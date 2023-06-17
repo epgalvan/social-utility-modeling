@@ -1,6 +1,6 @@
 # Configuration file for the Sphinx documentation builder.
 
-import os
+import os, sys
 
 # -- Project information
 
@@ -13,7 +13,9 @@ version = '0.1.0'
 
 # -- General configuration
 
-extensions = ["sphinx_design"]
+sys.path.append(os.path.abspath('sphinx-design'))
+
+extensions = ['dropdown', 'tabs', 'grids']
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
