@@ -1,0 +1,21 @@
+About the wiki
+**********
+
+This handbook contains information about what social utility models are, why one would use them, and how to implement them in R. 
+It contains both theory and tutorial, though it much more focused on the tuturial. 
+
+Required Foreknowledge
+=============
+
+There is no required foreknowledge, but some skills will help.
+
+Coding
+--------
+There are no specific functions called in the tutorial: we are writing our own code wherever possible. 
+Therefore, if you also know a statistical programming language (i.e. R, Python, or MatLab) you will be able to immediately implement this approach in your own research.
+Additionally, if you do not know a programming language, you will still understand what we are trying to accomplish and why. 
+
+Statistics
+----------
+If you have some basic knowledge of linear modeling (i.e. t-tests, ANOVA, regression) you will certainly be able to follow this lesson. 
+However, we are not taking for granted that you know commonsense statistical principles, so this should not prohibit anyone.
