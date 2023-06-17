@@ -4,5 +4,5 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "Social Utility Modeling"
-authors = [{name = "Graziella", email = "epgalvan20@g.ucla.edu"}]
+authors = [{name = "Elijah Galvan", email = "epgalvan20@g.ucla.edu"}]
 dynamic = ["version", "description"]
