@@ -14,13 +14,8 @@
 
 /* remove content width limit */
 .wy-nav-content {
-   max-width: 100%;
- }
- 
- /* Adjust the content width */
- .wy-nav-content-wrap {
-   width: 100%;
- }
+   max-width: None !important;
+}
  
 .kbd {
   -moz-border-radius:3px;
