@@ -14,7 +14,8 @@
 
 /* remove content width limit */
 .wy-nav-content {
-   max-width: None;
+   max-width: none;
+   margin: 0 auto;
 }
  
 .kbd {
