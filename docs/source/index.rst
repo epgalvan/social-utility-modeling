@@ -1,13 +1,29 @@
 Computational Modeling Handbook for Social Utility Models
 **********************
 
-Contents
-========
+.. toctree::
+   :maxdepth: 1
+   :caption: Introduction
+
+    About the wiki <0_1_0.rst>
+    Social Utility Theory <0_2_0.rst>
+    Computational versus Linear Modeling <0_3_0.rst>
+    Experimental Paradigms <0_4_0.rst>
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :caption: Before Data Collection
 
-   Introduction <0_0_0.rst>
-   Before Data Collection <1_0_0.rst>
-   Model Fitting <2_0_0.rst>
-   Hypothesis Testing <3_0_0.rst>
+    The Research Question <1_1_0.rst>
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Model Fitting
+
+    Recovering Free Parameters <2_1_0.rst>
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Hypothesis Testing
+
+    Comparing Competing Accounts of Behavior <3_1_0.rst>

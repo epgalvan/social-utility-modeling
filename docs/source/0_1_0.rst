@@ -1,6 +1,15 @@
 About the wiki
 **********
 
+.. article-info::
+    :avatar: dnl_plastic.png
+    :avatar-link: https://www.decisionneurosciencelab.com/
+    :avatar-outline: muted
+    :author: Elijah Galvan
+    :date: September 1, 2023
+    :read-time: 2 min read
+    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
+
 This handbook contains information about what social utility models are, why one would use them, and how to implement them in R. 
 It contains both theory and tutorial, though it much more focused on the tuturial. 
 

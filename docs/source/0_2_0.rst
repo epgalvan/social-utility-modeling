@@ -1,6 +1,15 @@
 Social Utility Theory
 ****************
 
+.. article-info::
+    :avatar: dnl_plastic.png
+    :avatar-link: https://www.decisionneurosciencelab.com/
+    :avatar-outline: muted
+    :author: Elijah Galvan
+    :date: September 1, 2023
+    :read-time: 5 min read
+    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
+
 .. _Tverksy & Kahneman, 1992: https://link.springer.com/article/10.1007/bf00122574
 .. _Levy & Glimcher, 2012: https://pubmed.ncbi.nlm.nih.gov/22766486/
 .. _Bartra et al. 2013: https://pubmed.ncbi.nlm.nih.gov/23507394/
@@ -14,6 +23,7 @@ Premises
     ``Subjective Utility`` - personally experienced satisfaction
 
     .. dropdown:: Cumulative Prospect Theory (`Tverksy & Kahneman, 1992`_) disproved this, right?
+
         The short answer is yes. Prospect Theory advanced 4 notions which are problematic for our purposes:
 
         1. The carrier of value is gains and losses, not net value
@@ -25,10 +35,14 @@ Premises
         4. The framing of choices affects preferences
 
 
-        So, why do we still stand behind this premise? 
-        Well, the decision-making tasks we use often lead to model predictions are not meaningfully different between a Subjective Utility Theory and Prospect Theory. 
-        We favor Subjective Utility because it is parsimonious. 
-        However, we recommend that, whenever you use risky, social choice paradigms, you consider using a different model.
+        **Then why do we stil endorse this premise? **
+
+        1. Prospect Theory advances the notion that people do act in what they *perceive* to be in their best interest, but this perception is warped by several psychological factors - thus, the underlying idea is the same but the mathematical implementation differs.
+        
+        2. The decision-making tasks used often lead to model predictions are not meaningfully different between a Subjective Utility Theory and Prospect Theory - thus, we ought to adopt the more parsimonious model.
+
+    .. Note:: 
+        Although this is suited for most social decision making paradigms we will discuss, we recommend that whenever you use paradigms involving uncertainty, you consider using an alternative kind of model and strongly consider using the probability weighting function from `Tverksy & Kahneman, 1992`_.
 
 .. dropdown:: Premise 2: Subjective Utility is derived from both economic and social goods 
     
@@ -39,8 +53,9 @@ Premises
         When referencing this, consider citing `Levy & Glimcher, 2012`_, `Bartra et al. 2013`_, and `Ruff & Fehr, 2014`_
 
 
-Inferences
+Logical Implications
 =========
-If it is true that people behave in a way that maximizes their Subjective Utility, it must be true that their behavior reflects how they value goods. 
+
+.. dropdown::  Implication 1: *If* Desire to Maximize Subjective Utility :octicon:`arrow-right;2em` Decision, *Then* Subjective Utility (Decision) = max(Subjective Utility ([Decision Set]))  
 Therefore, in Experimental Paradigms where people have to choose between doing some prosocial thing against having more money, we can infer something about the Subjective Utility they derive from each outcome. 
 Social Utility models often weight an individual's preferences for economic goods against their preferences for social goods, but can also simulataneously weight preferences for different social goods against each other. 
