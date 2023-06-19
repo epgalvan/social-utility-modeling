@@ -56,7 +56,7 @@ Premises
 Logical Implications
 =========
 
-.. card::  Implications: 
+.. card::  Implication 1: 
     :width: 100%
 
     .. tab-set::
@@ -74,5 +74,6 @@ Logical Implications
 
 .. card::  Implication 2: 
     :width: 100%
-        Therefore, in Experimental Paradigms where people have to choose between doing some prosocial thing against having more money, we can infer something about the Subjective Utility they derive from each outcome. 
-        Social Utility models often weight an individual's preferences for economic goods against their preferences for social goods, but can also simulataneously weight preferences for different social goods against each other. 
+    
+    Therefore, in Experimental Paradigms where people have to choose between doing some prosocial thing against having more money, we can infer something about the Subjective Utility they derive from each outcome. 
+    Social Utility models often weight an individual's preferences for economic goods against their preferences for social goods, but can also simulataneously weight preferences for different social goods against each other. 
