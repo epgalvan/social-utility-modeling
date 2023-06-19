@@ -56,7 +56,7 @@ Premises
 Logical Implication
 =========
 
-.. dropdown:: Subjective Utility can be estimated via the Decisions people Make.
+.. dropdown:: Subjective Utility can be estimated via the Decisions people make.
 
     .. tab-set::
         .. tab-item:: Programming Logic
