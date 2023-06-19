@@ -56,6 +56,21 @@ Premises
 Logical Implications
 =========
 
-.. dropdown::  Implication 1: *If* Desire to Maximize Subjective Utility :octicon:`arrow-right;2em` Decision, *Then* Subjective Utility (Decision) = max(Subjective Utility ([Decision Set]))  
-Therefore, in Experimental Paradigms where people have to choose between doing some prosocial thing against having more money, we can infer something about the Subjective Utility they derive from each outcome. 
-Social Utility models often weight an individual's preferences for economic goods against their preferences for social goods, but can also simulataneously weight preferences for different social goods against each other. 
+.. card::  Implications: 
+    :width: 100%
+
+    .. tab-set::
+        .. tab-item:: Symbolic Logic
+
+            *If* Desire to Maximize Subjective Utility :octicon:`arrow-right;1em` Decision, 
+            *Then* Subjective Utility (Decision) = max(Subjective Utility (Decision Set))  
+
+        .. tab-item:: Plain English
+
+            Since we have adopted the premise that people make decisions based on what will maximize their Subjective Utility, the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
+
+
+.. card::  Implication 2: 
+    :width: 100%
+        Therefore, in Experimental Paradigms where people have to choose between doing some prosocial thing against having more money, we can infer something about the Subjective Utility they derive from each outcome. 
+        Social Utility models often weight an individual's preferences for economic goods against their preferences for social goods, but can also simulataneously weight preferences for different social goods against each other. 
