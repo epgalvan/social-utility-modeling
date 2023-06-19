@@ -10,8 +10,8 @@ About the wiki
     :read-time: 1 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-This handbook contains information about what social utility models are, why one would use them, and how to implement them in R. 
-It contains both theory and tutorial, though it much more focused on the tuturial. 
+This handbook contains information about what social utility models are, why one would use them, and how to implement them in R, Matlab, and Python. 
+It contains both theory and practical implementation, though it much more focused on the practical implementation. 
 
 Required Foreknowledge
 =============

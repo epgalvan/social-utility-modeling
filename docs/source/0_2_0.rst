@@ -37,7 +37,7 @@ We rely on these ideas being true (or true enough).
         4. The framing of choices affects preferences
 
 
-        **Then why do we stil endorse this premise? **
+        Then why do we still endorse this premise?
 
         1. Prospect Theory advances the notion that people do act in what they *perceive* to be in their best interest, but this perception is warped by several psychological factors - thus, the underlying idea is the same but the mathematical implementation differs.
         
@@ -49,6 +49,7 @@ We rely on these ideas being true (or true enough).
 .. dropdown:: 2) Subjective Utility is derived from both economic and social goods 
     
     ``Economic Goods`` - goods which are objectively useful to people but require effort to obtain (money, food, water, shelter, etc.)
+
     ``Social Goods`` - goods which are subjectively experienced via real or imagined social interactions (fairness, equality, self-validation, etc.)
 
     .. Note::
@@ -56,9 +57,9 @@ We rely on these ideas being true (or true enough).
 
 .. dropdown:: 3) Economic and social goods can be quantified
 
-    Economic goods are quantifiable via currency. 
+    Economic goods are already quantified. 
 
-    Social goods are also quantifiable via experimental variables. 
+    Social goods are also quantifiable, but via experimental variables. 
     Norm adherance or violation is expressed as a function of the choice (or dependant variable) **and** any situational factors (or indepedent variables).    
 
 
@@ -70,24 +71,25 @@ If we adopt these premises, it must be true that:
 .. dropdown:: 1) Subjective Utility can be estimated via the Decisions people make.
 
     .. tab-set::
+
+        .. tab-item:: Plain English
+
+            Since we have adopted the premise that people make decisions based on what will maximize their Subjective Utility, 
+            then the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
+            
         .. tab-item:: Programming Logic
 
             :bdg-primary:`Since` 
             
-            **Possible_Choices[which(U(Possible_Choices)) == max(U(Possible_Choices))]** :octicon:`arrow-right;1em` **Decision**
+            **Decision = Possible_Choices[which(U(Possible_Choices)) == max(U(Possible_Choices))**
 
             :bdg-secondary:`It Follows that` 
             
             **U(Decision) = max(U(Possible_Choices))** 
 
             .. Note::
-                ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility of a Decision is given as ``U(Decision)``.
+                ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility derived from making a given decision is given as ``U(Decision)``.
 
-        .. tab-item:: Plain English
-
-            Since we have adopted the premise that people make decisions based on what will maximize their Subjective Utility, 
-            then the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
-
-.. dropdown:: 2) Inter-Individual Variability reflects differing preferences for Economic and Social Goods.
+.. dropdown:: 2) Different choices by different people are caused by different preferences for Economic and Social Goods.
 
     Since we have adopted the assumption that people make Decisions which maximize their Subjective Utility, if some people make different Decisions than others, then it **must** be true that they value these goods differently from one another.
