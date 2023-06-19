@@ -1,2 +1,10 @@
 Computational versus Linear Modeling
 ****************
+
+.. toctree::
+   :maxdepth: 1
+
+    Theoretical Differences <0_3_1.rst>
+    Hypothesis Testing <0_3_2.rst>
+    Additional Benefits <0_3_3.rst>
+    Potential Pitfalls <0_3_4.rst>

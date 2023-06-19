@@ -7,7 +7,7 @@ Social Utility Theory
     :avatar-outline: muted
     :author: Elijah Galvan
     :date: September 1, 2023
-    :read-time: 5 min read
+    :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
 .. _Tverksy & Kahneman, 1992: https://link.springer.com/article/10.1007/bf00122574
@@ -18,7 +18,9 @@ Social Utility Theory
 Premises
 ===========
 
-.. dropdown:: Premise 1: People act in a way which maximizes their Subjective Utility
+We rely on these ideas being true (or true enough).
+
+.. dropdown:: 1) People act in a way which maximizes their Subjective Utility
     
     ``Subjective Utility`` - personally experienced satisfaction
 
@@ -44,19 +46,28 @@ Premises
     .. Note:: 
         Although this is suited for most social decision making paradigms we will discuss, we recommend that whenever you use paradigms involving uncertainty, you consider using an alternative kind of model and strongly consider using the probability weighting function from `Tverksy & Kahneman, 1992`_.
 
-.. dropdown:: Premise 2: Subjective Utility is derived from both economic and social goods 
+.. dropdown:: 2) Subjective Utility is derived from both economic and social goods 
     
     ``Economic Goods`` - goods which are objectively useful to people but require effort to obtain (money, food, water, shelter, etc.)
     ``Social Goods`` - goods which are subjectively experienced via real or imagined social interactions (fairness, equality, self-validation, etc.)
 
     .. Note::
-        When referencing this, consider citing `Levy & Glimcher, 2012`_, `Bartra et al. 2013`_, and `Ruff & Fehr, 2014`_
+        When referencing this, consider citing `Levy & Glimcher, 2012`_, `Bartra et al. 2013`_, and `Ruff & Fehr, 2014`_ who all roughly state that social and economic goods are represented in a common neural currency in the brain.
+
+.. dropdown:: 3) Economic and social goods can be quantified
+
+    Economic goods are quantifiable via currency. 
+
+    Social goods are also quantifiable via experimental variables. 
+    Norm adherance or violation is expressed as a function of the choice (or dependant variable) **and** any situational factors (or indepedent variables).    
 
 
-Logical Implication
+Logical Implications
 =========
 
-.. dropdown:: Subjective Utility can be estimated via the Decisions people make.
+If we adopt these premises, it must be true that:
+
+.. dropdown:: 1) Subjective Utility can be estimated via the Decisions people make.
 
     .. tab-set::
         .. tab-item:: Programming Logic
@@ -75,4 +86,8 @@ Logical Implication
         .. tab-item:: Plain English
 
             Since we have adopted the premise that people make decisions based on what will maximize their Subjective Utility, 
-            the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
+            then the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
+
+.. dropdown:: 2) Inter-Individual Variability reflects differing preferences for Economic and Social Goods.
+
+    Since we have adopted the assumption that people make Decisions which maximize their Subjective Utility, if some people make different Decisions than others, then it **must** be true that they value these goods differently from one another.

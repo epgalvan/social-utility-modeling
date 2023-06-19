@@ -1,0 +1,28 @@
+Potential Pitfalls
+**************
+
+.. article-info::
+    :avatar: dnl_plastic.png
+    :avatar-link: https://www.decisionneurosciencelab.com/
+    :avatar-outline: muted
+    :author: Elijah Galvan
+    :date: September 1, 2023
+    :read-time: 3 min read
+    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
+
+.. _Wilson and Collins (2019): https://elifesciences.org/articles/49547
+
+This is speculation, but I think that the reason that Computational Modeling isn’t taught widely as standard master’s or Ph.D. curriculum is that computational modeling - particularly Social Utility Modeling - requires abstract reasoning. 
+
+In the Piagetian model of cognitive development, the third stage where one develops concrete reasoning is sufficient for conducting linear modeling analyses: you can hand most anyone a list of instructions and they can follow those instructions and ultimately arrive at the ‘correct’ model. 
+In computational modeling, you can follow the outline that I’ve offered and the instructions that I’m relaying, but no guarantees can be made that you will produce the same (or even similar) models. 
+This requires independent hypothetical and deductive reasoning which is characteristic of the fourth stage of Piagetian cognitive development which only about 1/3 people reach. 
+Computational modeling demands correctly accounting for all possible psychological accounts for how people can solve a certain problem and correct mathematical representation. 
+So, rather than teaching a technique that only a subset of people (I would tend to think a significant majority, though certainly not everyone) can correctly use, they elected to spend their time and resources giving their students something that they are certain would be useful for everyone. 
+
+Given that this is not as widely taught as linear modeling, another reason for the lack of widespread use of computational modeling would also inherently be a lack of familiarity with how to actually do it. 
+This handbook is being made available in order to remediate this communication gap: I learned a majority of what is presented here from reading a paper by `Wilson and Collins (2019)`_`. 
+However, I still required an even more rudimentary and pragmatic understanding of what to actually do it and, upon further inquiry, learned that this was not a unique struggle – hence my reason for creating this. 
+However, beyond the actual practicalities of how to do this, I also learned from personal experience that the same flexibility that this technique offers can also serve to render wrong or uninterpretable results when the researcher does not observe (what should be) commonsense statistical and philosophical principles. 
+Naturally, this would not be such a big issue if this were more widely taught and those using this technique shared a common understanding of a standardized approach to this kind of analysis which, as it currently stands, does not exist. 
+An emphasis of this handbook is to explain the things that should be commonsense and outline the steps involved at every stage of the process of computational modeling in order to prevent us from arriving at bad and stupid results.

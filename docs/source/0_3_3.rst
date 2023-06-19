@@ -1,0 +1,35 @@
+Additional Benefits
+**************
+
+.. article-info::
+    :avatar: dnl_plastic.png
+    :avatar-link: https://www.decisionneurosciencelab.com/
+    :avatar-outline: muted
+    :author: Elijah Galvan
+    :date: September 1, 2023
+    :read-time: 2 min read
+    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
+
+
+Individual Differences
+=============
+
+In linear mixed effects modeling, individual differences are treated as a nuisance: random effects for the intercept and conditions varied within individuals are accounted for in order to the give better signal to the fixed effects of interest. 
+Computational modeling differs in comparison in terms of how individual differences are accounted for and what it enables us to do with further analyses.
+
+In computational models, individual differences are captured in free parameters: these are (generally) meaningful psychological dimensions which relate how the data generation process differs between people. 
+As such, we can explicitly test to determine whether or not people are significantly different in the context of our experiment and we can do things such as relate these free parameters to other psychological constructs or brain data (for instance via Intersubject Representational Similarity Analysis (IS-RSA): https://naturalistic-data.org/content/Intersubject_RSA.html). 
+
+Thus, it is an informative and intuitive way to reduce the complexity of high-dimensional datasets: you can go from say a hundred trials of raw behavioral data and arrive at a few (think 1 to 3) numbers that meaningfully characterize your subject.
+
+User-Defined Process
+==========
+
+Functionally, you need to install one package for parameter recovery but, apart from that, every line of code that determines the result of the analysis can and should be written by the researcher and should reflect:
+
+* Computational Logic
+* Relevant theory
+* Other extant knowledge
+
+As such, the researcher will be able to justify every choice that they have made and have much clearer insights regarding what their results actually tell them. 
+This enables us to also empirically test questions that are simply out of the reach of linear modeling.

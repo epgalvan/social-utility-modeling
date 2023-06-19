@@ -1,0 +1,28 @@
+Theoretical Differences
+*************
+
+.. article-info::
+    :avatar: dnl_plastic.png
+    :avatar-link: https://www.decisionneurosciencelab.com/
+    :avatar-outline: muted
+    :author: Elijah Galvan
+    :date: September 1, 2023
+    :read-time: 3 min read
+    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
+
+So why use computational modeling at all? 
+After all, many researchers in the general field of psychology have gotten along quite well using linear modeling techniques to answer their research questions: what is the upside in doing something more complex and (as we will see) much more prone to user error? 
+
+The Data Generation Process
+=============
+
+I would argue that, as psychologists, our goal in measuring behavior is as a means by which we can draw conclusions about the underlying psychological mechanisms which determine that behavior. 
+You can think about this for yourself: we create experimental designs with the purpose and the intention of creating a situation in which different accounts of psychological processes would generate distinguishable patterns of behavior. 
+
+Linear models use independent variables to predict dependent variables: more specifically, some amount of variance in an outcome variable is attributed to a predictor variable. So what does this enable us to conclude? 
+Well, fundamentally, we can say that if we change an independent variable by 1, the outcome variable changes by the beta weight of that independent variable. 
+In principle, the data generation process implied by linear modeling is linear (with the exception of when your data is not linear in which case you apply a binomial, curvilinear, or logarithmic transformation for instance where the data generation process then becomes whatever transformation you impose on the data). 
+What is being tested here is only the extent to which variance can be attributed to predictor variables of interest. 
+Philosophically, the data generation process is not being tested, but the extent to which behavior can be attributed to environmental manipulations under the assumption that the data generation process is linear (or binomial, logarithmic, etc.). 
+
+In contrast, adopting a Computational Modeling approach forces the researcher to actively think about and test what the Data Generation Process actually is.
