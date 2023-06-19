@@ -62,7 +62,7 @@ Logical Implications
     .. tab-set::
         .. tab-item:: Symbolic Logic
 
-            :bdg-primary:`If` **the Desire to Maximize Subjective Utility** :octicon:`arrow-right;1em` **Decision, **
+            :bdg-primary:`If` **the Desire to Maximize Subjective Utility** :octicon:`arrow-right;1em` **Decision**,
 
             :bdg-secondary:`Then` **Subjective Utility (Decision) = max(Subjective Utility (Decision Set))** 
 
@@ -70,7 +70,7 @@ Logical Implications
 
             Since we have adopted the premise that people make decisions based on what will maximize their Subjective Utility, the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
 
-    For our purposes, this means that we can ascertain how much Subjective Utility people derive from both Economic Goods and Social Goods from their behavior in Social Decision-Making.
+    For our purposes, this means that we can ascertain how much Subjective Utility people derive from both Economic Goods and Social Goods from their behavior in Social Decision-Making Tasks, given that we create decision sets that .
 
 .. card::  Implication 2: 
     :width: 100%
