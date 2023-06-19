@@ -13,8 +13,8 @@
 }
 
 /* remove content width limit */
-.wy-nav-content-wrap {
-   max-width: 100%;
+.wy-nav-content {
+   max-width: None;
 }
  
 .kbd {
