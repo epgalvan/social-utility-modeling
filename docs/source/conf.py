@@ -1,7 +1,4 @@
 # Configuration file for the Sphinx documentation builder.
-
-import sphinx_design
-
 # -- Project information
 
 project = 'Social Utility Modeling'
@@ -19,7 +16,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
-    'sphinx-design'
+    'sphinx_design'
 ]
 
 intersphinx_mapping = {
