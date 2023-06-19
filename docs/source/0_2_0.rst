@@ -53,31 +53,27 @@ Premises
         When referencing this, consider citing `Levy & Glimcher, 2012`_, `Bartra et al. 2013`_, and `Ruff & Fehr, 2014`_
 
 
-Logical Implications
+Logical Implication
 =========
 
-.. dropdown::  Implication 1: We can ascertain how much Subjective Utility people derive from the decisions that they make.
+We can ascertain how much Subjective Utility people derive from the decisions that they make.
+-----------------------------
 
-    .. tab-set::
-        .. tab-item:: Programming Logic
+.. tab-set::
+    .. tab-item:: Programming Logic
 
-            :bdg-primary:`If` **Possible_Choices[which(U(Possible_Choices)) == max(U(Possible_Choices))]** :octicon:`arrow-right;1em` **Decision**
+        :bdg-primary:`Since` 
+        
+        **Possible_Choices[which(U(Possible_Choices)) == max(U(Possible_Choices))]** :octicon:`arrow-right;1em` **Decision**
 
-            :bdg-secondary:`Then` **U(Decision) = max(U(Possible_Choices))** 
+        :bdg-secondary:`Then` 
+        
+        **U(Decision) = max(U(Possible_Choices))** 
 
-            .. Note::
-                ``U`` refers to Subjective Utility
+        .. Note::
+            ``U`` refers to Subjective Utility
 
-        .. tab-item:: Plain English
+    .. tab-item:: Plain English
 
-            Since we have adopted the premise that people make decisions based on what will maximize their Subjective Utility, 
-            the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
-
-.. card::  Implication 2: 
-    :width: 100%
-
-    
-
-    
-    Therefore, in Experimental Paradigms where people have to choose between doing some prosocial thing against having more money, we can infer something about the Subjective Utility they derive from each outcome. 
-    Social Utility models often weight an individual's preferences for economic goods against their preferences for social goods, but can also simulataneously weight preferences for different social goods against each other. 
+        Since we have adopted the premise that people make decisions based on what will maximize their Subjective Utility, 
+        the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
