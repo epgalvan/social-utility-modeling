@@ -70,7 +70,7 @@ Logical Implication
             **U(Decision) = max(U(Possible_Choices))** 
 
             .. Note::
-                ``U`` refers to Subjective Utility
+                ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility of a Decision is given as ``U(Decision)``.
 
         .. tab-item:: Plain English
 
