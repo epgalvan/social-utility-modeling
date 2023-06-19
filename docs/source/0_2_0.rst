@@ -56,24 +56,23 @@ Premises
 Logical Implication
 =========
 
-We can ascertain how much Subjective Utility people derive from the decisions that they make.
------------------------------
+.. dropdown:: Implication 1: We can ascertain how much Subjective Utility people derive from the decisions that they make.
 
-.. tab-set::
-    .. tab-item:: Programming Logic
+    .. tab-set::
+        .. tab-item:: Programming Logic
 
-        :bdg-primary:`Since` 
-        
-        **Possible_Choices[which(U(Possible_Choices)) == max(U(Possible_Choices))]** :octicon:`arrow-right;1em` **Decision**
+            :bdg-primary:`Since` 
+            
+            **Possible_Choices[which(U(Possible_Choices)) == max(U(Possible_Choices))]** :octicon:`arrow-right;1em` **Decision**
 
-        :bdg-secondary:`Then` 
-        
-        **U(Decision) = max(U(Possible_Choices))** 
+            :bdg-secondary:`It Follows that` 
+            
+            **U(Decision) = max(U(Possible_Choices))** 
 
-        .. Note::
-            ``U`` refers to Subjective Utility
+            .. Note::
+                ``U`` refers to Subjective Utility
 
-    .. tab-item:: Plain English
+        .. tab-item:: Plain English
 
-        Since we have adopted the premise that people make decisions based on what will maximize their Subjective Utility, 
-        the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
+            Since we have adopted the premise that people make decisions based on what will maximize their Subjective Utility, 
+            the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
