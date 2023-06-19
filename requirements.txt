@@ -1,2 +1,1 @@
-sphinx==7.0.1
 sphinx-design==0.4.1
