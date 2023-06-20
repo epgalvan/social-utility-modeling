@@ -74,14 +74,17 @@ If we adopt these premises, it must be true that:
 
         .. tab-item:: Plain English
 
-            Since we have adopted the premise that people make decisions based on what will maximize their Subjective Utility, 
-            then the Decision that a person has made **must** have the Highest Subjective Utility out of all of the possible Decisions that that person could have made.
+            Since we have adopted the premise that people make decisions with the purpose of maximizing their Subjective Utility, 
+
+            then the decision that a person has made **must** have the Highest Subjective Utility out of all of the possible choices that that person could have made.
             
-        .. tab-item:: Programming Logic
+        .. tab-item:: R
 
             :bdg-primary:`Since` 
-            
-            **Decision = Possible_Choices[which(U(Possible_Choices)) == max(U(Possible_Choices))**
+
+            **Maximizes_Utility = which(U(Possible_Choices)) == max(U(Possible_Choices))**
+
+            **Decision = Possible_Choices[Maximizes_Utility]**
 
             :bdg-secondary:`It Follows that` 
             
@@ -90,6 +93,41 @@ If we adopt these premises, it must be true that:
             .. Note::
                 ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility derived from making a given decision is given as ``U(Decision)``.
 
+        .. tab-item:: MatLab
+
+            :bdg-primary:`Since` 
+
+            **Maximizes_Utility = **
+
+            **Decision = Possible_Choices[Maximizes_Utility]**
+
+            :bdg-secondary:`It Follows that` 
+            
+            **U(Decision) = ** 
+
+            .. Note::
+                ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility derived from making a given decision is given as ``U(Decision)``.
+
+        .. tab-item:: Python
+
+            :bdg-primary:`Since` 
+
+            **Maximizes_Utility = **
+
+            **Decision = Possible_Choices[Maximizes_Utility]**
+
+            :bdg-secondary:`It Follows that` 
+            
+            **U(Decision) = ** 
+
+            .. Note::
+                ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility derived from making a given decision is given as ``U(Decision)``.
+
+
 .. dropdown:: 2) Different choices by different people are caused by different preferences for Economic and Social Goods.
 
-    Since we have adopted the assumption that people make Decisions which maximize their Subjective Utility, if some people make different Decisions than others, then it **must** be true that they value these goods differently from one another.
+    Since we have adopted the assumption that people make decisions which maximize their Subjective Utility, 
+    
+    if some people make different decisions than others, 
+    
+    then it **must** be true that they value these goods differently from one another.
