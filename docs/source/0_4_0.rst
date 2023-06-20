@@ -10,6 +10,11 @@ Experimental Paradigms
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
+In this section, we will look at the standard paradigms which are used in social utility modeling. 
+We will be referring to the standard 1-shot paradigms: multiple interactions nearly always ought to be modelled using learning models. 
+
+These tasks are often amended to answer specific research questions. 
+Thus, if we know the standard 
 
 
 .. dropdown:: Prisoner's Dilemma
@@ -21,8 +26,27 @@ Experimental Paradigms
             .. figure:: pd_gif.gif
                 :figwidth: 100%
                 :align: center
+            
+            Both Players make a simaltaneous decision about whether to cooperate or defect. 
+            If both players cooperate, they usually receive a nice payout. 
+            If one player cooperates and the other defects, the defector receives a much larger payout than the cooperator. 
+            However, if both players defect, they both get nothing. 
 
         .. tab-item:: Experimental Variables
+
+            .. grid:: 2
+                
+                .. grid-item-card:: Independant Variables
+
+                    * Outcome Under Cooperate-Cooperate = [5, 5] 
+                    * Outcome Under Cooperate-Defect = [1, 10]
+                    * Outcome Under Defect-Cooperate = [10, 1]
+                    * Outcome Under Defect-Defect = [0, 0]
+
+                .. grid-item-card:: Dependant Variables
+
+                    * Player 1 Decision
+                    * Player 2 Decision
 
         .. tab-item:: Stylized Facts
 

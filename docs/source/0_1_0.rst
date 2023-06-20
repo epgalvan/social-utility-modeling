@@ -19,6 +19,7 @@ Required Foreknowledge
 There is no required foreknowledge, but knowing programming and statistics will help.
 
 .. dropdown:: Programming
+
     If you also know a statistical programming language, even at a basic level, you will be able to immediately implement this approach in your own research. 
     The documentation is written in R, MatLab, and Python but the documentation is also written and justified in plain English to enable readers to follow the logic of each step.
 
@@ -27,6 +28,7 @@ There is no required foreknowledge, but knowing programming and statistics will 
     However, you will obviously not be able to then implement this yourself until you learn the basics of a programing language.
 
 .. dropdown:: Statistics
+    
     If you have some basic knowledge of linear modeling (i.e. t-tests, ANOVA, regression) you will find certain topics that you already understand. 
     
     However, we are not taking for granted that you know commonsense statistical principles, so this should not prohibit anyone.
