@@ -35,28 +35,28 @@ Thus, if we know the standard game design we can think about how to change it to
             If one player cooperates and the other defects, the defector receives a much larger payout than the cooperator. 
             However, if both players defect, they both get nothing. 
 
-        .. tab-item:: Experimental Variables
+        .. tab-item:: 
+            
 
             .. grid:: 2
                 
                 .. grid-item-card:: Independant Variables
                     :columns: 12
 
-                    * Outcome Under Cooperate-Cooperate = [5, 5] 
-                    * Outcome Under Cooperate-Defect = [1, 10]
-                    * Outcome Under Defect-Cooperate = [10, 1]
-                    * Outcome Under Defect-Defect = [0, 0]
+                    * None
 
                 .. grid-item-card:: Constants
                     :columns: 12
 
-                    * None
+                    * Cooperate-Cooperate Outcome 
+                    * Cooperate-Defect Outcome
+                    * Defect-Cooperate Outcome
+                    * Defect-Defect Outcome
 
                 .. grid-item-card:: Dependant Variables
                     :columns: 12
 
-                    * Player 1's decision
-                    * Player 2's decision
+                    * Cooperation Decision
 
         .. tab-item:: Stylized Facts
 
@@ -90,24 +90,18 @@ Thus, if we know the standard game design we can think about how to change it to
                 .. grid-item-card:: Constants
                     :columns: 12
 
-                    * Community Pot Multiplier                    
-                    * Player 1's Endowment
-                    * Player 2's Endowment
-                    * Player 3's Endowment
-                    * Player 4's Endowment
+                    * Community Pot Multiplier
+                    * Endowment Amounts
 
                 .. grid-item-card:: Dependant Variables
                     :columns: 12
 
-                    * Player 1's Contribution
-                    * Player 2's Contribution
-                    * Player 3's Contribution
-                    * Player 4's Contribution
-                    * Total Wealth
+                    * Contribution Amount (Individual)
+                    * Total Wealth (Group)
 
         .. tab-item:: Stylized Facts
 
-            * Most people give at least something, average giving behavior is 37.7% of the Endowment (`Zelmer, 2017`_)
+            * Most people give at least something, average giving behavior is 37.7% of the Endowment (`Zelmer, 2003`_)
             * Considered to measure cooperation
             * To use in social utility modeling, it require this game be played sequentially to make this a non-risky choice - more often used in repeated interactions to study group-level dynamics (i.e. Total Wealth accumulated over a certain number of trials)
             * Here's a helpful wikipedia article: https://en.wikipedia.org/wiki/Public_goods_game
@@ -128,22 +122,43 @@ Thus, if we know the standard game design we can think about how to change it to
         .. tab-item:: Experimental Variables
 
             .. grid:: 2
+                :outline:
+
+                .. grid-item:: Proposer
+                    :outline: 
                 
-                .. grid-item-card:: Independant Variables
-                    :columns: 12
+                    .. grid-item-card:: Independant Variables
+                        :columns: 6
 
-                    * None
+                        * None
 
-                .. grid-item-card:: Constants
-                    :columns: 12
+                    .. grid-item-card:: Constants
+                        :columns: 6
 
-                    * Endowment
+                        * Endowment Amount
 
-                .. grid-item-card:: Dependant Variables
-                    :columns: 12
+                    .. grid-item-card:: Dependant Variables
+                        :columns: 6
 
-                    * Proposer's Offer
-                    * Responder's Response
+                        * Offer Amount
+
+                .. grid-item:: Responder
+                    :outline: 
+                
+                    .. grid-item-card:: Independant Variables
+                        :columns: 6
+
+                        * Offer Amount
+
+                    .. grid-item-card:: Constants
+                        :columns: 6
+
+                        * Endowment Amount
+
+                    .. grid-item-card:: Dependant Variables
+                        :columns: 6
+
+                        * Ultimatum Response
 
         .. tab-item:: Stylized Facts
 
