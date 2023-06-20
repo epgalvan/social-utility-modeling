@@ -80,7 +80,6 @@ Thus, if we know the standard game design we can think about how to change it to
         .. tab-item:: Experimental Variables
 
             .. grid:: 2
-                :padding: 1
 
                 .. grid-item-card:: Independant Variables
                     :columns: 12
@@ -122,10 +121,8 @@ Thus, if we know the standard game design we can think about how to change it to
         .. tab-item:: Experimental Variables
 
             .. grid:: 2
-                :outline:
 
                 .. grid-item:: **Proposer**
-                    :outline: 
                 
                     .. grid-item-card:: Independant Variables
                         :columns: 12
@@ -143,7 +140,6 @@ Thus, if we know the standard game design we can think about how to change it to
                         * Offer Amount
 
                 .. grid-item:: **Responder**
-                    :outline: 
                 
                     .. grid-item-card:: Independant Variables
                         :columns: 12
