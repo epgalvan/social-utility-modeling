@@ -35,9 +35,8 @@ Thus, if we know the standard game design we can think about how to change it to
             If one player cooperates and the other defects, the defector receives a much larger payout than the cooperator. 
             However, if both players defect, they both get nothing. 
 
-        .. tab-item:: 
+        .. tab-item:: Experimental Variables
             
-
             .. grid:: 2
                 
                 .. grid-item-card:: Independant Variables
