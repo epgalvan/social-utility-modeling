@@ -103,7 +103,7 @@ Thus, if we know the standard game design we can think about how to change it to
 
             * Most people give at least something, average giving behavior is 37.7% of the Endowment (`Zelmer, 2003`_)
             * Considered to measure cooperation
-            * To use in social utility modeling, it require this game be played sequentially to make this a non-risky choice - more often used in repeated interactions to study group-level dynamics (i.e. Total Wealth accumulated over a certain number of trials)
+            * To use in social utility modeling, it may require this game be played sequentially to make this a non-risky choice - more often used in repeated interactions to study group-level dynamics (i.e. Total Wealth accumulated over a certain number of trials)
             * Here's a helpful wikipedia article: https://en.wikipedia.org/wiki/Public_goods_game
 
 .. dropdown:: Ultimatum Game 
