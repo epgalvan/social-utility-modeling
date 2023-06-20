@@ -10,21 +10,88 @@ Experimental Paradigms
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-Prisoner's Dilemma
-===========
 
 
-Public Goods Game
-=============
+.. dropdown:: Prisoner's Dilemma
 
-Ultimatum Game 
-============
+    .. tab-set::
 
-Dictator Game
-===========
+        .. tab-item:: Task Design
 
-Trust Game
-===========
+            .. figure:: pd_gif.gif
+                :figwidth: 100%
+                :align: center
 
-Justice Game
-=============
+        .. tab-item:: Experimental Variables
+
+        .. tab-item:: Stylized Facts
+
+.. dropdown:: Public Goods Game
+
+    .. tab-set::
+
+        .. tab-item:: Task Design
+
+            .. figure:: pgg_gif.gif
+                :figwidth: 100%
+                :align: center
+
+        .. tab-item:: Experimental Variables
+
+        .. tab-item:: Stylized Facts
+
+.. dropdown:: Ultimatum Game 
+
+    .. tab-set::
+
+        .. tab-item:: Task Design
+
+            .. figure:: ug_gif.gif
+                :figwidth: 100%
+                :align: center
+
+        .. tab-item:: Experimental Variables
+
+        .. tab-item:: Stylized Facts
+
+.. dropdown:: Dictator Game
+
+    .. tab-set::
+
+        .. tab-item:: Task Design
+
+            .. figure:: dg_gif.gif
+                :figwidth: 100%
+                :align: center
+
+        .. tab-item:: Experimental Variables
+
+        .. tab-item:: Stylized Facts
+
+.. dropdown:: Trust Game
+
+    .. tab-set::
+
+        .. tab-item:: Task Design
+
+            .. figure:: tg_gif.gif
+                :figwidth: 100%
+                :align: center
+
+        .. tab-item:: Experimental Variables
+
+        .. tab-item:: Stylized Facts
+
+.. dropdown:: Justice Game
+
+    .. tab-set::
+
+        .. tab-item:: Task Design
+
+            .. figure:: jg_gif.gif
+                :figwidth: 100%
+                :align: center
+
+        .. tab-item:: Experimental Variables
+
+        .. tab-item:: Stylized Facts
