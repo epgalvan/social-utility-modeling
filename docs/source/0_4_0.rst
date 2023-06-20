@@ -37,16 +37,21 @@ Thus, if we know the standard
             .. grid:: 2
                 
                 .. grid-item-card:: Independant Variables
+                    :columns: 12
 
                     * Outcome Under Cooperate-Cooperate = [5, 5] 
                     * Outcome Under Cooperate-Defect = [1, 10]
                     * Outcome Under Defect-Cooperate = [10, 1]
                     * Outcome Under Defect-Defect = [0, 0]
 
-                .. grid-item-card:: Dependant Variables
+                .. grid-item-card:: Constants
+                    :columns: 12
 
-                    * Player 1 Decision
-                    * Player 2 Decision
+                .. grid-item-card:: Dependant Variables
+                    :columns: 12
+
+                    * Player 1's decision
+                    * Player 2's decision
 
         .. tab-item:: Stylized Facts
 
