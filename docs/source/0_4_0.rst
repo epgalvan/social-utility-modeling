@@ -1,6 +1,9 @@
 Experimental Paradigms
 *************
 
+.. _Mengel, 2017: https://core.ac.uk/download/pdf/96933676.pdf
+.. _Zelmer, 2003: https://link.springer.com/content/pdf/10.1023/A:1026277420119.pdf
+
 .. article-info::
     :avatar: dnl_plastic.png
     :avatar-link: https://www.decisionneurosciencelab.com/
@@ -14,7 +17,7 @@ In this section, we will look at the standard paradigms which are used in social
 We will be referring to the standard 1-shot paradigms: multiple interactions nearly always ought to be modelled using learning models. 
 
 These tasks are often amended to answer specific research questions. 
-Thus, if we know the standard 
+Thus, if we know the standard game design we can think about how to change it to answer our research questions.
 
 
 .. dropdown:: Prisoner's Dilemma
@@ -47,6 +50,8 @@ Thus, if we know the standard
                 .. grid-item-card:: Constants
                     :columns: 12
 
+                    * None
+
                 .. grid-item-card:: Dependant Variables
                     :columns: 12
 
@@ -54,6 +59,10 @@ Thus, if we know the standard
                     * Player 2's decision
 
         .. tab-item:: Stylized Facts
+
+            * Although defecting is always better for each Player, around 37% of the time people cooperate (`Mengel, 2017`_)
+            * What causes defection is debated - risk and temptation are difficult to disentangle in this situation
+            * Almost unusable for our purposes due to the fact that it is a risky choice and not many variables can be manipulated - often used in an iterated design to study strategic decision-making
 
 .. dropdown:: Public Goods Game
 
@@ -65,9 +74,43 @@ Thus, if we know the standard
                 :figwidth: 100%
                 :align: center
 
+            All Players receive an Endowment (money given by the experimenter to use in the game) and make a simaltaneous decision about how much to contribute to a community pot. 
+            The community pot is multiplied and equally distributed among all players, regardless of contribution. 
+            Payouts are the sum of money not contributed to the community pot and money received from the community pot.
+
         .. tab-item:: Experimental Variables
 
+            .. grid:: 2
+                
+                .. grid-item-card:: Independant Variables
+                    :columns: 12
+
+                    * None
+
+                .. grid-item-card:: Constants
+                    :columns: 12
+
+                    * Community Pot Multiplier                    
+                    * Player 1's Endowment
+                    * Player 2's Endowment
+                    * Player 3's Endowment
+                    * Player 4's Endowment
+
+                .. grid-item-card:: Dependant Variables
+                    :columns: 12
+
+                    * Player 1's Contribution
+                    * Player 2's Contribution
+                    * Player 3's Contribution
+                    * Player 4's Contribution
+                    * Total Wealth
+
         .. tab-item:: Stylized Facts
+
+            * Most people give at least something, average giving behavior is 37.7% of the Endowment (`Zelmer, 2017`_)
+            * Considered to measure cooperation
+            * To use in social utility modeling, it require this game be played sequentially to make this a non-risky choice - more often used in repeated interactions to study group-level dynamics (i.e. Total Wealth accumulated over a certain number of trials)
+            * Here's a helpful wikipedia article: https://en.wikipedia.org/wiki/Public_goods_game
 
 .. dropdown:: Ultimatum Game 
 
@@ -79,7 +122,28 @@ Thus, if we know the standard
                 :figwidth: 100%
                 :align: center
 
+            The Proposer receives an Endowment and makes an Ultimatum Offer to the Responder. 
+            The Responder decides to accept the Ultimatum Offer - in which case both players receive the division according to the Ultimatum - or reject it - in which case both players receive nothing.
+
         .. tab-item:: Experimental Variables
+
+            .. grid:: 2
+                
+                .. grid-item-card:: Independant Variables
+                    :columns: 12
+
+                    * None
+
+                .. grid-item-card:: Constants
+                    :columns: 12
+
+                    * Endowment
+
+                .. grid-item-card:: Dependant Variables
+                    :columns: 12
+
+                    * Proposer's Offer
+                    * Responder's Response
 
         .. tab-item:: Stylized Facts
 

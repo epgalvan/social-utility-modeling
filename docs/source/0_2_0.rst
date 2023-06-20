@@ -82,9 +82,11 @@ If we adopt these premises, it must be true that:
 
             :bdg-primary:`Since` 
 
-            **Maximizes_Utility = which(U(Possible_Choices)) == max(U(Possible_Choices))**
+            **Decision = Possible_Choices[Maximizes_Utility]**           
+            
+             :bdg-primary-line:`where` 
 
-            **Decision = Possible_Choices[Maximizes_Utility]**
+            **Maximizes_Utility = which(U(Possible_Choices)) == max(U(Possible_Choices))**
 
             :bdg-secondary:`It Follows that` 
             
