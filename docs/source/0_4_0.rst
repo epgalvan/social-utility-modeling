@@ -124,7 +124,7 @@ Thus, if we know the standard game design we can think about how to change it to
             .. grid:: 2
                 :outline:
 
-                .. grid-item:: Proposer
+                .. grid-item:: **Proposer**
                     :outline: 
                 
                     .. grid-item-card:: Independant Variables
@@ -142,7 +142,7 @@ Thus, if we know the standard game design we can think about how to change it to
 
                         * Offer Amount
 
-                .. grid-item:: Responder
+                .. grid-item:: **Responder**
                     :outline: 
                 
                     .. grid-item-card:: Independant Variables
