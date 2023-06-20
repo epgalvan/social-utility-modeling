@@ -128,17 +128,17 @@ Thus, if we know the standard game design we can think about how to change it to
                     :outline: 
                 
                     .. grid-item-card:: Independant Variables
-                        :columns: 6
+                        :columns: 12
 
                         * None
 
                     .. grid-item-card:: Constants
-                        :columns: 6
+                        :columns: 12
 
                         * Endowment Amount
 
                     .. grid-item-card:: Dependant Variables
-                        :columns: 6
+                        :columns: 12
 
                         * Offer Amount
 
@@ -146,17 +146,17 @@ Thus, if we know the standard game design we can think about how to change it to
                     :outline: 
                 
                     .. grid-item-card:: Independant Variables
-                        :columns: 6
+                        :columns: 12
 
                         * Offer Amount
 
                     .. grid-item-card:: Constants
-                        :columns: 6
+                        :columns: 12
 
                         * Endowment Amount
 
                     .. grid-item-card:: Dependant Variables
-                        :columns: 6
+                        :columns: 12
 
                         * Ultimatum Response
 
