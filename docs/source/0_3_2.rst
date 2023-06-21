@@ -4,7 +4,6 @@ Hypothesis Testing
 .. article-info::
     :avatar: dnl_plastic.png
     :avatar-link: https://www.decisionneurosciencelab.com/
-    :avatar-outline: muted
     :author: Elijah Galvan
     :date: September 1, 2023
     :read-time: 2 min read
