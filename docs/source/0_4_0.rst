@@ -7,7 +7,7 @@ Experimental Paradigms
 .. _Yamagishi, 2009: https://www.pnas.org/doi/10.1073/pnas.0900636106#:~:text=The%20rejection%20rate%20in%20the%20standard%20ultimatum%20game%20(48.65%25),private%20impunity%20game%20(33.78%25).
 .. _Houser, Schunk, & Winter, 2006: https://www.econstor.eu/bitstream/10419/104198/1/lmu-mdp_2006-38.pdf
 .. _van Baar, Chang, & Sanfey, 2019: https://www.nature.com/articles/s41467-019-09161-6#Sec10
-.. _van Baar, Chang, & Sanfey, 2020: https://link.springer.com/content/pdf/10.1038/s41598-020-74818-y.pdf
+.. _van Baar et al., 2020: https://link.springer.com/content/pdf/10.1038/s41598-020-74818-y.pdf
 .. _Bosman & Winden, 2000: https://www.econstor.eu/bitstream/10419/85447/1/99039.pdf
 .. _Bosman & Winden, 2002: https://www.sciencedirect.com/science/article/pii/S0167487010000887#s0155
 
