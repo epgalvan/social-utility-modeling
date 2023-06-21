@@ -1,4 +1,4 @@
-Computational Modeling for Social Utility Theory Wiki
+Utility Models for Social Decision-Making Wiki
 **********************
 
 .. toctree::
@@ -6,7 +6,7 @@ Computational Modeling for Social Utility Theory Wiki
    :caption: Introduction
 
     About the Wiki <0_1_0.rst>
-    Social Utility Theory <0_2_0.rst>
+    Utility Theory <0_2_0.rst>
     Computational versus Linear Modeling <0_3_0.rst>
     Experimental Paradigms <0_4_0.rst>
     Overview <0_5_0.rst>

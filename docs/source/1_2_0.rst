@@ -1,10 +1,68 @@
 Experimental Design
-=================
+***********
 
 .. article-info::
     :avatar: dnl_plastic.png
     :avatar-link: https://www.decisionneurosciencelab.com/
     :author: Elijah Galvan
     :date: September 1, 2023
-    :read-time: 10 min read
+    :read-time: 3 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
+
+Goals During this Stage
+================
+
+After establishing the research question you want to answer, you must create an experimental paradigm that enables you to answer that question.
+As an aspirational benchmark, every potential answer to that research question should have a distinguishable behavioral trend over the course of the experiment which enables you to differentiate between other psychological accounts. 
+
+
+.. figure:: design.png
+    :figwidth: 100%
+    :align: center
+
+Here, your experimental design and hypotheses are codetermined: in reflecting on the possible answers to your research question, you should identify what behavioral patterns these psychological mechanisms would produce in the current design.
+
+If psychological differences make behaviorally distinct predictions in the current experiment, your design is adequate. 
+Importantly, at this stage it is necessary to exhaustively list both all possible psychological accounts for your question as well as the behavioral patterns in your experiment. 
+The purpose of doing the latter is to identify possible behavioral differences that might not correspond to any of your psychological hypotheses, but might relate to another psychological preference. 
+
+Tutorial
+===========
+
+So, the main goal at this stage is to identify an experimental design which allows to answer our research question, namely **What motivates people to reciprocate trust in single-shot interactions?**
+
+Let's follow the steps mentioned above.
+
+
+.. card:: Identify Plausible Answers
+
+    Well, we already know that some people do not reciprocate trust in single-shot interactions so let's jot down ``Greed`` as our first proposed answer. 
+
+    1. Greed
+
+    However, most people do reciprocate trust so what explanations may we propose for this? 
+    Well, traditional thought on the matter has been in favor of the explanation provided by inequity-aversion (see `Fehr & Schmidt, 1999`_ for the initial formulation of this inequity-aversion utility model).
+    In other words, people value being objectively fair which leads them to reciprocate trust in the context of the 1-shot Trust Game - let's add ``Inequity Aversion`` to our list. 
+
+    2. Inequity Aversion
+
+    However, we also know that when people do not behave in a way that is inequity-averse when they have the opportunity to appear fair while actually being selfish in the Ultimatum Game (`Güth, Huck, & Ockenfels, 1996`_).
+    Thus, rather than actually being fair, it could be the case that people reciprocate trust because they want to avoid feeling guilty for betraying the Investor's trust. 
+    So, let's also add ``Guilt Aversion`` to our list as well. 
+
+    3. Guilt Aversion. 
+
+    Nice, we have 3 explanations - can you think of any more? Well I can't and neither could the authors so let's proceed with these answers. 
+
+.. card:: Experimental Design
+
+    We are interested in reciprocity of trust - this tells us we should most likely use the Trust Game. 
+    So, working under this logic, we should now identify if any of our plausible answers predict the same behavior in the Trust Game. 
+
+    Well, Greed is certainly distinct from the other 2 - greedy people don't reciprocate and the others do. 
+    However, Inequity Aversion and Guilt Aversion lead to quite similar predictions: Inequity Aversion leads to people giving around half, as does Guilt Aversion since Trustees generally believe that Investors expect to receive half of the multiplied investment back. 
+
+    So the question now is: *How do we make Inequity Aversion and Guilt Aversion have different patterns of behavior in the Trust Game?* 
+    Well clearly we have to create situations where returning half of the multiplied investment (i.e. inequity-aversion) does not result in Investors believing that they received half of the multiplied investment back. 
+
+    

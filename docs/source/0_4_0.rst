@@ -19,7 +19,7 @@ Experimental Paradigms
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-In this section, we will look at the standard paradigms which are used in social utility modeling. 
+In this section, we will look at standard social decision-making paradigms. 
 We will be referring to the standard 1-shot paradigms: multiple interactions nearly always ought to be modelled using learning models. 
 
 These tasks are often amended to answer specific research questions. 
@@ -115,7 +115,7 @@ Public Goods Game
 
         * Most people give at least something, average giving behavior is 37.7% of the Endowment (`Zelmer, 2003`_)
         * Considered to measure cooperation
-        * To use in social utility modeling, it may require this game be played sequentially to make this a non-risky choice - more often used in repeated interactions to study group-level dynamics (i.e. Total Wealth accumulated over a certain number of trials)
+        * To use in utility modeling, it may require this game be played sequentially to make this a non-risky choice - more often used in repeated interactions to study group-level dynamics (i.e. Total Wealth accumulated over a certain number of trials)
 
     .. tab-item:: Notable Variants
 

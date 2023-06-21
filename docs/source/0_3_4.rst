@@ -11,7 +11,7 @@ Potential Pitfalls
 
 .. _Wilson and Collins (2019): https://elifesciences.org/articles/49547
 
-This is speculation, but I think that the reason that Computational Modeling isn’t taught widely as standard master’s or Ph.D. curriculum is that computational modeling - particularly Social Utility Modeling - requires abstract reasoning. 
+This is speculation, but I think that the reason that Computational Modeling isn’t taught widely as standard master’s or Ph.D. curriculum is that computational modeling - particularly Utility Modeling - requires abstract reasoning. 
 
 In the Piagetian model of cognitive development, the third stage where one develops concrete reasoning is sufficient for conducting linear modeling analyses: you can hand most anyone a list of instructions and they can follow those instructions and ultimately arrive at the ‘correct’ model. 
 
