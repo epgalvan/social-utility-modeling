@@ -71,7 +71,7 @@ Prisoner's Dilemma
         * What causes defection is debated - risk and temptation are difficult to disentangle in this situation
         * Almost unusable for our purposes due to the fact that it is a risky choice and not many variables can be manipulated - often used in an iterated design to study strategic decision-making
 
-    .. tab-item:: Notable Variants and Manipulations
+    .. tab-item:: Notable Variants
 
         1. Asymetric Costs/Benefits
         2. Sequential Decision-Making
@@ -118,7 +118,7 @@ Public Goods Game
         * Considered to measure cooperation
         * To use in social utility modeling, it may require this game be played sequentially to make this a non-risky choice - more often used in repeated interactions to study group-level dynamics (i.e. Total Wealth accumulated over a certain number of trials)
 
-    .. tab-item:: Notable Variants and Manipulations
+    .. tab-item:: Notable Variants
 
         1. Asymetric Costs/Benefits
         2. Asymetric Endowments
@@ -197,7 +197,7 @@ Ultimatum Game
                 * 70% of people accept Ultimatums 10% of Endomment
                 * Responses measure tolerance of unfairness
 
-    .. tab-item:: Notable Variants and Manipulations
+    .. tab-item:: Notable Variants
 
         1. Offer Game
         2. Demand Game
@@ -240,7 +240,7 @@ Dictator Game
         * Most Dictators offer around 20-30% of the Endowment (`Camerer, 2011`_)
         * Given Amount is taken as measure of fairness or altruism
 
-    .. tab-item:: Notable Variants and Manipulations
+    .. tab-item:: Notable Variants
         
         1. Impunity Game
         2. Taking Game
@@ -321,7 +321,7 @@ Trust Game
                 * Returned Amount is considered to be a measure of Positive Reciprocity
                 * Most people believe that the Investor expects them return 50% of the Mutliplied Investment (`van Baar, Chang, & Sanfey, 2019`_)
 
-    .. tab-item:: Notable Variants and Manipulations
+    .. tab-item:: Notable Variants
 
         1. Dishonest Salesman Game
         2. Trading Game
@@ -406,7 +406,7 @@ Justice Game
                 * Average Amount spent on Punishment is 15.6% of the Taken Amount (`Bosman & Winden, 2002`_)
                 * Punishment Amount is considered to measure tolerance for unfairness
 
-    .. tab-item:: Notable Variants and Manipulations
+    .. tab-item:: Notable Variants
 
         1. Three-Player Justice Game
         2. Three-Player Compensation Game
