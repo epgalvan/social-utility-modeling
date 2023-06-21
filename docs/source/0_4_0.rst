@@ -185,7 +185,7 @@ Ultimatum Game
             .. grid-item-card:: Proposer
                 :columns: 12
 
-                * Most proposers offer around 40% of the Endowment (`Camerer, 2011`_`)
+                * Most proposers offer around 40% of the Endowment (`Camerer, 2011`_)
                 * Ultimatums reflect first order-beliefs and thus, Proposing Behavior consider to measure Strategic Bargaining
 
             .. grid-item-card:: Responder
