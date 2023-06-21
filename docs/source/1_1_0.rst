@@ -1,2 +1,49 @@
 The Research Question
 ***********
+
+.. article-info::
+    :avatar: dnl_plastic.png
+    :avatar-link: https://www.decisionneurosciencelab.com/
+    :avatar-outline: muted
+    :author: Elijah Galvan
+    :date: September 1, 2023
+    :read-time: 5 min read
+    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
+
+The Role of the Research Question in Linear Modeling
+=============
+As a prerequisite for conducting research, we are often told that we must have a clear research question and a design that allows us to answer that question. 
+In practice many people abide by this but, in my personal experience, some do not: some researchers prefer to come up with an experiment that they think is interesting, hypothesize about behavior that they expect to observe in that experiment, and, only after collecting data, speculate as to what the underlying psychological motivation for that behavior was. 
+It’s a potentially wasteful and inefficient way to conduct research, but I can personally attest to the fact that I have observed people successfully complete Master’s, Ph.D.’s, and Postdocs with this logic. 
+
+The Role of the Research Question in Computational Modeling
+=================
+The ability to work backwards is not true of computational modeling: if you attempt to apply this logic when utilizing computational modeling, you will almost certainly end up arriving at wrong and uninterpretable results and, if you somehow arrive at the correct result, you will have spent much more time overcoming your lack of forethought than if you had thought your analysis through beforehand.
+As a prerequisite for computationally modeling behavior, you need a clear research question that goes to higher-level (i.e. psychological) function. 
+Thus, having a well-thought out, specific, testable Research Question is a *necessary* precondition for this kind of analysis. 
+Computational modeling is the mathematical representation of the mechanisms of a certain psychological process so it should seem intuitive that there is a necessity for you to be curious about psychological processes before using it to answer your questions. 
+From there, you must create an experimental paradigm that enables you to answer that question: as a rule of thumb, each different psychological account should have a distinguishable behavioral trend over the course of the experiment which enables you to differentiate between other psychological accounts. 
+
+Here, your experimental design and hypotheses are codetermined: in reflecting on the possible answers to your research question, you should identify what behavioral patterns these psychological mechanisms would produce in the current design: if psychological differences make distinctions in terms of behavior in the current experiment, your design is adequate. 
+Importantly, at this stage it is necessary to exhaustively list both all possible psychological accounts for your question as well as the behavioral patterns in your experiment. 
+The purpose of doing the latter is to identify possible behavioral differences that might not correspond to any of your psychological hypotheses, but might relate to another psychological preference. 
+
+.. _van Baar, Chang, & Sanfey, 2019: https://www.nature.com/articles/s41467-019-09161-6#Sec10
+.. _Fehr & Schmidt, 1999: https://www.jstor.org/stable/2586885
+.. _Güth, Huck, & Ockenfels, 1996: https://watermark.silverchair.com/ej0593.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAArwwggK4BgkqhkiG9w0BBwagggKpMIICpQIBADCCAp4GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM0kS3Uly_ObRPbcUAAgEQgIICbzUl-Dos5GklEcqxw3kQB8LTHgDSppBeGwY9tARYQOfzMyZMtCD6GIZyKM1abYRWbpvvGPa-ijL1fTgY9pFGgsB0hEJy8llt36vmRyhDfYc6BXymuM41E5Ej6KLjAcLmPzem-lbO98lYsTM4fc6yYeOrKnSSoMOH17nWdsP5tOjj2AxgcQ1gDsrG5Zjlfajm2TJI5Q53NmyVIdE9CAN60Y1IaGpI3IRjw9V9m7aq-XRjVc5e10sitM7eBxLofayNPADkq7qychLu_KZSv6YPgWMGSaKmx9GOOy2j9t9QJdFv-56Nnqos1tQ4-s9AOA4U-SUvlQz6WDImyahqB7wZuRID2CBztVPPU8cPGxEAPvo92-IFs9h1VXB-oi-Yjvsf59ziuKg8456DIjaBxsSyZWE6zbrVyJ3Xhv26JSAml-3xflrr5mSzZ7J3qK6RxiGRKzI9LxAJvA6mCmjT0OdbybVm8Va6Y1tyVuLFSZhRKICHoFdSkze2HcKfDHOZQhtckF5OHuZfqlfjs5sJxZNnjz0l3r25iNq0sjat4VWa_us6NHqkobvSetsXAL_A8JdO7sHoJYfw0XA8PpWhcJ3ygxgt2H9fjkh0UnBqVgnewoEyzzHUNHRQXXE1wJACsixq3K6ZM_WcuXJhr2fjJLybjf0SXxFKrfRXkwGeBCX8F6lyuBX2uvlGfaebhbuOzbFoJ1-HHnRP8YW0rLF-ZMkqXvQNvZougiLpx9fya2PMnaCZdvir7HYOflbz-tb-9XYG7tgF3LisM1f1-900xZ-zzr6LaeKRMPTpGZEOC6-RfR8kjKUH8EXunTOPM7KQNDtq
+
+Tutorial
+================
+
+In the context of the 1-shot Trust Game, around 90% of Trustees reciprocate the trust placed in them by the Investor even though there is nothing stopping the Trustee from giving nothing back. 
+Why is that?
+
+Well, traditional thought on the matter has been in favor of the explanation provided by inequity-aversion (see `Fehr & Schmidt, 1999`_ for the initial formulation of this inequity-aversion utility model).
+In other words, people value being objectively fair which leads them to reciprocate trust in the context of the 1-shot Trust Game. 
+
+However, we also know that when people do not behave in a way that is inequity-averse when they have the opportunity to appear fair while actually being selfish in the Ultimatum Game (`Güth, Huck, & Ockenfels, 1996`_).
+Thus, rather than actually being fair, it could be the case that people reciprocate trust because they want to avoid feeling guilty for betraying the Investor's trust.
+
+Thus, our goal is answer the following question:
+
+**What motivates reciprocity in the context of the one-shot Trust Game?**
