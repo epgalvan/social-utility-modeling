@@ -10,7 +10,8 @@ About the wiki
     :read-time: 1 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-This handbook contains information about what social utility models are, why one would use them, and how to implement them in R (Matlab and Python are currently under development). 
+This handbook contains information about what social utility models are, why one would use them, and how to implement them in R. 
+R was chosen because it is open source unlike MatLab and RStudio has a more user-friendly interface (and is easier for beginners in statistical computing in my opinion).
 It contains both theory and practical implementation, though it much more focused on the practical implementation. 
 
 Required Foreknowledge
@@ -21,7 +22,7 @@ There is no required foreknowledge, but knowing programming and statistics will 
 .. dropdown:: Programming
 
     If you also know a statistical programming language, even at a basic level, you will be able to immediately implement this approach in your own research. 
-    The documentation is written in R, MatLab, and Python but the documentation is also written and justified in plain English to enable readers to follow the logic of each step.
+    The documentation is written in R symbolically written and justified in plain English to enable readers to follow the logic of each step - those with a basic understanding of MatLab or Python should have no problem.
 
     However, if you do not know a programming language, you will still be able to understand what we are trying to accomplish and why. 
     This is because we are writing out all of our analyses and providing plain English documentation rather than using preexisting functions - it enables the reader to comprehend the how and why of our results. 

@@ -44,7 +44,8 @@ We rely on these ideas being true (or true enough).
         2. The decision-making tasks used often lead to model predictions are not meaningfully different between a Subjective Utility Theory and Prospect Theory - thus, we ought to adopt the more parsimonious model.
 
     .. Note:: 
-        Although this is suited for most social decision making paradigms we will discuss, we recommend that whenever you use paradigms involving uncertainty, you consider using an alternative kind of model and strongly consider using the probability weighting function from `Tverksy & Kahneman, 1992`_.
+        Although this is suited for most social decision making paradigms we will discuss, we recommend that whenever you use paradigms involving uncertainty, 
+        you should strongly consider using the probability weighting function from `Tverksy & Kahneman, 1992`_.
 
 .. dropdown:: 2) Subjective Utility is derived from both economic and social goods 
     
