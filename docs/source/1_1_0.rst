@@ -22,10 +22,6 @@ As a prerequisite for computationally modeling behavior, you need a clear resear
 Thus, having a well-thought out, specific, testable Research Question is a *necessary* precondition for this kind of analysis. 
 Computational modeling is the mathematical representation of the mechanisms of a certain psychological process so it should seem intuitive that there is a necessity for you to be curious about psychological processes before using it to answer your questions. 
 
-.. _van Baar, Chang, & Sanfey, 2019: https://www.nature.com/articles/s41467-019-09161-6#Sec10
-.. _Fehr & Schmidt, 1999: https://www.jstor.org/stable/2586885
-.. _Güth, Huck, & Ockenfels, 1996: https://watermark.silverchair.com/ej0593.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAArwwggK4BgkqhkiG9w0BBwagggKpMIICpQIBADCCAp4GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM0kS3Uly_ObRPbcUAAgEQgIICbzUl-Dos5GklEcqxw3kQB8LTHgDSppBeGwY9tARYQOfzMyZMtCD6GIZyKM1abYRWbpvvGPa-ijL1fTgY9pFGgsB0hEJy8llt36vmRyhDfYc6BXymuM41E5Ej6KLjAcLmPzem-lbO98lYsTM4fc6yYeOrKnSSoMOH17nWdsP5tOjj2AxgcQ1gDsrG5Zjlfajm2TJI5Q53NmyVIdE9CAN60Y1IaGpI3IRjw9V9m7aq-XRjVc5e10sitM7eBxLofayNPADkq7qychLu_KZSv6YPgWMGSaKmx9GOOy2j9t9QJdFv-56Nnqos1tQ4-s9AOA4U-SUvlQz6WDImyahqB7wZuRID2CBztVPPU8cPGxEAPvo92-IFs9h1VXB-oi-Yjvsf59ziuKg8456DIjaBxsSyZWE6zbrVyJ3Xhv26JSAml-3xflrr5mSzZ7J3qK6RxiGRKzI9LxAJvA6mCmjT0OdbybVm8Va6Y1tyVuLFSZhRKICHoFdSkze2HcKfDHOZQhtckF5OHuZfqlfjs5sJxZNnjz0l3r25iNq0sjat4VWa_us6NHqkobvSetsXAL_A8JdO7sHoJYfw0XA8PpWhcJ3ygxgt2H9fjkh0UnBqVgnewoEyzzHUNHRQXXE1wJACsixq3K6ZM_WcuXJhr2fjJLybjf0SXxFKrfRXkwGeBCX8F6lyuBX2uvlGfaebhbuOzbFoJ1-HHnRP8YW0rLF-ZMkqXvQNvZougiLpx9fya2PMnaCZdvir7HYOflbz-tb-9XYG7tgF3LisM1f1-900xZ-zzr6LaeKRMPTpGZEOC6-RfR8kjKUH8EXunTOPM7KQNDtq
-
 Tutorial
 ================
 

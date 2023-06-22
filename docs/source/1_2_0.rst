@@ -6,7 +6,7 @@ Experimental Design
     :avatar-link: https://www.decisionneurosciencelab.com/
     :author: Elijah Galvan
     :date: September 1, 2023
-    :read-time: 3 min read
+    :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
 Goals During this Stage
@@ -26,15 +26,20 @@ If psychological differences make behaviorally distinct predictions in the curre
 Importantly, at this stage it is necessary to exhaustively list both all possible psychological accounts for your question as well as the behavioral patterns in your experiment. 
 The purpose of doing the latter is to identify possible behavioral differences that might not correspond to any of your psychological hypotheses, but might relate to another psychological preference. 
 
+.. _Fehr & Schmidt, 1999: https://www.jstor.org/stable/2586885
+.. _Güth, Huck, & Ockenfels, 1996: https://watermark.silverchair.com/ej0593.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAArwwggK4BgkqhkiG9w0BBwagggKpMIICpQIBADCCAp4GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM0kS3Uly_ObRPbcUAAgEQgIICbzUl-Dos5GklEcqxw3kQB8LTHgDSppBeGwY9tARYQOfzMyZMtCD6GIZyKM1abYRWbpvvGPa-ijL1fTgY9pFGgsB0hEJy8llt36vmRyhDfYc6BXymuM41E5Ej6KLjAcLmPzem-lbO98lYsTM4fc6yYeOrKnSSoMOH17nWdsP5tOjj2AxgcQ1gDsrG5Zjlfajm2TJI5Q53NmyVIdE9CAN60Y1IaGpI3IRjw9V9m7aq-XRjVc5e10sitM7eBxLofayNPADkq7qychLu_KZSv6YPgWMGSaKmx9GOOy2j9t9QJdFv-56Nnqos1tQ4-s9AOA4U-SUvlQz6WDImyahqB7wZuRID2CBztVPPU8cPGxEAPvo92-IFs9h1VXB-oi-Yjvsf59ziuKg8456DIjaBxsSyZWE6zbrVyJ3Xhv26JSAml-3xflrr5mSzZ7J3qK6RxiGRKzI9LxAJvA6mCmjT0OdbybVm8Va6Y1tyVuLFSZhRKICHoFdSkze2HcKfDHOZQhtckF5OHuZfqlfjs5sJxZNnjz0l3r25iNq0sjat4VWa_us6NHqkobvSetsXAL_A8JdO7sHoJYfw0XA8PpWhcJ3ygxgt2H9fjkh0UnBqVgnewoEyzzHUNHRQXXE1wJACsixq3K6ZM_WcuXJhr2fjJLybjf0SXxFKrfRXkwGeBCX8F6lyuBX2uvlGfaebhbuOzbFoJ1-HHnRP8YW0rLF-ZMkqXvQNvZougiLpx9fya2PMnaCZdvir7HYOflbz-tb-9XYG7tgF3LisM1f1-900xZ-zzr6LaeKRMPTpGZEOC6-RfR8kjKUH8EXunTOPM7KQNDtq
+
 Tutorial
 ===========
 
-So, the main goal at this stage is to identify an experimental design which allows to answer our research question, namely **What motivates people to reciprocate trust in single-shot interactions?**
+So, the main goal at this stage is to identify an experimental design which allows to answer our research question, namely: 
+
+**What motivates people to reciprocate trust in single-shot interactions?**
 
 Let's follow the steps mentioned above.
 
 
-.. card:: Identify Plausible Answers
+.. card:: Generate Hypotheses
 
     Well, we already know that some people do not reciprocate trust in single-shot interactions so let's jot down ``Greed`` as our first proposed answer. 
 
@@ -57,7 +62,7 @@ Let's follow the steps mentioned above.
 
 .. card:: Create a Task
 
-    We are interested in reciprocity of trust - this tells us we should most likely use the Trust Game as our task. 
+    We are interested in reciprocity of trust - this tells us we should most likely use the Trust Game as our task. So we've checked the ``Identify a psychologically relevant task`` box.
     So, working under this logic, we should now identify if any of our plausible answers predict the same behavior in the Trust Game. 
 
     Well, Greed is certainly distinct from the other 2 - greedy people don't reciprocate and the others do. 
@@ -76,22 +81,7 @@ Let's follow the steps mentioned above.
     * When the Multiplier is 6 the Trustee believes the Investor expects the Trustee to return 2 times what the Investor invested - a third of the money that the Trustee has
 
     In all situations, it is Inequity Averse to return half of the money that the Trustee has. 
-    However, when the Multiplier is 2 or 6, it is Guilt Averse to return all or a third of the money that the Trustee has.
-
-.. card:: Design the Experiment
-
-    So we've accomplished our goal for creating a task but now we need to decide if we should use a within-subjects or between-subjects design. 
-    In all situations that I can conceive of, you should use a within-subjects design but let's think this out here for the sake of punctuality. 
-    We are seeing what motivates people to reciprocate trust by manipulating Investors' expectations, so does it make sense that we only expose them to one condition? 
-    If we only expose them to one condition, we cannot see how their reciprocation behavior changes as a function of the Investors' expectations relative to what is equitable, so no. 
-    This would certainly be pointless - we'll stick with a within-subjects design.
-
-    So now how many trials? 
-    This one's a tough one to answer and I honestly can't give a compelling, statistically well-founded answer. 
-    More is always better until it isn't, meaning it's always good to have as many trials as you can while having the subject still engaged in your task. 
-    Here, they opted for 80 which is quite a lot of trials. 
-    They could have certainly done this with 60 trials (they had 40 trials with the Multiplier as 4 and 20 each with the Multiplier as 2 and 6). 
-    Generally, you can feel quite safe with 20 trials per condition but, having worked with the data, I can say that they could have been fine with as few as 10 trials per condition though I will only recommend a minimum of 20 per condition.
+    However, when the Multiplier is 2 or 6, it is Guilt Averse to return all or a third of the money that the Trustee has. So we've checked the ``Hypothesized accounts produce distinct patterns of behavior`` box.
 
 .. card:: Identify Unintended Behavioral Patterns
 
@@ -110,3 +100,23 @@ Let's follow the steps mentioned above.
     The answer here is clearly yes: if people's motive to reciprocate changes depending on the situation this is psychologically meaningful and therefore interesting. 
     Thus, we will keep the current design as is. 
     We will also keep in mind that Moral Opportunism seems a relatively likely behavioral pattern which is psychologically compelling and relates to the plausible answers we have identified for our question. 
+
+.. card:: Design the Experiment
+
+    So we've accomplished our goal for creating a task and we're happy with it, but now we need to decide if we should use a within-subjects or between-subjects design. 
+    In all situations that I can conceive of, you should use a within-subjects design but let's think this out here for the sake of punctuality. 
+    We are seeing what motivates people to reciprocate trust by manipulating Investors' expectations, so does it make sense that we only expose them to one condition? 
+    If we only expose them to one condition, we cannot see how their reciprocation behavior changes as a function of the Investors' expectations relative to what is equitable, so no. 
+    This would certainly be pointless - we'll stick with a within-subjects design.
+
+    Do you want to add any additional manipulations (i.e. pharmacological, affective, etc.)?
+    The research question doesn't demand it in this instance so let's say no. 
+    However, at this stage if you did have such a manipulation, would you be more confident in your results if you varied this manipulation within-or-between-subjects? 
+    If you favor between-subjects, are the additional costs justified? 
+
+    So now how many trials? 
+    This one's a tough one to answer and I honestly can't give a compelling, statistically well-founded answer. 
+    More is always better until it isn't, meaning it's always good to have as many trials as you can while having the subject still engaged in your task. 
+    Here, they opted for 80 which is quite a lot of trials. 
+    They could have certainly done this with 60 trials (they had 40 trials with the Multiplier as 4 and 20 each with the Multiplier as 2 and 6). 
+    Generally, you can feel quite safe with 20 trials per condition but, having worked with the data, I can say that they could have been fine with as few as 10 trials per condition though I will only recommend a minimum of 20 per condition.
