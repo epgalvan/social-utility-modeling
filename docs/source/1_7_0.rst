@@ -1,4 +1,4 @@
-Data Generation Process
+A Priori Clustering
 *********
 
 .. article-info::

@@ -1,4 +1,4 @@
-Data Generation Process
+Defining Parameters
 *********
 
 .. article-info::

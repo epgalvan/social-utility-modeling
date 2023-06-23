@@ -1,15 +1,18 @@
 Utility Models for Social Decision-Making Wiki
 **********************
 
+In this handbook, we will walk, step-by-step, through the process of computationally modeling behavior in value-based social decision-making tasks - complete with conceptual and implemented examples. 
+You can expect to learn about what utility models are, why one would use them to capture behavior in social decision-making paradigms, and how to computationally implement them. 
+There is no required foreknowledge to conceptually understand the course, but a basic knowledge of statistical programming (i.e. MatLab, R, or Python) is of course required to implement this in your own research. 
+
 .. toctree::
    :maxdepth: 1
    :caption: Introduction
 
-    About the Wiki <0_1_0.rst>
-    Utility Theory <0_2_0.rst>
-    Computational versus Linear Modeling <0_3_0.rst>
-    Experimental Paradigms <0_4_0.rst>
-    Overview <0_5_0.rst>
+    Utility Theory <0_1_0.rst>
+    Computational versus Linear Modeling <0_2_0.rst>
+    Experimental Paradigms <0_3_0.rst>
+    Overview <0_4_0.rst>
 
 .. toctree::
    :maxdepth: 1

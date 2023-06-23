@@ -1,4 +1,4 @@
-Data Generation Process
+Simulating Data
 *********
 
 .. article-info::

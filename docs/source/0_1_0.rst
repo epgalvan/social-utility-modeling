@@ -1,34 +1,139 @@
-About the wiki
-**********
+Utility Theory
+****************
 
 .. article-info::
     :avatar: dnl_plastic.png
     :avatar-link: https://www.decisionneurosciencelab.com/
     :author: Elijah Galvan
     :date: September 1, 2023
-    :read-time: 1 min read
+    :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-This handbook contains information about what utility models are, why one would use them to capture behavior in social decision-making paradigms, and how to computationally implement them in R. 
-R was chosen because it is open source unlike MatLab and RStudio has a more user-friendly interface (and is easier for beginners in statistical computing in my opinion).
-It contains both theory and practical implementation, though it much more focused on the practical implementation. 
+.. _Tverksy & Kahneman, 1992: https://link.springer.com/article/10.1007/bf00122574
+.. _Levy & Glimcher, 2012: https://pubmed.ncbi.nlm.nih.gov/22766486/
+.. _Bartra et al. 2013: https://pubmed.ncbi.nlm.nih.gov/23507394/
+.. _Ruff & Fehr, 2014: https://pubmed.ncbi.nlm.nih.gov/24986556/
 
-Required Foreknowledge
-=============
+Premises
+===========
 
-There is no required foreknowledge, but knowing programming and statistics will help.
+Utility Theory relies on the following assumptions.
 
-.. dropdown:: Programming
-
-    If you also know a statistical programming language, even at a basic level, you will be able to immediately implement this approach in your own research. 
-    The documentation is written in R symbolically written and justified in plain English to enable readers to follow the logic of each step - those with a basic understanding of MatLab or Python should have no problem.
-
-    However, if you do not know a programming language, you will still be able to understand what we are trying to accomplish and why. 
-    This is because we are writing out all of our analyses and providing plain English documentation rather than using preexisting functions - it enables the reader to comprehend the how and why of our results. 
-    However, you will obviously not be able to then implement this yourself until you learn the basics of a programing language.
-
-.. dropdown:: Statistics
-
-    If you have some basic knowledge of linear modeling (i.e. t-tests, ANOVA, regression) you will find certain topics that you already understand. 
+.. dropdown:: 1) People act in a way which maximizes their Subjective Utility
     
-    However, we are not taking for granted that you know commonsense statistical principles, so this should not prohibit anyone.
+    ``Subjective Utility`` - personally experienced satisfaction
+
+    .. dropdown:: Cumulative Prospect Theory (`Tverksy & Kahneman, 1992`_) disproved this, right?
+
+        The short answer is yes. Prospect Theory advanced 4 notions which are problematic for our purposes:
+
+        1. The carrier of value is gains and losses, not net value
+
+        2. Perceptions of probabilities reflect diminishing sensitivity.
+
+        3. Risk attitudes change as a function of probability and outcome (gains or losses)
+
+        4. The framing of choices affects preferences
+
+
+        Then why do we still endorse this premise?
+
+        1. Prospect Theory advances the notion that people do act in what they *perceive* to be in their best interest, but this perception is warped by several psychological factors - thus, the underlying idea is the same but the mathematical implementation differs.
+        
+        2. The decision-making tasks used often lead to model predictions are not meaningfully different between a Subjective Utility Theory and Prospect Theory - thus, we ought to adopt the more parsimonious model.
+
+    .. Note:: 
+        Although this is suited for most social decision making paradigms we will discuss, we recommend that whenever you use paradigms involving uncertainty, 
+        you should strongly consider using the probability weighting function from `Tverksy & Kahneman, 1992`_.
+
+.. dropdown:: 2) Subjective Utility is derived from both economic and social goods 
+    
+    ``Economic Goods`` - goods which are objectively useful to people but require effort to obtain (money, food, water, shelter, etc.)
+
+    ``Social Goods`` - goods which are subjectively experienced via real or imagined social interactions (fairness, equality, self-validation, etc.)
+
+    .. Note::
+        When referencing this, consider citing `Levy & Glimcher, 2012`_, `Bartra et al. 2013`_, and `Ruff & Fehr, 2014`_ who all roughly state that social and economic goods are represented in a common neural currency in the brain.
+
+.. dropdown:: 3) Economic and social goods can be quantified
+
+    Economic goods are already quantified. 
+
+    Social goods are also quantifiable, but via experimental variables. 
+    Norm adherance or violation is expressed as a function of the choice (or dependant variable) **and** any situational factors (or indepedent variables).    
+
+
+Logical Implications
+=========
+
+If we adopt these premises, it must be true that:
+
+.. dropdown:: 1) Subjective Utility can be estimated via the Decisions people make.
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            Since we have adopted the premise that people make decisions with the purpose of maximizing their Subjective Utility, 
+
+            then the decision that a person has made **must** have the Highest Subjective Utility out of all of the possible choices that that person could have made.
+            
+        .. tab-item:: R
+
+            :bdg-primary:`Since` 
+
+            **Decision = Possible_Choices[Maximizes_Utility]**           
+            
+             :bdg-primary-line:`where` 
+
+            **Maximizes_Utility = which(U(Possible_Choices)) == max(U(Possible_Choices))**
+
+            :bdg-secondary:`It Follows that` 
+            
+            **U(Decision) = max(U(Possible_Choices))** 
+
+            .. Note::
+                ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility derived from making a given decision is given as ``U(Decision)``.
+
+        .. tab-item:: MatLab
+
+            :bdg-primary:`Since` 
+
+            **Maximizes_Utility = **   
+            
+             :bdg-primary-line:`where` 
+
+            **Decision = Possible_Choices(Maximizes_Utility)**
+
+            :bdg-secondary:`It Follows that` 
+            
+            **U(Decision) = ** 
+
+            .. Note::
+                ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility derived from making a given decision is given as ``U(Decision)``.
+
+        .. tab-item:: Python
+
+            :bdg-primary:`Since` 
+
+            **Maximizes_Utility = **   
+            
+             :bdg-primary-line:`where` 
+
+            **Decision = Possible_Choices[Maximizes_Utility]**
+
+            :bdg-secondary:`It Follows that` 
+            
+            **U(Decision) = ** 
+
+            .. Note::
+                ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility derived from making a given decision is given as ``U(Decision)``.
+
+
+.. dropdown:: 2) Different choices by different people are caused by different preferences for Economic and Social Goods.
+
+    Since we have adopted the assumption that people make decisions which maximize their Subjective Utility, 
+    
+    if some people make different decisions than others, 
+    
+    then it **must** be true that they value these goods differently from one another.

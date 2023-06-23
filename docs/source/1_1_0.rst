@@ -13,7 +13,7 @@ The Role of the Research Question in Linear Modeling
 =============
 As a prerequisite for conducting research, we are often told that we must have a clear research question and a design that allows us to answer that question. 
 In practice many people abide by this but, in my personal experience, some do not: some researchers prefer to come up with an experiment that they think is interesting, hypothesize about behavior that they expect to observe in that experiment, and, only after collecting data, speculate as to what the underlying psychological motivation for that behavior was. 
-It’s a potentially wasteful and inefficient way to conduct research, but I can personally attest to the fact that I have observed people successfully complete Master’s, Ph.D.’s, and Postdocs with this logic. 
+It's a potentially wasteful and inefficient way to conduct research, but I can personally attest to the fact that I have observed people successfully complete Master's, Ph.D.'s, and Postdocs with this logic. 
 
 Goals During This Stage
 =================

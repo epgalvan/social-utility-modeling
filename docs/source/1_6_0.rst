@@ -1,4 +1,4 @@
-Data Generation Process
+Compare Recovered Parameters
 *********
 
 .. article-info::
