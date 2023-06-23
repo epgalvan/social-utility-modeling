@@ -14,7 +14,7 @@ Utility Theory
 .. _Bartra et al. 2013: https://pubmed.ncbi.nlm.nih.gov/23507394/
 .. _Ruff & Fehr, 2014: https://pubmed.ncbi.nlm.nih.gov/24986556/
 
-Premises
+Assumptions
 ===========
 
 Utility Theory relies on the following assumptions.
@@ -66,7 +66,7 @@ Utility Theory relies on the following assumptions.
 Logical Implications
 =========
 
-If we adopt these premises, it must be true that:
+If we adopt these assumptions, it must be true that:
 
 .. dropdown:: 1) Subjective Utility can be estimated via the Decisions people make.
 
@@ -82,15 +82,15 @@ If we adopt these premises, it must be true that:
 
             :bdg-primary:`Since` 
 
-            **Decision = Possible_Choices[Maximizes_Utility]**           
+            ``Decision = Possible_Choices[Maximizes_Utility]``           
             
              :bdg-primary-line:`where` 
 
-            **Maximizes_Utility = which(U(Possible_Choices)) == max(U(Possible_Choices))**
+            ``Maximizes_Utility = which(U(Possible_Choices)) == max(U(Possible_Choices))``
 
             :bdg-secondary:`It Follows that` 
             
-            **U(Decision) = max(U(Possible_Choices))** 
+            ``U(Decision) == max(U(Possible_Choices))`` 
 
             .. Note::
                 ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility derived from making a given decision is given as ``U(Decision)``.
@@ -99,15 +99,15 @@ If we adopt these premises, it must be true that:
 
             :bdg-primary:`Since` 
 
-            **Maximizes_Utility = **   
+            ``Decision = Possible_Choices(Maximizes_Utility);``
             
              :bdg-primary-line:`where` 
 
-            **Decision = Possible_Choices(Maximizes_Utility)**
+            ``[~, Maximizes_Utility] = max(U(Possible_Choices)) == max(U(Possible_Choices));``
 
             :bdg-secondary:`It Follows that` 
             
-            **U(Decision) = ** 
+            ``U(Decision) == max(U(Possible_Choices));``
 
             .. Note::
                 ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility derived from making a given decision is given as ``U(Decision)``.
@@ -116,15 +116,18 @@ If we adopt these premises, it must be true that:
 
             :bdg-primary:`Since` 
 
-            **Maximizes_Utility = **   
+            ``Decision = Possible_Choices[Maximizes_Utility]``
             
              :bdg-primary-line:`where` 
 
-            **Decision = Possible_Choices[Maximizes_Utility]**
+            ``import numpy as np``
+            ``utilities = U(Possible_Choices)``
+            ``max_utility_index = np.argmax(utilities)`` 
+            ``Maximizes_Utility = Possible_Choices[max_utility_index]``
 
             :bdg-secondary:`It Follows that` 
             
-            **U(Decision) = ** 
+            ``U(Decision) == max(utilities)``
 
             .. Note::
                 ``U()`` generically refers to a Subjective Utility Function: in other words, the Subjective Utility derived from making a given decision is given as ``U(Decision)``.

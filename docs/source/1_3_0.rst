@@ -12,5 +12,35 @@ Data Generation Process
 Goals During this Stage
 ================
 
+Mathematically modeling the data generation process is the most difficult step in the computational modeling process: there is no objectively correct way to go about it. 
+With that said, I believe that this is achievable in a timely manner when given the correct goals and a useful framework. 
+
+Framework for Developing an Equation
+----------------
+
+The central theoretical question we want our Equation to answer is this:
+
+What :bdg-success:`meaningful psychological differences between people` determine how much :bdg-info:`utility` they derive from their :bdg-danger:`decisions`, 
+given the situation as defined by the :bdg-warning-line:`independent variables` and :bdg-primary-line:`constants`.
+
+1. For each hypothesis, think of the central appetitive or aversive motive that would lead people to make such :bdg-danger-line:`decisions`
+2. Think about *how* the :bdg-danger-line:`decisions` people make enable them to act on their environment (:bdg-warning-line:`independent variables` and :bdg-primary-line:`constants`) to avoid or obtain whatever is motivating them according to each hypothesis
+3. Now think about *how* other :bdg-danger-line:`decisions` that people prevents them from avoid or obtain whatever is motivating them according to each hypothesis
+4. Taking a step back now, identify the dimensions which are implied by the :bdg-success:`meaningful psychological differences between people` you have identified in your hypotheses - what way are these people quantitatively different?
+
+By now, you should have an idea of how :bdg-warning-line:`independent variables`, :bdg-primary-line:`constants` , and :bdg-danger-line:`decisions` relate to the motives identified by each hypothesis, so now let's get into actually designing the equation. 
+
+5. For each motive you have identified, create a function which takes :bdg-danger-line:`decisions` as an input, where :bdg-warning-line:`independent variables` and :bdg-primary-line:`constants` are already defined, and outputs a value which scales with motive as a function of :bdg-danger-line:`decisions`.
+
+If you plot the output (let's call this our :bdg-secondary-line:`construct value`) against :bdg-danger-line:`decisions` and it makes sense to you, then great job! 
+Otherwise, think about how you can fix it. 
+
+.. Note::
+    It helps to have all terms (i.e.:bdg-secondary-line:`construct value` and :bdg-success-line:`free parameters`) range between 0 and 1.
+
+6. Now, multiply each :bdg-secondary-line:`construct value` by the relevant :bdg-success-line:`free parameters`.
+7. This expression you have created should be set equal to :bdg-dark-line:`Utility` - now you have a working draft of an Equation!
+
+
 Tutorial
 ================
