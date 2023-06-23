@@ -20,17 +20,17 @@ Framework for Developing an Equation
 
 The central theoretical question we want our Equation to answer is this:
 
-What :bdg-success:`meaningful psychological differences between people` determine how much :bdg-info:`utility` they derive from their :bdg-danger:`decisions`, 
-given the situation as defined by the :bdg-warning:`independent variables` and :bdg-primary:`constants`.
+What :bdg-success:`meaningful psychological differences between people` determine how much :bdg-warning:`Utility` they derive from their :bdg-danger:`decisions`, 
+given the situation as defined by the :bdg-primary:`independent variables` and :bdg-primary:`constants`.
 
 1. For each hypothesis, think of the central appetitive or aversive motive that would lead people to make such :bdg-danger:`decisions`
-2. Think about *how* the :bdg-danger:`decisions` people make enable them to act on their environment (:bdg-warning:`independent variables` and :bdg-primary:`constants`) to avoid or obtain whatever is motivating them according to each hypothesis
+2. Think about *how* the :bdg-danger:`decisions` people make enable them to act on their environment (:bdg-primary:`independent variables` and :bdg-primary:`constants`) to avoid or obtain whatever is motivating them according to each hypothesis
 3. Now think about *how* other :bdg-danger:`decisions` that people prevents them from avoid or obtain whatever is motivating them according to each hypothesis
 4. Taking a step back now, identify the dimensions which are implied by the :bdg-success:`meaningful psychological differences between people` you have identified in your hypotheses - what way are these people quantitatively different?
 
-By now, you should have an idea of how :bdg-warning:`independent variables`, :bdg-primary:`constants` , and :bdg-danger:`decisions` relate to the motives identified by each hypothesis, so now let's get into actually designing the equation. 
+By now, you should have an idea of how :bdg-primary:`independent variables`, :bdg-primary:`constants` , and :bdg-danger:`decisions` relate to the motives identified by each hypothesis, so now let's get into actually designing the equation. 
 
-5. For each motive you have identified, create a function which takes :bdg-danger:`decisions` as an input, where :bdg-warning:`independent variables` and :bdg-primary:`constants` are already defined, and outputs a value which scales with motive as a function of :bdg-danger-line:`decisions`.
+5. For each motive you have identified, create a function which takes :bdg-danger:`decisions` as an input, where :bdg-primary:`independent variables` and :bdg-primary:`constants` are already defined, and outputs a value which scales with motive as a function of :bdg-danger:`decisions`.
 
 If you plot the output (let's call this our :bdg-secondary:`construct value`) against :bdg-danger:`decisions` and it makes sense to you, then great job! 
 Otherwise, think about how you can fix it. 
@@ -39,7 +39,7 @@ Otherwise, think about how you can fix it.
     It helps to have all terms (i.e. :bdg-secondary:`construct value` and :bdg-success:`free parameters`) range between 0 and 1.
 
 6. Now, multiply each :bdg-secondary:`construct value` by the relevant :bdg-success:`free parameters`.
-7. This expression you have created should be set equal to :bdg-dark:`Utility` - now you have a working draft of an Equation!
+7. This expression you have created should be set equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
 
 
 Tutorial
