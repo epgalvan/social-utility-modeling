@@ -1,4 +1,4 @@
-Defining Parameters
+Simulating Data
 *********
 
 .. article-info::
@@ -11,6 +11,8 @@ Defining Parameters
 
 Goals During this Stage
 ================
+
+To simply plug in all of the inputs that we know (experimental variables and free parameters) into the data generation process (the computational model) and seeing if the model predicts what we want it to.
 
 Tutorial
 ================

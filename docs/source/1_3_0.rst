@@ -12,6 +12,7 @@ Data Generation Process
 Goals During this Stage
 ================
 
+We want to mathematically model the data generation process - in other words, develop an equation that 
 Mathematically modeling the data generation process is the most difficult step in the computational modeling process: there is no objectively correct way to go about it. 
 With that said, I believe that this is achievable in a timely manner when given the correct goals and a useful framework. 
 
@@ -32,15 +33,67 @@ By now, you should have an idea of how :bdg-primary:`independent variables`, :bd
 
 5. For each motive you have identified, create a function which takes :bdg-danger:`decisions` as an input, where :bdg-primary:`independent variables` and :bdg-primary:`constants` are already defined, and outputs a value which scales with motive as a function of :bdg-danger:`decisions`.
 
-If you plot the output (let's call this our :bdg-secondary:`construct value`) against :bdg-danger:`decisions` and it makes sense to you, then great job! 
-Otherwise, think about how you can fix it. 
+If you plot the output (let's call this our :bdg-secondary:`construct values`) against :bdg-danger:`decisions` for a few trials (with a few example combinations of :bdg-primary:`independent variables`) and it makes sense to you, then great job! 
+Otherwise, think about how you can fix it so that it will make sense. 
 
 .. Note::
     It helps to have all terms (i.e. :bdg-secondary:`construct value` and :bdg-success:`free parameters`) range between 0 and 1.
 
 6. Now, multiply each :bdg-secondary:`construct value` by the relevant :bdg-success:`free parameters`.
-7. This expression you have created should be set equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
+7. Combine these terms and set them equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
 
 
 Tutorial
 ================
+
+.. dropdown:: For each hypothesis, think of the central appetitive or aversive motive that would lead people to make such :bdg-danger:`decisions`.
+
+    1. Greed
+
+    2. Inequity Aversion
+    
+    3. Guilt Aversion
+
+.. dropdown:: Think about *how* the :bdg-danger:`decisions` people make enable them to act on their environment (:bdg-primary:`independent variables` and :bdg-primary:`constants`) to avoid or obtain whatever is motivating them according to each hypothesis.
+
+    1. Greed
+
+    2. Inequity Aversion
+    
+    3. Guilt Aversion
+
+.. dropdown:: Now think about *how* other :bdg-danger:`decisions` that people prevents them from avoid or obtain whatever is motivating them according to each hypothesis.
+
+    1. Greed
+
+    2. Inequity Aversion
+    
+    3. Guilt Aversion
+
+.. dropdown:: Taking a step back now, identify the dimensions which are implied by the :bdg-success:`meaningful psychological differences between people` you have identified in your hypotheses - what way are these people quantitatively different?
+
+    1. Greed
+
+    2. Inequity Aversion
+    
+    3. Guilt Aversion
+
+.. dropdown:: For each motive you have identified, create a function which takes :bdg-danger:`decisions` as an input, where :bdg-primary:`independent variables` and :bdg-primary:`constants` are already defined, and outputs a value which scales with motive as a function of :bdg-danger:`decisions`.
+
+    1. Greed
+
+    2. Inequity Aversion
+    
+    3. Guilt Aversion
+
+.. dropdown:: Now, multiply each :bdg-secondary:`construct value` by the relevant :bdg-success:`free parameters`.
+
+    1. Greed
+
+    2. Inequity Aversion
+    
+    3. Guilt Aversion
+
+.. dropdown:: Combine these terms and set them equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
+
+    

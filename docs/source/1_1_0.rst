@@ -9,25 +9,27 @@ Research Question
     :read-time: 5 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-The Role of the Research Question in Linear Modeling
-=============
-As a prerequisite for conducting research, we are often told that we must have a clear research question and a design that allows us to answer that question. 
-In practice many people abide by this but, in my personal experience, some do not: some researchers prefer to come up with an experiment that they think is interesting, hypothesize about behavior that they expect to observe in that experiment, and, only after collecting data, speculate as to what the underlying psychological motivation for that behavior was. 
-It's a potentially wasteful and inefficient way to conduct research, but I can personally attest to the fact that I have observed people successfully complete Master's, Ph.D.'s, and Postdocs with this logic. 
 
 Goals During This Stage
 =================
-The ability to work backwards is not true of computational modeling: if you attempt to apply this logic when utilizing computational modeling, you will almost certainly end up arriving at wrong and uninterpretable results and, if you somehow arrive at the correct result, you will have spent much more time overcoming your lack of forethought than if you had thought your analysis through beforehand.
-As a prerequisite for computationally modeling behavior, you need a clear research question that goes to higher-level (i.e. psychological) function. 
-Thus, having a well-thought out, specific, testable Research Question is a *necessary* precondition for this kind of analysis. 
-Computational modeling is the mathematical representation of the mechanisms of a certain psychological process so it should seem intuitive that there is a necessity for you to be curious about psychological processes before using it to answer your questions. 
+
+To develop a clear research question that goes to higher-level (i.e. psychological) function.  
+
+.. Note::
+
+    As a prerequisite for conducting research, we are often told that we must have a clear research question and a design that allows us to answer that question. 
+    In practice many people abide by this but, in my personal experience, some do not: some researchers prefer to come up with an experiment that they think is interesting, hypothesize about behavior that they expect to observe in that experiment, and, only after collecting data, speculate as to what the underlying psychological motivation for that behavior was. 
+    It's a potentially wasteful and inefficient way to conduct research, but I can personally attest to the fact that I have observed people successfully complete Master's, Ph.D.'s, and Postdocs with this logic. 
+    The ability to work backwards is not true of computational modeling: if you attempt to apply this logic when utilizing computational modeling, you will almost certainly end up arriving at wrong and uninterpretable results and, if you somehow arrive at the correct result, you will have spent much more time overcoming your lack of forethought than if you had thought your analysis through beforehand.
 
 Tutorial
 ================
 
-In the context of the 1-shot Trust Game, around 90% of Trustees reciprocate the trust placed in them by the Investor even though there is nothing stopping the Trustee from giving nothing back. 
-What we want to know is why that is.
+.. dropdown:: Create a Research Question
 
-Thus, our goal is answer the following question:
+    In the context of the 1-shot Trust Game, around 90% of Trustees reciprocate the trust placed in them by the Investor even though there is nothing stopping the Trustee from giving nothing back. 
+    What we want to know is why that is.
 
-**What motivates people to reciprocate trust in single-shot interactions?**
+    Thus, our goal is answer the following question:
+
+    **What motivates people to reciprocate trust in single-shot interactions?**

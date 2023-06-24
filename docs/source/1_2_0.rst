@@ -12,13 +12,14 @@ Experimental Design
 Goals During this Stage
 ================
 
-After establishing the research question you want to answer, you must create an experimental paradigm that enables you to answer that question.
-As an aspirational benchmark, every potential answer to that research question should have a distinguishable behavioral trend over the course of the experiment which enables you to differentiate between other psychological accounts. 
+To create an experimental paradigm where every potential answer to that research question should have a distinguishable behavioral trend over the course of the experiment which enables you to differentiate between other psychological accounts. 
 
-Here, your experimental design and hypotheses are codetermined: in reflecting on the possible answers to your research question, you should identify what behavioral patterns these psychological mechanisms would produce in the current design.
-If psychological differences make behaviorally distinct predictions in the current experiment, your design is adequate. 
-Importantly, at this stage it is necessary to exhaustively list both all possible psychological accounts for your question as well as the behavioral patterns in your experiment. 
-The purpose of doing the latter is to identify possible behavioral differences that might not correspond to any of your psychological hypotheses, but might relate to another psychological preference. 
+.. Note::
+
+    Here, your experimental design and hypotheses are codetermined: in reflecting on the possible answers to your research question, you should identify what behavioral patterns these psychological mechanisms would produce in the current design.
+    If psychological differences make behaviorally distinct predictions in the current experiment, your design is adequate. 
+    Importantly, at this stage it is necessary to exhaustively list both all possible psychological accounts for your question as well as the behavioral patterns in your experiment. 
+    The purpose of doing the latter is to identify possible behavioral differences that might not correspond to any of your psychological hypotheses, but might relate to another psychological preference. 
 
 .. _Fehr & Schmidt, 1999: https://www.jstor.org/stable/2586885
 .. _Güth, Huck, & Ockenfels, 1996: https://watermark.silverchair.com/ej0593.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAArwwggK4BgkqhkiG9w0BBwagggKpMIICpQIBADCCAp4GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM0kS3Uly_ObRPbcUAAgEQgIICbzUl-Dos5GklEcqxw3kQB8LTHgDSppBeGwY9tARYQOfzMyZMtCD6GIZyKM1abYRWbpvvGPa-ijL1fTgY9pFGgsB0hEJy8llt36vmRyhDfYc6BXymuM41E5Ej6KLjAcLmPzem-lbO98lYsTM4fc6yYeOrKnSSoMOH17nWdsP5tOjj2AxgcQ1gDsrG5Zjlfajm2TJI5Q53NmyVIdE9CAN60Y1IaGpI3IRjw9V9m7aq-XRjVc5e10sitM7eBxLofayNPADkq7qychLu_KZSv6YPgWMGSaKmx9GOOy2j9t9QJdFv-56Nnqos1tQ4-s9AOA4U-SUvlQz6WDImyahqB7wZuRID2CBztVPPU8cPGxEAPvo92-IFs9h1VXB-oi-Yjvsf59ziuKg8456DIjaBxsSyZWE6zbrVyJ3Xhv26JSAml-3xflrr5mSzZ7J3qK6RxiGRKzI9LxAJvA6mCmjT0OdbybVm8Va6Y1tyVuLFSZhRKICHoFdSkze2HcKfDHOZQhtckF5OHuZfqlfjs5sJxZNnjz0l3r25iNq0sjat4VWa_us6NHqkobvSetsXAL_A8JdO7sHoJYfw0XA8PpWhcJ3ygxgt2H9fjkh0UnBqVgnewoEyzzHUNHRQXXE1wJACsixq3K6ZM_WcuXJhr2fjJLybjf0SXxFKrfRXkwGeBCX8F6lyuBX2uvlGfaebhbuOzbFoJ1-HHnRP8YW0rLF-ZMkqXvQNvZougiLpx9fya2PMnaCZdvir7HYOflbz-tb-9XYG7tgF3LisM1f1-900xZ-zzr6LaeKRMPTpGZEOC6-RfR8kjKUH8EXunTOPM7KQNDtq
@@ -26,11 +27,8 @@ The purpose of doing the latter is to identify possible behavioral differences t
 Tutorial
 ===========
 
-So, the main goal at this stage is to identify an experimental design which allows to answer our research question, namely: 
-
+We're trying to identify an experimental design which allows to answer the following question: 
 **What motivates people to reciprocate trust in single-shot interactions?**
-
-Let's follow the steps mentioned above.
 
 
 .. dropdown:: Generate Hypotheses

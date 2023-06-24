@@ -1,4 +1,4 @@
-Simulating Data
+Compare Recovered Parameters
 *********
 
 .. article-info::
