@@ -71,6 +71,11 @@ Tutorial
     2. Inequity Averse people act in others' material self-interest based on a desire to maintain equality - to be objectively fair
     3. Guilt Averse people are motivated to act in others' material self-interest based on a desire to meet expectations - to be perceived as being fair
 
+    Dimensions:
+
+    :bdg-success:`D1`` - ranges from prosociality (low) to greed (high)
+    :bdg-success:`D2` - ranges from perceived (low) to objective (high)
+
     .. figure:: dimension_hmtg.png
         :figwidth: 100%
         :align: center
