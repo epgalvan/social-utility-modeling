@@ -12,7 +12,7 @@ Experimental Design
 Goals During this Stage
 ================
 
-To create an experimental paradigm where every potential answer to that research question should have a distinguishable behavioral trend over the course of the experiment which enables you to differentiate between other psychological accounts. 
+To create an experimental paradigm where every potential answer to your research question has a distinguishable behavioral trend over the course of the experiment. 
 
 .. Note::
 

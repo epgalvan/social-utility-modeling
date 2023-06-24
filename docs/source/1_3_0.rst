@@ -49,51 +49,53 @@ Tutorial
 
 .. dropdown:: For each hypothesis, think of the central appetitive or aversive motive that would lead people to make such :bdg-danger:`decisions`.
 
-    1. Greed
-
-    2. Inequity Aversion
-    
-    3. Guilt Aversion
+    1. Greed - a desire to obtain money (or an aversion to losing money)
+    2. Inequity Aversion - an aversion to creating inequity (or a desire to achieve equity)    
+    3. Guilt Aversion - an aversion to violating others' expectations (or a desire to meet others' expectation)
 
 .. dropdown:: Think about *how* the :bdg-danger:`decisions` people make enable them to act on their environment (:bdg-primary:`independent variables` and :bdg-primary:`constants`) to avoid or obtain whatever is motivating them according to each hypothesis.
 
-    1. Greed
-
-    2. Inequity Aversion
-    
-    3. Guilt Aversion
+    1. Greed - people keep and take as much money as they can
+    2. Inequity Aversion - people give back enough money so that them and their partner have an equal amount     
+    3. Guilt Aversion - people give back enough money so that their partners' expectations are met
 
 .. dropdown:: Now think about *how* other :bdg-danger:`decisions` that people prevents them from avoid or obtain whatever is motivating them according to each hypothesis.
 
-    1. Greed
-
-    2. Inequity Aversion
-    
-    3. Guilt Aversion
+    1. Greed - not keeping or taking as much money does not maximize one's payoff
+    2. Inequity Aversion - not giving enough money back so that them and their partner have an equal amount
+    3. Guilt Aversion - not giving their partner what they expect
 
 .. dropdown:: Taking a step back now, identify the dimensions which are implied by the :bdg-success:`meaningful psychological differences between people` you have identified in your hypotheses - what way are these people quantitatively different?
 
-    1. Greed
+    1. Greedy people act in their own material self-interest while both Inequity Averse and Guilt Averse people act in others' self-interest
+    2. Inequity Averse people act in others' material self-interest based on a desire to maintain equality - to be objectively fair
+    3. Guilt Averse people are motivated to act in others' material self-interest based on a desire to meet expectations - to be perceived as being fair
 
-    2. Inequity Aversion
-    
-    3. Guilt Aversion
+    .. figure:: dimension_hmtg.png
+        :figwidth: 100%
+        :align: center
 
 .. dropdown:: For each motive you have identified, create a function which takes :bdg-danger:`decisions` as an input, where :bdg-primary:`independent variables` and :bdg-primary:`constants` are already defined, and outputs a value which scales with motive as a function of :bdg-danger:`decisions`.
 
-    1. Greed
+    .. dropdown:: Greed
+        .. tab-set::
 
-    2. Inequity Aversion
-    
-    3. Guilt Aversion
+            .. tab-item:: Plain English
+                The extent to which one has behaved greedily is 
+            .. tab-item:: R
+
+            .. tab-item:: MatLab
+
+            .. tab-item:: Python
+
+    .. dropdown:: Inequity Aversion  
+    .. dropdown:: Guilt Aversion
 
 .. dropdown:: Now, multiply each :bdg-secondary:`construct value` by the relevant :bdg-success:`free parameters`.
 
-    1. Greed
-
-    2. Inequity Aversion
-    
-    3. Guilt Aversion
+    1. Greed - 
+    2. Inequity Aversion -     
+    3. Guilt Aversion - 
 
 .. dropdown:: Combine these terms and set them equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
 
