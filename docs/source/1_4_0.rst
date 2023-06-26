@@ -68,15 +68,15 @@ Otherwise, think about how you can fix it so that it will make sense.
 
     2 Parameters 
 
-    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout Adh` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × (:bdg-success:`Φ` × :bdg-secondary:`Norm 1 Adh`  + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`Norm 2 Adh` )
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout Adh` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × (:bdg-success:`Φ` × :bdg-secondary:`SN1 Adh`  + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`SN2 Adh` )
 
-    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) - (1 - :bdg-success:`Θ` ) × 
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout Adh` × :bdg-success:`Θ` ) - (1 - :bdg-success:`Θ` ) × 
 
-    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × 
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout Adh` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × 
 
-    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + 
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout Adh` × :bdg-success:`Θ` ) + 
 
-    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + 
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout Adh` × :bdg-success:`Θ` ) + 
 
     3 Parameters
 
