@@ -89,6 +89,7 @@ Otherwise, think about how you can fix it so that it will make sense.
         :bdg-success:`Θ` = [0, 1]
 
         :bdg-secondary:`Payout Adh` = `Normalized Norm Adherance` = [0, 1]
+
         :bdg-secondary:`SN1 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
 
     2 Parameter 
@@ -96,10 +97,13 @@ Otherwise, think about how you can fix it so that it will make sense.
     .. dropdown:: :bdg-warning:`Utility` =  :bdg-secondary:`Payout Adh` × :bdg-success:`Θ`  + (1 - :bdg-success:`Θ` ) × ( :bdg-success:`Φ` × :bdg-secondary:`SN1 Adh` + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`SN2 Adh` )
 
         :bdg-success:`Θ` = [0, 1]
+
         :bdg-success:`Φ` = [0, 1]
 
         :bdg-secondary:`Payout Adh` = `Squared Normalized Norm Adherance` = [0, 1]
+
         :bdg-secondary:`SN1 Adh` = `Squared Normalized Norm Adherance` = [0, 1]
+
         :bdg-secondary:`SN2 Adh` = `Squared Normalized Norm Adherance` = [0, 1]
 
         .. Note:: 
@@ -110,19 +114,25 @@ Otherwise, think about how you can fix it so that it will make sense.
     .. dropdown:: :bdg-warning:`Utility` = :bdg-secondary:`Payout Adh` × :bdg-success:`Θ`  - (1 - :bdg-success:`Θ` ) × ( :bdg-success:`Φ` × :bdg-secondary:`SN1 Vio` + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`SN2 Vio` )
 
         :bdg-success:`Θ` = [0, 0.5]
+
         :bdg-success:`Φ` = [0, 1]
         
         :bdg-secondary:`Payout Adh` = `Normalized Norm Adherance` = [0, 1]
+
         :bdg-secondary:`SN1 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
+
         :bdg-secondary:`SN2 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
 
     .. dropdown:: :bdg-warning:`Utility` = :bdg-secondary:`Payout Adh` × :bdg-success:`Θ`  - (1 - :bdg-success:`Θ` ) × min( :bdg-secondary:`SN1 Vio` +  :bdg-success:`Φ` , :bdg-secondary:`SN2 Vio` -  :bdg-success:`Φ` )
 
         :bdg-success:`Θ` = [0, 0.5]
+
         :bdg-success:`Φ`= [-0.1, 0.1]
         
         :bdg-secondary:`Payout Adh` = `Normalized Norm Adherance` = [0, 1]
+
         :bdg-secondary:`SN1 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
+        
         :bdg-secondary:`SN2 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
 
 Tutorial
