@@ -26,7 +26,7 @@ and outputs a value which reflects the :bdg-secondary:`construct value` of such 
 
     Here the :bdg-danger:`decision` (the chosen option) is represented as Decision, the option which most closely follows the norm is represented as Norm, and the option which most strongly violates the norm is represented as Maximum Norm Violation. 
 
-    :bdg-secondary:`Norm Violation` = (|Norm - Decision|)/(Maximum Norm Violation)
+    :bdg-secondary:`Raw Norm Violation` = (|Norm - Decision|)/(Maximum Norm Violation)
 
     * If any violation of the norm results in disutility
 
@@ -61,13 +61,16 @@ Otherwise, think about how you can fix it so that it will make sense.
 
 .. dropdown:: Examples of :bdg-warning:`Utility` Equations
 
+    .. Note:: 
+        Adh is shorthad for Adherance and Vio is shorthad for Violation.
+
     1 Parameter
 
     2 Parameters 
 
-    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × (:bdg-success:`Φ` × :bdg-secondary:`Norm 1 Adherance`  + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`Norm 2 Adherance` )
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout Adh` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × (:bdg-success:`Φ` × :bdg-secondary:`Norm 1 Adh`  + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`Norm 2 Adh` )
 
-    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × 
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) - (1 - :bdg-success:`Θ` ) × 
 
     .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × 
 
@@ -77,7 +80,7 @@ Otherwise, think about how you can fix it so that it will make sense.
 
     3 Parameters
 
-ΦΘ
+
 Tutorial
 ================
 
