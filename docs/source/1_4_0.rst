@@ -62,13 +62,14 @@ Otherwise, think about how you can fix it so that it will make sense.
 .. dropdown:: Examples of :bdg-warning:`Utility` Equations
 
     .. Note:: 
-        Adh is shorthad for Adherance and Vio is shorthad for Violation.
+        Adh is shorthand for Adherance and Vio is shorthand for Violation. 
+        SN is shorthand for Social Norm - when there are multiple social norms we use numbers to demarcate.
 
     1 Parameter
 
     2 Parameters 
 
-    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout Adh` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × (:bdg-success:`Φ` × :bdg-secondary:`SN1 Adh`  + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`SN2 Adh` )
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout Adh` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × ( :bdg-success:`Φ` × :bdg-secondary:`SN1 Adh`  + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`SN2 Adh` )
 
     .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout Adh` × :bdg-success:`Θ` ) - (1 - :bdg-success:`Θ` ) × 
 
