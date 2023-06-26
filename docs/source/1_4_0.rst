@@ -24,35 +24,60 @@ and outputs a value which reflects the :bdg-secondary:`construct value` of such 
 
 .. dropdown:: Conceptual Examples of :bdg-secondary:`construct value` Formulations
 
+    Here the :bdg-danger:`decision` (the chosen option) is represented as Decision, the option which most closely follows the norm is represented as Norm, and the option which most strongly violates the norm is represented as Maximum Norm Violation. 
+
     :bdg-secondary:`Norm Violation` = (|Norm - Decision|)/(Maximum Norm Violation)
 
-    * Fewer use cases than Normalized Norm Violation
+    * If any violation of the norm results in disutility
 
-    :bdg-secondary:`Unidirectional Norm Violation` = (max((Norm - Decision), 0))/(Maximum Norm Violation)
+    :bdg-secondary:`Unidirectional Norm Violation` = (|max((Norm - Decision), 0)|)/(Maximum Norm Violation)
 
-    * If the Norm is violated in one direction but not another
+    * If the Norm is violated in one direction but not another 
+    * Could also use min
+    * The second argument (0 here) can be anything
 
     :bdg-secondary:`Normalized Norm Violation` = ((|Norm - Decision|)/(|Maximum Norm Violation - Norm|))
 
-    * If the norm
+    * If all choices result in a norm being violated to some extent, disutility is not experienced by choosing the closest value to the norm
 
     :bdg-secondary:`Squared Normalized Norm Violation` = ((Norm - Decision)/(Maximum Norm Violation - Norm))²
 
+    * If smaller norm violations are less significant than a linear relationship would suggest
+
     :bdg-secondary:`Square Root Normalized Norm Violation` = sqrt((Norm - Decision)/(Maximum Norm Violation - Norm))
+
+    * If smaller norm violations are more significant than a linear relationship would suggest
 
     .. Note::
 
-        <Any Kind of> Norm Adherance = 1 - <The Same Kind of> Norm Violation
+        <Any Kind of> Norm Adherance = 1 - <That Same Kind of> Norm Violation
 
 
 
 If you plot the output (let's call this our :bdg-secondary:`construct values` ) against :bdg-danger:`decisions` for a few trials (with a few example combinations of :bdg-primary:`independent variables` ) and it makes sense to you, then great job! 
 Otherwise, think about how you can fix it so that it will make sense. 
 
-2. Now, we need to figure out how each :bdg-secondary:`construct value` mathematically interacts with the relevant :bdg-success:`free parameters`.
+2. Identify several *possible* examples of how each :bdg-secondary:`construct value` mathematically interacts with the relevant :bdg-success:`free parameters` to determine :bdg-warning:`Utility`.
 
-3. Combine these terms and set them equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
+.. dropdown:: Examples of :bdg-warning:`Utility` Equations
 
+    1 Parameter
+
+    2 Parameters 
+
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × (:bdg-success:`Φ` × :bdg-secondary:`Norm 1 Adherance`  + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`Norm 2 Adherance` )
+
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × 
+
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + (1 - :bdg-success:`Θ` ) × 
+
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + 
+
+    .. dropdown:: :bdg-warning:`Utility` = ( :bdg-secondary:`Payout_Maximization` × :bdg-success:`Θ` ) + 
+
+    3 Parameters
+
+ΦΘ
 Tutorial
 ================
 
@@ -134,7 +159,7 @@ Tutorial
 
                 :: 
 
-.. dropdown:: Now, multiply each :bdg-secondary:`construct value` by the relevant :bdg-success:`free parameters`.
+.. dropdown:: Identify several *possible* examples of how each :bdg-secondary:`construct value` mathematically interacts with the relevant :bdg-success:`free parameters` to determine :bdg-warning:`Utility`
 
     1. Greed - :bdg-secondary:`Payout Maximization` × :bdg-success:`D1`  
     2. Inequity Aversion - :bdg-secondary:`Equity Achieved` × (1-:bdg-success:`D1` ) × (:bdg-success:`D2` )
@@ -149,7 +174,5 @@ Tutorial
         
         The dimension we created dichtomize one preference against another: thus, we can simply take the inverse
 
-
-.. dropdown:: Combine these terms and set them equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
 
     
