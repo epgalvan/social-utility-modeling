@@ -31,7 +31,7 @@ and outputs a value which reflects the :bdg-secondary:`construct value` of such 
         All differences are set to the absolute value. 
         The logic of this choice is that the direction of the norm violation is not important: violating a norm in either direction results in disutility. 
         If norm violation in one direction could result in a positive utility, this should not be done. 
-        However, in most cases this is appropriate (albiet unnecessary from a design perspective since usually such deviations are not permitted.)
+        However, in most cases this is appropriate (albiet unnecessary from a design perspective since usually such deviations are not possible).
 
     :bdg-secondary:`Raw Norm Violation` = (|Norm - Decision|)/(Maximum Norm Violation)
 
@@ -68,11 +68,11 @@ Otherwise, think about how you can fix it so that it will make sense.
 
 .. dropdown:: General :bdg-warning:`Utility` Equation Formulation
 
-    :bdg-warning:`Utility` =   (:bdg-secondary:`Utility Source 1` × :bdg-success:`Relevant Free Parameters`) + 
-    
-                                ... + 
-    
-                                (:bdg-secondary:`Utility Source N` × :bdg-success:`Relevant Free Parameters`)
+    :bdg-warning:`Utility` =   
+
+        (:bdg-secondary:`Utility Source 1` × :bdg-success:`Relevant Free Parameters`) + ... + 
+
+        (:bdg-secondary:`Utility Source N` × :bdg-success:`Relevant Free Parameters`)
 
 .. dropdown:: Examples of :bdg-warning:`Utility` Equations
 
@@ -127,12 +127,12 @@ Otherwise, think about how you can fix it so that it will make sense.
 
         :bdg-success:`Θ` = [0, 0.5]
 
-        :bdg-success:`Φ`= [-0.1, 0.1]
+        :bdg-success:`Φ` = [-0.1, 0.1]
         
         :bdg-secondary:`Payout Adh` = `Normalized Norm Adherance` = [0, 1]
 
         :bdg-secondary:`SN1 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
-        
+
         :bdg-secondary:`SN2 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
 
 Tutorial
