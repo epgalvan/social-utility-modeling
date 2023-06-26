@@ -1,4 +1,4 @@
-Compare Recovered Parameters
+Simulating Data
 *********
 
 .. article-info::
@@ -11,6 +11,8 @@ Compare Recovered Parameters
 
 Goals During this Stage
 ================
+
+Now we want to plug in all of the inputs that we know (experimental variables and free parameters) into the data generation process (the computational model) and see what it outputs.
 
 Tutorial
 ================

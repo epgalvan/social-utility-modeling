@@ -20,10 +20,11 @@ There is no required foreknowledge to conceptually understand the course, but a 
 
     Research Question <1_1_0.rst>
     Experimental Design <1_2_0.rst>
-    Defining Parameters <1_3_0.rst>
-    Simulating Data <1_4_0.rst>
-    Compare Recovered Parameters <1_5_0.rst>
-    A Priori Clustering <1_6_0.rst>
+    Outline the Data Generation Process <1_3_0.rst>
+    Mathematically Model the Data Generation Process <1_4_0.rst>
+    Simulating Data <1_5_0.rst>
+    Compare Recovered Parameters <1_6_0.rst>
+    A Priori Clustering <1_7_0.rst>
 
 .. toctree::
    :maxdepth: 1

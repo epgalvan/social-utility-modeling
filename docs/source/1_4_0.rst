@@ -1,4 +1,4 @@
-Simulating Data
+Mathematically Model the Data Generation Process
 *********
 
 .. article-info::
@@ -12,7 +12,131 @@ Simulating Data
 Goals During this Stage
 ================
 
-Now we want to plug in all of the inputs that we know (experimental variables and free parameters) into the data generation process (the computational model) and see what it outputs.
+We want to mathematically model the data generation process - in other words, develop an equation that predicts what all people will decide in each trial.
+
+.. Warning::
+
+    Mathematically modeling the data generation process is the most difficult step in the computational modeling process: there is no objectively correct way to go about it. 
+    With that said, I believe that this is achievable in a timely manner when given the correct goals and a useful framework. 
+
+    1. For each motive you have identified, create a function which takes :bdg-danger:`decisions`, :bdg-primary:`independent variables`, and :bdg-primary:`constants` as inputs, 
+    and outputs a value which reflects the :bdg-secondary:`construct value` of such a motive based on :bdg-danger:`decisions`.
+
+    .. dropdown:: Examples of some mathematical formulations
+
+        :bdg-secondary:`Example 1` = (Decision)/(Norm)
+        :bdg-secondary:`Example 2` = (Decision - Norm)/(Maximum Norm Violation)
+        :bdg-secondary:`Example 3` = ((Decision - Norm)/(Maximum Norm Violation - Norm))
+        :bdg-secondary:`Example 4` = ((Decision - Norm)^2/(Maximum Norm Violation - Norm)^2)
+
+
+
+
+
+    If you plot the output (let's call this our :bdg-secondary:`construct values` ) against :bdg-danger:`decisions` for a few trials (with a few example combinations of :bdg-primary:`independent variables` ) and it makes sense to you, then great job! 
+    Otherwise, think about how you can fix it so that it will make sense. 
+
+    2. Now, we need to figure out how each :bdg-secondary:`construct value` mathematically interacts with the relevant :bdg-success:`free parameters`.
+
+    3. Combine these terms and set them equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
 
 Tutorial
 ================
+
+.. dropdown:: For each motive you have identified, create a function which takes :bdg-danger:`decisions` as an input, where :bdg-primary:`independent variables` and :bdg-primary:`constants` are already defined, and outputs a value which scales with motive as a function of :bdg-danger:`decisions`.
+
+    .. dropdown:: Greed
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                The extent to which one has behaved greedily can be expressed as the proportion of how much they decided to keep for themselves out of how much they *could* have kept for themselves (i.e the extent to which they maximized their payout). 
+                In the Trust Game, the maximum amount that the Trustee can keep for themselves is what they are :bdg-primary:`Given` , namely: :bdg-primary-line:`Investment` × :bdg-primary-line:`Multiplier`. 
+                And, therefore, what they :bdg-danger:`Keep` is (:bdg-primary-line:`Investment` × :bdg-primary-line:`Multiplier` ) - :bdg-danger:`Returned`
+
+                Thus, the extent to which one has maximized their payout is:
+                
+                :bdg-secondary:`Payout Maximization` = :bdg-danger:`Keep`/(:bdg-primary-line:`Investment` × :bdg-primary-line:`Multiplier` )
+
+            .. tab-item:: R
+
+                ::
+
+                    payout_maximization = function(investment, multiplier, returned){
+                        return(((investment * multiplier) - returned)/(investment * multiplier))
+                    }
+
+            .. tab-item:: MatLab
+
+                ::
+
+                    function value = payout_maximization(investment, multiplier, returned)
+                        value = ((investment * multiplier) - returned) / (investment * multiplier);
+                    end
+
+
+            .. tab-item:: Python
+
+                :: 
+                    
+                    def payout_maximization(investment, multiplier, returned):
+                        return ((investment * multiplier) - returned) / (investment * multiplier)
+
+    .. dropdown:: Inequity Aversion
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+
+            .. tab-item:: R
+
+                :: 
+
+            .. tab-item:: MatLab
+
+                :: 
+
+            .. tab-item:: Python
+
+                :: 
+                
+    .. dropdown:: Guilt Aversion
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+
+            .. tab-item:: R
+
+                :: 
+
+            .. tab-item:: MatLab
+
+                :: 
+
+            .. tab-item:: Python
+
+                :: 
+
+.. dropdown:: Now, multiply each :bdg-secondary:`construct value` by the relevant :bdg-success:`free parameters`.
+
+    1. Greed - :bdg-secondary:`Payout Maximization` × :bdg-success:`D1`  
+    2. Inequity Aversion - :bdg-secondary:`Equity Achieved` × (1-:bdg-success:`D1` ) × (:bdg-success:`D2` )
+    3. Guilt Aversion - :bdg-secondary:`Expectation Meeting` × (1-:bdg-success:`D1` ) × (1-:bdg-success:`D2` )
+
+    .. Note::
+
+        Why do we use (1-:bdg-success:`D1` ) and (1-:bdg-success:`D2` )? 
+        
+        Each dimension we have created is mathematically arbitrary: the fact that greed is endorsed at high values of :bdg-success:`D1` is a consequence of our choice. 
+        It could just as reasonably be that greed is endorsed at low values of :bdg-success:`D1`. 
+        
+        The dimension we created dichtomize one preference against another: thus, we can simply take the inverse
+
+
+.. dropdown:: Combine these terms and set them equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
+
+    
