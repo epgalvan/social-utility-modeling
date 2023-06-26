@@ -314,7 +314,7 @@ Tutorial
 
     .. Note::
 
-        Why do we use (1-:bdg-succes-lines:`D1` ) and (1-:bdg-success-line:`D2` )? 
+        Why do we use (1-:bdg-succes-line:`D1` ) and (1-:bdg-success-line:`D2` )? 
         
         Each dimension we have created is mathematically arbitrary: the fact that greed is endorsed at high values of :bdg-success-line:`D1` is a consequence of our choice. 
         It could just as reasonably be that greed is endorsed at low values of :bdg-success-line:`D1`. 
