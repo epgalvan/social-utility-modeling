@@ -19,26 +19,39 @@ We want to mathematically model the data generation process - in other words, de
     Mathematically modeling the data generation process is the most difficult step in the computational modeling process: there is no objectively correct way to go about it. 
     With that said, I believe that this is achievable in a timely manner when given the correct goals and a useful framework. 
 
-    1. For each motive you have identified, create a function which takes :bdg-danger:`decisions`, :bdg-primary:`independent variables`, and :bdg-primary:`constants` as inputs, 
-    and outputs a value which reflects the :bdg-secondary:`construct value` of such a motive based on :bdg-danger:`decisions`.
+1. For each motive you have identified, create a function which takes :bdg-danger:`decisions`, :bdg-primary:`independent variables`, and :bdg-primary:`constants` as inputs, 
+and outputs a value which reflects the :bdg-secondary:`construct value` of such a motive based on :bdg-danger:`decisions`.
 
-    .. dropdown:: Examples of some mathematical formulations
+.. dropdown:: Conceptual Examples of :bdg-secondary:`construct value` Formulations
 
-        :bdg-secondary:`Example 1` = (Decision)/(Norm)
-        :bdg-secondary:`Example 2` = (Decision - Norm)/(Maximum Norm Violation)
-        :bdg-secondary:`Example 3` = ((Decision - Norm)/(Maximum Norm Violation - Norm))
-        :bdg-secondary:`Example 4` = ((Decision - Norm)^2/(Maximum Norm Violation - Norm)^2)
+    :bdg-secondary:`Norm Violation` = (|Norm - Decision|)/(Maximum Norm Violation)
+
+    * Fewer use cases than Normalized Norm Violation
+
+    :bdg-secondary:`Unidirectional Norm Violation` = (max((Norm - Decision), 0))/(Maximum Norm Violation)
+
+    * If the Norm is violated in one direction but not another
+
+    :bdg-secondary:`Normalized Norm Violation` = ((|Norm - Decision|)/(|Maximum Norm Violation - Norm|))
+
+    * If the norm
+
+    :bdg-secondary:`Squared Normalized Norm Violation` = ((Norm - Decision)/(Maximum Norm Violation - Norm))²
+
+    :bdg-secondary:`Square Root Normalized Norm Violation` = sqrt((Norm - Decision)/(Maximum Norm Violation - Norm))
+
+    .. Note::
+
+        <Any Kind of> Norm Adherance = 1 - <The Same Kind of> Norm Violation
 
 
 
+If you plot the output (let's call this our :bdg-secondary:`construct values` ) against :bdg-danger:`decisions` for a few trials (with a few example combinations of :bdg-primary:`independent variables` ) and it makes sense to you, then great job! 
+Otherwise, think about how you can fix it so that it will make sense. 
 
+2. Now, we need to figure out how each :bdg-secondary:`construct value` mathematically interacts with the relevant :bdg-success:`free parameters`.
 
-    If you plot the output (let's call this our :bdg-secondary:`construct values` ) against :bdg-danger:`decisions` for a few trials (with a few example combinations of :bdg-primary:`independent variables` ) and it makes sense to you, then great job! 
-    Otherwise, think about how you can fix it so that it will make sense. 
-
-    2. Now, we need to figure out how each :bdg-secondary:`construct value` mathematically interacts with the relevant :bdg-success:`free parameters`.
-
-    3. Combine these terms and set them equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
+3. Combine these terms and set them equal to :bdg-warning:`Utility` - now you have a working draft of an Equation!
 
 Tutorial
 ================
