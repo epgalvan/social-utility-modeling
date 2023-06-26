@@ -26,6 +26,13 @@ and outputs a value which reflects the :bdg-secondary:`construct value` of such 
 
     Here the :bdg-danger:`decision` (the chosen option) is represented as Decision, the option which most closely follows the norm is represented as Norm, and the option which most strongly violates the norm is represented as Maximum Norm Violation. 
 
+    .. Note::
+
+        All differences are set to the absolute value. 
+        The logic of this choice is that the direction of the norm violation is not important: violating a norm in either direction results in disutility. 
+        If norm violation in one direction could result in a positive utility, this should not be done. 
+        However, in most cases this is appropriate (albiet unnecessary from a design perspective since usually such deviations are not permitted.)
+
     :bdg-secondary:`Raw Norm Violation` = (|Norm - Decision|)/(Maximum Norm Violation)
 
     * If any violation of the norm results in disutility
@@ -34,7 +41,7 @@ and outputs a value which reflects the :bdg-secondary:`construct value` of such 
 
     * If the Norm is violated in one direction but not another 
     * Could also use min
-    * The second argument (0 here) can be anything
+    * The second argument (0 here) can be anything, though 0 is usually the most meaningful
 
     :bdg-secondary:`Normalized Norm Violation` = ((|Norm - Decision|)/(|Maximum Norm Violation - Norm|))
 
@@ -50,7 +57,7 @@ and outputs a value which reflects the :bdg-secondary:`construct value` of such 
 
     .. Note::
 
-        <Any Kind of> Norm Adherance = 1 - <That Same Kind of> Norm Violation
+       Adherance = 1 - Violation
 
 
 
@@ -59,24 +66,61 @@ Otherwise, think about how you can fix it so that it will make sense.
 
 2. Identify several *possible* examples of how each :bdg-secondary:`construct value` mathematically interacts with the relevant :bdg-success:`free parameters` to determine :bdg-warning:`Utility`.
 
+.. dropdown:: General :bdg-warning:`Utility` Equation Formulation
+
+    :bdg-warning: `Utility` = 
+    
+    (:bdg-secondary:`Utility Source 1` × :bdg-success:`Relevant Free Parameters`) + 
+    
+    ... + 
+    
+    (:bdg-secondary:`Utility Source N` × :bdg-success:`Relevant Free Parameters`)
+
 .. dropdown:: Examples of :bdg-warning:`Utility` Equations
 
     .. Note:: 
-        Adh is shorthand for Adherance and Vio is shorthand for Violation. 
         SN is shorthand for Social Norm - when there are multiple social norms we use numbers to demarcate.
+        
+        Adh is shorthand for Adherance. 
+        Vio is shorthand for Violation. 
 
     1 Parameter
 
-    2 Parameters 
+    .. dropdown:: :bdg-warning:`Utility` =  :bdg-secondary:`Payout Adh` × :bdg-success:`Θ`  - (1 - :bdg-success:`Θ` ) × :bdg-secondary:`SN Vio` 
+
+        :bdg-success:`Θ` = [0, 1]
+
+        :bdg-secondary:`Payout Adh` = `Normalized Norm Adherance` = [0, 1]
+        :bdg-secondary:`SN1 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
+
+    2 Parameter 
 
     .. dropdown:: :bdg-warning:`Utility` =  :bdg-secondary:`Payout Adh` × :bdg-success:`Θ`  + (1 - :bdg-success:`Θ` ) × ( :bdg-success:`Φ` × :bdg-secondary:`SN1 Adh` + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`SN2 Adh` )
 
+        :bdg-success:`Θ` = [0, 1]
+        :bdg-success:`Φ` = [0, 1]
+
+        :bdg-secondary:`Payout Adh` = `Squared Normalized Norm Adherance` = [0, 1]
+        :bdg-secondary:`SN1 Adh` = `Squared Normalized Norm Adherance` = [0, 1]
+        :bdg-secondary:`SN2 Adh` = `Squared Normalized Norm Adherance` = [0, 1]
+
     .. dropdown:: :bdg-warning:`Utility` = :bdg-secondary:`Payout Adh` × :bdg-success:`Θ`  - (1 - :bdg-success:`Θ` ) × ( :bdg-success:`Φ` × :bdg-secondary:`SN1 Vio` + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`SN2 Vio` )
 
-    .. dropdown:: :bdg-warning:`Utility` = :bdg-secondary:`Payout Adh` × :bdg-success:`Θ`  - (1 - :bdg-success:`Θ` ) × min( :bdg-secondary:`SN1 Vio` +  :bdg-success:`Φ` , :bdg-secondary:`SN2 Vio` -  :bdg-success:`Φ` )
+        :bdg-success:`Θ` = [0, 0.5]
+        :bdg-success:`Φ` = [0, 1]
         
-    3 Parameters
+        :bdg-secondary:`Payout Adh` = `Normalized Norm Adherance` = [0, 1]
+        :bdg-secondary:`SN1 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
+        :bdg-secondary:`SN2 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
 
+    .. dropdown:: :bdg-warning:`Utility` = :bdg-secondary:`Payout Adh` × :bdg-success:`Θ`  - (1 - :bdg-success:`Θ` ) × min( :bdg-secondary:`SN1 Vio` +  :bdg-success:`Φ` , :bdg-secondary:`SN2 Vio` -  :bdg-success:`Φ` )
+
+        :bdg-success:`Θ` = [0, 0.5]
+        :bdg-success:`Φ`= [-0.1, 0.1]
+        
+        :bdg-secondary:`Payout Adh` = `Normalized Norm Adherance` = [0, 1]
+        :bdg-secondary:`SN1 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
+        :bdg-secondary:`SN2 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
 
 Tutorial
 ================
