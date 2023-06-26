@@ -68,13 +68,11 @@ Otherwise, think about how you can fix it so that it will make sense.
 
 .. dropdown:: General :bdg-warning:`Utility` Equation Formulation
 
-    :bdg-warning: `Utility` = 
+    :bdg-warning:`Utility` =   (:bdg-secondary:`Utility Source 1` × :bdg-success:`Relevant Free Parameters`) + 
     
-    (:bdg-secondary:`Utility Source 1` × :bdg-success:`Relevant Free Parameters`) + 
+                                ... + 
     
-    ... + 
-    
-    (:bdg-secondary:`Utility Source N` × :bdg-success:`Relevant Free Parameters`)
+                                (:bdg-secondary:`Utility Source N` × :bdg-success:`Relevant Free Parameters`)
 
 .. dropdown:: Examples of :bdg-warning:`Utility` Equations
 
@@ -103,6 +101,11 @@ Otherwise, think about how you can fix it so that it will make sense.
         :bdg-secondary:`Payout Adh` = `Squared Normalized Norm Adherance` = [0, 1]
         :bdg-secondary:`SN1 Adh` = `Squared Normalized Norm Adherance` = [0, 1]
         :bdg-secondary:`SN2 Adh` = `Squared Normalized Norm Adherance` = [0, 1]
+
+        .. Note:: 
+
+            This model was used in multiplayer choice. 
+            Thus, SN1 Adh and SN2 Adh were computed as ``1 - (sum(Norm Violation for Each Player²)/sum(Maximum Norm Violation for Each Player²))``.
 
     .. dropdown:: :bdg-warning:`Utility` = :bdg-secondary:`Payout Adh` × :bdg-success:`Θ`  - (1 - :bdg-success:`Θ` ) × ( :bdg-success:`Φ` × :bdg-secondary:`SN1 Vio` + (1 - :bdg-success:`Φ` ) × :bdg-secondary:`SN2 Vio` )
 
