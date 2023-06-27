@@ -70,6 +70,11 @@ Otherwise, think about how you can fix it so that it will make sense.
 
 .. dropdown:: General :bdg-warning:`Utility` Equation Formulation
 
+    .. Note:: 
+
+        In most cases, you should not apply a nonlinear transformation to your :bdg-success:`Free Parameters`. 
+        Doing so strongly limits the interpretability of distance in your parameter space.  
+
     :bdg-warning:`Utility` =   
 
         ( :bdg-secondary:`Utility Source 1` × :bdg-success:`Relevant Free Parameters` ) + 

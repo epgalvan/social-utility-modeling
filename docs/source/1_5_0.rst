@@ -27,7 +27,8 @@ Seems easy enough right?
     For beginners with access to MatLab and no particular preference about programming language, I would recommend using MatLab. 
     The idea is aligned with the above illustration: each coordinate has a cell in a structure and the contents of the cell are a structure with various fields. 
     
-    I chose to keep Python in long format just like R - Python is less concise than either MatLab or R so, to reduce the amount of code to keep track of, this was preferable.
+    I chose to keep Python in long format just like R - Python is less concise than either MatLab or R so, to reduce the amount of code to keep track of, this was preferable. 
+    Nonethless, I think it is still possible to easily switch by translating the MatLab code to Python with ChatGPT.
 
 .. dropdown:: Preallocating, Defining Functions, Defining Trial List, and Defining Parameters
 
@@ -137,26 +138,67 @@ Seems easy enough right?
 
         .. tab-item:: Plain English
 
-            We're going to start our most superior ``for`` loop. 
+            We're going to start our most superior ``for`` loop which iterates over unique combinations of :bdg-success:`Free Parameters`. 
+
+            Each combination of :bdg-success:`Free Parameters` can be thought of as a hypothetical person. 
+            In the context of our model, :bdg-success:`Free Parameters` mathematically represent the conceptual dimensions which characterize **all** of the ways that people can be different in your experimental paradigm. 
+            Thus, we are generating predictions about what any given person (i.e. a certain coordinate in our parameter space) *would* do in our experiment *if* it is indeed true that our equation aptly represents the data generation process. 
+
+            ..dropdown:: So what are we starting with in this loop? 
+                
+                :bdg-success:`Free Parameters` 
+
+            ..dropdown:: And what do we want to finish this loop with?
+
+                :bdg-danger:`Decisions` for all trials in our trial set. 
+
+            .. dropdown:: So what do we need to preallocate before this loop starts?
+
+                An output for the predicted :bdg-danger:`Decisions`. We already did this above, nice. 
+
+            .. dropdown:: Then, what do we need to compute within this loop?
+
+                We need to determine what the predicted :bdg-danger:`Decisions` for all trials in our trial set are for those :bdg-success:`Free Parameters`
+            
 
         .. tab-item:: R
 
             ::
                 
+                for (i in 1:length(freeParameters[,1])){
+                    parameter1 = freeParameters[i,1]
+                    parameter2 = freeParameters[i,2]
+                    
+                    #Compute Predictions
+                    predictions[i,] = #To Compute
+                }
 
 
         .. tab-item:: MatLab
 
             ::
-                
+
+                for i = 1:numel(parameter1range)
+                    for j = 1:numel(parameter2range)
+                        Parameter1 = freeParameters(i,j).parameter1
+                        Parameter2 = freeParameters(i,j).parameter2
+
+                        %Compute Predictions
+                        freeParameters(i,j).predictions = %toCompute
+                    end
+                end
 
 
         .. tab-item:: Python
 
             :: 
-                
 
+                for i in range(len(freeParameters)):
+                    Parameter1 = freeParameters[i, 0]
+                    Parameter2 = freeParameters[i, 1]
 
+                    # Compute Predictions
+                    predictions[i, :] = # To Compute
 
 .. dropdown:: Define the Trial Loop
 
@@ -276,3 +318,46 @@ Tutorial
                     })
 
                     predictions = pd.DataFrame()
+
+.. dropdown:: Define the Coordinate Loop
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+                
+                for (i in 1:length(freeParameters[,1])){
+                    Theta = freeParameters[i,1]
+                    Phi = freeParameters[i,2]
+                    
+                    #Compute Predictions
+                    predictions[i,] = #To Compute
+                }
+
+
+        .. tab-item:: MatLab
+
+            ::
+                
+                for i = 1:numel(thetaRange)
+                    for j = 1:numel(phiRange)
+                        Theta = freeParameters(i,j).theta
+                        Phi = freeParameters(i,j).phi
+
+                        %Compute Predictions
+                        freeParameters(i,j).predictions = %toCompute
+                    end
+                end
+
+
+        .. tab-item:: Python
+
+            :: 
+
+                for i in range(len(freeParameters)):
+                    Theta = freeParameters[i, 0]
+                    Phi = freeParameters[i, 1]
+
+                    # Compute Predictions
+                    predictions[i, :] = # To Compute
