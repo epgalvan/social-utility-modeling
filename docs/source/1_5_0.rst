@@ -18,7 +18,16 @@ Now we want to plug in all of the inputs that we know (experimental variables an
     :figwidth: 100%
     :align: center
 
-Seems easy enough right? Let's get started!
+Seems easy enough right? 
+
+.. Note:: 
+
+    Here, the path taken by MatLab will diverge. 
+    In comparison with R - which is designed around long format data frames, MatLab is designed around the Matrix. 
+    For beginners with access to MatLab and no particular preference about programming language, I would recommend using MatLab. 
+    The idea is aligned with the above illustration: each coordinate has a cell in a structure and the contents of the cell are a structure with various fields. 
+    
+    I chose to keep Python in long format just like R - Python is less concise than either MatLab or R so, to reduce the amount of code to keep track of, this was preferable.
 
 .. dropdown:: Preallocating, Defining Functions, Defining Trial List, and Defining Parameters
 
@@ -123,6 +132,30 @@ Seems easy enough right? Let's get started!
     
 
 .. dropdown:: Define the Coordinate Loop
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            We're going to start our most superior ``for`` loop. 
+
+        .. tab-item:: R
+
+            ::
+                
+
+
+        .. tab-item:: MatLab
+
+            ::
+                
+
+
+        .. tab-item:: Python
+
+            :: 
+                
+
 
 
 .. dropdown:: Define the Trial Loop
