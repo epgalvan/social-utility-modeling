@@ -144,11 +144,11 @@ Seems easy enough right?
             In the context of our model, :bdg-success:`Free Parameters` mathematically represent the conceptual dimensions which characterize **all** of the ways that people can be different in your experimental paradigm. 
             Thus, we are generating predictions about what any given person (i.e. a certain coordinate in our parameter space) *would* do in our experiment *if* it is indeed true that our equation aptly represents the data generation process. 
 
-            ..dropdown:: So what are we starting with in this loop? 
+            .. dropdown:: So what are we starting with in this loop? 
                 
                 :bdg-success:`Free Parameters` 
 
-            ..dropdown:: And what do we want to finish this loop with?
+            .. dropdown:: And what do we want to finish this loop with?
 
                 :bdg-danger:`Decisions` for all trials in our trial set. 
 
@@ -202,7 +202,91 @@ Seems easy enough right?
 
 .. dropdown:: Define the Trial Loop
 
-    Now, we are going to begin answering the Compute Predictions demand placed on us in the Coordinate Loop. 
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            Now, we are going to begin answering the Compute Predictions demand placed on us in the Coordinate Loop. 
+            So we're within the Coordinate Loop and thus we have our coordinate values defined - so let's say that theoretically we're adopting the perspective of one hypothetical person. 
+            What we want to answer specifically is "What should this hypothetical person do on this particular trial?".
+
+
+            .. dropdown:: So what are we starting with in this loop? 
+
+                We're starting with the :bdg-primary:`Independent variables`, :bdg-primary:`Constants`, and possible :bdg-danger:`Decisions` at the start of each trial. 
+
+                We already have :bdg-success:`Free Parameters` defined in the coordinate loop. 
+
+            .. dropdown:: And what do we want to finish this loop with?
+
+                The predicted :bdg-danger:`Decision` for this trial. 
+
+            .. dropdown:: So what do we need to preallocate before this loop starts?
+
+                We need to preallocate a vector for all :bdg-danger:`Decisions` for this coordinate pair. 
+                However, we already have a preallocated data structure, so for simplicity sake we'll move that within the trial loop - defining the model prediction directly on a trial-by-trial basis rather than a coordinate-by-coordinate basis. 
+
+            .. dropdown:: Then, what do we need to compute within this loop?
+
+                We need to compute the :bdg-secondary:`Utility` for all possible :bdg-danger:`Decisions` in this trial. 
+                Then, we need to save the :bdg-danger:`Decision` which results in the greatest :bdg-secondary:`Utility`.
+
+        .. tab-item:: R
+
+            ::
+
+                for (i in 1:length(freeParameters[,1])){
+                    Theta = freeParameters[i,1]
+                    Phi = freeParameters[i,2]
+                    
+                    ``for (k in 1:length(trialList[,1])){
+                        IV = trialList[k, 1]
+                        Constant = trialList[k, 2]
+                        #Choices = vector() #if not already defined
+                        
+                        # Compute Utility 
+                        
+                        predictions[i,k] = # To Compute
+                    }``
+                }
+
+        .. tab-item:: MatLab
+
+            ::
+                
+                for i = 1:numel(thetaRange)
+                    for j = 1:numel(phiRange)
+                        Theta = freeParameters(i,j).theta
+                        Phi = freeParameters(i,j).phi
+                        ``for k = 1:height(trialList(:,1))
+                            IV = trialList(:,1);
+                            Constant = trialList(:,2);
+                            %Choices = []; %if not already defined
+
+                            % Compute Utility
+
+                            freeParameters(i,j).predictions(k) = %toCompute
+                        end``
+                    end
+                end
+
+        .. tab-item:: Python
+
+            ::
+
+                for i in range(len(freeParameters)):
+                    Theta = freeParameters[i, 0]
+                    Phi = freeParameters[i, 1]
+
+                    for k in range(len(trialList)):
+                        IV = trialList[k, 0]
+                        Constant = trialList[k, 1]                        
+                        #Choices = [] #if not already defined
+
+                        # Compute Utility
+                        
+                        predictions[i, k] = # To Compute
+
 
 .. dropdown:: Define the Choice Loop
 
@@ -362,3 +446,69 @@ Tutorial
 
                     # Compute Predictions
                     predictions[i, :] = # To Compute
+
+.. dropdown:: Define the Trial Loop
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+                for (i in 1:length(freeParameters[,1])){
+                    Theta = freeParameters[i,1]
+                    Phi = freeParameters[i,2]
+                    
+                    ``for (k in 1:length(trialList[,1])){
+                        I = trialList[k, 1]
+                        M = trialList[k, 2]
+                        B = trialList[k, 3]
+                        E = trialList[k, 4]
+                        Choices = seq(0, (I * M), 1)
+                        
+                        # Compute Utility 
+                        
+                        predictions[i,k] = # To Compute
+                    }``
+                }
+
+        .. tab-item:: MatLab
+
+            ::
+                
+                for i = 1:numel(thetaRange)
+                    for j = 1:numel(phiRange)
+                        Theta = freeParameters(i,j).theta
+                        Phi = freeParameters(i,j).phi
+                        ``for k = 1:height(trialList(:,1))
+                            I = trialList(:,1);
+                            M = trialList(:,2);
+                            B = trialList(:,3);
+                            E = trialList(:,4);
+                            Choices = 0:1:(I*M);
+
+                            % Compute Utility
+
+                            freeParameters(i,j).predictions(k) = %toCompute
+                        end``
+                    end
+                end
+
+        .. tab-item:: Python
+
+            ::
+
+                for i in range(len(freeParameters)):
+                    Theta = freeParameters[i, 0]
+                    Phi = freeParameters[i, 1]
+
+                    ``for k in range(len(trialList)):
+                        I = trialList[k, 0]
+                        M = trialList[k, 1]
+                        B = trialList[k, 2]
+                        E = trialList[k, 3]
+                        Choices = list(range(0, I * M + 1, 1))
+
+                        # Compute Utility
+                        
+                        predictions[i, k] = # To Compute``
