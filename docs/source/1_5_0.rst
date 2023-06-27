@@ -202,6 +202,7 @@ Seems easy enough right?
 
 .. dropdown:: Define the Trial Loop
 
+    Now, we are going to begin answering the Compute Predictions demand placed on us in the Coordinate Loop. 
 
 .. dropdown:: Define the Choice Loop
 
