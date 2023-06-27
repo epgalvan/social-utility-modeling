@@ -239,7 +239,8 @@ Seems easy enough right?
                     Theta = freeParameters[i,1]
                     Phi = freeParameters[i,2]
                     
-                    ``for (k in 1:length(trialList[,1])){
+                    #Just Added
+                    for (k in 1:length(trialList[,1])){
                         IV = trialList[k, 1]
                         Constant = trialList[k, 2]
                         #Choices = vector() #if not already defined
@@ -247,7 +248,7 @@ Seems easy enough right?
                         # Compute Utility 
                         
                         predictions[i,k] = # To Compute
-                    }``
+                    }
                 }
 
         .. tab-item:: MatLab
@@ -258,7 +259,9 @@ Seems easy enough right?
                     for j = 1:numel(phiRange)
                         Theta = freeParameters(i,j).theta
                         Phi = freeParameters(i,j).phi
-                        ``for k = 1:height(trialList(:,1))
+
+                        %Just Added
+                        for k = 1:height(trialList(:,1))
                             IV = trialList(:,1);
                             Constant = trialList(:,2);
                             %Choices = []; %if not already defined
@@ -266,7 +269,7 @@ Seems easy enough right?
                             % Compute Utility
 
                             freeParameters(i,j).predictions(k) = %toCompute
-                        end``
+                        end
                     end
                 end
 
@@ -277,7 +280,8 @@ Seems easy enough right?
                 for i in range(len(freeParameters)):
                     Theta = freeParameters[i, 0]
                     Phi = freeParameters[i, 1]
-
+                    
+                    #Just Added
                     for k in range(len(trialList)):
                         IV = trialList[k, 0]
                         Constant = trialList[k, 1]                        
@@ -459,7 +463,8 @@ Tutorial
                     Theta = freeParameters[i,1]
                     Phi = freeParameters[i,2]
                     
-                    ``for (k in 1:length(trialList[,1])){
+                    #Just Added
+                    for (k in 1:length(trialList[,1])){
                         I = trialList[k, 1]
                         M = trialList[k, 2]
                         B = trialList[k, 3]
@@ -469,7 +474,7 @@ Tutorial
                         # Compute Utility 
                         
                         predictions[i,k] = # To Compute
-                    }``
+                    }
                 }
 
         .. tab-item:: MatLab
@@ -480,7 +485,9 @@ Tutorial
                     for j = 1:numel(phiRange)
                         Theta = freeParameters(i,j).theta
                         Phi = freeParameters(i,j).phi
-                        ``for k = 1:height(trialList(:,1))
+                    
+                    %Just Added
+                        for k = 1:height(trialList(:,1))
                             I = trialList(:,1);
                             M = trialList(:,2);
                             B = trialList(:,3);
@@ -490,7 +497,7 @@ Tutorial
                             % Compute Utility
 
                             freeParameters(i,j).predictions(k) = %toCompute
-                        end``
+                        end
                     end
                 end
 
@@ -501,8 +508,9 @@ Tutorial
                 for i in range(len(freeParameters)):
                     Theta = freeParameters[i, 0]
                     Phi = freeParameters[i, 1]
-
-                    ``for k in range(len(trialList)):
+                    
+                    #Just Added
+                    for k in range(len(trialList)):
                         I = trialList[k, 0]
                         M = trialList[k, 1]
                         B = trialList[k, 2]
@@ -511,4 +519,4 @@ Tutorial
 
                         # Compute Utility
                         
-                        predictions[i, k] = # To Compute``
+                        predictions[i, k] = # To Compute
