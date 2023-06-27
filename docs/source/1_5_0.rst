@@ -102,7 +102,7 @@ Seems easy enough right? Let's get started!
                 import numpy as np
 
                 trialList = pd.DataFrame({
-                    'Independant Variables': [],
+                    'IndependantVariable': [],
                     'Constants': [],
                 })
 
@@ -205,7 +205,7 @@ Tutorial
             .. tab-item:: Python
 
                 :: 
-                    
+
                     import pandas as pd
                     import numpy as np
 
