@@ -68,6 +68,7 @@ Seems easy enough right? Let's get started!
         .. tab-item:: MatLab
 
             ::
+
                 trialList = table([], [], 'VariableNames', {'IndependantVariable', 'Constant'});
 
                 % choice
@@ -96,6 +97,7 @@ Seems easy enough right? Let's get started!
         .. tab-item:: Python
 
             :: 
+
                 import pandas as pd
                 import numpy as np
 
@@ -140,9 +142,9 @@ Tutorial
                 ::
 
                     trialList = data.frame(Investment = rep(seq(1, 10, 1), times = 8),
-                                            Multiplier = rep(c(2, 4, 4, 6), each = 20),
-                                            Believed_Multiplier = rep(4, 80),
-                                            Endowment = rep(10, 80))
+                                           Multiplier = rep(c(2, 4, 4, 6), each = 20),
+                                           Believed_Multiplier = rep(4, 80),
+                                           Endowment = rep(10, 80))
 
                     payout_maximization = function(investment, multiplier, returned){
                         return(((investment * multiplier) - returned)/(investment * multiplier))
@@ -168,8 +170,8 @@ Tutorial
             .. tab-item:: MatLab
 
                 ::
-                    trialList = table(repelem(1:10, 8)', repmat([2; 4; 4; 6], 20, 1), repmat(4, 80, 1), repmat(10, 80, 1), ...
-                        'VariableNames', {'Investment', 'Multiplier', 'Believed_Multiplier', 'Endowment'});
+
+                    trialList = table(repelem(1:10, 8)', repmat([2; 4; 4; 6], 20, 1), repmat(4, 80, 1), repmat(10, 80, 1), 'VariableNames', {'Investment', 'Multiplier', 'Believed_Multiplier', 'Endowment'});
 
                     function value = payout_maximization(investment, multiplier, returned)
                         value = ((investment * multiplier) - returned) / (investment * multiplier);
@@ -203,6 +205,7 @@ Tutorial
             .. tab-item:: Python
 
                 :: 
+                    
                     import pandas as pd
                     import numpy as np
 
