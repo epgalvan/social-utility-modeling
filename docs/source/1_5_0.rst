@@ -363,7 +363,7 @@ Seems easy enough right?
 
                 ::
                 
-                    freeParameters = struct('theta', {}, 'phi', {}, 'predictions', {}, non_specific, {}); %Just Changed This Line
+                    freeParameters = struct('theta', {}, 'phi', {}, 'predictions', {}, 'non_specific', {}); %Just Changed This Line
 
                     for i = 1:numel(thetaRange)
                         for j = 1:numel(phiRange)
@@ -376,7 +376,7 @@ Seems easy enough right?
                                 Constant = trialList{k,2};
                                 %Choices = []; %if not already defined
 
-                                % Compute Utility
+                                % Just Added
                                 Utility = zeros(size(Choices));
                                 for n = 1:height(Choices(:,1))
                                     Utility(n) = utility(parameter1 = Parameter1,
@@ -386,7 +386,7 @@ Seems easy enough right?
                                 correct_choice = find(Utility == max(Utility));
                                 if numel(correct_choice) > 1
                                     correct_choice = correct_choice(randi(numel(correct_choice)));
-                                    non_specific(i) = non_specific(i) + 1;
+                                    freeParameters(i,j).non_specific(k) = freeParameters(i,j).non_specific(k) + 1;
                                 end
                                 freeParameters(i,j).predictions(k) = Choices(correct_choice)
                             end
@@ -695,7 +695,8 @@ Tutorial
 
                 ::
                 
-                    freeParameters = struct('theta', {}, 'phi', {}, 'predictions', {}, non_specific, {});
+                    freeParameters = struct('theta', {}, 'phi', {}, 'predictions', {}, 'non_specific', {}); %Just Added this Line
+
                     for i = 1:numel(thetaRange)
                         for j = 1:numel(phiRange)
                             Theta = freeParameters(i,j).theta
@@ -708,6 +709,7 @@ Tutorial
                                 E = trialList{k,4};
                                 Choices = 0:1:(I*M);
 
+                                %Just Added
                                 Utility = zeros(size(Choices));
                                 for n = 1:height(Choices(:,1))
                                     Utility(n) = utility(theta = Theta,
@@ -719,7 +721,7 @@ Tutorial
                                 correct_choice = find(Utility == max(Utility));
                                 if numel(correct_choice) > 1
                                     correct_choice = correct_choice(randi(numel(correct_choice)));
-                                    non_specific(i) = non_specific(i) + 1;
+                                    freeParameters(i,j).non_specific(k) = freeParameters(i,j).non_specific(k) + 1;
                                 end
                                 freeParameters(i,j).predictions(k) = Choices(correct_choice)
                             end
@@ -731,7 +733,7 @@ Tutorial
 
                 ::
 
-                    non_specific = [0] * len(freeParameters)
+                    non_specific = [0] * len(freeParameters) # Just Added this Line
 
                     for i in range(len(freeParameters)):
                         Theta = freeParameters[i, 0]
@@ -744,6 +746,7 @@ Tutorial
                             E = trialList[k, 3]
                             Choices = list(range(0, I * M + 1, 1))
 
+                            #Just Added
                             Utility = [0] * len(Choices)
                             for n in range(len(Choices)):
                                 Utility[n] = utility(theta=Theta,
