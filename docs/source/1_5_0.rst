@@ -26,6 +26,8 @@ Seems easy enough right?
     In comparison with R - which is designed around long format data frames, MatLab is designed around the Matrix. 
     For beginners with access to MatLab and no particular preference about programming language, I would recommend using MatLab. 
     The idea is aligned with the above illustration: each coordinate has a cell in a structure and the contents of the cell are a structure with various fields. 
+    So, in essence, where we are essentially saying that each coordinate represents one hypothetical person this means that each cell represents a hypothetical person: 
+    we can open the structure in the cell and look at the fields which tell us something about that hypothetical person - their parameter values (together telling us their coordinates in parameter space) and the decisions that they would make.
     
     I chose to keep Python in long format just like R - Python is less concise than either MatLab or R so, to reduce the amount of code to keep track of, this was preferable. 
     Nonethless, I think it is still possible to easily switch by translating the MatLab code to Python with ChatGPT.
@@ -132,7 +134,7 @@ Seems easy enough right?
                 predictions = pd.DataFrame()
     
 
-.. dropdown:: Define the Coordinate Loop
+.. dropdown:: Define the :bdg-success:`Free Parameter` Loop
 
     .. tab-set::
 
@@ -150,7 +152,7 @@ Seems easy enough right?
 
             .. dropdown:: And what do we want to finish this loop with?
 
-                :bdg-danger:`Decisions` for all trials in our trial set. 
+                :bdg-danger:`Decisions` for all of the :bdg-primary:`Trials` in our set. 
 
             .. dropdown:: So what do we need to preallocate before this loop starts?
 
@@ -158,7 +160,7 @@ Seems easy enough right?
 
             .. dropdown:: Then, what do we need to compute within this loop?
 
-                We need to determine what the predicted :bdg-danger:`Decisions` for all trials in our trial set are for those :bdg-success:`Free Parameters`
+                We need to determine what the predicted :bdg-danger:`Decisions` for all of the :bdg-primary:`Trials` in our set are for those :bdg-success:`Free Parameters`
             
 
         .. tab-item:: R
@@ -200,35 +202,35 @@ Seems easy enough right?
                     # Compute Predictions
                     predictions[i, :] = # To Compute
 
-.. dropdown:: Define the Trial Loop
+.. dropdown:: Define the :bdg-primary:`Trial` Loop
 
     .. tab-set::
 
         .. tab-item:: Plain English
 
-            Now, we are going to begin answering the Compute Predictions demand placed on us in the Coordinate Loop. 
+            Now, we are going to begin answering the Compute Predictions demand placed on us in the :bdg-success:`Free Parameter` Loop. 
             So we're within the Coordinate Loop and thus we have our coordinate values defined - so let's say that theoretically we're adopting the perspective of one hypothetical person. 
-            What we want to answer specifically is "What should this hypothetical person do on this particular trial?".
+            What we want to answer specifically is "What should this hypothetical person do on this particular :bdg-primary:`Trial`?".
 
 
             .. dropdown:: So what are we starting with in this loop? 
 
-                We're starting with the :bdg-primary:`Independent variables`, :bdg-primary:`Constants`, and possible :bdg-danger:`Decisions` at the start of each trial. 
+                We're starting with the :bdg-primary:`Independent Variables`, :bdg-primary:`Constants`, and possible :bdg-danger:`Decisions` at the start of each :bdg-primary:`Trial`. 
 
                 We already have :bdg-success:`Free Parameters` defined in the coordinate loop. 
 
             .. dropdown:: And what do we want to finish this loop with?
 
-                The predicted :bdg-danger:`Decision` for this trial. 
+                The predicted :bdg-danger:`Decision` for this :bdg-primary:`Trial`. 
 
             .. dropdown:: So what do we need to preallocate before this loop starts?
 
                 We need to preallocate a vector for all :bdg-danger:`Decisions` for this coordinate pair. 
-                However, we already have a preallocated data structure, so for simplicity sake we'll move that within the trial loop - defining the model prediction directly on a trial-by-trial basis rather than a coordinate-by-coordinate basis. 
+                However, we already have a preallocated data structure, so for simplicity sake we'll move that within the :bdg-primary:`Trial` loop - defining the model prediction directly on a trial-by-trial basis rather than a coordinate-by-coordinate basis. 
 
             .. dropdown:: Then, what do we need to compute within this loop?
 
-                We need to compute the :bdg-secondary:`Utility` for all possible :bdg-danger:`Decisions` in this trial. 
+                We need to compute the :bdg-secondary:`Utility` for all possible :bdg-danger:`Decisions` in this :bdg-primary:`Trial`. 
                 Then, we need to save the :bdg-danger:`Decision` which results in the greatest :bdg-secondary:`Utility`.
 
         .. tab-item:: R
@@ -236,8 +238,8 @@ Seems easy enough right?
             ::
 
                 for (i in 1:length(freeParameters[,1])){
-                    Theta = freeParameters[i,1]
-                    Phi = freeParameters[i,2]
+                    Parameter1 = freeParameters[i,1]
+                    Parameter2 = freeParameters[i,2]
                     
                     #Just Added
                     for (k in 1:length(trialList[,1])){
@@ -257,13 +259,13 @@ Seems easy enough right?
                 
                 for i = 1:numel(thetaRange)
                     for j = 1:numel(phiRange)
-                        Theta = freeParameters(i,j).theta
-                        Phi = freeParameters(i,j).phi
+                        Parameter1 = freeParameters(i,j).parameter1
+                        Parameter2 = freeParameters(i,j).parameter2
 
                         %Just Added
                         for k = 1:height(trialList(:,1))
-                            IV = trialList(:,1);
-                            Constant = trialList(:,2);
+                            IV = trialList{k,1};
+                            Constant = trialList{k,2};
                             %Choices = []; %if not already defined
 
                             % Compute Utility
@@ -278,8 +280,8 @@ Seems easy enough right?
             ::
 
                 for i in range(len(freeParameters)):
-                    Theta = freeParameters[i, 0]
-                    Phi = freeParameters[i, 1]
+                    Parameter1 = freeParameters[i, 0]
+                    Parameter2 = freeParameters[i, 1]
                     
                     #Just Added
                     for k in range(len(trialList)):
@@ -292,7 +294,136 @@ Seems easy enough right?
                         predictions[i, k] = # To Compute
 
 
-.. dropdown:: Define the Choice Loop
+.. dropdown:: Define the :bdg-danger:`Decisions` Loop
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                    We're going to start our most inferior ``for`` loop which iterates over all possible :bdg-danger:`Decisions`. 
+
+                    Here, we're going to answer the Compute Utility demand placed on us in the :bdg-primary:`Trial` loop.
+
+                    .. dropdown:: So what are we starting with in this loop? 
+                        
+                        We're starting with one of the possible :bdg-success:`Decisions` at the start of each loop. 
+
+                        We already have :bdg-primary:`Independent Variables`, :bdg-primary:`Constants`, and possible :bdg-danger:`Decisions` defined at the start of the :bdg-primary:`Trial` loop and 
+
+                        :bdg-success:`Free Parameters` defined at the start of the :bdg-success:`Free Parameter` loop. 
+
+                    .. dropdown:: And what do we want to finish this loop with?
+
+                        The :bdg-secondary:`Utility` which would be derived for all :bdg-danger:`Decisions` on this :bdg-primary:`Trial`. 
+
+                    .. dropdown:: So what do we need to preallocate before this loop starts?
+
+                        A vector for :bdg-secondary:`Utility` which has the same length as all possible :bdg-danger:`Decisions`. 
+                        
+                        Also, let's remember that it's possible that multiple :bdg-danger:`Decisions` will maximize utility. 
+                        Therefore, let's make sure that our script doesn't error by potentially outputting multiple :bdg-danger:`Decisions` predictions - we'll randomly select between whichever maximizes utility. 
+                        Let's also output a vector which keeps track of the number of :bdg-primary:`Trials` where multiple :bdg-danger:`Decisions` maximize :bdg-secondary:`Utility` (i.e. our model makes non-specific predictions) for each pair of :bdg-success:`Free Parameters`. 
+                        A few of :bdg-primary:`Trials` for a few :bdg-success:`Free Parameters` is acceptable, but let's just keep an eye on it. 
+
+                    .. dropdown:: Then, what do we need to compute within this loop?
+
+                        Nothing, this is the smallest loop. We're ready to get our answer.
+            
+            .. tab-item:: R
+
+                ::
+
+                    non_specific = rep(0, length(freeParameters[,1])) # Just Added This Line
+                    
+                    for (i in 1:length(freeParameters[,1])){
+                        Parameter1 = freeParameters[i,1]
+                        Parameter2 = freeParameters[i,2]                    
+                        for (k in 1:length(trialList[,1])){
+                            IV = trialList[k, 1]
+                            Constant = trialList[k, 2]
+                            #Choices = vector() #if not already defined
+                            
+                            # Just Added
+                            Utility = vector('numeric', length(Choices))
+                            for (n in 1:length(Choices)){
+                                Utility[n] = utility(parameter1 = Parameter1,
+                                                    parameter2 = Parameter2,
+                                                    construct = constructs(IV, Constant, Choices[n]))
+                            }
+                            correct_choice = which(Utility == max(Utility))
+                            if (length(correct_choice) > 1){
+                                correct_choice = correct_choice[sample(correct_choice, 1)]
+                                non_specific[i] =+ 1
+                            }
+                            predictions[i,k] = Choices[correct_choice]
+                        }
+                    }
+                    
+            .. tab-item:: MatLab
+
+                ::
+                
+                    freeParameters = struct('theta', {}, 'phi', {}, 'predictions', {}, non_specific, {}); %Just Changed This Line
+
+                    for i = 1:numel(thetaRange)
+                        for j = 1:numel(phiRange)
+                            Parameter1 = freeParameters(i,j).parameter1
+                            Parameter2 = freeParameters(i,j).parameter2
+
+                            %Just Added
+                            for k = 1:height(trialList(:,1))
+                                IV = trialList{k,1};
+                                Constant = trialList{k,2};
+                                %Choices = []; %if not already defined
+
+                                % Compute Utility
+                                Utility = zeros(size(Choices));
+                                for n = 1:height(Choices(:,1))
+                                    Utility(n) = utility(parameter1 = Parameter1,
+                                                        parameter2 = Parameter2,
+                                                        construct = constructs(IV, Constant, Choices[n]))
+                                end
+                                correct_choice = find(Utility == max(Utility));
+                                if numel(correct_choice) > 1
+                                    correct_choice = correct_choice(randi(numel(correct_choice)));
+                                    non_specific(i) = non_specific(i) + 1;
+                                end
+                                freeParameters(i,j).predictions(k) = Choices(correct_choice)
+                            end
+                        end
+                    end
+
+                    
+            .. tab-item:: Python
+
+                ::
+
+                    non_specific = [0] * len(freeParameters) # Just Added this Line 
+
+                    for i in range(len(freeParameters)):
+                        Parameter1 = freeParameters[i, 0]
+                        Parameter2 = freeParameters[i, 1]
+                        
+                        for k in range(len(trialList)):
+                            IV = trialList[k, 0]
+                            Constant = trialList[k, 1]                        
+                            #Choices = [] #if not already defined
+
+                            #Just Added
+                            Utility = [0] * len(Choices)
+                            for n in range(len(Choices)):
+                                Utility[n] = utility(parameter1 = Parameter1,
+                                                    parameter2 = Parameter2,
+                                                    construct = constructs(IV, Constant, Choices[n]))
+                            
+                            correct_choice = [idx for idx, val in enumerate(Utility) if val == max(Utility)]
+                            if len(correct_choice) > 1:
+                                correct_choice = random.sample(correct_choice, 1)
+                                non_specific[i] += 1
+
+                            predictions[i, k] = Choices[correct_choice[0]]
+
+
 
 Tutorial
 ================
@@ -488,10 +619,10 @@ Tutorial
                     
                     %Just Added
                         for k = 1:height(trialList(:,1))
-                            I = trialList(:,1);
-                            M = trialList(:,2);
-                            B = trialList(:,3);
-                            E = trialList(:,4);
+                            I = trialList{k,1};
+                            M = trialList{k,2};
+                            B = trialList{k,3};
+                            E = trialList{k,4};
                             Choices = 0:1:(I*M);
 
                             % Compute Utility
@@ -520,3 +651,110 @@ Tutorial
                         # Compute Utility
                         
                         predictions[i, k] = # To Compute
+
+.. dropdown:: Define the :bdg-danger:`Decisions` Loop
+
+        .. tab-set::
+            
+            .. tab-item:: R
+
+                ::
+
+                    non_specific = rep(0, length(freeParameters[,1])) # Just Added This Line
+                    
+                    for (i in 1:length(freeParameters[,1])){
+                        Theta = freeParameters[i,1]
+                        Phi = freeParameters[i,2]
+                        
+                        for (k in 1:length(trialList[,1])){
+                            I = trialList[k, 1]
+                            M = trialList[k, 2]
+                            B = trialList[k, 3]
+                            E = trialList[k, 4]
+                            Choices = seq(0, (I * M), 1)
+                            
+                            # Just Added
+                            Utility = vector('numeric', length(Choices))
+                            for (n in 1:length(Choices)){
+                                Utility[n] = utility(theta = Theta,
+                                                    phi = Phi,
+                                                    guilt = guilt(I, B, Choices[n]),
+                                                    inequity = inequity(I, M, Choices[n], E,),
+                                                    payout = payout_maximization(I, M, R))
+                            }
+                            correct_choice = which(Utility == max(Utility))
+                            if (length(correct_choice) > 1){
+                                correct_choice = correct_choice[sample(correct_choice, 1)]
+                                non_specific[i] =+ 1
+                            }
+                            predictions[i,k] = Choices[correct_choice]
+                        }
+                    }
+                    
+            .. tab-item:: MatLab
+
+                ::
+                
+                    freeParameters = struct('theta', {}, 'phi', {}, 'predictions', {}, non_specific, {});
+                    for i = 1:numel(thetaRange)
+                        for j = 1:numel(phiRange)
+                            Theta = freeParameters(i,j).theta
+                            Phi = freeParameters(i,j).phi
+                            
+                            for k = 1:height(trialList(:,1))
+                                I = trialList{k,1};
+                                M = trialList{k,2};
+                                B = trialList{k,3};
+                                E = trialList{k,4};
+                                Choices = 0:1:(I*M);
+
+                                Utility = zeros(size(Choices));
+                                for n = 1:height(Choices(:,1))
+                                    Utility(n) = utility(theta = Theta,
+                                                         phi = Phi,
+                                                         guilt = guilt(I, B, Choices(n)),
+                                                         inequity = inequity(I, M, Choices(n), E,),
+                                                         payout = payout_maximization(I, M, R))
+                                end
+                                correct_choice = find(Utility == max(Utility));
+                                if numel(correct_choice) > 1
+                                    correct_choice = correct_choice(randi(numel(correct_choice)));
+                                    non_specific(i) = non_specific(i) + 1;
+                                end
+                                freeParameters(i,j).predictions(k) = Choices(correct_choice)
+                            end
+                        end
+                    end
+
+                    
+            .. tab-item:: Python
+
+                ::
+
+                    non_specific = [0] * len(freeParameters)
+
+                    for i in range(len(freeParameters)):
+                        Theta = freeParameters[i, 0]
+                        Phi = freeParameters[i, 1]
+
+                        for k in range(len(trialList)):
+                            I = trialList[k, 0]
+                            M = trialList[k, 1]
+                            B = trialList[k, 2]
+                            E = trialList[k, 3]
+                            Choices = list(range(0, I * M + 1, 1))
+
+                            Utility = [0] * len(Choices)
+                            for n in range(len(Choices)):
+                                Utility[n] = utility(theta=Theta,
+                                                    phi=Phi,
+                                                    guilt=guilt(I, B, Choices[n]),
+                                                    inequity=inequity(I, M, Choices[n], E),
+                                                    payout=payout_maximization(I, M, R))
+                            
+                            correct_choice = [idx for idx, val in enumerate(Utility) if val == max(Utility)]
+                            if len(correct_choice) > 1:
+                                correct_choice = random.sample(correct_choice, 1)
+                                non_specific[i] += 1
+
+                            predictions[i, k] = Choices[correct_choice[0]]
