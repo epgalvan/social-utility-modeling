@@ -54,7 +54,7 @@ Seems easy enough right?
 
                 4. Preallocate Model Output
 
-                * Preallocate the data storage structures for the model-predicted :bdg-danger:`Decisions` for each Trial, for each Coordinate
+                * Preallocate the data storage structures for the model-predicted :bdg-danger:`Decisions` for each Trial, for each Coordinate (i.e. pair of :bdg-success:`Free Parameters`)
 
         .. tab-item:: R
 
@@ -209,7 +209,7 @@ Seems easy enough right?
         .. tab-item:: Plain English
 
             Now, we are going to begin answering the Compute Predictions demand placed on us in the :bdg-success:`Free Parameter` Loop. 
-            So we're within the Coordinate Loop and thus we have our coordinate values defined - so let's say that theoretically we're adopting the perspective of one hypothetical person. 
+            So we're within the :bdg-success:`Free Parameter` Loop and thus we have our :bdg-success:`Free Parameter` values defined - so let's say that theoretically we're adopting the perspective of one hypothetical person. 
             What we want to answer specifically is "What should this hypothetical person do on this particular :bdg-primary:`Trial`?".
 
 
@@ -217,7 +217,7 @@ Seems easy enough right?
 
                 We're starting with the :bdg-primary:`Independent Variables`, :bdg-primary:`Constants`, and possible :bdg-danger:`Decisions` at the start of each :bdg-primary:`Trial`. 
 
-                We already have :bdg-success:`Free Parameters` defined in the coordinate loop. 
+                We already have :bdg-success:`Free Parameters` defined. 
 
             .. dropdown:: And what do we want to finish this loop with?
 
@@ -538,7 +538,7 @@ Tutorial
 
                     predictions = pd.DataFrame()
 
-.. dropdown:: Define the Coordinate Loop
+.. dropdown:: Define the :bdg-success:`Free Parameter` Loop
 
     .. tab-set::
 
@@ -581,7 +581,7 @@ Tutorial
                     # Compute Predictions
                     predictions[i, :] = # To Compute
 
-.. dropdown:: Define the Trial Loop
+.. dropdown:: Define the :bdg-primary:`Trial` Loop
 
     .. tab-set::
 
@@ -651,7 +651,7 @@ Tutorial
                         
                         predictions[i, k] = # To Compute
 
-.. dropdown:: Define the :bdg-danger:`Decisions` Loop
+.. dropdown:: Define the :bdg-danger:`Decision` Loop
 
         .. tab-set::
             

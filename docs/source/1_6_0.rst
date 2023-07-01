@@ -12,19 +12,19 @@ Compare Recovered Parameters
 Goals During this Stage
 ================
 
-To recover :bdg-success:`Free Parameters` from our simulated data and to compare the recovered parameters to our true free parameters
+To recover :bdg-success:`Free Parameters` from our simulated data and to compare the recovered :bdg-success:`Free Parameters` to our true :bdg-success:`Free Parameters`
 
 .. dropdown:: The Logic of Recovering :bdg-success:`Free Parameters`
 
     In essence, simulating data is a deduction - we know what the data generation process is and we know what the inputs to the data generation process are, so we deduce what data would be generated. 
     However, participants obviously don't walk into your laboratory with their free parameter values plastered onto their forehead so how do we get to these? 
     The intuition of recovering free parameters is that of drawing an inference. 
+
     Here, we will illustrate this logic using our example of utility theory; we can start by reiterating the central premise of utility theory which is that people are thought to maximize their expected :bdg-secondary:`Utility`. 
-    Therefore, we would say that, if we know an individual subject's :bdg-danger:`Decisions`, we can calculate the :bdg-secondary:`Utility` that they would have experienced if that subject's true :bdg-success:`Free Parameters` were any of the possible coordinates in our parameter space ('observed :bdg-secondary:`Utility`'). 
-    From there, we can compare the expected :bdg-secondary:`Utility` on each :bdg-primary:`Trial` for each of those :bdg-success:`Free Parameters` pairs to the observed utility on each :bdg-primary:`Trial` for each of those :bdg-success:`Free Parameters`. 
-    Thus, recovering :bdg-success:`Free Parameters` is the process of drawing an inference - given that we know the outcome of the data generation process for each trial and the experimental parameters for each trial, we can infer about the unknowns - in this case the :bdg-success:`Free Parameters` which produced these :bdg-danger:`Decisions`. 
-    
-    We will infer that the :bdg-success:`Free Parameters` which generated the observed :bdg-danger:`Decisions` is the :bdg-success:`Free Parameter` pair where the difference between observed :bdg-secondary:`Utility` and expected :bdg-secondary:`Utility` are the smallest.
+    Therefore, we would say that, if we know an individual subject's :bdg-danger:`Decisions`, we just take some random :bdg-success:`Free Parameters` and calculate the :bdg-secondary:`Utility` that they would have experienced if those were their true :bdg-success:`Free Parameter` values. 
+    Obviously, we cannot make an inference with only one guess, but if we make several guesses we can identify the pair of :bdg-success:`Free Parameters` which minimize the difference between observed-and-expected :bdg-secondary:`Utility` (meaning that the person maximized their expected :bdg-secondary:`Utility`). 
+    This pair of :bdg-success:`Free Parameters` that we identify is referred to as the *recovered* :bdg-success:`Free Parameters`.
+    Thus, recovering :bdg-success:`Free Parameters` is the process of drawing an inference - given that we know the outcome of the data generation process (:bdg-danger:`Decisions`) and the :bdg-primary:`Experimental Variables` for each trial, we can infer about the unknowns - in this case the :bdg-success:`Free Parameters` which produced these :bdg-danger:`Decisions`. 
 
 .. dropdown:: Why Recover :bdg-success:`Free Parameters` for *Simulated* Data?
 
@@ -68,7 +68,7 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
 
     Objective Functions take in arguments and provide, as an output, something that tells us about *progress* towards some objective. 
     That's a bit abstract but let's remember what we just learned: OLS and MLE (or MNLLE as we specified) output values. 
-    Here lower error means better model fit. 
+    Here lower error means better parameter fit. 
     Thus, objective function would output error - progress towards the objective would consititute decreasing error. 
     Let's write an objective function which returns error, given observed :bdg-danger:`Decisions` and proposed :bdg-success:`Free Parameters`
 
@@ -180,9 +180,9 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
 
 
 
-.. dropdown:: About Optimizers
+.. dropdown:: Optimizers
 
-    Optimizers provide optimal solutions for certain functions. 
+    Optimizers provide optimal solutions for objective functions. 
     Thus, they take :bdg-danger:`Decisions` as fixed inputs and they provide optimal values for :bdg-success:`Free Parameters` - optimal in the sense that they *best* achieve a specified objective. 
     Here, that objective would be to either minimize or maximize the output of the Objective Function we just created. 
     Thus, the :bdg-success:`Free Parameters` supplied by our optimizer produce the predicted :bdg-danger:`Decisions` whose Expected :bdg-secondary:`Utility` is least different from the :bdg-secondary:`Utility` produced from the Observed :bdg-danger:`Decisions`.
@@ -297,12 +297,6 @@ Tutorial
 ================
 
 .. dropdown:: Objective Functions
-
-    Objective Functions take in arguments and provide, as an output, something that tells us about *progress* towards some objective. 
-    That's a bit abstract but let's remember what we just learned: OLS and MLE (or MNLLE as we specified) output values. 
-    Here lower error means better model fit. 
-    Thus, objective function would output error - progress towards the objective would consititute decreasing error. 
-    Let's write an objective function which returns error, given observed :bdg-danger:`Decisions` and proposed :bdg-success:`Free Parameters`
 
     .. tab-set::
 
@@ -490,6 +484,7 @@ Tutorial
                     theta_recovered[i] = result.x[0]
                     phi_recovered[i] = result.x[1]
 
+.. dropdown:: Verifying Parameter Recovery Process
 
     .. tab-set::
         
