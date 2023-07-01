@@ -27,8 +27,8 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
     Thus, recovering :bdg-success:`Free Parameters` is the process of drawing an inference - given that we know the outcome of the data generation process (:bdg-danger:`Decisions`) and the :bdg-primary:`Experimental Variables` for each trial, we can infer about the unknowns - in this case the :bdg-success:`Free Parameters` which produced these :bdg-danger:`Decisions`. 
 
 .. dropdown:: Why Recover :bdg-success:`Free Parameters` for *Simulated* Data?
-
-	So now we know what we're generally doing with computational modeling, but why are we talking about recovering :bdg-success:`Free Parameters` now? 
+    
+    So now we know what we're generally trying to achieve with computational modeling, but why are we talking about recovering :bdg-success:`Free Parameters` now? 
     After all, we haven't collected any data at this stage - the only data we have is the data we've simulated and why would we want to recover :bdg-success:`Free Parameters` we already know in the first place? 
     This seems rather silly at first glance, but recovering :bdg-success:`Free Parameters` from simulated data is the most important thing we will do at this stage of computational modeling. 
     Our model obviously has made some specific predictions in terms of behavior: for each pair of :bdg-success:`Free Parameters`, we have a single predicted :bdg-danger:`Decision` for each :bdg-primary:`Trial`. 
@@ -288,7 +288,7 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
     This either means one of two things: 1) we need to ensure that our experimental design enables us to behaviorally distinguish between the psychological differences we are interested in (a logical place to start would be the task itself, our :bdg-primary:`Trial` distribution, and the :bdg-danger:`Decision` choices) or 2) we need to restructure our equation so that the predictions made by the model reflect individual differences captured in our :bdg-success:`Free Parameters`. 
     
     On the other hand, if the recovered :bdg-success:`Free Parameters` are unreliable only beyond a parameter value (i.e. for a :bdg-success:`Free Parameter` ranging from 0 to 1, past 0.5 the :bdg-success:`Free Parameters` we recover seem to be arbitrary and range from 0.5 to 1), we would determine that we should limit the range of :bdg-success:`Free Parameters` for that range of values (in this example, instead of ranging from 0 to 1, the :bdg-success:`Free Parameter` should only range from 0 to 0.5). 
-	Importantly, the converse would not be true - if meaningful psychological differences extended beyond the defined range of values for a :bdg-success:`Free Parameter`, we would not be able to determine that we should extend the range of our :bdg-success:`Free Parameters` at this stage. 
+    Importantly, the converse would not be true - if meaningful psychological differences extended beyond the defined range of values for a :bdg-success:`Free Parameter`, we would not be able to determine that we should extend the range of our :bdg-success:`Free Parameters` at this stage. 
     Thus, when in doubt, we should simulate over a broader range than might be necessary so that we can be confident that we are capturing the true data generation process, not only a small portion of it. 
     If you fail to do this, you can still catch your mistake during data analysis, but the computational power to estimate :bdg-success:`Free Parameters` for your sample will be much greater, the time and effort involved to correct this error will be much greater, and you will have deviated from your preregistration -all of which you can avoided by simply being punctual. 
     This, again, is a theme: putting in a little extra time and effort will save you later!
@@ -299,14 +299,6 @@ Tutorial
 .. dropdown:: Objective Functions
 
     .. tab-set::
-
-        .. tab-item:: Plain English
-
-            1. Take in observed :bdg-danger:`Decisions` as some proposed :bdg-success:`Free Parameters` as inputs
-            2. Compute :bdg-secondary:`Utility` for each possible :bdg-danger:`Decision` for each :bdg-primary:`Trial`
-            3. Select the highest possible :bdg-secondary:`Utility` value for each :bdg-primary:`Trial` as the Expected :bdg-secondary:`Utility`
-            4. Compute the Observed :bdg-secondary:`Utility` for each observed :bdg-danger:`Decision`
-            5. Return the error between Expected :bdg-secondary:`Utility` and Observed :bdg-secondary:`Utility`
 
         .. tab-item:: R
 
@@ -532,7 +524,7 @@ Tutorial
                     :align: center
 
                 Making the distance between true and recovered :bdg-success-line:`Phi` values decrease linearly as a function of :bdg-success-line:`Theta` provides an theoretically and practically correct solution to our problem. 
-                Thus, we are all ready to move on since we have determined that our model makes distinct predictions and we can reliably and validly recover :bdg-success:`Free Parameters` from :bdg-danger-line:`Decisions`.
+                Thus, we are all ready to move on since we have determined that our model makes distinct predictions and we can reliably and validly recover :bdg-success:`Free Parameters` from :bdg-danger:`Decisions`.
         
         .. tab-item:: R
 
