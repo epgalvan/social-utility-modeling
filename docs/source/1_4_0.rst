@@ -283,24 +283,26 @@ Tutorial
                         
                         Remember that there is always often tradeoff between specificty, parsimony, and theoretical correctness. 
 
+                    We can fix this by changing the denominator from :bdg-primary-line:`Investment` × :bdg-primary-line:`Believed Multiplier` to :bdg-primary-line:`Investment` × :bdg-primary-line:`Multiplier` - guilt can now only range from 0 to 0.25
+
                 Thus with this representation of the norm, then the extent to which it was violated is:
 
-                :bdg-secondary-line:`Guilt` = (((( :bdg-primary-line:`Investment` × :bdg-primary-line:`Believed Multiplier` )/2) - :bdg-danger-line:`Returned` ) /( :bdg-primary-line:`Investment` × :bdg-primary-line:`Believed Multiplier` )/( :bdg-primary-line:`Investment` × :bdg-primary-line:`Believed Multiplier` ))²
+                :bdg-secondary-line:`Guilt` = (((( :bdg-primary-line:`Investment` × :bdg-primary-line:`Believed Multiplier` )/2) - :bdg-danger-line:`Returned` ) /( :bdg-primary-line:`Investment` × :bdg-primary-line:`Multiplier` ))²
 
             .. tab-item:: R
 
                 ::
 
-                    guilt = function(investment, believed_multiplier, returned){
-                        return(((investment * believed_multiplier)/2 - returned)/(investment * believed_multiplier))
+                    guilt = function(investment, believed_multiplier, returned, multiplier){
+                        return((((investment * believed_multiplier)/2 - returned)/(investment * multiplier))**2)
                     }
 
             .. tab-item:: MatLab
 
                 ::
 
-                    function value = guilt(investment, believed_multiplier, returned)
-                        value = ((investment * believed_multiplier)/2 - returned) / (investment * believed_multiplier);
+                    function value = guilt(investment, believed_multiplier, returned, multiplier)
+                        value = (((investment * believed_multiplier)/2 - returned) / (investment * multiplier))^2;
                     end
 
 
@@ -308,8 +310,8 @@ Tutorial
 
                 :: 
                     
-                    def guilt(investment, believed_multiplier, returned):
-                        return ((investment * believed_multiplier)/2 - returned) / (investment * believed_multiplier)
+                    def guilt(investment, believed_multiplier, returned, multiplier):
+                        return ((((investment * believed_multiplier)/2 - returned) / (investment * multiplier))**2)
 
 .. dropdown:: Identify which :bdg-success:`free parameters` are relevant for each :bdg-secondary:`construct value` in determining :bdg-warning:`Utility`
 

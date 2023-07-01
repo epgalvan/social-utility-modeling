@@ -294,7 +294,7 @@ Seems easy enough right?
                         predictions[i, k] = # To Compute
 
 
-.. dropdown:: Define the :bdg-danger:`Decisions` Loop
+.. dropdown:: Define the :bdg-danger:`Decision` Loop
 
         .. tab-set::
 
@@ -427,7 +427,6 @@ Seems easy enough right?
 
 Tutorial
 ================
-
 .. dropdown:: Preallocating, Defining Functions, Defining Trial List, and Defining Parameters
 
         .. tab-set::
@@ -436,21 +435,21 @@ Tutorial
 
                 ::
 
-                    trialList = data.frame(Investment = rep(seq(1, 10, 1), times = 8),
-                                           Multiplier = rep(c(2, 4, 4, 6), each = 20),
-                                           Believed_Multiplier = rep(4, 80),
-                                           Endowment = rep(10, 80))
+                    trialList = data.frame(Investment = rep(seq(1, 10, 1), times = 6),
+                                           Multiplier = rep(c(2, 4, 6), each = 20),
+                                           Believed_Multiplier = rep(4, 60),
+                                           Endowment = rep(10, 60))
 
                     payout_maximization = function(investment, multiplier, returned){
                         return(((investment * multiplier) - returned)/(investment * multiplier))
                     }
 
                     inequity = function(investment, multiplier, returned, endowment){
-                        return(((investment * multiplier - returned)/(investment * multiplier - endowment - investment))**2)
+                        return((0.5-((investment * multiplier - returned)/(investment * multiplier + endowment - investment)))**2)
                     }
 
-                    guilt = function(investment, believed_multiplier, returned){
-                        return(((investment * believed_multiplier)/2 - returned)/(investment * believed_multiplier))
+                    guilt = function(investment, believed_multiplier, returned, multiplier){
+                        return((((investment * believed_multiplier)/2 - returned)/(investment * multiplier))**2)
                     }
 
                     utility = function(theta, phi, guilt, inequity, payout){
@@ -473,11 +472,11 @@ Tutorial
                     end
 
                     function value = inequity(investment, multiplier, returned, endowment)
-                        value = ((investment * multiplier - returned)/(investment * multiplier - endowment - investment))^2;
+                        value = ((investment * multiplier - returned)/(investment * multiplier + endowment - investment))^2;
                     end
 
-                    function value = guilt(investment, believed_multiplier, returned)
-                        value = ((investment * believed_multiplier)/2 - returned) / (investment * believed_multiplier);
+                    function value = guilt(investment, believed_multiplier, returned, multiplier)
+                        value = ((investment * believed_multiplier)/2 - returned) / (investment * multiplier);
                     end
 
                     function value = utility(theta, phi, guilt, inequity, payout)
@@ -504,10 +503,10 @@ Tutorial
                     import pandas as pd
                     import numpy as np
 
-                    Investment = np.repeat(np.arange(1, 11), repeats=8)
-                    Multiplier = np.repeat([2, 4, 4, 6], repeats=20)
-                    Believed_Multiplier = np.repeat(4, 80)
-                    Endowment = np.repeat(10, 80)
+                    Investment = np.repeat(np.arange(1, 11), repeats=6)
+                    Multiplier = np.repeat([2, 4, 6], repeats=20)
+                    Believed_Multiplier = np.repeat(4, 60)
+                    Endowment = np.repeat(10, 60)
 
                     trialList = pd.DataFrame({
                         'Investment': Investment,
@@ -520,10 +519,10 @@ Tutorial
                         return ((investment * multiplier - returned) / (investment * multiplier))
                         
                     def inequity(investment, multiplier, returned, endowment):
-                        return ((investment * multiplier - returned) / (investment * multiplier - endowment - investment)) ** 2
+                        return ((investment * multiplier - returned) / (investment * multiplier + endowment - investment)) ** 2
                         
-                    def guilt(investment, believed_multiplier, returned):
-                        return ((investment * believed_multiplier / 2 - returned) / (investment * believed_multiplier))
+                    def guilt(investment, believed_multiplier, returned, multiplier):
+                        return ((investment * believed_multiplier / 2 - returned) / (investment * multiplier))
 
                     def utility(theta, phi, guilt, inequity, payout){
                         return(theta*payout + (1-theta)*min(guilt + phi, inequity - phi))
@@ -679,7 +678,7 @@ Tutorial
                                 Utility[n] = utility(theta = Theta,
                                                     phi = Phi,
                                                     guilt = guilt(I, B, Choices[n]),
-                                                    inequity = inequity(I, M, Choices[n], E,),
+                                                    inequity = inequity(I, M, Choices[n], E),
                                                     payout = payout_maximization(I, M, R))
                             }
                             correct_choice = which(Utility == max(Utility))
@@ -715,7 +714,7 @@ Tutorial
                                     Utility(n) = utility(theta = Theta,
                                                          phi = Phi,
                                                          guilt = guilt(I, B, Choices(n)),
-                                                         inequity = inequity(I, M, Choices(n), E,),
+                                                         inequity = inequity(I, M, Choices(n), E),
                                                          payout = payout_maximization(I, M, R))
                                 end
                                 correct_choice = find(Utility == max(Utility));

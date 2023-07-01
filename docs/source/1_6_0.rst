@@ -12,5 +12,583 @@ Compare Recovered Parameters
 Goals During this Stage
 ================
 
+To recover :bdg-success:`Free Parameters` from our simulated data and to compare the recovered parameters to our true free parameters
+
+.. dropdown:: The Logic of Recovering :bdg-success:`Free Parameters`
+
+    In essence, simulating data is a deduction - we know what the data generation process is and we know what the inputs to the data generation process are, so we deduce what data would be generated. 
+    However, participants obviously don't walk into your laboratory with their free parameter values plastered onto their forehead so how do we get to these? 
+    The intuition of recovering free parameters is that of drawing an inference. 
+    Here, we will illustrate this logic using our example of utility theory; we can start by reiterating the central premise of utility theory which is that people are thought to maximize their expected :bdg-secondary:`Utility`. 
+    Therefore, we would say that, if we know an individual subject's :bdg-danger:`Decisions`, we can calculate the :bdg-secondary:`Utility` that they would have experienced if that subject's true :bdg-success:`Free Parameters` were any of the possible coordinates in our parameter space ('observed :bdg-secondary:`Utility`'). 
+    From there, we can compare the expected :bdg-secondary:`Utility` on each :bdg-primary:`Trial` for each of those :bdg-success:`Free Parameters` pairs to the observed utility on each :bdg-primary:`Trial` for each of those :bdg-success:`Free Parameters`. 
+    Thus, recovering :bdg-success:`Free Parameters` is the process of drawing an inference - given that we know the outcome of the data generation process for each trial and the experimental parameters for each trial, we can infer about the unknowns - in this case the :bdg-success:`Free Parameters` which produced these :bdg-danger:`Decisions`. 
+    
+    We will infer that the :bdg-success:`Free Parameters` which generated the observed :bdg-danger:`Decisions` is the :bdg-success:`Free Parameter` pair where the difference between observed :bdg-secondary:`Utility` and expected :bdg-secondary:`Utility` are the smallest.
+
+.. dropdown:: Why Recover :bdg-success:`Free Parameters` for *Simulated* Data?
+
+	So now we know what we're generally doing with computational modeling, but why are we talking about recovering :bdg-success:`Free Parameters` now? 
+    After all, we haven't collected any data at this stage - the only data we have is the data we've simulated and why would we want to recover :bdg-success:`Free Parameters` we already know in the first place? 
+    This seems rather silly at first glance, but recovering :bdg-success:`Free Parameters` from simulated data is the most important thing we will do at this stage of computational modeling. 
+    Our model obviously has made some specific predictions in terms of behavior: for each pair of :bdg-success:`Free Parameters`, we have a single predicted :bdg-danger:`Decision` for each :bdg-primary:`Trial`. 
+    However, our ability to draw an inference about :bdg-success:`Free Parameters` relies on the fact that :bdg-danger:`Decisions` predicted by the model can be reliably 'mapped onto' the true :bdg-success:`Free Parameters` values. 
+
+    If the :bdg-success:`Free Parameters` we recover from the the predicted :bdg-danger:`Decisions` are similar enough to the :bdg-success:`Free Parameters` which created the data, we can be confident that the :bdg-success:`Free Parameters` we recover from subjects' :bdg-danger:`Decisions` will be useful estimates of their preferences in this task. 
+
+.. dropdown:: Defining Error Between Expected :bdg-secondary:`Utility` and Observed :bdg-secondary:`Utility`. 
+
+    So how do we recover :bdg-success:`Free Parameters` from :bdg-danger:`Decisions`? 
+    In theory, we've already answered that: we're going to take the :bdg-success:`Free Parameters` which minimize the error between expected :bdg-secondary:`Utility` and observed :bdg-secondary:`Utility`. 
+    2 common ways of defining this error are Maximum Likelihood Estimation and Ordinary Least Squares.
+    Here's are some copy-and-pasted explanations from ChatGPT which I found to be concise and helpful.
+
+    .. dropdown:: Maximum Likelihood Estimation
+
+        ``Maximum Likelihood Estimation (MLE) is typically used when you have a parametric statistical model and you want to estimate the parameters that maximize the likelihood of the observed data given the model. 
+        MLE is often used in models where the error terms are assumed to follow a specific distribution, such as the normal distribution. 
+        MLE provides estimates that are asymptotically efficient and consistent.``
+
+        .. Note::
+
+            Maximum Likelihood Estimation is a bit of a misnomer in this instance: although Likelihood is sometimes used to estimate values, here we don't consider *Likelihood* but *Negative Log Likelihood*. 
+            Thus, for our purposes MLE refers to Minimum Negative Log Likelihood Estimation (MNLLE). 
+
+    .. dropdown:: Ordinary Least Squares
+
+        ``Ordinary Least Squares (OLS) is commonly used for linear regression models where the goal is to minimize the sum of squared residuals between the observed data and the predicted values. 
+        OLS assumes that the errors are normally distributed, and it provides estimates that are unbiased and have the minimum variance among linear unbiased estimators. 
+        OLS is computationally efficient and easy to interpret.``
+
+    We're going to use OLS since that it what they used in the paper, though it should be noted that the objective function that I will call will have an argument to choose between the two. 
+    These will be based on a normal distribution - the same assumption as is made by OLS. 
+    Predictably, the choice of MLE versus OLS has no bearing on the results.
+
+.. dropdown:: Objective Functions
+
+    Objective Functions take in arguments and provide, as an output, something that tells us about *progress* towards some objective. 
+    That's a bit abstract but let's remember what we just learned: OLS and MLE (or MNLLE as we specified) output values. 
+    Here lower error means better model fit. 
+    Thus, objective function would output error - progress towards the objective would consititute decreasing error. 
+    Let's write an objective function which returns error, given observed :bdg-danger:`Decisions` and proposed :bdg-success:`Free Parameters`
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            1. Take in observed :bdg-danger:`Decisions` as some proposed :bdg-success:`Free Parameters` as inputs
+            2. Compute :bdg-secondary:`Utility` for each possible :bdg-danger:`Decision` for each :bdg-primary:`Trial`
+            3. Select the highest possible :bdg-secondary:`Utility` value for each :bdg-primary:`Trial` as the Expected :bdg-secondary:`Utility`
+            4. Compute the Observed :bdg-secondary:`Utility` for each observed :bdg-danger:`Decision`
+            5. Return the error between Expected :bdg-secondary:`Utility` and Observed :bdg-secondary:`Utility`
+
+        .. tab-item:: R
+
+            ::
+
+                obj_function = function(params, decisions, method = "OLS") {
+                    Parameter1 = params[1]
+                    Parameter2 = params[2]
+                    
+                    predicted_utility = vector('numeric', length(trialList[,1]))
+                    chosen = decisions + 1
+                    for (k in 1:length(trialList[,1])){
+                        IV = trialList[k, 1]
+                        Constant = trialList[k, 2]
+                        Choices = seq(0, (I * M), 1)
+                        
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                        Utility[n] = utility(Parameter1, Parameter2, constructs(IV, Constant, Choices[n]))
+                        }
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[chosen[k]]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                }
+
+        .. tab-item:: MatLab
+
+            ::
+
+                function obj_value = obj_function(params, decisions, method)
+                    if nargin < 3
+                        method = 'OLS';
+                    end
+                    Parameter1 = params(1);
+                    Parameter2 = params(2);
+                    
+                    predicted_utility = zeros(length(trialList), 1);
+                    chosen = decisions + 1;
+                    for k = 1:length(trialList)
+                        IV = trialList(k, 1);
+                        Constant = trialList(k, 2);
+                        Choices = 0:(I * M);
+                        
+                        Utility = zeros(length(Choices), 1);
+                        for n = 1:length(Choices)
+                            Utility(n) = utility(Parameter1, Parameter2, constructs(IV, Constant, Choices(n)));
+                        end
+                        predicted_utility(k) = max(Utility);
+                        observed_utility(k) = Utility(chosen(k));
+                    end
+                    
+                    if strcmp(method, 'OLS')
+                        obj_value = sum((predicted_utility - observed_utility).^2);
+                    elseif strcmp(method, 'MLE')
+                        obj_value = -1 * sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                    end
+                end
+
+
+        .. tab-item:: Python
+
+            ::
+                
+                from scipy.stats import norm
+
+                def obj_function(params, decisions, method="OLS"):
+                    Parameter1 = params[0]
+                    Parameter2 = params[1]
+
+                    predicted_utility = np.zeros(len(trialList))
+                    chosen = decisions + 1
+
+                    for k in range(len(trialList)):
+                        IV = trialList[k, 0]
+                        Constant = trialList[k, 1]
+                        Choices = np.arange(0, (I * M) + 1, 1)
+
+                        Utility = np.zeros(len(Choices))
+                        for n in range(len(Choices)):
+                            Utility[n] = utility(Parameter1, Parameter2, constructs(IV, Constant, Choices[n]))
+
+                        predicted_utility[k] = np.max(Utility)
+                        observed_utility[k] = Utility[chosen[k]]
+
+                    if method == "OLS":
+                        return np.sum((predicted_utility - observed_utility) ** 2)
+                    elif method == "MLE":
+                        sd = 1 
+                        log_likelihood = np.sum(norm.logpdf(observed_utility, loc=predicted_utility, scale=sd))
+                        return -log_likelihood
+                        
+
+
+
+.. dropdown:: About Optimizers
+
+    Optimizers provide optimal solutions for certain functions. 
+    Thus, they take :bdg-danger:`Decisions` as fixed inputs and they provide optimal values for :bdg-success:`Free Parameters` - optimal in the sense that they *best* achieve a specified objective. 
+    Here, that objective would be to either minimize or maximize the output of the Objective Function we just created. 
+    Thus, the :bdg-success:`Free Parameters` supplied by our optimizer produce the predicted :bdg-danger:`Decisions` whose Expected :bdg-secondary:`Utility` is least different from the :bdg-secondary:`Utility` produced from the Observed :bdg-danger:`Decisions`.
+    Importantly, we are optimizing on :bdg-secondary:`Utility` which is psychological rather than :bdg-danger:`Decisions` which is behavioral - to fit on :bdg-danger:`Decisions` would be a logical fallacy. 
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            Here, you will provide the Upper and Lower Boundaries for your :bdg-success:`Free Parameters` if applicable, as well as the starting values for each of the :bdg-success:`Free Parameters`. 
+            You will also need to preallocate vectors for your recovered free parameters. 
+
+            .. Note::
+
+                You also may wish to subset your :bdg-success:`Free Parameters`, as to avoid long waiting times. 
+                Often, around the order of 100 recovered points will be more than sufficient - it is preferable to doing our full simulated data set which will take around 2-3 hours. 
+                As a rule of thumb, 10 to the number of :bdg-success:`Free Parameters` (here 2) is a good resolution. 
+                Here, parameter1_true and parameter2_true each are a subset of :bdg-success:`Free Parameters`.
+
+            Then, we want to loop around each pair of :bdg-success:`Free Parameters` we are recovering values for and we are going to hand our optimizer the predicted :bdg-danger:`Decisions` for those :bdg-success:`Free Parameters`. 
+            Then we want to save the :bdg-success:`Free Parameters` recovered by that optimizer to parameter1_recovered and parameter2_recovered - these are the values that our optimizer thinks determined the predicted :bdg-danger:`Decisions`.
+
+        .. tab-item:: R
+
+            ::
+
+                library(pracma)
+
+                initial_params = #something
+                lower_bounds = #something
+                upper_bounds = #something
+                parameter1_recovered = #something
+                parameter2_recovered = #something
+                parameter1_true = #something
+                parameter2_true = #something
+
+                for (i in 1:length(parameter1_true)) {
+                    this_idx = which(parameter1_true[i] == freeParameters$Parameter1 & parameter2_true[i] == freeParameters$Parameter2)                
+                    result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                        lb = lower_bounds, ub = upper_bounds,
+                                        decisions = as.numeric(predictions[this_idx,]))
+                    
+                    parameter1_recovered[i] = result$par[1]
+                    parameter2_recovered[i] = result$par[2]
+                }
+
+        .. tab-item:: MatLab
+
+            ::
+
+                initial_params = %something;
+                lower_bounds = %something;
+                upper_bounds = %something;
+                parameter1_recovered = %something;
+                parameter2_recovered = %something;
+                parameter1_true = %something;
+                parameter2_true = %something;
+
+                k = 1;
+                for i = 1:11
+                    this_i = ((i - 1) * 10) + 1
+                    for j = 1:11
+                        this_j = ((j - 1) * 10) + 1
+                        options = optimoptions('fmincon', 'Display', 'off');
+                        result = fmincon(@(params) obj_function(params, freeParameters(this_i,this_j).predictions, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+                        
+                        parameter1_recovered(k) = result(1);
+                        parameter2_recovered(k) = result(2);
+                        k = k + 1;
+                    end
+                end
+
+        .. tab-item:: Python
+
+            ::
+
+                from scipy.optimize import minimize
+
+                initial_params = #something
+                lower_bounds = #something
+                upper_bounds = #something
+                parameter1_recovered = #something
+                parameter2_recovered = #something
+                parameter1_true = #something
+                parameter2_true = #something
+
+                for i in range(0, len(parameter1_true)):
+                    this_idx = np.where((freeParameters['Parameter1'] == parameter1_true[i]) & (freeParameters['Parameter2'] == parameter2_true[i]))[0]
+                    result = minimize(obj_function, x0=initial_params, bounds=list(zip(lower_bounds, upper_bounds)), args=(np.array(predictions[this_idx,])))
+                    
+                    parameter1_recovered[i] = result.x[0]
+                    parameter2_recovered[i] = result.x[1]
+                
+.. dropdown:: Verifying Parameter Recovery Process
+
+    I recommend using graphs to visualize the error in your parameter recovery process. 
+    See the example below. 
+
+.. dropdown:: Fixing Nonspecific Models
+
+    More than likely, we shouldn't see anything that surprises us because we've reasoned through what our model should predict but for now let's say that we have some work to do to improve our model before data collection. 
+    What that work which our model needs depends on the nature of our results - if all of the recovered parameters are equally unreliable, our data generation process is fundamentally flawed. 
+    This either means one of two things: 1) we need to ensure that our experimental design enables us to behaviorally distinguish between the psychological differences we are interested in (a logical place to start would be the task itself, our :bdg-primary:`Trial` distribution, and the :bdg-danger:`Decision` choices) or 2) we need to restructure our equation so that the predictions made by the model reflect individual differences captured in our :bdg-success:`Free Parameters`. 
+    
+    On the other hand, if the recovered :bdg-success:`Free Parameters` are unreliable only beyond a parameter value (i.e. for a :bdg-success:`Free Parameter` ranging from 0 to 1, past 0.5 the :bdg-success:`Free Parameters` we recover seem to be arbitrary and range from 0.5 to 1), we would determine that we should limit the range of :bdg-success:`Free Parameters` for that range of values (in this example, instead of ranging from 0 to 1, the :bdg-success:`Free Parameter` should only range from 0 to 0.5). 
+	Importantly, the converse would not be true - if meaningful psychological differences extended beyond the defined range of values for a :bdg-success:`Free Parameter`, we would not be able to determine that we should extend the range of our :bdg-success:`Free Parameters` at this stage. 
+    Thus, when in doubt, we should simulate over a broader range than might be necessary so that we can be confident that we are capturing the true data generation process, not only a small portion of it. 
+    If you fail to do this, you can still catch your mistake during data analysis, but the computational power to estimate :bdg-success:`Free Parameters` for your sample will be much greater, the time and effort involved to correct this error will be much greater, and you will have deviated from your preregistration -all of which you can avoided by simply being punctual. 
+    This, again, is a theme: putting in a little extra time and effort will save you later!
+
 Tutorial
 ================
+
+.. dropdown:: Objective Functions
+
+    Objective Functions take in arguments and provide, as an output, something that tells us about *progress* towards some objective. 
+    That's a bit abstract but let's remember what we just learned: OLS and MLE (or MNLLE as we specified) output values. 
+    Here lower error means better model fit. 
+    Thus, objective function would output error - progress towards the objective would consititute decreasing error. 
+    Let's write an objective function which returns error, given observed :bdg-danger:`Decisions` and proposed :bdg-success:`Free Parameters`
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            1. Take in observed :bdg-danger:`Decisions` as some proposed :bdg-success:`Free Parameters` as inputs
+            2. Compute :bdg-secondary:`Utility` for each possible :bdg-danger:`Decision` for each :bdg-primary:`Trial`
+            3. Select the highest possible :bdg-secondary:`Utility` value for each :bdg-primary:`Trial` as the Expected :bdg-secondary:`Utility`
+            4. Compute the Observed :bdg-secondary:`Utility` for each observed :bdg-danger:`Decision`
+            5. Return the error between Expected :bdg-secondary:`Utility` and Observed :bdg-secondary:`Utility`
+
+        .. tab-item:: R
+
+            ::
+
+                obj_function = function(params, decisions, method = "OLS") {
+                    Theta = params[1]
+                    Phi = params[2]
+                    
+                    predicted_utility = vector('numeric', length(trialList[,1]))
+                    chosen = decisions + 1
+                    for (k in 1:length(trialList[,1])){
+                        I = trialList[k, 1]
+                        M = trialList[k, 2]
+                        B = trialList[k, 3]
+                        E = trialList[k, 4]
+                        Choices = seq(0, (I * M), 1)
+                        
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                        Utility[n] = utility(Theta, Phi, guilt(I, B, Choices[n], M), inequity(I, M, Choices[n], E), payout_maximization(I, M, Choices[n]))
+                        }
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[chosen[k]]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                }
+
+        .. tab-item:: MatLab
+
+            ::
+
+                function obj_value = obj_function(params, decisions, method)
+                    if nargin < 3
+                        method = 'OLS';  % Default method is "OLS"
+                    end
+                    Theta = params(1);
+                    Phi = params(2);
+                    
+                    predicted_utility = zeros(length(trialList), 1);
+                    chosen = decisions + 1;
+                    for k = 1:length(trialList)
+                        I = trialList(k, 1);
+                        M = trialList(k, 2);
+                        B = trialList(k, 3);
+                        E = trialList(k, 4);
+                        Choices = 0:(I * M);
+                        
+                        Utility = zeros(length(Choices), 1);
+                        for n = 1:length(Choices)
+                            Utility(n) = utility(Theta, Phi, guilt(I, B, Choices(n), M), inequity(I, M, Choices(n), E), payout_maximization(I, M, Choices(n)));
+                        end
+                        predicted_utility(k) = max(Utility);
+                        observed_utility(k) = Utility(chosen(k));
+                    end
+                    
+                    if strcmp(method, 'OLS')
+                        obj_value = sum((predicted_utility - observed_utility).^2);
+                    elseif strcmp(method, 'MLE')
+                        obj_value = -1 * sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                    end
+                end
+
+
+        .. tab-item:: Python
+
+            ::
+                
+                from scipy.stats import norm
+
+                def obj_function(params, decisions, method="OLS"):
+                    Theta = params[0]
+                    Phi = params[1]
+
+                    predicted_utility = np.zeros(len(trialList))
+                    chosen = decisions + 1
+
+                    for k in range(len(trialList)):
+                        I = trialList[k, 0]
+                        M = trialList[k, 1]
+                        B = trialList[k, 2]
+                        E = trialList[k, 3]
+                        Choices = np.arange(0, (I * M) + 1, 1)
+
+                        Utility = np.zeros(len(Choices))
+                        for n in range(len(Choices)):
+                            Utility[n] = utility(Theta, Phi, guilt(I, B, Choices[n], M), inequity(I, M, Choices[n], E), payout_maximization(I, M, Choices[n]))
+
+                        predicted_utility[k] = np.max(Utility)
+                        observed_utility[k] = Utility[chosen[k]]
+
+                    if method == "OLS":
+                        return np.sum((predicted_utility - observed_utility) ** 2)
+                    elif method == "MLE":
+                        sd = 1 
+                        log_likelihood = np.sum(norm.logpdf(observed_utility, loc=predicted_utility, scale=sd))
+                        return -log_likelihood
+
+.. dropdown:: Optimizers
+
+    .. tab-set::
+        
+        .. tab-item:: R
+
+            ::
+
+                library(pracma)
+
+                initial_params = c(0, 0)  
+                lower_bounds = c(0, -0.1)  
+                upper_bounds = c(0.5, 0.1)  
+                theta_recovered = vector('numeric', 11**2)
+                phi_recovered = vector('numeric', 11**2)
+                theta_true = rep(seq(0, 0.5, 0.05), each = 11)
+                phi_true = rep(seq(-0.1, 0.1, 0.02), times = 11)
+
+                for (i in 1:length(theta_true)) {
+                    this_idx = which(theta_true[i] == freeParameters$theta & phi_true[i] == freeParameters$phi)                
+                    result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                        lb = lower_bounds, ub = upper_bounds,
+                                        decisions = as.numeric(predictions[this_idx,]))
+                    
+                    theta_recovered[i] = result$par[1]
+                    phi_recovered[i] = result$par[2]
+                }
+
+        .. tab-item:: MatLab
+
+            ::
+
+                initial_params = [0, 0];
+                lower_bounds = [0, -0.1];
+                upper_bounds = [0.5, 0.1];
+                theta_recovered = zeros(11^2);
+                phi_recovered = zeros(11^2);
+                theta_true = repelem(0:0.05:0.5, 11);
+                phi_true = repmat(-0.1:0.02:0.1, 1, 11);
+
+                k = 1;
+                for i = 1:11
+                    this_i = ((i - 1) * 11) + 1
+                    for j = 1:11
+                        this_j = ((j - 1) * 11) + 1
+                        options = optimoptions('fmincon', 'Display', 'off');
+                        result = fmincon(@(params) obj_function(params, freeParameters(this_i,this_j).predictions, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+                        
+                        theta_recovered(k) = result(1);
+                        phi_recovered(k) = result(2);
+                        k = k + 1;
+                    end
+                end
+
+        .. tab-item:: Python
+
+            ::
+
+                from scipy.optimize import minimize
+
+                initial_params = np.array([0, 0])
+                lower_bounds = np.array([0, -0.1])
+                upper_bounds = np.array([0.5, 0.1])
+                theta_recovered = np.zeros(11**2)
+                phi_recovered = np.zeros(11**2)
+                theta_true = np.repeat(np.arange(0, 0.51, 0.05), 11)
+                phi_true = np.tile(np.arange(-0.1, 0.11, 0.02), 11)
+
+                for i in range(0, 121):
+                    this_idx = np.where((freeParameters['theta'] == theta_true[i]) & (freeParameters['phi'] == phi_true[i]))[0]
+                    result = minimize(obj_function, x0=initial_params, bounds=list(zip(lower_bounds, upper_bounds)), args=(np.array(predictions[this_idx,])))
+                    
+                    theta_recovered[i] = result.x[0]
+                    phi_recovered[i] = result.x[1]
+
+
+    .. tab-set::
+        
+        .. tab-item:: Plain English
+
+            We want to see how much distance in Parameter Space that there is between the true :bdg-success:`Free Parameter` values and the recovered :bdg-success:`Free Parameters`. 
+            I find that with models with parameter values that are codetermined and interdependant, it is useful to visualize the accuracy (i.e. distance) of parameter estimation in one plot.
+            Some rules of thumb to follow when calculating distance: 
+            
+            1. Normalize the distance on each axis to be between 0 and 1 so the differences are equally important for each of your :bdg-success:`Free Parameters`
+            2. Keep the existing parameter value ranges on the axes so you can look into your 
+            3. Plot the true :bdg-success:`Free Parameters`, not the recovered :bdg-success:`Free Parameters`
+            4. Visualize distance using size (adding color helps but is not necessary)
+            5. Ensure that the size of the points is always bound between 0 and the maximum distance (sqrt(number of :bdg-success:`Free Parameters`)) so that size is a meaningful estimate of distance
+
+            .. dropdown:: Visualizing the difference in true-versus-recovered :bdg-success:`Free Parameters` Following These Rules
+
+                .. figure:: 1_6_old.png
+                    :figwidth: 100%
+                    :align: center
+
+                Not so great here. 
+                In the bottom right, there are some pretty big points: in fact there are 3 points which are more than 1 unit of distance away from the true value, 15 greater than 0.5 units, and 36 greater than 0.25 units. 
+                0.25 units of distance means it's pretty problematic - less than 5% should fit this poorly. 
+                And nothing should fit as bad to be 1 unit of distance away. 
+
+                Why are we seeing what we're seeing?
+                Well our optimizer has a bias - it fits negative values much worse than positive values when these fits equally well which means that it *would* fit the positive values that badly if it had the opposite bias. 
+                More to the point, the further right we get the less meaningful the distinctions in the y-axis are. 
+
+                .. figure:: 1_6_old_explanation.png
+                    :figwidth: 100%
+                    :align: center
+
+                We can see this clearly in our computational model: the terms weighted by :bdg-success-line:`Phi` are weighted by the inverse of :bdg-success-line:`Theta`. 
+                So the predictions as :bdg-success-line:`Theta` approach 0.5 all begin to converge on a single prediction for all values of :bdg-success-line:`Phi` - to make :bdg-danger-line:`Decisions` that are selfish.
+                Thus, there is still another very important rule of thumb to consider.
+
+            6. Remember the dependency structure between :bdg-success:`Free Parameter` values as determined by the data generation process
+
+            .. dropdown:: Visualizing the difference in true-versus-recovered :bdg-success:`Free Parameters` Following These Rules
+
+                .. figure:: 1_6_new.png
+                    :figwidth: 100%
+                    :align: center
+
+                Making the distance between true and recovered :bdg-success-line:`Phi` values decrease linearly as a function of :bdg-success-line:`Theta` provides an theoretically and practically correct solution to our problem. 
+                Thus, we are all ready to move on since we have determined that our model makes distinct predictions and we can reliably and validly recover :bdg-success:`Free Parameters` from :bdg-danger-line:`Decisions`.
+        
+        .. tab-item:: R
+
+            ::
+
+                library(ggplot2)
+
+                distance = (2*(theta_recovered - theta_true))**2 + (5*(phi_recovered - phi_true))**2
+                qplot(x = theta_true, y = phi_true, color = distance, size = distance, geom = 'point') + scale_radius(limits=c(0, sqrt(2)), range=c(0, 20))
+
+                distance_new = (2*(theta_recovered - theta_true))**2 + (5*(0.5-theta_true)*(phi_recovered - phi_true))**2
+                qplot(x = theta_true, y = phi_true, color = distance_new, size = distance_new, geom = 'point') + scale_radius(limits=c(0, sqrt(2)), range=c(0, 20))
+
+        .. tab-item:: MatLab
+
+            ::
+
+                distance = (2*(theta_recovered - theta_true)).^2 + (5*(phi_recovered - phi_true)).^2;
+                scatter(theta_true, phi_true, [], distance, 'filled');
+                colormap('jet');
+                colorbar;
+                xlim([0, 0.5]);
+                ylim([-0.1, 0.1]);
+                axis square;
+
+                distance_new = (2*(theta_recovered - theta_true)).^2 + (5*(0.5-theta_true).*(phi_recovered - phi_true)).^2;
+                scatter(theta_true, phi_true, [], distance_new, 'filled');
+                colormap('jet');
+                colorbar;
+                xlim([0, 0.5]);
+                ylim([-0.1, 0.1]);
+                axis square;
+
+
+        .. tab-item:: Python
+
+            ::
+
+                import matplotlib.pyplot as plt
+
+                distance = (2*(theta_recovered - theta_true))**2 + (5*(phi_recovered - phi_true))**2
+                plt.scatter(theta_true, phi_true, c=distance, s=distance)
+                plt.colorbar()
+                plt.xlim(0, 0.5)
+                plt.ylim(-0.1, 0.1)
+                plt.show()
+
+                distance_new = (2*(theta_recovered - theta_true))**2 + (5*(0.5-theta_true)*(phi_recovered - phi_true))**2
+                plt.scatter(theta_true, phi_true, c=distance_new, s=distance_new)
+                plt.colorbar()
+                plt.xlim(0, 0.5)
+                plt.ylim(-0.1, 0.1)
+                plt.show()
+
