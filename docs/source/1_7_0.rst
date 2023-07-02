@@ -147,39 +147,45 @@ Tutorial
 
         .. tab-item:: R
 
-            distance_mat = dist(predictions, method = 'euclidean')
-            set.seed(240)
-            hierarchical = hclust(distance_mat, method = 'average')
-            plot(hierarchical)
-            fit = cutree(hierarchical, k = 4)
+            ::
+
+                distance_mat = dist(predictions, method = 'euclidean')
+                set.seed(240)
+                hierarchical = hclust(distance_mat, method = 'average')
+                plot(hierarchical)
+                fit = cutree(hierarchical, k = 4)
 
         .. tab-item:: MatLab
 
-            [nrows, ncols] = size(freeParameters);
-            data_matrix = zeros(nrows * ncols, length(freeParameters(1, 1).predictions));
-            for i = 1:nrows
-                for j = 1:ncols
-                    index = (i - 1) * ncols + j;
-                    data_matrix(index, :) = freeParameters(i, j).predictions;
+            ::
+
+                [nrows, ncols] = size(freeParameters);
+                data_matrix = zeros(nrows * ncols, length(freeParameters(1, 1).predictions));
+                for i = 1:nrows
+                    for j = 1:ncols
+                        index = (i - 1) * ncols + j;
+                        data_matrix(index, :) = freeParameters(i, j).predictions;
+                    end
                 end
-            end
-            distance_mat = pdist(predictions, 'euclidean');
-            rng(240); % Set the seed for reproducibility
-            hierarchical = linkage(distance_mat, 'average');
-            dendrogram(hierarchical);
-            k = 4;
-            fit = cluster(hierarchical, 'MaxClust', k);
+                distance_mat = pdist(predictions, 'euclidean');
+                rng(240); % Set the seed for reproducibility
+                hierarchical = linkage(distance_mat, 'average');
+                dendrogram(hierarchical);
+                k = 4;
+                fit = cluster(hierarchical, 'MaxClust', k);
 
         .. tab-item:: Python
 
-            from scipy.cluster.hierarchy import dendrogram, linkage, cut_tree
-            distance_mat = np.linalg.norm(predictions, axis=1)
-            np.random.seed(240)
-            hierarchical = linkage(distance_mat, method='average')
-            dendrogram(hierarchical)
-            plt.show()
+            ::
 
-            fit = cut_tree(hierarchical, n_clusters=4).flatten()
+                from scipy.cluster.hierarchy import dendrogram, linkage, cut_tree
+                distance_mat = np.linalg.norm(predictions, axis=1)
+                np.random.seed(240)
+                hierarchical = linkage(distance_mat, method='average')
+                dendrogram(hierarchical)
+                plt.show()
+
+                fit = cut_tree(hierarchical, n_clusters=4).flatten()
 
 .. dropdown:: Identify Where Your Clusters are
 
@@ -196,72 +202,78 @@ Tutorial
 
         .. tab-item:: R
 
-            freeParameters$Strategy = as.character(fit)
-            freeParameters$Strategy[which(freeParameters$Strategy == freeParameters$Strategy[1])] = 'Guilt-Averse'
-            freeParameters$Strategy[which(freeParameters$Strategy == freeParameters$Strategy[10101])] = 'Greedy'
-            freeParameters$Strategy[which(freeParameters$Strategy == freeParameters$Strategy[100])] = 'Inequity-Averse'
-            freeParameters$Strategy[which(freeParameters$Strategy != 'Inequity-Averse' & freeParameters$Strategy != 'Greedy' & freeParameters$Strategy != 'Guilt-Averse')] = 'Moral Opportunists'; 
-            freeParameters$Strategy = as.factor(freeParameters$Strategy) #Strategy clusters
-            model_space = ggplot(data = freeParameters, aes(x = theta, y = phi, color = Strategy)) + 
-            labs(x = 'Theta', y = 'Phi', color = 'Strategy') + geom_point(size = 2.5) + 
-            scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), rgb(230,157,54, maxColorValue = 255), rgb(57,193,59, maxColorValue = 255), 
-                                            rgb(200,50,50, maxColorValue = 255))); model_space
+            ::
+
+                freeParameters$Strategy = as.character(fit)
+                freeParameters$Strategy[which(freeParameters$Strategy == freeParameters$Strategy[1])] = 'Guilt-Averse'
+                freeParameters$Strategy[which(freeParameters$Strategy == freeParameters$Strategy[10101])] = 'Greedy'
+                freeParameters$Strategy[which(freeParameters$Strategy == freeParameters$Strategy[100])] = 'Inequity-Averse'
+                freeParameters$Strategy[which(freeParameters$Strategy != 'Inequity-Averse' & freeParameters$Strategy != 'Greedy' & freeParameters$Strategy != 'Guilt-Averse')] = 'Moral Opportunists'; 
+                freeParameters$Strategy = as.factor(freeParameters$Strategy) #Strategy clusters
+                model_space = ggplot(data = freeParameters, aes(x = theta, y = phi, color = Strategy)) + 
+                labs(x = 'Theta', y = 'Phi', color = 'Strategy') + geom_point(size = 2.5) + 
+                scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), rgb(230,157,54, maxColorValue = 255), rgb(57,193,59, maxColorValue = 255), 
+                                                rgb(200,50,50, maxColorValue = 255))); model_space
 
         .. tab-item:: MatLab
 
-            Strategy = cellstr(num2str(fit));
-            Strategy(strcmp(Strategy, Strategy(1))) = {'Guilt-Averse'};
-            Strategy(strcmp(Strategy, Strategy(10101))) = {'Greedy'};
-            Strategy(strcmp(Strategy, Strategy(100))) = {'Inequity-Averse'};
-            Strategy(~ismember(Strategy, {'Inequity-Averse', 'Greedy', 'Guilt-Averse'})) = {'Moral Opportunists'};
-            Strategy = categorical(Strategy);
+            ::
 
-            for i = 1:nrows
-                for j = 1:ncols
-                    index = (i - 1) * ncols + j;
-                    freeParameters(i, j).predictions = Strategy(index);
+                Strategy = cellstr(num2str(fit));
+                Strategy(strcmp(Strategy, Strategy(1))) = {'Guilt-Averse'};
+                Strategy(strcmp(Strategy, Strategy(10101))) = {'Greedy'};
+                Strategy(strcmp(Strategy, Strategy(100))) = {'Inequity-Averse'};
+                Strategy(~ismember(Strategy, {'Inequity-Averse', 'Greedy', 'Guilt-Averse'})) = {'Moral Opportunists'};
+                Strategy = categorical(Strategy);
+
+                for i = 1:nrows
+                    for j = 1:ncols
+                        index = (i - 1) * ncols + j;
+                        freeParameters(i, j).predictions = Strategy(index);
+                    end
                 end
-            end
 
-            model_space = gca;
-            hold on;
+                model_space = gca;
+                hold on;
 
-            for i = 1:nrows
-                for j = 1:ncols
-                    scatter(freeParameters(i, j).theta, freeParameters(i, j).phi, 40, freeParameters(i, j).Strategy, 'filled');
+                for i = 1:nrows
+                    for j = 1:ncols
+                        scatter(freeParameters(i, j).theta, freeParameters(i, j).phi, 40, freeParameters(i, j).Strategy, 'filled');
+                    end
                 end
-            end
-            xlabel('Theta');
-            ylabel('Phi');
-            colormap([50 50 200; 230 157 54; 57 193 59; 200 50 50] / 255);
-            colorbar('Ticks', 1:4, 'TickLabels', {'Guilt-Averse', 'Greedy', 'Inequity-Averse', 'Moral Opportunists'});
+                xlabel('Theta');
+                ylabel('Phi');
+                colormap([50 50 200; 230 157 54; 57 193 59; 200 50 50] / 255);
+                colorbar('Ticks', 1:4, 'TickLabels', {'Guilt-Averse', 'Greedy', 'Inequity-Averse', 'Moral Opportunists'});
 
-            hold off;
+                hold off;
 
         .. tab-item:: Python
 
-            import pandas as pd
-            import seaborn as sns
+            ::
 
-            fit_char = fit.astype(str).tolist()
+                import pandas as pd
+                import seaborn as sns
 
-            freeParameters['Strategy'] = fit_char
-            freeParameters.loc[freeParameters['Strategy'] == freeParameters['Strategy'][0], 'Strategy'] = 'Guilt-Averse'
-            freeParameters.loc[freeParameters['Strategy'] == freeParameters['Strategy'][10101], 'Strategy'] = 'Greedy'
-            freeParameters.loc[freeParameters['Strategy'] == freeParameters['Strategy'][100], 'Strategy'] = 'Inequity-Averse'
-            freeParameters.loc[~freeParameters['Strategy'].isin(['Inequity-Averse', 'Greedy', 'Guilt-Averse']), 'Strategy'] = 'Moral Opportunists'
-            freeParameters['Strategy'] = pd.Categorical(freeParameters['Strategy'])
+                fit_char = fit.astype(str).tolist()
 
-            model_space = sns.scatterplot(data=freeParameters, x='theta', y='phi', hue='Strategy', palette={
-                'Guilt-Averse': (50/255, 50/255, 200/255),
-                'Greedy': (230/255, 157/255, 54/255),
-                'Inequity-Averse': (57/255, 193/255, 59/255),
-                'Moral Opportunists': (200/255, 50/255, 50/255)
-            })
-            plt.xlabel('Theta')
-            plt.ylabel('Phi')
-            plt.legend(title='Strategy')
-            plt.show()
+                freeParameters['Strategy'] = fit_char
+                freeParameters.loc[freeParameters['Strategy'] == freeParameters['Strategy'][0], 'Strategy'] = 'Guilt-Averse'
+                freeParameters.loc[freeParameters['Strategy'] == freeParameters['Strategy'][10101], 'Strategy'] = 'Greedy'
+                freeParameters.loc[freeParameters['Strategy'] == freeParameters['Strategy'][100], 'Strategy'] = 'Inequity-Averse'
+                freeParameters.loc[~freeParameters['Strategy'].isin(['Inequity-Averse', 'Greedy', 'Guilt-Averse']), 'Strategy'] = 'Moral Opportunists'
+                freeParameters['Strategy'] = pd.Categorical(freeParameters['Strategy'])
+
+                model_space = sns.scatterplot(data=freeParameters, x='theta', y='phi', hue='Strategy', palette={
+                    'Guilt-Averse': (50/255, 50/255, 200/255),
+                    'Greedy': (230/255, 157/255, 54/255),
+                    'Inequity-Averse': (57/255, 193/255, 59/255),
+                    'Moral Opportunists': (200/255, 50/255, 50/255)
+                })
+                plt.xlabel('Theta')
+                plt.ylabel('Phi')
+                plt.legend(title='Strategy')
+                plt.show()
 
 .. dropdown:: Examine Model Predictions Efficiently
 
@@ -278,111 +290,117 @@ Tutorial
 
         .. tab-item:: R
 
-            toPlot = data.frame()
-            for (i in 1:length(freeParameters[,1])){
-                replacement = ((i - 1) * 60 + 1):(i * 60)
-                toPlot[replacement, 1] = freeParameters$Strategy[i]
-                toPlot[replacement, 2] = trialList$Investment
-                toPlot[replacement, 3] = trialList$Multiplier
-                toPlot[replacement, 4] = as.numeric(predictions[i,])
-            }
-            colnames(toPlot) = c('Strategy', 'Investment', 'Multiplier', 'Return')
+            ::
 
-            ggplot(data = toPlot[which(toPlot$Multiplier==2),], aes(x = Investment, y = Return, group = Strategy, color = Strategy)) + geom_smooth(se = TRUE) + 
-            scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), rgb(230,157,54, maxColorValue = 255), rgb(57,193,59, maxColorValue = 255), 
-                                            rgb(200,50,50, maxColorValue = 255))) + lims(x = c(0, 10), y = c(0, 30))
+                toPlot = data.frame()
+                for (i in 1:length(freeParameters[,1])){
+                    replacement = ((i - 1) * 60 + 1):(i * 60)
+                    toPlot[replacement, 1] = freeParameters$Strategy[i]
+                    toPlot[replacement, 2] = trialList$Investment
+                    toPlot[replacement, 3] = trialList$Multiplier
+                    toPlot[replacement, 4] = as.numeric(predictions[i,])
+                }
+                colnames(toPlot) = c('Strategy', 'Investment', 'Multiplier', 'Return')
 
-            ggplot(data = toPlot[which(toPlot$Multiplier==4),], aes(x = Investment, y = Return, group = Strategy, color = Strategy)) + geom_smooth(se = TRUE) + 
-            scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), rgb(230,157,54, maxColorValue = 255), rgb(57,193,59, maxColorValue = 255), 
-                                            rgb(200,50,50, maxColorValue = 255))) + lims(x = c(0, 10), y = c(0, 30))
+                ggplot(data = toPlot[which(toPlot$Multiplier==2),], aes(x = Investment, y = Return, group = Strategy, color = Strategy)) + geom_smooth(se = TRUE) + 
+                scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), rgb(230,157,54, maxColorValue = 255), rgb(57,193,59, maxColorValue = 255), 
+                                                rgb(200,50,50, maxColorValue = 255))) + lims(x = c(0, 10), y = c(0, 30))
 
-            ggplot(data = toPlot[which(toPlot$Multiplier==6),], aes(x = Investment, y = Return, group = Strategy, color = Strategy)) + geom_smooth(se = TRUE) + 
-            scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), rgb(230,157,54, maxColorValue = 255), rgb(57,193,59, maxColorValue = 255), 
-                                            rgb(200,50,50, maxColorValue = 255))) + lims(x = c(0, 10), y = c(0, 30))
+                ggplot(data = toPlot[which(toPlot$Multiplier==4),], aes(x = Investment, y = Return, group = Strategy, color = Strategy)) + geom_smooth(se = TRUE) + 
+                scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), rgb(230,157,54, maxColorValue = 255), rgb(57,193,59, maxColorValue = 255), 
+                                                rgb(200,50,50, maxColorValue = 255))) + lims(x = c(0, 10), y = c(0, 30))
+
+                ggplot(data = toPlot[which(toPlot$Multiplier==6),], aes(x = Investment, y = Return, group = Strategy, color = Strategy)) + geom_smooth(se = TRUE) + 
+                scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), rgb(230,157,54, maxColorValue = 255), rgb(57,193,59, maxColorValue = 255), 
+                                                rgb(200,50,50, maxColorValue = 255))) + lims(x = c(0, 10), y = c(0, 30))
 
         .. tab-item:: MatLab
 
-            toPlot = table();
-            for i = 1:(ncols.*nrows)
-                replacement = ((i - 1) * 60 + 1):(i * 60);
-                toPlot(replacement, 1) = table(Strategy(i));
-                toPlot(replacement, 2) = table(trialList.Investment);
-                toPlot(replacement, 3) = table(trialList.Multiplier);
-                toPlot(replacement, 4) = table(data_matrix(i,:));
-            end
+            ::
 
-            toPlot.Properties.VariableNames = {'Strategy', 'Investment', 'Multiplier', 'Return'};
+                toPlot = table();
+                for i = 1:(ncols.*nrows)
+                    replacement = ((i - 1) * 60 + 1):(i * 60);
+                    toPlot(replacement, 1) = table(Strategy(i));
+                    toPlot(replacement, 2) = table(trialList.Investment);
+                    toPlot(replacement, 3) = table(trialList.Multiplier);
+                    toPlot(replacement, 4) = table(data_matrix(i,:));
+                end
 
-            figure;
-            subplot(1, 3, 1);
-            dataSubset = toPlot(toPlot.Multiplier == 2,:);
-            scatter(dataSubset.Investment, dataSubset.Return, [], dataSubset.Strategy, 'filled');
-            colormap([50 50 200; 230 157 54; 57 193 59; 200 50 50] / 255);
-            xlabel('Investment');
-            ylabel('Return');
-            title('Multiplier = 2');
+                toPlot.Properties.VariableNames = {'Strategy', 'Investment', 'Multiplier', 'Return'};
 
-            subplot(1, 3, 2);
-            dataSubset = toPlot(toPlot.Multiplier == 4,:);
-            scatter(dataSubset.Investment, dataSubset.Return, [], dataSubset.Strategy, 'filled');
-            colormap([50 50 200; 230 157 54; 57 193 59; 200 50 50] / 255);
-            xlabel('Investment');
-            ylabel('Return');
-            title('Multiplier = 4');
+                figure;
+                subplot(1, 3, 1);
+                dataSubset = toPlot(toPlot.Multiplier == 2,:);
+                scatter(dataSubset.Investment, dataSubset.Return, [], dataSubset.Strategy, 'filled');
+                colormap([50 50 200; 230 157 54; 57 193 59; 200 50 50] / 255);
+                xlabel('Investment');
+                ylabel('Return');
+                title('Multiplier = 2');
 
-            subplot(1, 3, 3);
-            dataSubset = toPlot(toPlot.Multiplier == 6,:);
-            scatter(dataSubset.Investment, dataSubset.Return, [], dataSubset.Strategy, 'filled');
-            colormap([50 50 200; 230 157 54; 57 193 59; 200 50 50] / 255);
-            xlabel('Investment');
-            ylabel('Return');
-            title('Multiplier = 6');
+                subplot(1, 3, 2);
+                dataSubset = toPlot(toPlot.Multiplier == 4,:);
+                scatter(dataSubset.Investment, dataSubset.Return, [], dataSubset.Strategy, 'filled');
+                colormap([50 50 200; 230 157 54; 57 193 59; 200 50 50] / 255);
+                xlabel('Investment');
+                ylabel('Return');
+                title('Multiplier = 4');
+
+                subplot(1, 3, 3);
+                dataSubset = toPlot(toPlot.Multiplier == 6,:);
+                scatter(dataSubset.Investment, dataSubset.Return, [], dataSubset.Strategy, 'filled');
+                colormap([50 50 200; 230 157 54; 57 193 59; 200 50 50] / 255);
+                xlabel('Investment');
+                ylabel('Return');
+                title('Multiplier = 6');
 
         .. tab-item:: Python
 
-            toPlot = pd.DataFrame(columns=['Strategy', 'Investment', 'Multiplier', 'Return'])
+            ::
 
-            for i in range(len(freeParameters)):
-                replacement = list(range((i * 60) + 1, (i + 1) * 60 + 1))
-                toPlot.loc[replacement, 'Strategy'] = freeParameters.loc[i, 'Strategy']
-                toPlot.loc[replacement, 'Investment'] = trialList['Investment']
-                toPlot.loc[replacement, 'Multiplier'] = trialList['Multiplier']
-                toPlot.loc[replacement, 'Return'] = predictions[i, :].astype(float)
+                toPlot = pd.DataFrame(columns=['Strategy', 'Investment', 'Multiplier', 'Return'])
 
-            toPlot['Multiplier'] = toPlot['Multiplier'].astype(int)
+                for i in range(len(freeParameters)):
+                    replacement = list(range((i * 60) + 1, (i + 1) * 60 + 1))
+                    toPlot.loc[replacement, 'Strategy'] = freeParameters.loc[i, 'Strategy']
+                    toPlot.loc[replacement, 'Investment'] = trialList['Investment']
+                    toPlot.loc[replacement, 'Multiplier'] = trialList['Multiplier']
+                    toPlot.loc[replacement, 'Return'] = predictions[i, :].astype(float)
 
-            plt.figure(figsize=(8, 6))
-            sns.lineplot(data=toPlot[toPlot['Multiplier'] == 2], x='Investment', y='Return', hue='Strategy', palette={
-                'Guilt-Averse': (50/255, 50/255, 200/255),
-                'Greedy': (230/255, 157/255, 54/255),
-                'Inequity-Averse': (57/255, 193/255, 59/255),
-                'Moral Opportunists': (200/255, 50/255, 50/255)
-            })
-            plt.xlim(0, 10)
-            plt.ylim(0, 30)
-            plt.legend(title='Strategy')
-            plt.show()
+                toPlot['Multiplier'] = toPlot['Multiplier'].astype(int)
 
-            plt.figure(figsize=(8, 6))
-            sns.lineplot(data=toPlot[toPlot['Multiplier'] == 4], x='Investment', y='Return', hue='Strategy', palette={
-                'Guilt-Averse': (50/255, 50/255, 200/255),
-                'Greedy': (230/255, 157/255, 54/255),
-                'Inequity-Averse': (57/255, 193/255, 59/255),
-                'Moral Opportunists': (200/255, 50/255, 50/255)
-            })
-            plt.xlim(0, 10)
-            plt.ylim(0, 30)
-            plt.legend(title='Strategy')
-            plt.show()
+                plt.figure(figsize=(8, 6))
+                sns.lineplot(data=toPlot[toPlot['Multiplier'] == 2], x='Investment', y='Return', hue='Strategy', palette={
+                    'Guilt-Averse': (50/255, 50/255, 200/255),
+                    'Greedy': (230/255, 157/255, 54/255),
+                    'Inequity-Averse': (57/255, 193/255, 59/255),
+                    'Moral Opportunists': (200/255, 50/255, 50/255)
+                })
+                plt.xlim(0, 10)
+                plt.ylim(0, 30)
+                plt.legend(title='Strategy')
+                plt.show()
 
-            plt.figure(figsize=(8, 6))
-            sns.lineplot(data=toPlot[toPlot['Multiplier'] == 6], x='Investment', y='Return', hue='Strategy', palette={
-                'Guilt-Averse': (50/255, 50/255, 200/255),
-                'Greedy': (230/255, 157/255, 54/255),
-                'Inequity-Averse': (57/255, 193/255, 59/255),
-                'Moral Opportunists': (200/255, 50/255, 50/255)
-            })
-            plt.xlim(0, 10)
-            plt.ylim(0, 30)
-            plt.legend(title='Strategy')
-            plt.show()
+                plt.figure(figsize=(8, 6))
+                sns.lineplot(data=toPlot[toPlot['Multiplier'] == 4], x='Investment', y='Return', hue='Strategy', palette={
+                    'Guilt-Averse': (50/255, 50/255, 200/255),
+                    'Greedy': (230/255, 157/255, 54/255),
+                    'Inequity-Averse': (57/255, 193/255, 59/255),
+                    'Moral Opportunists': (200/255, 50/255, 50/255)
+                })
+                plt.xlim(0, 10)
+                plt.ylim(0, 30)
+                plt.legend(title='Strategy')
+                plt.show()
+
+                plt.figure(figsize=(8, 6))
+                sns.lineplot(data=toPlot[toPlot['Multiplier'] == 6], x='Investment', y='Return', hue='Strategy', palette={
+                    'Guilt-Averse': (50/255, 50/255, 200/255),
+                    'Greedy': (230/255, 157/255, 54/255),
+                    'Inequity-Averse': (57/255, 193/255, 59/255),
+                    'Moral Opportunists': (200/255, 50/255, 50/255)
+                })
+                plt.xlim(0, 10)
+                plt.ylim(0, 30)
+                plt.legend(title='Strategy')
+                plt.show()
