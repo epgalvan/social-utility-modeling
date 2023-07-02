@@ -34,7 +34,7 @@ To examine our model predictions in an efficient way and to potentially generate
     To develop an intuition about these things, see the image below which we would cut into 2 groups - group 1 with [A, B] and group 2 with [C, D, E, F]. 
 
     .. figure:: dendro_example.png
-        :figwidth: 200%
+        :figwidth: 100%
         :align: center
 
     .. Note::
