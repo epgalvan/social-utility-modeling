@@ -12,5 +12,151 @@ A Priori Clustering
 Goals During this Stage
 ================
 
+To examine our model predictions in an efficient way and to potentially generate theoretical, sampling invariant, theoretically valid a priori groupings. 
+
+.. _different clustering algorithms: https://www.freecodecamp.org/news/8-clustering-algorithms-in-machine-learning-that-all-data-scientists-should-know/
+
+.. dropdown:: Clustering Algorithms
+
+    Clustering Algorithms are generally used to determine 1) how many groups are in a data set and 2) the group that people belong to in a data set. 
+    They do this by taking one observation of multiple variables (columns) for many people (rows). 
+    As an input Hierarchical Agglomerative Clustering (HAC), which is what we will be using, takes a distance matrix. 
+    A distance matrix is a square matrix with as many rows and columns as the number of rows in our data set. 
+    Every cell below the diagonal (i.e. the second-last row of the first column, the third-last row of the second column, etc.) represents a distance. 
+    Here, distance is often *Euclidean* meaning it is just an extension of Pythagorean Theorem - it equals the sum of all squared differences between the values in each column. 
+    The position of the cell is also meaningful: for instance, the cell in the first row and the second column represents the total distance between Subject 1 and Subject 2 for instance. 
+
+    HAC essentially tries to figure out what the most parsimonious grouping is for each possible number of groups, starting with 2 groups and finishing with the maximum number of groups (i.e. the number of rows meaning everyone is in their own group). 
+    It visualizes this parsimony in the form of a dendrogram - a type of tree graph. 
+    Reading dendrograms is simple, but for some people it is not very intuitive. 
+    You determine the number of groups in a data set by cutting the tree. 
+    You determine where to cut the tree on the horizontal where there is the *longest* vertical space without *any* branching. 
+    To develop an intuition about these things, see the image below which we would cut into 2 groups - group 1 with [A, B] and group 2 with [C, D, E, F]. 
+
+    .. figure:: dendro_example.png
+        :figwidth: 200%
+        :align: center
+
+    .. Note::
+
+        There are many `different clustering algorithms`_ out there, but I'll only be talking about HAC because it is basic, I'm agnostic about clustering algorithms, and I'm familiar with it. 
+        You might have a strong opinion or motivation - in principle, any clustering algorithm can be applied and your needs and knowledge might dictate that others are preferable and that's perfectly valid. 
+
+.. dropdown:: A Priori Clustering
+
+    Canonically, there have been 2 approaches to grouping: clustering and binning. 
+
+    Binning is simply the researcher *asserting* that it is the case that groups 1 and 2 are differentiable on X or Y: the grouping is only as valid as the researcher's reasoning.
+    Further, this approach is theoretically only valid when specified a priori (in a preregistration).  
+
+    On the other hand, Clustering is an empirical, data-driven approach which provides ad-hoc explanations. 
+    Essentially, whichever Clustering Algorithm you use searches for the best solution to the problem you offer it. 
+    Thus, the groups are determined by the observed data and can obviously be biased therein. 
+
+    Here, we clearly don't have any real data: we want to cluster the simulated model predictions. 
+    This is the most ideal situation: since we can simulate as much data as we want and therefore exhaustively represent the variance in expected behavior. 
+    Here, we also group based on the model predictions (i.e. our hypotheses) - which means that our clustered groupings are a logical extension of our psychological theory in the context of our Experimental Paradigm and Trial Set.
+    This enables us to overcome the limitations of both clustering (ad-hoc, sampling dependency, atheoretical) and binning (arbitrariness, overreliance on reasoning, etc.). 
+
+    However, the validity of a priori clustering requires that our model be highly generalizable: all :bdg-secondary:`Constructs` must have the same value on the same :bdg-primary:`Trial` for each subject and there are no :bdg-success:`Free Parameters` in your model which do not translate to psychologically meaningful differences.. 
+    So, for instance, this might preclude using binary choice tasks which often require :bdg-success:`Free Parameters` to model response bias parameters (preference for left-versus-right) and inverse heat parameters (probability of behaving preference-congruent) for example. 
+    It also requires that all :bdg-secondary:`Constructs` are directly computed from :bdg-primary:`Experimental Variables` and not self-report measures for instance. 
+    In this study, the experimenters asked what the participant thought the Investor expected for all trials: although this would be a theoretically superior way to mathematically calculate :bdg-secondary-line:`Guilt`, using the a priori clustering to group subjects would be conceptually problematic. 
+    In these cases, it is always good to make sure that the generalized :bdg-secondary:`Constructs` is highly correlated with the questionnaire measure and that using either value leads to the same behavioral conclusions - not just taking for granted that these are distinctions without differences. 
+
+.. dropdown:: Informing a Change in the of :bdg-primary:`Trial Set`
+
+    Our :bdg-primary:`Trial Set` is designed to elicit maximally different behavioral patterns between groups of people who have different psychological preferences. 
+    Some rules of thumb here are as follows:
+    
+    1. Offer as many choice options as is possible, within reason
+    2. Make sure the number of trials in each condition of interest are equal 
+
+    Here, HAC especially can offer insight about if you have accomplished these two aims. 
+    Let's take a look at some minor mistakes that were made in this study. 
+
+    .. dropdown:: Limited :bdg-danger:`Choice` Options and Asymetric :bdg-primary:`Trial Set`
+
+        In the paper, the Choice Options were ``in increments of 1 token or 10% of the slider range (whichever was greatest, to increase the speed of movement on the slider`` and the trial distribution was not 10 trials per multiplier condition (with Investment ranging fro 1 to 10). 
+        For the exact trial distribution you can see the file ``trialSet.csv`` in the folder that you downloaded with the actual data. 
+
+        .. Note::
+
+            The authors also conducted a behavioral follow-up to validate a different clustering which they applied in the paper. 
+
+        Using HAC on *these* simulations leads to the following dendrogram which favors a 2 group solution and the following model space which is less in line with our expected outcome of either a 3 or 4 cluster solution as specified in our hypotheses. 
+
+        .. dropdown:: Dendgrogram for the fMRI Experiment
+
+            .. figure:: 1_7_dendro_wrong.png
+                :figwidth: 100%
+                :align: center
+
+        It also leads to the following grouping for a 4 cluster solution which is not well aligned with the parameter space that we sketched out earlier. 
+
+        .. dropdown:: Model Space for the fMRI Experiment
+
+            .. figure:: 1_7_param_wrong.png
+                :figwidth: 100%
+                :align: center
+
+    Having the :bdg-danger:`Choice` Options always Specified in Increments of 1 Token leads to the following with the same :bdg-primary:`Trial Set` 
+
+    .. dropdown:: Asymetric :bdg-primary:`Trial Set`
+
+        .. dropdown:: Dendgrogram
+
+            .. figure:: 1_7_dendro_half.png
+                :figwidth: 100%
+                :align: center
+
+        .. dropdown:: Model Space
+
+            .. figure:: 1_7_param_half.png
+                :figwidth: 100%
+                :align: center
+
+    Fixing both of these problems - which the authors did in the behavioral follow-up also reported in the paper - results in the following.
+
+    .. dropdown:: The Ideal :bdg-primary:`Trial Set`
+
+        .. dropdown:: Dendgrogram
+
+            .. figure:: 1_7_dendro_right.png
+                :figwidth: 100%
+                :align: center
+
+        .. dropdown:: Model Space
+
+            .. figure:: 1_7_param_right.png
+                :figwidth: 100%
+                :align: center
+
 Tutorial
 ================
+
+.. dropdown:: Cluster Your Data Using HAC
+
+    .. tab-set::
+        
+        .. tab-item:: Plain English
+
+            We need to compute a distance matrix which will require a table or data frame object which contains the model predictions. 
+            Then we will use an HAC algorithm to cluster the data. 
+            After, we will determine how many groups we should have and we will cut the tree into that many groups - assigning row identities to whichever group the clustering algorithm says that they belong to. 
+
+.. dropdown:: Identify Where Your Clusters are
+
+    .. tab-set::
+        
+        .. tab-item:: Plain English
+
+.. dropdown:: Examine Model Predictions Efficiently
+
+    .. tab-set::
+        
+        .. tab-item:: Plain English
+
+            During this stage, you want to visualize the :bdg-danger:`Decisions` predicted by your model based on which cluster they fall into, visualizing the variance ideally, and considering the :bdg-secondary:`Independant Variables`. 
+            This will allow you to gather a clearer picture of the differences predicted by your model. 
+

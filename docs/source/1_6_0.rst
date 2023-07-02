@@ -511,7 +511,7 @@ Tutorial
                     :figwidth: 100%
                     :align: center
 
-                We can see this clearly in our computational model: the terms weighted by :bdg-success-line:`Phi` are weighted by the inverse of :bdg-success-line:`Theta`. 
+                We can clearly see why this is the case when we look at our computational model: the terms weighted by :bdg-success-line:`Phi` are weighted by the inverse of :bdg-success-line:`Theta`. 
                 So the predictions as :bdg-success-line:`Theta` approach 0.5 all begin to converge on a single prediction for all values of :bdg-success-line:`Phi` - to make :bdg-danger-line:`Decisions` that are selfish.
                 Thus, there is still another very important rule of thumb to consider.
 
