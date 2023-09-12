@@ -39,7 +39,7 @@ There is no required foreknowledge to conceptually understand the course, but a 
    :maxdepth: 1
    :caption: Hypothesis Testing
 
-    Comparing Competing Accounts of Behavior <3_1_0.rst> 
+    Compare Competing Accounts of Behavior <3_1_0.rst> 
     Test Modulatory Hypotheses <3_2_0.rst> 
     Test for Individual Differences <3_3_0.rst> 
     Correlate with Other Variables/Constructs <3_4_0.rst> 

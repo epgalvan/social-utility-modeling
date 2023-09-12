@@ -1,2 +1,21 @@
 Recovering Free Parameters
 *************
+
+Goals During this Stage
+==========
+
+Now that we have our data, our first objective is to determine what the :bdg-success:`free parameters` are for each particular person. 
+This is because we need to know :bdg-success:`free parameters` for each person in order to determine what the model predicts that they will do: we need to compare model predicted :bdg-danger:`decisions` to observed :bdg-danger:`decisions`.
+
+.. dropdown:: Preallocating and Defining Functions
+
+.. dropdown:: Define the :bdg-success-line:`Subject` Loop
+
+.. dropdown:: Define the :bdg-primary-line:`Trial` Loop
+
+.. dropdown:: Define the :bdg-danger:`Choice` Loop
+
+
+
+Tutorial
+==========
