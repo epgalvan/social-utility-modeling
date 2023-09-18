@@ -208,9 +208,9 @@ This will enable us to test how well our model performed and classify what kind 
                                          lb = lower_bounds, ub = upper_bounds,
                                          decisions = df$Decisions)
 
-                        closestPoint = which(as.numeric(freeParameters[,1]) == as.numeric(round(result$par[1])) & as.numeric(freeParameters[,2]) == as.numeric(round(result$par[2])))
-
                         #Just Added
+
+                        closestPoint = which(as.numeric(freeParameters[,1]) == as.numeric(round(result$par[1])) & as.numeric(freeParameters[,2]) == as.numeric(round(result$par[2])))
                         df$Prediction = vector('numeric')
                         for (k in 1:length(df$Decisions)){
                             Utility = vector('numeric', length(Choices))
