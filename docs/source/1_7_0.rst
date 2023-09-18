@@ -13,6 +13,7 @@ Goals During this Stage
 ================
 
 To examine our model predictions in an efficient way and to potentially generate theoretical, sampling invariant, theoretically valid a priori groupings. 
+Essentially, this a valid, unbiased way to *classify* subjects' behavior in your task without making any arbitrary assertions about who falls into which group.
 
 .. _different clustering algorithms: https://www.freecodecamp.org/news/8-clustering-algorithms-in-machine-learning-that-all-data-scientists-should-know/
 

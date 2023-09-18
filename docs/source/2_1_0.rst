@@ -4,16 +4,268 @@ Recovering Free Parameters
 Goals During this Stage
 ==========
 
-Now that we have our data, our first objective is to determine what the :bdg-success:`free parameters` are for each particular person. 
-This is because we need to know :bdg-success:`free parameters` for each person in order to determine what the model predicts that they will do: we need to compare model predicted :bdg-danger:`decisions` to observed :bdg-danger:`decisions`.
+Now that we have our data, our first objective is to determine what the :bdg-success:`Free Parameters` are for each particular person. 
+This is because we need to know :bdg-success:`Free Parameters` for each person in order to determine what the model predicts that they will do: we need to compare model predicted :bdg-danger:`Decisions` to observed :bdg-danger:`Decisions`.
 
 .. dropdown:: Preallocating and Defining Functions
 
+    .. tab-set::
+
+            .. tab-item:: Plain English
+
+                Before we start recovering free parameters, we need to check off a pretty simple list. 
+                There are several functions and variables that we should already have: in the event that you are using a seperate workspace from your simulation, make sure that these are included.
+
+                1. :bdg-primary:`Trial` List - this should be in a certain order and have all of the trials that the subject has seen
+                2. :bdg-secondary:`Construct Value` Functions - this should relate :bdg-danger:`Decisions`, :bdg-primary:`Independent Variables`, and :bdg-primary:`Constants` to a number which encapsulates how much :bdg-danger:`Decisions` violate/follow a relevant norm
+                3. :bdg-secondary:`Utility` Function - this should be a function of :bdg-secondary:`Construct Value` and :bdg-success:`Free Parameters`
+                4. Your Objective Function - a function which takes :bdg-success:`Free Parameters` and :bdg-danger:`Decisions` and returns the error between Expected :bdg-secondary:`Utility` and Observed :bdg-secondary:`Utility`
+                5. Optimizer Inputs - the Initial Parameters and Boundaries for your Objective Function
+
+                Here, if we have a data set with subjects who are excluded, we need to know which subjects should be included in the analysis. 
+
+                1. A list of all subject folders/files that tell us which data to retrieve for analysis - these must include the subject ID to be able to be identifyied
+
+                We also need to preallocate the output of our analysis as well as the raw trial-by-trial data.
+
+                1. A trial-level data structure
+                2. A subject-level data structure
+
+            .. tab-item:: R
+
+                ::
+
+                    all_subjects = read.csv2() #a file with all subject names
+                    included_subjects = all_subjects$subjectID[-which(all_subjects$subjectID == excluded_subjects)]
+
+                    parentfolder = '' #the parentfolder where the subject folder/file is
+                    restoffilepath = '' #everything after the subject folder/file name
+
+                    trialData = data.frame()
+                    subjectData = data.frame()
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+                
+                ::
+
 .. dropdown:: Define the :bdg-success-line:`Subject` Loop
 
-.. dropdown:: Define the :bdg-primary-line:`Trial` Loop
+    .. tab-set::
 
-.. dropdown:: Define the :bdg-danger:`Choice` Loop
+            .. tab-item:: Plain English
+
+                We're going to start our most superior ``for`` loop which iterates over :bdg-success:`Subjects` included in our analysis. 
+                Before we start talking about recovering parameters, let's just make sure that we have our ducks in a row: 
+                
+                1. We need the data for this :bdg-success:`Subject``
+                2. The :bdg-danger:`Decisions` for this :bdg-success:`Subject` need to be in the same order as the :bdg-primary:`Trial` List we use in our Objective Function
+                3. We need to determine what is going to be outputted
+
+                .. dropdown:: So what are we starting with in this loop? 
+                        
+                    A :bdg-success:`Subject`
+
+                .. dropdown:: And what do we want to finish this loop with?
+
+                    :bdg-success:`Free Parameters` for this :bdg-success:`Subject` as well as all of the relevant variables for assessing our model. 
+                    Namely, this would be either be the Negative Log-Likelihood or Sum of Squared Errors of our model predictions. 
+
+                    We also want to output any variables we think will be relevant for additional analyses at a trial-level or at a subject-level.
+
+                .. dropdown:: So what do we need to preallocate before this loop starts?
+
+                    An output for the :bdg-success:`Free Parameters` we'll recover, along with any other subject information. 
+                    Also, we'll output all trial-by-trial :bdg-success:`Subject` data that will be relevant later.
+
+                    Both of these are already done, nice.
+
+                .. dropdown:: Then, what do we need to compute within this loop?
+
+                    :bdg-success:`Free Parameters`
+
+            .. tab-item:: R
+
+                ::
+
+                    for (i in 1:length(included_subjects)){
+                        datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                        df = read.csv2(datafile)
+                        reorder = df$trialsTask.thisIndex + 1
+
+                        #Determine Free Parameters
+
+                        subjectData[i, ] = #to determine
+                        trialData[start:end, ] = #to determine
+                    }
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+                
+                ::
+
+.. dropdown:: Recover :bdg-success-line:`Free Parameters`
+
+    .. tab-set::
+
+            .. tab-item:: Plain English
+
+                Now, we are going to answer the Determine Free Parameters demand placed on us in the :bdg-success:`Subject` loop, namely to recover :bdg-success-line:`Free Parameters`.
+                We only need to hand our Objective Function the :bdg-success:`Subject`'s data. 
+                Then, we need to store our data before we proceed to the next :bdg-success:`Subject`. 
+
+                .. dropdown:: So what are we starting with? 
+                        
+                    :bdg-danger:`Decisions`, correctly ordered
+
+                .. dropdown:: And what do we want to finish with?
+
+                    1. A single set of :bdg-success:`Free Parameters`
+                    2. The Model Error for your :bdg-success:`Free Parameters`
+
+                    A tip here, always name your columns immediately below your loop so that you don't forget what is what!
+
+                .. dropdown:: So what do we need to preallocate?
+
+                    Nothing, we've already got everything we need.
+
+                .. dropdown:: Then, what do we need to compute?
+
+                    Nothing more.
+
+            .. tab-item:: R
+
+                ::
+
+                    for (i in 1:length(included_subjects)){
+                        datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                        df = read.csv2(datafile)
+                        reorder = df$trialsTask.thisIndex + 1
+
+                        #Just Added
+
+                        result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                         lb = lower_bounds, ub = upper_bounds,
+                                         decisions = df$Decisions)
+
+                        closestPoint = which(as.numeric(freeParameters[,1]) == as.numeric(round(result$par[1])) & as.numeric(freeParameters[,2]) == as.numeric(round(result$par[2])))
+
+                        model_NLL = -2 * sum(dnorm(observed, mean = #Determine Predictions))
+                        model_SS = sum((df$Decision - #Determine Predictions)**2)
+
+                        subjectData[i, ] = c(included_subjects[i], result$par[1], result$par[2],  freeParameters$Strategy[closestPoint], model_NLL, model_SS) 
+                                            #add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
+                        
+                        start = length(subjectData[, 1]) + 1
+                        end = start + length(df$Decisions)
+                        trialData[start:end, 1] = included_subjects[i]
+                        trialData[start:end, 2] = df$IV
+                        trialData[start:end, 3] = df$Constant
+                        trialData[start:end, 4] = df$Decision
+                        trialData[start:end, 5] = #Determine Predictions
+                    }
+                    colnames(subjectData) = c('SubjectID', 'Parameter1', 'Parameter2', 'Strategy', 'modelNLL', 'modelSS')
+                    colnames(trialData) = c('SubjectID', 'IV', 'Constant', 'Decision', 'Prediction') 
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+                
+                ::
+
+.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success-line:`Free Parameters`
+
+    .. tab-set::
+
+            .. tab-item:: Plain English
+
+                Now, we are going to answer the Determine Predictions demand placed on us.
+                We have found the :bdg-success:`Subject`'s :bdg-success-line:`Free Parameters` so we need to specifically know what it is that our model predicts that they will do.
+                In the previous step, we could have cut a corner and gotten the predictions from the closest point we simulated data for. 
+                In all likelihood, the model predictions would be indistinguishable from these, but for the sake of being punctual let's get these predictions! 
+
+                .. dropdown:: So what are we starting with? 
+                        
+                    :bdg-success:`Free Parameters`, :bdg-danger:`Decisions`, and the :bdg-primary:`Trial` Set
+
+                .. dropdown:: And what do we want to finish with?
+
+                    Predicted :bdg-danger:`Decisions` and the Model Error (which we will compute by comparing Predicted-and-Observed :bdg-danger:`Decisions`)
+
+                .. dropdown:: So what do we need to preallocate?
+
+                    A vector for our predicted :bdg-danger:`Decisions`.
+
+                .. dropdown:: Then, what do we need to compute?
+
+                    Nothing more.
+
+            .. tab-item:: R
+
+                ::
+
+                    for (i in 1:length(included_subjects)){
+                        datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                        df = read.csv2(datafile)
+                        reorder = df$trialsTask.thisIndex + 1
+
+                        #Just Added
+
+                        result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                         lb = lower_bounds, ub = upper_bounds,
+                                         decisions = df$Decisions)
+
+                        closestPoint = which(as.numeric(freeParameters[,1]) == as.numeric(round(result$par[1])) & as.numeric(freeParameters[,2]) == as.numeric(round(result$par[2])))
+
+                        #Just Added
+                        df$Prediction = vector('numeric')
+                        for (k in 1:length(df$Decisions)){
+                            Utility = vector('numeric', length(Choices))
+                            for (n in 1:length(Choices)){
+                                Utility[n] = utility(parameter1 = results$par[1],
+                                                    parameter2 = results$par[2],
+                                                    construct = constructs(df$IV[k], df$Constant[k], Choices[n]))
+                            }
+                            correct_choice = which(Utility == max(Utility))
+                            if (length(correct_choice) > 1){
+                                correct_choice = correct_choice[sample(correct_choice, 1)]
+                            }
+                            df$Prediction[k] = Choices[correct_choice]
+                        }
+
+                        model_NLL = -2 * log(sum(dnorm(df$Decision, mean = df$Prediction)))
+                        model_SS = sum((df$Decision - df$Prediction)**2)
+
+                        subjectData[i, ] = c(included_subjects[i], result$par[1], result$par[2],  freeParameters$Strategy[closestPoint], model_NLL, modelSS) 
+                                            #add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
+                        
+                        start = length(subjectData[, 1]) + 1
+                        end = start + length(df$Decisions)
+                        trialData[start:end, 1] = included_subjects[i]
+                        trialData[start:end, 2] = df$IV
+                        trialData[start:end, 3] = df$Constant
+                        trialData[start:end, 4] = df$Decision
+                        trialData[start:end, 5] = df$Prediction
+                    }
+                    colnames(subjectData) = c('SubjectID', 'Parameter1', 'Parameter2', 'Strategy', 'modelNLL', 'modelSS')
+                    colnames(trialData) = c('SubjectID', 'IV', 'Constant', 'Decision', 'Prediction') 
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+                
+                ::
+
 
 
 
