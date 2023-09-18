@@ -4,7 +4,7 @@ Compute Model Fit Index
 Goals During this Stage
 ==========
 
-So now we should be ascertain the model predictions for each subject which we can compare to their actual behavior on each trial. 
+So now we should have the predicted :bdg-danger:`Decisions` for each :bdg-success:`Subject` which we can compare to the actual :bdg-danger:`Decisions` they made. 
 We mentioned already that this will enable us to determine how well the model performed, but how do we actually do this?
 We want to assess model accuracy: here, telling us how well our model predicts actual behavior **for each individual subject**. 
 In other words, if we determine the prediction error - for instance the sum of squared errors - which will tell us how accurate our model is. 
