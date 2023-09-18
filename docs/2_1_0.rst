@@ -127,10 +127,7 @@ This will enable us to test how well our model performed and classify what kind 
 
                 .. dropdown:: And what do we want to finish with?
 
-                    1. A single set of :bdg-success:`Free Parameters`
-                    2. The Model Error for your :bdg-success:`Free Parameters`
-
-                    A tip here, always name your columns immediately below your loop so that you don't forget what is what!
+                    A single set of :bdg-success:`Free Parameters`
 
                 .. dropdown:: So what do we need to preallocate?
 
@@ -185,6 +182,8 @@ This will enable us to test how well our model performed and classify what kind 
                 .. dropdown:: And what do we want to finish with?
 
                     Predicted :bdg-danger:`Decisions` and the Model Error (which we will compute by comparing Predicted-and-Observed :bdg-danger:`Decisions`)
+
+                    A tip here, always name your columns immediately below your loop so that you don't forget what is what!
 
                 .. dropdown:: So what do we need to preallocate?
 
