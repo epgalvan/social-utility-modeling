@@ -27,31 +27,33 @@ So how do we mathematically do this?
 
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`
 
-    .. tab-item:: Plain English
+    .. tab-set::
 
-        AIC is calculated as ``NLL + 2k`` while BIC is calculated as ``NLL + ln(N) * k``
-        For both NLL is -2 times the log likelihood of our :bdg-success:`Subject`'s data (we calculated this already), k is the number of Free Parameters in our data, and N is the number of observations (i.e. trials).
-        
-        Alternatively, if model errors are normally distributed, NLL can be replaced with ``N * ln(SS/N)`` where SS is the sum of squared errors between model predictions and observed values. 
-        If you are using a generalized model, your conclusions rely on this assumption. 
-        This is because if you are *choosing* to overlook aspects of the data generation process by not modeling noise or biases, you must create a design wherein these tendencies produce random, rather than systematic, noise. 
-        Otherwise, you might very well end up fitting this systematic noise which means that your conclusions might be wrong and are certainly invalid.
+        .. tab-item:: Plain English
 
-        We've been very focused on making our models generalizable, so we would use the AIC with the latter formulation but we'll compute the BIC in both formulations for an example here. 
-        Remember our model has two free parameters.
+            AIC is calculated as ``NLL + 2k`` while BIC is calculated as ``NLL + ln(N) * k``
+            For both NLL is -2 times the log likelihood of our :bdg-success:`Subject`'s data (we calculated this already), k is the number of Free Parameters in our data, and N is the number of observations (i.e. trials).
+            
+            Alternatively, if model errors are normally distributed, NLL can be replaced with ``N * ln(SS/N)`` where SS is the sum of squared errors between model predictions and observed values. 
+            If you are using a generalized model, your conclusions rely on this assumption. 
+            This is because if you are *choosing* to overlook aspects of the data generation process by not modeling noise or biases, you must create a design wherein these tendencies produce random, rather than systematic, noise. 
+            Otherwise, you might very well end up fitting this systematic noise which means that your conclusions might be wrong and are certainly invalid.
 
-    .. tab-item:: R
+            We've been very focused on making our models generalizable, so we would use the AIC with the latter formulation but we'll compute the BIC in both formulations for an example here. 
+            Remember our model has two free parameters.
 
-        N = length(trialList[, 1])
-        k = 2
-        subjectData$modelAIC = N * log(subjectData$modelSS/N) + 2*k
-        subjectData$modelAICStandard = subjectData$modelNLL + 2*k
-        subjectData$modelBIC = N * log(subjectData$modelSS/N) + log(N)*k
-        subjectData$modelBICStandard = subjectData$modelNLL + log(N)*k
+        .. tab-item:: R
 
-    .. tab-item:: MatLab
+            N = length(trialList[, 1])
+            k = 2
+            subjectData$modelAIC = N * log(subjectData$modelSS/N) + 2*k
+            subjectData$modelAICStandard = subjectData$modelNLL + 2*k
+            subjectData$modelBIC = N * log(subjectData$modelSS/N) + log(N)*k
+            subjectData$modelBICStandard = subjectData$modelNLL + log(N)*k
 
-    .. tab-item:: Python
+        .. tab-item:: MatLab
+
+        .. tab-item:: Python
 
         
 
