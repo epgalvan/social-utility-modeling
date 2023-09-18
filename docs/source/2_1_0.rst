@@ -52,7 +52,7 @@ This is because we need to know :bdg-success:`Free Parameters` for each person i
                 
                 ::
 
-.. dropdown:: Define the :bdg-success-line:`Subject` Loop
+.. dropdown:: Define the :bdg-success:`Subject` Loop
 
     .. tab-set::
 
@@ -110,13 +110,13 @@ This is because we need to know :bdg-success:`Free Parameters` for each person i
                 
                 ::
 
-.. dropdown:: Recover :bdg-success-line:`Free Parameters`
+.. dropdown:: Recover :bdg-success:`Free Parameters`
 
     .. tab-set::
 
             .. tab-item:: Plain English
 
-                Now, we are going to answer the Determine Free Parameters demand placed on us in the :bdg-success:`Subject` loop, namely to recover :bdg-success-line:`Free Parameters`.
+                Now, we are going to answer the Determine Free Parameters demand placed on us in the :bdg-success:`Subject` loop, namely to recover :bdg-success:`Free Parameters`.
                 We only need to hand our Objective Function the :bdg-success:`Subject`'s data. 
                 Then, we need to store our data before we proceed to the next :bdg-success:`Subject`. 
 
@@ -181,14 +181,14 @@ This is because we need to know :bdg-success:`Free Parameters` for each person i
                 
                 ::
 
-.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success-line:`Free Parameters`
+.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success:`Free Parameters`
 
     .. tab-set::
 
             .. tab-item:: Plain English
 
                 Now, we are going to answer the Determine Predictions demand placed on us.
-                We have found the :bdg-success:`Subject`'s :bdg-success-line:`Free Parameters` so we need to specifically know what it is that our model predicts that they will do.
+                We have found the :bdg-success:`Subject`'s :bdg-success:`Free Parameters` so we need to specifically know what it is that our model predicts that they will do.
                 In the previous step, we could have cut a corner and gotten the predictions from the closest point we simulated data for. 
                 In all likelihood, the model predictions would be indistinguishable from these, but for the sake of being punctual let's get these predictions! 
 
