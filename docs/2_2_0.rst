@@ -6,7 +6,7 @@ Goals During this Stage
 
 So now we should have the predicted :bdg-danger:`Decisions` for each :bdg-success:`Subject` which we can compare to the actual :bdg-danger:`Decisions` they made. 
 We mentioned already that this will enable us to determine how well the model performed, but how do we actually do this?
-We want to assess model accuracy: here, telling us how well our model predicts actual behavior **for each individual subject**. 
+We want to assess model accuracy: here, telling us how well our model predicts actual behavior **for each individual** :bdg-success:`Subject`. 
 In other words, if we determine the prediction error - for instance the sum of squared errors - which will tell us how accurate our model is. 
 However, we also want to penalize models for having more and more parameters. 
 So how do we mathematically do this?
