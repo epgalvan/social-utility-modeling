@@ -19,13 +19,13 @@ This will enable us to test how well our model performed and classify what kind 
 
                 1. :bdg-primary:`Trial` List - this should be in a certain order and have all of the trials that the subject has seen
                 2. :bdg-secondary:`Construct Value` Functions - this should relate :bdg-danger:`Decisions`, :bdg-primary:`Independent Variables`, and :bdg-primary:`Constants` to a number which encapsulates how much :bdg-danger:`Decisions` violate/follow a relevant norm
-                3. :bdg-secondary:`Utility` Function - this should be a function of :bdg-secondary:`Construct Value` and :bdg-success:`Free Parameters`
+                3. :bdg-secondary:`Utility` Function - this should be a function of :bdg-secondary:`Construct Values` and :bdg-success:`Free Parameters`
                 4. Your Objective Function - a function which takes :bdg-success:`Free Parameters` and :bdg-danger:`Decisions` and returns the error between Expected :bdg-secondary:`Utility` and Observed :bdg-secondary:`Utility`
                 5. Optimizer Inputs - the Initial Parameters and Boundaries for your Objective Function
 
                 Here, if we have a data set with subjects who are excluded, we need to know which subjects should be included in the analysis. 
 
-                1. A list of all subject folders/files that tell us which data to retrieve for analysis - these must include the subject ID to be able to be identifyied
+                1. A list of all subject folders/files that tell us which data to retrieve for analysis - these must include the subject ID to be able to be identified
 
                 We also need to preallocate the output of our analysis as well as the raw trial-by-trial data.
 
@@ -118,7 +118,7 @@ This will enable us to test how well our model performed and classify what kind 
             .. tab-item:: Plain English
 
                 Now, we are going to answer the Determine Free Parameters demand placed on us in the :bdg-success:`Subject` loop, namely to recover :bdg-success:`Free Parameters`.
-                We only need to hand our Objective Function the :bdg-success:`Subject`'s data. 
+                We first need to hand our Objective Function the :bdg-success:`Subject`'s data. 
                 Then, we need to store our data before we proceed to the next :bdg-success:`Subject`. 
 
                 .. dropdown:: So what are we starting with? 
@@ -138,7 +138,7 @@ This will enable us to test how well our model performed and classify what kind 
 
                 .. dropdown:: Then, what do we need to compute?
 
-                    Nothing more.
+                    We need to get data about what the model actually predicts based on the recovered :bdg-success:`Free Parameters`.
 
             .. tab-item:: R
 
@@ -155,24 +155,9 @@ This will enable us to test how well our model performed and classify what kind 
                                          lb = lower_bounds, ub = upper_bounds,
                                          decisions = df$Decisions)
 
-                        closestPoint = which(as.numeric(freeParameters[,1]) == as.numeric(round(result$par[1])) & as.numeric(freeParameters[,2]) == as.numeric(round(result$par[2])))
-
-                        model_NLL = -2 * sum(dnorm(observed, mean = #Determine Predictions))
-                        model_SS = sum((df$Decision - #Determine Predictions)**2)
-
-                        subjectData[i, ] = c(included_subjects[i], result$par[1], result$par[2],  freeParameters$Strategy[closestPoint], model_NLL, model_SS) 
-                                            #add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
-                        
-                        start = length(subjectData[, 1]) + 1
-                        end = start + length(df$Decisions)
-                        trialData[start:end, 1] = included_subjects[i]
-                        trialData[start:end, 2] = df$IV
-                        trialData[start:end, 3] = df$Constant
-                        trialData[start:end, 4] = df$Decision
-                        trialData[start:end, 5] = #Determine Predictions
+                        # Determine Predictions
                     }
-                    colnames(subjectData) = c('SubjectID', 'Parameter1', 'Parameter2', 'Strategy', 'modelNLL', 'modelSS')
-                    colnames(trialData) = c('SubjectID', 'IV', 'Constant', 'Decision', 'Prediction') 
+                    
 
             .. tab-item:: MatLab
 
