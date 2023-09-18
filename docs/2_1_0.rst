@@ -4,8 +4,9 @@ Recovering Free Parameters
 Goals During this Stage
 ==========
 
-Now that we have our data, our first objective is to determine what the :bdg-success:`Free Parameters` are for each particular person. 
-This is because we need to know :bdg-success:`Free Parameters` for each person in order to determine what the model predicts that they will do: we need to compare model predicted :bdg-danger:`Decisions` to observed :bdg-danger:`Decisions`.
+Now that we have our data, our first objective is to determine what the :bdg-success:`Free Parameters` are for each :bdg-success:`Subject`. 
+This is because we need to know *who* our :bdg-success:`Subjects` are according to our model. 
+This will enable us to test how well our model performed and classify what kind of :bdg-success:`Subjects` we have if we are using an a priori clustering approach
 
 .. dropdown:: Preallocating and Defining Functions
 
