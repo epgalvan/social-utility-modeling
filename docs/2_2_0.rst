@@ -23,7 +23,7 @@ So how do we mathematically do this?
     The BIC is superior to the AIC at detecting the model which created data. 
     On the other hand, AIC is favorable if you believe that none of the models that you propose are the true data generation process.
     AIC is superior at identifying the best approximation of the data generation process.
-    Therefore, you should use AIC for generalized models (models without :bdg-success:`Free Parameters` characterizing the actual Decision-Making Process such as noise, bias, or inverse heat :bdg-success:`Free Parameters`)
+    Therefore, you should use AIC for generalized models (models without :bdg-success:`Free Parameters` characterizing the actual Decision-Making Process such as noise, bias, or stochastic selection (i.e. inverse heat) :bdg-success:`Free Parameters`)
 
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`
 
