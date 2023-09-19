@@ -22,9 +22,9 @@ We want to mathematically model the data generation process - in other words, de
 1. For each motive you have identified, create a function which takes :bdg-danger:`Decisions`, :bdg-primary:`Independent Variables`, and :bdg-primary:`Constants` as inputs, 
 and outputs a value which reflects the :bdg-secondary:`Construct Value` of such a motive based on :bdg-danger:`Decisions`.
 
-.. dropdown:: Conceptual Examples of :bdg-secondary:`construct value` Formulations
+.. dropdown:: Conceptual Examples of :bdg-secondary:`Construct Value` Formulations
 
-    Here the :bdg-danger:`decision` (the chosen option) is represented as Decision, the option which most closely follows the norm is represented as Norm, and the option which most strongly violates the norm is represented as Maximum Norm Violation. 
+    Here the :bdg-danger:`Decision` (the chosen option) is represented as Decision, the option which most closely follows the norm is represented as Norm, and the option which most strongly violates the norm is represented as Maximum Norm Violation. 
 
     .. Note::
 
@@ -155,7 +155,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
     Please be aware that no examples are given in the documentation for alternative models.
 
 
-.. dropdown:: For each motive you have identified, create a function which takes :bdg-danger:`decisions` as an input, where :bdg-primary:`independent variables` and :bdg-primary:`constants` are already defined, and outputs a value which scales with motive as a function of :bdg-danger:`decisions`.
+.. dropdown:: For each motive you have identified, create a function which takes :bdg-danger:`Decisions` as an input, where :bdg-primary:`Independent Variables` and :bdg-primary:`Constants` are already defined, and outputs a value which scales with motive as a function of :bdg-danger:`Decisions`.
 
     .. dropdown:: Greed
 
@@ -313,7 +313,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                     def guilt(investment, believed_multiplier, returned, multiplier):
                         return ((((investment * believed_multiplier)/2 - returned) / (investment * multiplier))**2)
 
-.. dropdown:: Identify which :bdg-success:`free parameters` are relevant for each :bdg-secondary:`construct value` in determining :bdg-warning:`Utility`
+.. dropdown:: Identify which :bdg-success:`Free Parameters` are relevant for each :bdg-secondary:`Construct Value` in determining :bdg-warning:`Utility`
 
     1. :bdg-secondary-line:`Payout Maximization` - :bdg-success-line:`D1`  
     2. :bdg-secondary-line:`Equity Achieved` - :bdg-success-line:`D1` & :bdg-success-line:`D2` 
@@ -328,7 +328,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         
         The dimension we created dichtomize one preference against another: thus, we can just as reasonably take the inverse.
 
-.. dropdown:: Identify how each :bdg-secondary:`construct value` mathematically interacts with the relevant :bdg-success:`free parameters` to determine :bdg-warning:`Utility`
+.. dropdown:: Identify how each :bdg-secondary:`Construct Value` mathematically interacts with the relevant :bdg-success:`Free Parameters` to determine :bdg-warning:`Utility`
 
     :bdg-warning:`Utility` = :bdg-secondary-line:`Payout_Maximization` × :bdg-success-line:`Θ`  - (1 - :bdg-success-line:`Θ` ) × min( :bdg-secondary-line:`Guilt` +  :bdg-success-line:`Φ` , :bdg-secondary-line:`Inequity` -  :bdg-success-line:`Φ` )
     
