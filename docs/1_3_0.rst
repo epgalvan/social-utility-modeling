@@ -28,7 +28,7 @@ where the situation as defined by the :bdg-primary:`independent variables` and :
 By now, you should have a conceptual model of how :bdg-primary:`independent variables`, :bdg-primary:`constants` , and :bdg-danger:`decisions` relate to the :bdg-success:`meaningful psychological differences between people` identified by each hypothesis, 
 so you can proceed to actually designing the equation. 
 
-Tutorial
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 ================
 
 .. dropdown:: For each hypothesis, think of the central appetitive or aversive motive that would lead people to make such :bdg-danger:`decisions`.

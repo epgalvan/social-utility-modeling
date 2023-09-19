@@ -22,7 +22,7 @@ To develop a clear research question that goes to higher-level (i.e. psychologic
     It's a potentially wasteful and inefficient way to conduct research, but I can personally attest to the fact that I have observed people successfully complete Master's, Ph.D.'s, and Postdocs with this logic. 
     The ability to work backwards is not true of computational modeling: if you attempt to apply this logic when utilizing computational modeling, you will almost certainly end up arriving at wrong and uninterpretable results and, if you somehow arrive at the correct result, you will have spent much more time overcoming your lack of forethought than if you had thought your analysis through beforehand.
 
-Tutorial
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 ================
 
 .. dropdown:: Create a Research Question

@@ -10,9 +10,11 @@ Overview
     :read-time: 2 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-The tutorial we will be walking through will be on a data set from `van Baar, Chang, & Sanfey, 2019`_
-To access this dataset, go to ().
-We will work through each step as though we want to conduct the research ourselves. 
+We will have 2 tutorials: the first one will be on a data set from `van Baar, Chang, & Sanfey, 2019`_ and the second will be on a data set from Galvan & Sanfey, forthcoming.
+For both tutorials, we will work through each step as though we want to conduct the research ourselves. 
+The first tutorial is more simple in the sense that there is only one condition - the second tutorial has four different conditions.
+
+Both data sets can be publicly downloaded at the Radboud Data Repository: 
 
 Before Data Collection
 ==========

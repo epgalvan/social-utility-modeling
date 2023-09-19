@@ -133,7 +133,7 @@ Essentially, this a valid, unbiased way to *classify* subjects' behavior in your
                 :figwidth: 100%
                 :align: center
 
-Tutorial
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 ================
 
 .. dropdown:: Cluster Your Data Using HAC

@@ -144,7 +144,7 @@ Otherwise, think about how you can fix it so that it will make sense.
 
         :bdg-secondary:`SN2 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
 
-Tutorial
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 ================
 
 .. Note::

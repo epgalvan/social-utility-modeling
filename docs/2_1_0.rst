@@ -251,8 +251,5 @@ This will enable us to test how well our model performed and classify what kind 
                 
                 ::
 
-
-
-
 Tutorial
 ==========

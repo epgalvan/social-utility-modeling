@@ -425,7 +425,7 @@ Seems easy enough right?
 
 
 
-Tutorial
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 ================
 .. dropdown:: Preallocating, Defining Functions, Defining Trial List, and Defining Parameters
 

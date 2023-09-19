@@ -293,7 +293,7 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
     If you fail to do this, you can still catch your mistake during data analysis, but the computational power to estimate :bdg-success:`Free Parameters` for your sample will be much greater, the time and effort involved to correct this error will be much greater, and you will have deviated from your preregistration -all of which you can avoided by simply being punctual. 
     This, again, is a theme: putting in a little extra time and effort will save you later!
 
-Tutorial
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 ================
 
 .. dropdown:: Objective Functions
