@@ -10,16 +10,19 @@ To do this, we need to briefly get the model error for each alternative model.
 Then we can simply figure out which model error is lowest on average: just like golf, lower scores mean better performance. 
 
 .. Note::
+
     Now if you've been following along, you've probably realized that we've only talked so far about a single model - I'll briefly explain why. 
-    We use Social Utility Models to encapsulate individual differences in value based preferences and exisiting research on this topic essentially shows that *in most ways that there could be meaningful individual differences*, **there usually are**. 
-    Thus, we always try to design experiments around trying to see this individual differences in behavior and our "favored" model - the one we think will best fit the data.
-    This favored model is usually the most complex model because it captures all of the ways that people could be different.
+    We use Social Utility Models to encapsulate individual differences in value based preferences and exisiting research on this topic essentially shows that **people are usually different in most conceivable ways**. 
+    Thus, we always try to design experiments around trying to see this individual differences in behavior and our "favored" model - the one we think will best fit the data - is the one which captures all of these differences.
+    Since the favored model must capture all meaningful potential differences, it is therefore the most complex model that we will test.
 
     So why are we reiterating this now? 
     Well, the answer is that any *other types* of models you test on value-based decision-making behavior in non-forced, non-probabilistic, social choice tasks are almost always going to perform much worse. 
     These tasks are designed to elicit consistent, well-defined preferences with a very high signal to noise ratio: therefore, models capturing other aspects of the decision-making process other than these preferences are theoretically and pragmatically inferior in these scenarios. 
     All of this to say, we are going to test this favored model - which is the most complex model - against models which are simplifications of this model.
     Thus, we can use the same :bdg-secondary:`Construct Value` computations, removing one of these :bdg-secondary:`Construct Value` computations from the utility equation and a :bdg-success:`Free Parameter` per model.
+
+.. dropdown:: 
 
 Tutorial
 ==========
