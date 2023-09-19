@@ -19,8 +19,8 @@ This will enable us to test how well our model performed and classify what kind 
 
                 1. :bdg-primary:`Trial` List - this should be in a certain order and have all of the trials that the subject has seen
                 2. :bdg-secondary:`Construct Value` Functions - this should relate :bdg-danger:`Decisions`, :bdg-primary:`Independent Variables`, and :bdg-primary:`Constants` to a number which encapsulates how much :bdg-danger:`Decisions` violate/follow a relevant norm
-                3. :bdg-secondary:`Utility` Function - this should be a function of :bdg-secondary:`Construct Values` and :bdg-success:`Free Parameters`
-                4. Your Objective Function - a function which takes :bdg-success:`Free Parameters` and :bdg-danger:`Decisions` and returns the error between Expected :bdg-secondary:`Utility` and Observed :bdg-secondary:`Utility`
+                3. :bdg-warning:`Utility` Function - this should be a function of :bdg-secondary:`Construct Values` and :bdg-success:`Free Parameters`
+                4. Your Objective Function - a function which takes :bdg-success:`Free Parameters` and :bdg-danger:`Decisions` and returns the error between Expected :bdg-warning:`Utility` and Observed :bdg-warning:`Utility`
                 5. Optimizer Inputs - the Initial Parameters and Boundaries for your Objective Function
 
                 Here, if we have a data set with subjects who are excluded, we need to know which subjects should be included in the analysis. 

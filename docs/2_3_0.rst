@@ -22,7 +22,7 @@ Then we can simply figure out which model error is lowest on average: just like 
     All of this to say, we are going to test this favored model - which is the most complex model - against models which are simplifications of this model.
     Thus, we can use the same :bdg-secondary:`Construct Value` computations, removing one of these :bdg-secondary:`Construct Value` computations from the utility equation and a :bdg-success:`Free Parameter` per model.
 
-.. dropdown:: 
+.. dropdown:: Create :bdg-warning:`Utility` Equations for our Alternative Models
 
 Tutorial
 ==========

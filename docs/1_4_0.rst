@@ -19,8 +19,8 @@ We want to mathematically model the data generation process - in other words, de
     Mathematically modeling the data generation process is the most difficult step in the computational modeling process: there is no objectively correct way to go about it. 
     With that said, I believe that this is achievable in a timely manner when given the correct goals and a useful framework. 
 
-1. For each motive you have identified, create a function which takes :bdg-danger:`decisions`, :bdg-primary:`independent variables`, and :bdg-primary:`constants` as inputs, 
-and outputs a value which reflects the :bdg-secondary:`construct value` of such a motive based on :bdg-danger:`decisions`.
+1. For each motive you have identified, create a function which takes :bdg-danger:`Decisions`, :bdg-primary:`Independent Variables`, and :bdg-primary:`Constants` as inputs, 
+and outputs a value which reflects the :bdg-secondary:`Construct Value` of such a motive based on :bdg-danger:`Decisions`.
 
 .. dropdown:: Conceptual Examples of :bdg-secondary:`construct value` Formulations
 
@@ -61,12 +61,12 @@ and outputs a value which reflects the :bdg-secondary:`construct value` of such 
 
 
 
-If you plot the output (let's call this our :bdg-secondary:`construct values` ) against :bdg-danger:`decisions` for a few trials (with a few example combinations of :bdg-primary:`independent variables` ) and it makes sense to you, then great job! 
+If you plot the output (let's call this our :bdg-secondary:`Construct Values` ) against :bdg-danger:`Decisions` for a few trials (with a few example combinations of :bdg-primary:`Independent Variables` ) and it makes sense to you, then great job! 
 Otherwise, think about how you can fix it so that it will make sense. 
 
-2. Identify which :bdg-success:`free parameters` are relevant for each :bdg-secondary:`construct value` in determining :bdg-warning:`Utility`
+2. Identify which :bdg-success:`Free Parameters` are relevant for each :bdg-secondary:`Construct Value` in determining :bdg-warning:`Utility`
 
-3. Identify how each :bdg-secondary:`construct value` mathematically interacts with the relevant :bdg-success:`free parameters` to determine :bdg-warning:`Utility`.
+3. Identify how each :bdg-secondary:`Construct Value` mathematically interacts with the relevant :bdg-success:`Free Parameters` to determine :bdg-warning:`Utility`.
 
 .. dropdown:: General :bdg-warning:`Utility` Equation Formulation
 

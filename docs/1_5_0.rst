@@ -46,7 +46,7 @@ Seems easy enough right?
 
                 2. Define Your Functions
 
-                * Define the value of all :bdg-secondary:`Construct Value` functions and the :bdg-secondary:`Utility` function
+                * Define the value of all :bdg-secondary:`Construct Value` functions and the :bdg-warning:`Utility` function
 
                 3. Define Your Parameters
 
@@ -230,8 +230,8 @@ Seems easy enough right?
 
             .. dropdown:: Then, what do we need to compute within this loop?
 
-                We need to compute the :bdg-secondary:`Utility` for all possible :bdg-danger:`Decisions` in this :bdg-primary:`Trial`. 
-                Then, we need to save the :bdg-danger:`Decision` which results in the greatest :bdg-secondary:`Utility`.
+                We need to compute the :bdg-warning:`Utility` for all possible :bdg-danger:`Decisions` in this :bdg-primary:`Trial`. 
+                Then, we need to save the :bdg-danger:`Decision` which results in the greatest :bdg-warning:`Utility`.
 
         .. tab-item:: R
 
@@ -314,15 +314,15 @@ Seems easy enough right?
 
                     .. dropdown:: And what do we want to finish this loop with?
 
-                        The :bdg-secondary:`Utility` which would be derived for all :bdg-danger:`Decisions` on this :bdg-primary:`Trial`. 
+                        The :bdg-warning:`Utility` which would be derived for all :bdg-danger:`Decisions` on this :bdg-primary:`Trial`. 
 
                     .. dropdown:: So what do we need to preallocate before this loop starts?
 
-                        A vector for :bdg-secondary:`Utility` which has the same length as all possible :bdg-danger:`Decisions`. 
+                        A vector for :bdg-warning:`Utility` which has the same length as all possible :bdg-danger:`Decisions`. 
                         
                         Also, let's remember that it's possible that multiple :bdg-danger:`Decisions` will maximize utility. 
                         Therefore, let's make sure that our script doesn't error by potentially outputting multiple :bdg-danger:`Decisions` predictions - we'll randomly select between whichever maximizes utility. 
-                        Let's also output a vector which keeps track of the number of :bdg-primary:`Trials` where multiple :bdg-danger:`Decisions` maximize :bdg-secondary:`Utility` (i.e. our model makes non-specific predictions) for each pair of :bdg-success:`Free Parameters`. 
+                        Let's also output a vector which keeps track of the number of :bdg-primary:`Trials` where multiple :bdg-danger:`Decisions` maximize :bdg-warning:`Utility` (i.e. our model makes non-specific predictions) for each pair of :bdg-success:`Free Parameters`. 
                         A few of :bdg-primary:`Trials` for a few :bdg-success:`Free Parameters` is acceptable, but let's just keep an eye on it. 
 
                     .. dropdown:: Then, what do we need to compute within this loop?
