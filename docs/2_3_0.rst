@@ -139,25 +139,7 @@ Then we can simply figure out which model error is lowest on average: just like 
                 Now, we are going to answer the Determine Predictions demand placed on us.
                 We have found the :bdg-success:`Subject`'s :bdg-success:`Free Parameters` so we need to specifically know what it is that our model predicts that they will do.
                 In the previous step, we could have cut a corner and gotten the predictions from the closest point we simulated data for. 
-                In all likelihood, the model predictions would be indistinguishable from these, but for the sake of being punctual let's get these predictions! 
-
-                .. dropdown:: So what are we starting with? 
-                        
-                    :bdg-success:`Free Parameters`, :bdg-danger:`Decisions`, and the :bdg-primary:`Trial` Set
-
-                .. dropdown:: And what do we want to finish with?
-
-                    Predicted :bdg-danger:`Decisions` and the Model Error (which we will compute by comparing Predicted-and-Observed :bdg-danger:`Decisions`)
-
-                    A tip here, always name your columns immediately below your loop so that you don't forget what is what!
-
-                .. dropdown:: So what do we need to preallocate?
-
-                    A vector for our predicted :bdg-danger:`Decisions`.
-
-                .. dropdown:: Then, what do we need to compute?
-
-                    Nothing more.
+                In all likelihood, the model predictions would be indistinguishable from these, but for the sake of being punctual let's get these predictions in the same way we did with our favored model!
 
             .. tab-item:: R
 
