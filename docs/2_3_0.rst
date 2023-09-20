@@ -24,5 +24,232 @@ Then we can simply figure out which model error is lowest on average: just like 
 
 .. dropdown:: Create :bdg-warning:`Utility` Equations for our Alternative Models
 
+    Generally, you should first enumerate all of the reasonable potential alternative models. 
+    This means that if you have a model with 3 different :bdg-secondary:`Construct Value` terms (as most models that we will talk about indeed do) then the alternative model set would include models with only 2 or 1 :bdg-secondary:`Construct Value` terms.
+    Are any models not worth testing? 
+    Then don't include them. 
+    For every model we think is worth testing, let's talk about how you're going to go about testing them.
+
+    Any models that we want to test with one :bdg-secondary:`Construct Value` term are really, really simple - :bdg-warnings:`Utility` = :bdg-secondary:`Construct Value`. 
+    Notice that there are no :bdg-success:`Free Parameters` in this Equation - since only one :bdg-secondary:`Construct Value` determines :bdg-warnings:`Utility`, there is no way that it can capture individual differences. 
+
+    The models that we want to test with two :bdg-secondary:`Construct Value` terms are also pretty simple - we want to capture how people prioritize one norm over another. 
+    Thus, we express this as :bdg-warnings:`Utility` = (:bdg-secondary:`Construct Value 1` x :bdg-success:`Free Parameter`) + (:bdg-secondary:`Construct Value 2` x (1 - :bdg-success:`Free Parameter`)).
+
+.. dropdown:: Preallocating and Defining Functions 
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            We're going to need several items for this section:
+
+            1. :bdg-warnings:`Utility` Functions for each each Model
+            2. Objective Functions for each :bdg-warnings:`Utility` Equation with :bdg-success:`Free Parameters`
+            3. New Optimizer Inputs for each :bdg-warnings:`Utility` Equation with :bdg-success:`Free Parameters`
+            4. Outputs for the Alternative Models
+        
+        .. tab-item:: R
+
+            :: 
+
+                utility_alt1 = function(construct1){
+                    return(utility)
+                }
+                utility_alt2 = function(construct1, construct2, parameter1){
+                    return(utility)
+                }
+
+                #alternative model with 1 construct has 0 free parameters: doesn't need an objective function
+
+                obj_function_alt2 = function(param, decisions, method = "OLS") {
+                    Parameter1 = param[1]
+                    
+                    predicted_utility = vector('numeric', length(trialList[,1]))
+                    chosen = decisions + 1
+                    for (k in 1:length(trialList[,1])){
+                        IV = trialList[k, 1]
+                        Constant = trialList[k, 2]
+                        Choices = seq(0, (I * M), 1)
+                        
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                        Utility[n] = utility_alt2(Parameter1, construct1(IV, Constant, Choices[n]))
+                        }
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[chosen[k]]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                }
+
+                initial_param_alt2 = #something
+                lower_bound_alt2 = #something
+                upper_bound_alt2 = #something
+
+                altSubjectData = data.frame()
+}
+
+        .. tab-item:: MatLab
+
+        .. tab-item:: Python
+
+
+
+.. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+           For the alternative models with :bdg-success:`Free Parameters`, we'll need to recover these :bdg-success:`Free Parameters` in order to generate model predictions. 
+           Let's do that quickly in the same way that we did for the other model, leaving a demand to subsequently determine model predictions.
+           
+           .. Note::
+            
+                Models with only one :bdg-success:`Free Parameter` may require a different optimzer than models with multiple :bdg-success:`Free Parameters`. 
+                However, you won't have to change anything about how your objective function works or anything like that so don't worry!
+        
+        .. tab-item:: R
+
+            :: 
+
+                for (i in 1:length(included_subjects)){
+                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    df = read.csv2(datafile)
+                    reorder = df$trialsTask.thisIndex + 1
+
+                    result_alt2 = optim(obj_function_alt2, par = initial_param_alt2, lower = lower_bound_alt2, upper = upper_bound_alt2, decisions = df$Decisions)
+
+                    # Determine Predictions
+                }
+
+        .. tab-item:: MatLab
+
+        .. tab-item:: Python
+
+.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
+
+    .. tab-set::
+
+            .. tab-item:: Plain English
+
+                Now, we are going to answer the Determine Predictions demand placed on us.
+                We have found the :bdg-success:`Subject`'s :bdg-success:`Free Parameters` so we need to specifically know what it is that our model predicts that they will do.
+                In the previous step, we could have cut a corner and gotten the predictions from the closest point we simulated data for. 
+                In all likelihood, the model predictions would be indistinguishable from these, but for the sake of being punctual let's get these predictions! 
+
+                .. dropdown:: So what are we starting with? 
+                        
+                    :bdg-success:`Free Parameters`, :bdg-danger:`Decisions`, and the :bdg-primary:`Trial` Set
+
+                .. dropdown:: And what do we want to finish with?
+
+                    Predicted :bdg-danger:`Decisions` and the Model Error (which we will compute by comparing Predicted-and-Observed :bdg-danger:`Decisions`)
+
+                    A tip here, always name your columns immediately below your loop so that you don't forget what is what!
+
+                .. dropdown:: So what do we need to preallocate?
+
+                    A vector for our predicted :bdg-danger:`Decisions`.
+
+                .. dropdown:: Then, what do we need to compute?
+
+                    Nothing more.
+
+            .. tab-item:: R
+
+                ::
+
+                    for (i in 1:length(included_subjects)){
+                        datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                        df = read.csv2(datafile)
+                        reorder = df$trialsTask.thisIndex + 1
+
+                        result_alt2 = optim(obj_function_alt2, par = initial_param_alt2, lower = lower_bound_alt2, upper = upper_bound_alt2, decisions = df$Decisions)
+
+                        #Just Added
+                        
+                        df$PredictionAlt1 = vector('numeric')
+                        df$PredictionAlt2 = df$PredictionAlt1
+                        for (k in 1:length(df$Decisions)){
+                            UtilityAlt1 = vector('numeric', length(Choices))
+                            UtilityAlt2 = vector('numeric', length(Choices))
+                            for (n in 1:length(Choices)){
+                                Utility[n] = utility(parameter1 = results$par[1],
+                                                    parameter2 = results$par[2],
+                                                    construct = constructs(df$IV[k], df$Constant[k], Choices[n]))
+                            }
+                            correct_choice = which(Utility == max(Utility))
+                            if (length(correct_choice) > 1){
+                                correct_choice = correct_choice[sample(correct_choice, 1)]
+                            }
+                            df$Prediction[k] = Choices[correct_choice]
+                        }
+
+                        model_NLL = -2 * log(sum(dnorm(df$Decision, mean = df$Prediction)))
+                        model_SS = sum((df$Decision - df$Prediction)**2)
+
+                        subjectData[i, ] = c(included_subjects[i], result$par[1], result$par[2],  freeParameters$Strategy[closestPoint], model_NLL, modelSS) 
+                                            #add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
+                        
+                        start = length(subjectData[, 1]) + 1
+                        end = start + length(df$Decisions)
+                        trialData[start:end, 1] = included_subjects[i]
+                        trialData[start:end, 2] = df$IV
+                        trialData[start:end, 3] = df$Constant
+                        trialData[start:end, 4] = df$Decision
+                        trialData[start:end, 5] = df$Prediction
+                    }
+                    colnames(subjectData) = c('SubjectID', 'Parameter1', 'Parameter2', 'Strategy', 'modelNLL', 'modelSS')
+                    colnames(trialData) = c('SubjectID', 'IV', 'Constant', 'Decision', 'Prediction') 
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+                
+                ::
+
+.. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`, for Each Alternative Model
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+           
+        
+        .. tab-item:: R
+
+            :: 
+
+                
+
+        .. tab-item:: MatLab
+
+        .. tab-item:: Python
+
+.. dropdown:: Compare Model Performance
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            
+        
+        .. tab-item:: R
+
+            :: 
+
+                
+
+        .. tab-item:: MatLab
+
+        .. tab-item:: Python
+
 Tutorial
 ==========

@@ -201,9 +201,6 @@ This will enable us to test how well our model performed and classify what kind 
                         datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
                         df = read.csv2(datafile)
                         reorder = df$trialsTask.thisIndex + 1
-
-                        #Just Added
-
                         result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                          lb = lower_bounds, ub = upper_bounds,
                                          decisions = df$Decisions)
