@@ -30,11 +30,11 @@ Then we can simply figure out which model error is lowest on average: just like 
     Then don't include them. 
     For every model we think is worth testing, let's talk about how you're going to go about testing them.
 
-    Any models that we want to test with one :bdg-secondary:`Construct Value` term are really, really simple - :bdg-warnings:`Utility` = :bdg-secondary:`Construct Value`. 
-    Notice that there are no :bdg-success:`Free Parameters` in this Equation - since only one :bdg-secondary:`Construct Value` determines :bdg-warnings:`Utility`, there is no way that it can capture individual differences. 
+    Any models that we want to test with one :bdg-secondary:`Construct Value` term are really, really simple - :bdg-warning:`Utility` = :bdg-secondary:`Construct Value`. 
+    Notice that there are no :bdg-success:`Free Parameters` in this Equation - since only one :bdg-secondary:`Construct Value` determines :bdg-warning:`Utility`, there is no way that it can capture individual differences. 
 
     The models that we want to test with two :bdg-secondary:`Construct Value` terms are also pretty simple - we want to capture how people prioritize one norm over another. 
-    Thus, we express this as :bdg-warnings:`Utility` = (:bdg-secondary:`Construct Value 1` x :bdg-success:`Free Parameter`) + (:bdg-secondary:`Construct Value 2` x (1 - :bdg-success:`Free Parameter`)).
+    Thus, we express this as :bdg-warning:`Utility` = (:bdg-secondary:`Construct Value 1` x :bdg-success:`Free Parameter`) + (:bdg-secondary:`Construct Value 2` x (1 - :bdg-success:`Free Parameter`)).
 
 .. dropdown:: Preallocating and Defining Functions 
 
@@ -44,9 +44,9 @@ Then we can simply figure out which model error is lowest on average: just like 
 
             We're going to need several items for this section:
 
-            1. :bdg-warnings:`Utility` Functions for each each Model
-            2. Objective Functions for each :bdg-warnings:`Utility` Equation with :bdg-success:`Free Parameters`
-            3. New Optimizer Inputs for each :bdg-warnings:`Utility` Equation with :bdg-success:`Free Parameters`
+            1. :bdg-warning:`Utility` Functions for each each Model
+            2. Objective Functions for each :bdg-warning:`Utility` Equation with :bdg-success:`Free Parameters`
+            3. New Optimizer Inputs for each :bdg-warning:`Utility` Equation with :bdg-success:`Free Parameters`
             4. Outputs for the Alternative Models
         
         .. tab-item:: R
@@ -91,7 +91,6 @@ Then we can simply figure out which model error is lowest on average: just like 
                 upper_bound_alt2 = #something
 
                 altSubjectData = data.frame()
-}
 
         .. tab-item:: MatLab
 
@@ -179,33 +178,29 @@ Then we can simply figure out which model error is lowest on average: just like 
                             UtilityAlt1 = vector('numeric', length(Choices))
                             UtilityAlt2 = vector('numeric', length(Choices))
                             for (n in 1:length(Choices)){
-                                Utility[n] = utility(parameter1 = results$par[1],
-                                                    parameter2 = results$par[2],
-                                                    construct = constructs(df$IV[k], df$Constant[k], Choices[n]))
+                                UtilityAlt1[n] = utility_alt1(construct1 = construct1(df$IV[k], df$Constant[k], Choices[n]))
+                                UtilityAlt2[n] = utility_alt2(parameter1 = result_alt2$par[1],
+                                                              construct1 = construct1(df$IV[k], df$Constant[k], Choices[n]),
+                                                              construct2 = construct2(df$IV[k], df$Constant[k], Choices[n]))
                             }
-                            correct_choice = which(Utility == max(Utility))
+                            correct_choice_alt1 = which(UtilityAlt1 == max(UtilityAlt1))
+                            correct_choice_alt2 = which(UtilityAlt2 == max(UtilityAlt2))
                             if (length(correct_choice) > 1){
                                 correct_choice = correct_choice[sample(correct_choice, 1)]
                             }
-                            df$Prediction[k] = Choices[correct_choice]
+                            df$PredictionAlt1[k] = Choices[correct_choice_alt1]
+                            df$PredictionAlt2[k] = Choices[correct_choice_alt2]
                         }
 
-                        model_NLL = -2 * log(sum(dnorm(df$Decision, mean = df$Prediction)))
-                        model_SS = sum((df$Decision - df$Prediction)**2)
+                        model_NLL_Alt1 = -2 * log(sum(dnorm(df$Decision, mean = df$PredictionAlt1)))
+                        model_SS_Alt1 = sum((df$Decision - df$PredictionAlt1)**2)
+                        model_NLL_Alt2 = -2 * log(sum(dnorm(df$Decision, mean = df$PredictionAlt2)))
+                        model_SS_Alt2 = sum((df$Decision - df$PredictionAlt2)**2)
 
-                        subjectData[i, ] = c(included_subjects[i], result$par[1], result$par[2],  freeParameters$Strategy[closestPoint], model_NLL, modelSS) 
-                                            #add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
-                        
-                        start = length(subjectData[, 1]) + 1
-                        end = start + length(df$Decisions)
-                        trialData[start:end, 1] = included_subjects[i]
-                        trialData[start:end, 2] = df$IV
-                        trialData[start:end, 3] = df$Constant
-                        trialData[start:end, 4] = df$Decision
-                        trialData[start:end, 5] = df$Prediction
+                        altSubjectData[i, ] = c(included_subjects[i], result_alt2$par[1], model_NLL_Alt1, model_SS_Alt1, model_NLL_Alt2, model_SS_Alt2) 
+                        #add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
                     }
-                    colnames(subjectData) = c('SubjectID', 'Parameter1', 'Parameter2', 'Strategy', 'modelNLL', 'modelSS')
-                    colnames(trialData) = c('SubjectID', 'IV', 'Constant', 'Decision', 'Prediction') 
+                    colnames(subjectData) = c('SubjectID', 'Parameter1_Alt2', 'alt1_modelNLL', 'alt1_modelSS', 'alt2_modelNLL', 'alt2_modelSS')
 
             .. tab-item:: MatLab
 
@@ -221,13 +216,14 @@ Then we can simply figure out which model error is lowest on average: just like 
 
         .. tab-item:: Plain English
 
-           
+           Now that we have the model error - either the sum of squared errors or the negative log likelihood of the real :bdg-success:`Subjects` :bdg-danger:`Decisions` versus the model's predicted :bdg-danger:`Decisions`.
         
         .. tab-item:: R
 
             :: 
 
-                
+                altSubjectData$modelAlt1AIC = N * log(altSubjectData$modelSS_Alt1/N) + 2*0
+                altSubjectData$modelAlt2AIC = N * log(altSubjectData$modelSS_Alt2/N) + 2*1
 
         .. tab-item:: MatLab
 
@@ -239,13 +235,26 @@ Then we can simply figure out which model error is lowest on average: just like 
 
         .. tab-item:: Plain English
 
-            
+            Now we simply want to identify which model is best. 
+            Thus, we're going to create a vector with the MFI for each model averaged across all :bdg-success:`Subjects` and select the model with the lowest MFI. 
+            This approach tells us which model provides the best average fit for :bdg-success:`Subjects` in our sample. 
+            Importantly, if any :bdg-success:`Subjects` data are fully explained by the model (i.e. observed :bdg-danger:`Decisions` always equal :bdg-danger:`Decisions` predicted by the model) then these :bdg-success:`Subjects` must be excluded from your analysis since their MFIs are negative infinity. 
+
+            Another approach would be to compute MFIs for the entire dataset - this approach does not require that you exclude :bdg-success:`Subjects` from analysis. 
+            It is more appropriate to use the first approach if you are focused on individual differences (i.e. trying to characterize how people are different) rather than general trends in behavior (i.e. tring to characterize how various factors affect decision-making within a person).
         
         .. tab-item:: R
 
             :: 
 
-                
+                excluded = which(is.inf(subjectData$modelAIC) | is.inf(altSubjectData$modelAlt1AIC) | is.inf(altSubjectData$modelAlt2AIC))
+                averageAIC = (mean(subjectData$modelAIC[-excluded]), mean(altSubjectData$modelAlt1AIC[-excluded]), mean(altSubjectData$modelAlt2AIC[-excluded]))
+                fullAIC = length(trialData$SubjectID) * log(sum(subjectData$modelSS)/length(trialData$SubjectID)) + (2 * k * length(subjectData$SubjectID))
+                fullAICAlt1 = length(trialData$SubjectID) * log(sum(altSubjectData$modelAlt1SS)/length(trialData$SubjectID)) + (2 * 0 * length(subjectData$SubjectID))
+                fullAICAlt2 = length(trialData$SubjectID) * log(sum(altSubjectData$modelAlt2SS)/length(trialData$SubjectID)) + (2 * 0 * length(subjectData$SubjectID))
+
+                bestModel = c("Favored Model", "Alternative Model 1", "Alternative Model 2")[which(averageAIC == min(averageAIC))] #best model based on average performance per subject
+                bestModelFullDataset = c("Favored Model", "Alternative Model 1", "Alternative Model 2")[which(c(fullAIC, fullAICAlt1, fullAICAlt2) == min(c(fullAIC, fullAICAlt1, fullAICAlt2)))] #best model based on all data observations
 
         .. tab-item:: MatLab
 
