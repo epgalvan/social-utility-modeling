@@ -34,7 +34,7 @@ These are also four of the five assumptions of linear regression (the fifth is t
 
         .. tab-item:: Plain English
 
-            Before we start checking assumptions, we need to do a simple regression: using the predicted :bdg-danger:`Decisions` of our best model to predict actual `Decisions`.
+            Before we start checking assumptions, we need to do a simple regression: using the predicted :bdg-danger:`Decisions` of our best model to predict actual :bdg-danger:`Decisions`.
             So, we will have to use the trial-by-trial data to accomplish this.
 
             What we want to see first is the R-squared: the multiple R-squared should always be essentially equal to the adjusted R-squared since there are going to be a lot of observations. 
@@ -44,7 +44,8 @@ These are also four of the five assumptions of linear regression (the fifth is t
 
             An R-squared between 0.5 and 0.7 is acceptable. 
             Although this good model performance by objective standards, these tasks are designed to elicit very well-defined, consistent preferences with a very high signal to noise ratio. 
-            Thus, you should proceed with apprehension but it does not immediately invalidate any conclusions that you want to draw. 
+            You might be missing an additional strategy in your model - so use the steps below and see if this is the case!
+            If not, you should proceed with apprehension but it does not immediately invalidate any conclusions that you want to draw. 
 
             An R-squared of less than 0.5 is bad. 
             Either your task-and-experimental procedure was 1) poorly thought out, producing too high of a signal-to-noise ratio, or 2) your model does not account for one or more preferences that govern behavior in your task.
@@ -102,7 +103,7 @@ These are also four of the five assumptions of linear regression (the fifth is t
             .. tab-item:: Plain English
 
                 We need to ensure that prediction errors are normally distributed. 
-                If prediction errors are skewed, then our model is making consistent underpredictions (negative) or overpredictions (negative) of :bdg-danger:`Decisions`.
+                If prediction errors are skewed, then our model is making making more underpredictions (negative) or overpredictions (positive) of :bdg-danger:`Decisions`.
                 If the distribution is kurtosed (i.e. too skinny or too fat) then we're more or less likely to have extreme errors in predicting :bdg-danger:`Decisons` compared to a normal distribution. 
                 We can create a density plot of prediction errors (i.e. the difference between model predictions of :bdg-danger:`Decisions` and observed :bdg-danger:`Decisions`) and see if it follows a bell-curve.
                 We can create a density plot with a normal distribution where the standard deviation is the standard deviation of prediction errors to check this.
@@ -130,7 +131,7 @@ These are also four of the five assumptions of linear regression (the fifth is t
                 If our model predicts :bdg-danger:`Decisions` worse or better at certain values of :bdg-primary:`Independent Variable` compared to others, then our recovery of :bdg-success:`Free Parameters` is influenced disproportionately by :bdg-danger:`Decisions` made when :bdg-primary:`Independent Variable` have a certain value. 
                 Thus, our :bdg-success:`Free Parameters` would be overfit for certain values and underfit for other values. 
                 We can check this assumption by creating loess line with our :bdg-primary:`Independent Variable` on the x-axis and the model prediction errors on the y-axis.
-                This slope should be essentially 0 with an intercept of 0.
+                This slope should be 0 with an intercept of 0.
 
             .. tab-item:: R
 
@@ -208,8 +209,9 @@ We accomplish this by performing Fivefold Validation.
 
             So, we're going to randomly split each :bdg-success:`Subjects`' :bdg-danger:`Decisions` into one of five groups, called folds. 
             We're going to take one fold and remove those :bdg-primary:`Trials` from our training set - we're going to recover :bdg-success:`Free Parameters` from four-fifths of :bdg-danger:`Decisions` and we're going to test it on this fold - this fifth of :bdg-danger:`Decisions` that we excluded. 
-            We're going to save the :bdg-success:`Free Parameters` from this four-fifths and the difference between observed-and-predicted :bdg-danger:`Decisions` of the withheld one-fifth. 
+            We're going to save the :bdg-success:`Free Parameters` from this four-fifths and the predicted :bdg-danger:`Decisions` of the withheld one-fifth. 
             We rinse and repeat for the remaining four folds. 
+            Once this is done, we can get the model error for the predicted-against-observed :bdg-danger:`Decisions` for all :bdg-primary:`Trials`.
             Now we should have five sets of :bdg-success:`Free Parameters` for each :bdg-success:`Subject` and, combining the model error of all five folds, we should have a model error estimate across all :bdg-primary:`Trials`.
 
             Now, we want to look at two things: first we want to assess how much larger this model error is compared to the model error of the model trained on all of the data. 
