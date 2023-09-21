@@ -23,13 +23,173 @@ These are also four of the five assumptions of linear regression (the fifth is t
     In a similar vein, linear mixed effects models control for the independence of observations (i.e. produced by the same :bdg-success:`Subject`) using random effects. 
 
     See, where we're going here? 
-    Since our model asserts that all of the ways that :bdg-success:`Subjects` can be different are encapsulated in the :bdg-success:`Free Parameters`, we essentially argue that the way our model predicts :bdg-danger:`Decisions` does not differ across :bdg-success:`Subjects`. 
+    Since our model asserts that all of the ways that :bdg-success:`Subjects` can be different are encapsulated in the :bdg-success:`Free Parameters`, we essentially assert that the way our model predicts :bdg-danger:`Decisions` does not differ across :bdg-success:`Subjects`. 
+    We have one :bdg-primary:`Independent Variable` - the model predicted :bdg-danger:`Decisions`. 
+    According to our model, *nothing else* can predict :bdg-danger:`Decisions`. 
+    However, we're not going to blindly assume this - we'll also verify that this is true.
 
-.. dropdown:: Visually Testing Assumptions
+.. dropdown:: Model Performance
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            Before we start checking assumptions, we need to do a simple regression: using the predicted :bdg-danger:`Decisions` of our best model to predict actual `Decisions`.
+            So, we will have to use the trial-by-trial data to accomplish this.
+
+            What we want to see first is the R-squared: the multiple R-squared should always be essentially equal to the adjusted R-squared since there are going to be a lot of observations. 
+            The R-squared tells us how much variance our model explains: any model with an R-squared above 0.70 is very good. 
+            Particularly for models without noise parameters, it means that you are really capturing the data generation process and essentially rules out the possibility that you are missing an additionally strategy or additional motive. 
+            As long as you don't find any assumptions to be grotesquely violated, you should proceed and feel very confident that your model is a good representation of the data generation process. 
+
+            An R-squared between 0.5 and 0.7 is acceptable. 
+            Although this good model performance by objective standards, these tasks are designed to elicit very well-defined, consistent preferences with a very high signal to noise ratio. 
+            Thus, you should proceed with apprehension but it does not immediately invalidate any conclusions that you want to draw. 
+
+            An R-squared of less than 0.5 is bad. 
+            Either your task-and-experimental procedure was 1) poorly thought out, producing too high of a signal-to-noise ratio, or 2) your model does not account for one or more preferences that govern behavior in your task.
+            Ask yourself what the cause is: if it is a problem with the task either consider adding noise or bias parameters, find a different kind of model to analyze your data, or otherwise throw the data out because you cannot analyze it with a utility model. 
+            If it is the latter then identify :bdg-success:`Subjects` who are fit particularly poorly by the model, identify the behavioral trend, and try to think about a value-based preference that could lead one to behave in such a way. 
+            We can try this on all of these :bdg-sucess:`Subjects` - if this doesn't offer clear insight then we might want to look at individual subjects.
+
+        .. tab-item:: R
+
+            ::
+                
+                modelPredictions = lm(data = trialData, Decisions ~ Prediction)
+                summary(modelPredictions) # R-squared
+
+                #we can identify if we're missing a strategy using a density plot of MFIs - a plot with a group of really high AICs with a group of lower AICs would suggest a missing strategy
+                qplot(x = subjectData$modelAIC, geom = 'density')
+
+                #if we're missing something let's identify worst explained quartile of subjects according to our model            
+                worstExplained = which(subjectData$modelAIC > as.numeric(summary(subjectData$modelAIC)[5]))
+                qplot(data = trialData[which(trialData$SubjectID == subjectData$SubjectID[worstExplained]), x = IV, y = DV, group = trialData$SubjectID]) + geom_smooth() #a loess line for all subjects
+
+        .. tab-item:: MatLab
+
+        .. tab-item:: Python
+
+.. dropdown:: Visually Checking Assumptions
+
+    .. dropdown:: Linearity
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                We need to ensure that the relationship between model predictions of :bdg-danger:`Decisions` and observed :bdg-danger:`Decisions` is linear. 
+                If this relationship is flat (slope is 0) rather than linear (slope is 1) then our model is doing terribly at predicting :bdg-danger:`Decisions`, essentially making predictions completely at chance-level.
+                Thus our model would not be capturing the data generation process and, most likely, our :bdg-success:`Free Parameters` are fitted to noise at all values.
+                So let's plot a regression line with model predictions on the x-axis and observed :bdg-danger:`Decisions` on the y-axis. 
+                The slope should be essentially 1.
+
+            .. tab-item:: R
+
+                ::
+                    
+                    qplot(x = trialData$Prediction, y = trialData$Decision, geom = 'smooth') + geom_abline(slope = 1, intercept = 0)
+                    
+            .. tab-item:: MatLab
+
+            .. tab-item:: Python
+
+    .. dropdown:: Normality of Error
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                We need to ensure that prediction errors are normally distributed. 
+                If prediction errors are skewed, then our model is making consistent underpredictions (negative) or overpredictions (negative) of :bdg-danger:`Decisions`.
+                If the distribution is kurtosed (i.e. too skinny or too fat) then we're more or less likely to have extreme errors in predicting :bdg-danger:`Decisons` compared to a normal distribution. 
+                We can create a density plot of prediction errors (i.e. the difference between model predictions of :bdg-danger:`Decisions` and observed :bdg-danger:`Decisions`) and see if it follows a bell-curve.
+                We can create a density plot with a normal distribution where the standard deviation is the standard deviation of prediction errors to check this.
+
+            .. tab-item:: R
+
+                ::
+                    
+                    normvals = rnorm(1000, mean = 0, sd = sd(trialData$Prediction - trialData$Decision))
+                    qplot(x = trialData$Prediction - trialData$Decision, geom = 'density', bw = 1, color = 'Actual') + 
+                        geom_density(aes(x = normvals, color = 'Predicted'), bw = 1)
+                    
+            .. tab-item:: MatLab
+
+            .. tab-item:: Python
 
 
+    .. dropdown:: Independence of Error
 
-In order to show that our parameter recovery process is robust, we have to show that the model can predict behavior that it was not trained on.
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                Next, we need to ensure that our model's prediction errors of :bdg-danger:`Decisions` are not confounded with values of :bdg-primary:`Independent Variable`. 
+                If our model predicts :bdg-danger:`Decisions` worse or better at certain values of :bdg-primary:`Independent Variable` compared to others, then our recovery of :bdg-success:`Free Parameters` is influenced disproportionately by :bdg-danger:`Decisions` made when :bdg-primary:`Independent Variable` have a certain value. 
+                Thus, our :bdg-success:`Free Parameters` would be overfit for certain values and underfit for other values. 
+                We can check this assumption by creating loess line with our :bdg-primary:`Independent Variable` on the x-axis and the model prediction errors on the y-axis.
+                This slope should be essentially 0 with an intercept of 0.
+
+            .. tab-item:: R
+
+                ::
+                    
+                    qplot(x = trialData$IV, y = (trialData$Prediction-trialData$Decision), geom = 'smooth', method = 'lm')
+                    
+            .. tab-item:: MatLab
+
+            .. tab-item:: Python
+
+    .. dropdown:: Homoscedasticty
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                Finally, we need to ensure that variance in model prediction errors does not change as a function of an :bdg-primary:`Independent Variable`. 
+                Of all of the assumptions, this one is the least problematic if violated - essentially it indicates that our model has less predictive accuracy at certain values of the :bdg-primary:`Independent Variable`. 
+                This is a bigger issue for regression models because it can make Confidence Intervals of regression coefficients which are too narrow - we don't have this issue unless you're doing means testing on your :bdg-success:`Free Parameters`. 
+                Nonetheless, this could produce unreliable :bdg-success:`Free Parameter` estimates so we have to rely on out-of-sample validation to rule this out.
+                If this assumption is very badly violated, it might make sense to included a noise parameter into your model to scale with the :bdg-primary:`Independent Variable` or to, instead, use a different estimator such as Weighted Least Squares to recover your :bdg-success:`Free Parameters`.
+                To check this, we can create a loess line with a variance cloud with our :bdg-primary:`Independent Variable` on the x-axis and the model prediction errors on the y-axis.
+                The cloud should be a constant width around the loess line. 
+
+            .. tab-item:: R
+
+                ::
+                    
+                    qplot(x = trialData$IV, y = (trialData$Prediction-trialData$Decision), geom = 'smooth')
+                    
+            .. tab-item:: MatLab
+
+            .. tab-item:: Python
+
+.. dropdown:: Assessing Independence of Observations
+
+    We want to ensure that accounting for :bdg-success:`Subjects`' differences from each other using :bdg-success:`Free Parameters` results in model predictions of :bdg-danger:`Decisions` which are not attributable to individual differences.
+    We can accomplish this using the same linear modeling formula, but including random intercepts for the subject. 
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            First, we can try a model with a random intercept and random slope of model predicted value. 
+            This model should have convergence issues - this is good. 
+
+            Next, we can try a model with a only a random intercept. 
+            We can estimate an R-squared for this model - the marginal R-squared (i.e. including variance explained by random effects) should be roughly equivalent to the conditional R-squared (i.e. variance only explained by fixed effects - i.e. your model) - within 0.05 is reasonable.
+
+        .. tab-item:: R
+
+            ::
+                
+                
+
+In order to show that our parameter recovery process is robust, we have to show that the model can predict behavior that it was not trained on. 
+We accomplish this by using Fivefold Validation
+
+.. dropdown:: Fivefold Validation
 
 Tutorial
 ==========
