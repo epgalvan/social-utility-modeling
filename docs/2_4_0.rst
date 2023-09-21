@@ -153,7 +153,7 @@ Essentially, there are two things that we need to prove in order for our model t
 
                     Finally, we need to ensure that variance in model prediction errors does not change as a function of an :bdg-primary:`Independent Variable`. 
                     Of all of the assumptions, this one is the least problematic if violated - essentially it indicates that our model has less predictive accuracy at certain values of the :bdg-primary:`Independent Variable`. 
-                    This is a bigger issue for regression models because it can make Confidence Intervals of regression coefficients which are too narrow - we don't have this issue unless you're doing means testing on your :bdg-success:`Free Parameters`. 
+                    This is a bigger issue for regression models because it can make Confidence Intervals of regression coefficients which are too narrow - we don't have this issue unless you're doing means testing on your :bdg-success:`Free Parameters` (i.e. testing modulatory hypotheses). 
                     Nonetheless, this could produce unreliable :bdg-success:`Free Parameter` estimates so we have to rely on out-of-sample validation to rule this out.
                     If this assumption is very badly violated, it might make sense to included a noise parameter into your model to scale with the :bdg-primary:`Independent Variable` or to, instead, use a different estimator such as Weighted Least Squares to recover your :bdg-success:`Free Parameters`.
                     To check this, we can create a loess line with a variance cloud with our :bdg-primary:`Independent Variable` on the x-axis and the model prediction errors on the y-axis.
