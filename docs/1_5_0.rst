@@ -64,11 +64,19 @@ Seems easy enough right?
 
                 # choices = vector()
 
-                construct = function(iv, constant, choice){
+                construct1 = function(iv, constant, choice){
                     return(construct_value)
                 }
 
-                utility = function(constructs, parameters){
+                construct2 = function(iv, constant, choice){
+                    return(construct_value)
+                }
+
+                construct3 = function(iv, constant, choice){
+                    return(construct_value)
+                }
+
+                utility = function(construct1, construct2, construct3, parameter1, parameter2){
                     return(utility)
                 }
 
@@ -85,11 +93,19 @@ Seems easy enough right?
 
                 % choice
 
-                function value = construct(iv, constant, choice)
+                function value = construct1(iv, constant, choice)
                     value = construct_value;
                 end
 
-                function value = utility(constructs, parameters)
+                function value = construct2(iv, constant, choice)
+                    value = construct_value;
+                end
+
+                function value = construct3(iv, constant, choice)
+                    value = construct_value;
+                end
+
+                function value = utility(construct1, construct2, construct3, parameter1, parameter2)
                     value = utility;
                 end
 
@@ -120,7 +136,13 @@ Seems easy enough right?
 
                 # choices = []
 
-                def construct(iv, constant, choice):
+                def construct1(iv, constant, choice):
+                    return(construct_value)
+                
+                def construct2(iv, constant, choice):
+                    return(construct_value)
+
+                def construct3(iv, constant, choice):
                     return(construct_value)
 
                 def utility(constructs, parameters):
@@ -348,7 +370,9 @@ Seems easy enough right?
                             for (n in 1:length(Choices)){
                                 Utility[n] = utility(parameter1 = Parameter1,
                                                     parameter2 = Parameter2,
-                                                    construct = constructs(IV, Constant, Choices[n]))
+                                                    construct1 = construct1(IV, Constant, Choices[n]),
+                                                    construct2 = construct2(IV, Constant, Choices[n]),
+                                                    construct3 = construct3(IV, Constant, Choices[n]))
                             }
                             correct_choice = which(Utility == max(Utility))
                             if (length(correct_choice) > 1){
@@ -381,7 +405,9 @@ Seems easy enough right?
                                 for n = 1:height(Choices(:,1))
                                     Utility(n) = utility(parameter1 = Parameter1,
                                                         parameter2 = Parameter2,
-                                                        construct = constructs(IV, Constant, Choices[n]))
+                                                        construct1 = construct1(IV, Constant, Choices[n]),
+                                                        construct2 = construct2(IV, Constant, Choices[n]),
+                                                        construct3 = construct3(IV, Constant, Choices[n]))
                                 end
                                 correct_choice = find(Utility == max(Utility));
                                 if numel(correct_choice) > 1
@@ -414,7 +440,9 @@ Seems easy enough right?
                             for n in range(len(Choices)):
                                 Utility[n] = utility(parameter1 = Parameter1,
                                                     parameter2 = Parameter2,
-                                                    construct = constructs(IV, Constant, Choices[n]))
+                                                    construct1 = construct1(IV, Constant, Choices[n]),
+                                                    construct2 = construct2(IV, Constant, Choices[n]),
+                                                    construct3 = construct3(IV, Constant, Choices[n]))
                             
                             correct_choice = [idx for idx, val in enumerate(Utility) if val == max(Utility)]
                             if len(correct_choice) > 1:

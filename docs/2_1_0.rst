@@ -214,7 +214,9 @@ This will enable us to test how well our model performed and classify what kind 
                             for (n in 1:length(Choices)){
                                 Utility[n] = utility(parameter1 = results$par[1],
                                                     parameter2 = results$par[2],
-                                                    construct = constructs(df$IV[k], df$Constant[k], Choices[n]))
+                                                    construct1 = construct1(df$IV[k], df$Constant[k], Choices[n]),
+                                                    construct2 = construct2(df$IV[k], df$Constant[k], Choices[n])),
+                                                    construct3 = construct3(df$IV[k], df$Constant[k], Choices[n])
                             }
                             correct_choice = which(Utility == max(Utility))
                             if (length(correct_choice) > 1){

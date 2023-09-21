@@ -5,7 +5,7 @@ Goals During this Stage
 ==========
 
 In the last stage, we identified the best model in our model set - now we want to see if the model is actually valid. 
-Essentially, there are two things that we need to prove in order for our model to be valid: first, we have to show that our model accruately captures the data generation process and, second, we have to show that our parameter recovery process is robust.
+Essentially, there are two things that we need to prove in order for our model to be valid: first, we have to show that our model accurately captures the data generation process and, second, we have to show that our parameter recovery process is robust.
 
 In order to show that our model accurately captures the data generation process, we have to show that the model predicts behavior equally well at all values. 
 Essentially, we must test four assumptions about how our model predictions relate to the behavioral data that they were trained upon: linearity, normality of error, independence of error, and homoscedasticty. 

@@ -99,7 +99,7 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
                         
                         Utility = vector('numeric', length(Choices))
                         for (n in 1:length(Choices)){
-                        Utility[n] = utility(Parameter1, Parameter2, constructs(IV, Constant, Choices[n]))
+                        Utility[n] = utility(Parameter1, Parameter2, construct1(IV, Constant, Choices[n]), construct2(IV, Constant, Choices[n]), construct3(IV, Constant, Choices[n]))
                         }
                         predicted_utility[k] = max(Utility)
                         observed_utility[k] = Utility[chosen[k]]
@@ -131,7 +131,7 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
                         
                         Utility = zeros(length(Choices), 1);
                         for n = 1:length(Choices)
-                            Utility(n) = utility(Parameter1, Parameter2, constructs(IV, Constant, Choices(n)));
+                            Utility(n) = utility(Parameter1, Parameter2, construct1(IV, Constant, Choices(n)), construct2(IV, Constant, Choices(n)), construct3(IV, Constant, Choices(n)));
                         end
                         predicted_utility(k) = max(Utility);
                         observed_utility(k) = Utility(chosen(k));
@@ -165,7 +165,7 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
 
                         Utility = np.zeros(len(Choices))
                         for n in range(len(Choices)):
-                            Utility[n] = utility(Parameter1, Parameter2, constructs(IV, Constant, Choices[n]))
+                            Utility[n] = utility(Parameter1, Parameter2, construct1(IV, Constant, Choices[n]), construct2(IV, Constant, Choices[n]), construct3(IV, Constant, Choices[n]))
 
                         predicted_utility[k] = np.max(Utility)
                         observed_utility[k] = Utility[chosen[k]]
