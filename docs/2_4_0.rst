@@ -4,7 +4,32 @@ Validate the Best Model
 Goals During this Stage
 ==========
 
-a
+In the last stage, we identified the best model in our model set - now we want to see if the model is actually valid. 
+Essentially, there are two things that we need to prove in order for our model to be valid: first, we have to show that our model accruately captures the data generation process and, second, we have to show that our parameter recovery process is robust.
+
+In order to show that our model accurately captures the data generation process, we have to show that the model predicts behavior equally well at all values. 
+Essentially, we must test four assumptions about how our model predictions relate to the behavioral data that they were trained upon: linearity, normality of error, independence of error, and homoscedasticty. 
+These are also four of the five assumptions of linear regression (the fifth is the independence of :bdg-primary:`Independent Variables`, but we don't rely on this assumption).
+
+.. Note:: 
+
+    The assumptions of our model are (with one exception) the assumptions of linear regression, but not the assumptions of mixed effects regression despite the fact that we obviously are using repeated measures - why is this?
+
+    Well, the answer is essentially the same answer as why this fifth assumption - the independence of :bdg-primary:`Independent Variables` - is not included. 
+    According to our model, all of the ways that :bdg-success:`Subjects` can be different are encapsulated in the :bdg-success:`Free Parameters`. 
+    Another way to phrase the assumption of the independence of :bdg-primary:`Independent Variables` is the independence of observations. 
+    Linear modeling requires that observations are not related, so if :bdg-primary:`Independent Variables` are collinear, then the :bdg-danger:`Dependent Variable` are predicted by both :bdg-primary:`Independent Variables` which means that the observations are dependent upon each other. 
+    Thus since we don't know what actually causes the :bdg-danger:`Dependent Variable` to change neither :bdg-primary:`Independent Variable` can be used to predict the variance explained by both. 
+    In a similar vein, linear mixed effects models control for the independence of observations (i.e. produced by the same :bdg-success:`Subject`) using random effects. 
+
+    See, where we're going here? 
+    Since our model asserts that all of the ways that :bdg-success:`Subjects` can be different are encapsulated in the :bdg-success:`Free Parameters`, we essentially argue that the way our model predicts :bdg-danger:`Decisions` does not differ across :bdg-success:`Subjects`. 
+
+.. dropdown:: Visually Testing Assumptions
+
+
+
+In order to show that our parameter recovery process is robust, we have to show that the model can predict behavior that it was not trained on.
 
 Tutorial
 ==========
