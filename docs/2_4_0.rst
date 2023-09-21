@@ -176,7 +176,7 @@ These are also four of the five assumptions of linear regression (the fifth is t
         .. tab-item:: Plain English
 
             First, we can try a model with a random intercept and random slope of model predicted value. 
-            This model should have convergence issues or overfitting issues - if it doesn't don't worry too much just continue to the next step anyways. 
+            This model might have convergence issues or singularity issues - if so, great! Otherwise, don't worry just go to the next model. 
 
             Next, we can try a model with a only a random intercept. 
             We can estimate an R-squared for this model - the marginal R-squared (i.e. including variance explained by random effects) should be roughly equivalent to the conditional R-squared (i.e. variance only explained by fixed effects - i.e. your model) - within 0.05 is reasonable.
@@ -193,7 +193,7 @@ These are also four of the five assumptions of linear regression (the fifth is t
                 r.squaredGLMM(ri_model) #if conditional Rsq is between 0 and 0.05 lower than the multiple Rsq, that's good enough
 
 In order to show that our parameter recovery process is robust, we have to show that the model can predict behavior that it was not trained on. 
-We accomplish this by using Fivefold Validation
+We accomplish this by performing Fivefold Validation.
 
 .. dropdown:: Fivefold Validation
 
@@ -204,11 +204,13 @@ We accomplish this by using Fivefold Validation
             We essentially want to prove that our :bdg-success:`Free Parameters` are not overfitting the :bdg-danger:`Decisions` that they are training on. 
             In other words, we want to rule out that our favored model isn't outperforming other models because it's fitting weird quirks in :bdg-success:`Subjects`' :bdg-danger:`Decisions`. 
             It should seem really intuitive that, in order to prove this, we're going to separate :bdg-danger:`Decisions` into a training set and a testing set. 
+            Let's talk about how specifically we're going to do this. 
+
             So, we're going to randomly split each :bdg-success:`Subjects`' :bdg-danger:`Decisions` into one of five groups, called folds. 
             We're going to take one fold and remove those :bdg-primary:`Trials` from our training set - we're going to recover :bdg-success:`Free Parameters` from four-fifths of :bdg-danger:`Decisions` and we're going to test it on this fold - this fifth of :bdg-danger:`Decisions` that we excluded. 
             We're going to save the :bdg-success:`Free Parameters` from this four-fifths and the difference between observed-and-predicted :bdg-danger:`Decisions` of the withheld one-fifth. 
             We rinse and repeat for the remaining four folds. 
-            Now we should have five sets of :bdg-success:`Free Parameters` for each :bdg-success:`Subject` and, comnbing model error of all five folds, we should have a model error.
+            Now we should have five sets of :bdg-success:`Free Parameters` for each :bdg-success:`Subject` and, combining the model error of all five folds, we should have a model error estimate across all :bdg-primary:`Trials`.
 
             Now, we want to look at two things: first we want to assess how much larger this model error is compared to the model error of the model trained on all of the data. 
             Here, you should report the change in root mean squared error per trial - you can also do a paired t-test on the MFI of the fivefold predictions compared to the standard model predictions but this is not necessary.
