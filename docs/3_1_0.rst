@@ -28,11 +28,13 @@ While we've already determined what the best model is, we haven't yet tested the
 
     .. tab-item:: R
 
-        excluded1 = which(subjectData$modelSS == 0 | altSubjectData$modelAlt1SS == 0)
-        excluded2 = which(subjectData$modelSS == 0 | altSubjectData$mode2Alt1SS == 0)
+        ::
 
-        t.test(subjectData$modelAIC[-excluded1], altSubjectData$modelAlt1AIC[-excluded1], paired = T, alternative = 'less') #favored model should be less than the other model (i.e. better model fit)
-        t.test(subjectData$modelAIC[-excluded2], altSubjectData$modelAlt2AIC[-excluded2], paired = T, alternative = 'less')
+            excluded1 = which(subjectData$modelSS == 0 | altSubjectData$modelAlt1SS == 0)
+            excluded2 = which(subjectData$modelSS == 0 | altSubjectData$mode2Alt1SS == 0)
+
+            t.test(subjectData$modelAIC[-excluded1], altSubjectData$modelAlt1AIC[-excluded1], paired = T, alternative = 'less') #favored model should be less than the other model (i.e. better model fit)
+            t.test(subjectData$modelAIC[-excluded2], altSubjectData$modelAlt2AIC[-excluded2], paired = T, alternative = 'less')
 
 
     .. tab-item:: MatLab
