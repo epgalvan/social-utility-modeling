@@ -50,7 +50,7 @@ These are also four of the five assumptions of linear regression (the fifth is t
             Either your task-and-experimental procedure was 1) poorly thought out, producing too high of a signal-to-noise ratio, or 2) your model does not account for one or more preferences that govern behavior in your task.
             Ask yourself what the cause is: if it is a problem with the task either consider adding noise or bias parameters, find a different kind of model to analyze your data, or otherwise throw the data out because you cannot analyze it with a utility model. 
             If it is the latter then identify :bdg-success:`Subjects` who are fit particularly poorly by the model, identify the behavioral trend, and try to think about a value-based preference that could lead one to behave in such a way. 
-            We can try this on all of these :bdg-sucess:`Subjects` - if this doesn't offer clear insight then we might want to look at individual subjects.
+            We can try this on all of these :bdg-success:`Subjects` - if this doesn't offer clear insight then we might want to look at individual subjects.
 
         .. tab-item:: R
 
@@ -88,7 +88,8 @@ These are also four of the five assumptions of linear regression (the fifth is t
 
                 ::
                     
-                    qplot(x = trialData$Prediction, y = trialData$Decision, geom = 'smooth') + geom_abline(slope = 1, intercept = 0)
+                    qplot(x = trialData$Prediction, y = trialData$Decision, geom = 'smooth') + 
+                          geom_abline(slope = 1, intercept = 0)
                     
             .. tab-item:: MatLab
 
@@ -135,7 +136,7 @@ These are also four of the five assumptions of linear regression (the fifth is t
 
                 ::
                     
-                    qplot(x = trialData$IV, y = (trialData$Prediction-trialData$Decision), geom = 'smooth', method = 'lm')
+                    qplot(x = trialData$IV, y = (trialData$Prediction-trialData$Decision), geom = 'smooth')
                     
             .. tab-item:: MatLab
 
@@ -175,7 +176,7 @@ These are also four of the five assumptions of linear regression (the fifth is t
         .. tab-item:: Plain English
 
             First, we can try a model with a random intercept and random slope of model predicted value. 
-            This model should have convergence issues - this is good. 
+            This model should have convergence issues or overfitting issues - if it doesn't don't worry too much just continue to the next step anyways. 
 
             Next, we can try a model with a only a random intercept. 
             We can estimate an R-squared for this model - the marginal R-squared (i.e. including variance explained by random effects) should be roughly equivalent to the conditional R-squared (i.e. variance only explained by fixed effects - i.e. your model) - within 0.05 is reasonable.
@@ -184,12 +185,119 @@ These are also four of the five assumptions of linear regression (the fifth is t
 
             ::
                 
-                
+                ris_model = lmer(data = trialData, Decision ~ Prediction + (1 + Prediction | SubjectID)) 
+                summary(ris_model) #model should have issues
+                ri_model = lmer(data = trialData, Decision ~ Prediction + (1 | SubjectID))
+                summary(ri_model)
+                library(MuMin)
+                r.squaredGLMM(ri_model) #if conditional Rsq is between 0 and 0.05 lower than the multiple Rsq, that's good enough
 
 In order to show that our parameter recovery process is robust, we have to show that the model can predict behavior that it was not trained on. 
 We accomplish this by using Fivefold Validation
 
 .. dropdown:: Fivefold Validation
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            We essentially want to prove that our :bdg-success:`Free Parameters` are not overfitting the :bdg-danger:`Decisions` that they are training on. 
+            In other words, we want to rule out that our favored model isn't outperforming other models because it's fitting weird quirks in :bdg-success:`Subjects`' :bdg-danger:`Decisions`. 
+            It should seem really intuitive that, in order to prove this, we're going to separate :bdg-danger:`Decisions` into a training set and a testing set. 
+            So, we're going to randomly split each :bdg-success:`Subjects`' :bdg-danger:`Decisions` into one of five groups, called folds. 
+            We're going to take one fold and remove those :bdg-primary:`Trials` from our training set - we're going to recover :bdg-success:`Free Parameters` from four-fifths of :bdg-danger:`Decisions` and we're going to test it on this fold - this fifth of :bdg-danger:`Decisions` that we excluded. 
+            We're going to save the :bdg-success:`Free Parameters` from this four-fifths and the difference between observed-and-predicted :bdg-danger:`Decisions` of the withheld one-fifth. 
+            We rinse and repeat for the remaining four folds. 
+            Now we should have five sets of :bdg-success:`Free Parameters` for each :bdg-success:`Subject` and, comnbing model error of all five folds, we should have a model error.
+
+            Now, we want to look at two things: first we want to assess how much larger this model error is compared to the model error of the model trained on all of the data. 
+            Here, you should report the change in root mean squared error per trial - you can also do a paired t-test on the MFI of the fivefold predictions compared to the standard model predictions but this is not necessary.
+            Second, we also want to assess the similarity of the :bdg-success:`Free Parameters` we recovered withholding each of the five folds to the :bdg-success:`Free Parameters` recovered on the entire data set. 
+            You should report the average cosine similarity across all folds for each of the :bdg-success:`Free Parameters`.
+
+        .. tab-item:: R
+
+            ::
+                
+                # define objective function
+                obj_function_ff = function(params, decisions, wh){
+                    Parameter1 = params[1]
+                    Parameter2 = params[2]
+                    
+                    df = # a dataframe with your independent variables and constants
+                    Choices = #
+                    decisions = decisions[-wh]                    
+                    predicted_u = vector('numeric', length(decisions))
+                    observed_u = predicted_u
+                    
+                    for (j in 1:length(df$IV)){
+                        u = vector('numeric', length(redistribution_rate))
+                        for (k in 1:length(Choices)){
+                            u[k] = Utility(Parameter1, Parameter2,
+                                           construct1(df$IV[j], df$Constant[j], Choices[n]),
+                                           construct2(df$IV[j], df$Constant[j], Choices[n]),
+                                           construct3(df$IV[j], df$Constant[j], Choices[n]))
+                        }
+                        predicted_u[j] = max(u); observed_u[j] = u[(rr[j] * 10)+1]
+                    }
+                    return(sum(((predicted_u-observed_u))**2))
+                }
+
+                fivefold = data.frame() #preallocate for parameters and errors from the fivefold validation to go into
+
+                for (i in 1:length(included_subjects)){
+                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    df = read.csv2(datafile)
+                    reorder = df$trialsTask.thisIndex + 1
+
+                    order = sample(20)
+                    Parameter1_ff = vector('numeric', length = 5)
+                    Parameter2_ff = vector('numeric', length = 5)
+                    SS_ff = 0
+                    Prediction_ff = vector('numeric', length(df$Decision))
+                    for (z in 1:5){
+                        j = (z - 1) * 4 + 1
+                        n = z * 4
+                        withheld = order[j:n]
+                        m = ((i - 1) * 5) + z
+                        
+                        result_ff = fmincon(obj_function_ff,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                            lb = lower_bounds, ub = upper_bounds,
+                                            decisions = df$Decision[reorder], wh = withheld)
+                        
+                        Parameter1_ff[m] = result_ff$par[1]
+                        Parameter2_ff[m] = result_ff$par[2]
+                        for (n in 1:length(withheld)){
+                            utility = vector('numeric', length(Choices))
+                            for (q in 1:length(Choices)){
+                                utility[q] = Utility(result_ff$par[1], result_ff$par[2],
+                                                    construct1(df$IV[withheld[n]], df$Constant[withheld[n]], Choices[q]),
+                                                    construct2(df$IV[withheld[n]], df$Constant[withheld[n]], Choices[q]),
+                                                    construct3(df$IV[withheld[n]], df$Constant[withheld[n]], Choices[q]))
+                            }
+                            Prediction_ff[withheld[n]] = Choices[which(utility == max(utility))]
+                        }
+                    }
+                    SS_ff = sum((df$Decision - Prediction_ff)**2)
+                    fivefold[i, 1:11] = c(SS_ff, Parameter1_ff, Parameter2_ff)
+                }
+                colnames(fivefold) = c('SS', 'Par1_fold1', 'Par1_fold2', 'Par1_fold3', 'Par1_fold4', 'Par1_fold5', 
+                                       'Par2_fold1', 'Par2_fold2', 'Par2_fold3', 'Par2_fold4', 'Par2_fold5', SubjectID)
+
+                sqrt(mean(fivefold$SS)/length(df$IV)) - sqrt(mean(subjectData$modelSS)/length(df$IV)) #the change in root mean squared error, per trial
+                fivefold$AIC = length(df$IV) * log(fivefold$SS/length(df$IV)) + 2 * 2
+                t.test(fivefold$AIC, subjectData$AIC, paired = T) #test fivefold MFI against normal MFI for this model
+
+                library(lsa)
+                cosines = vector('numeric', length = 10)
+                for (i in 1:5){
+                    cosines[i] = cosine(subjectData$Parameter1, fivefold[, (i + 1)]) #to get the correct columns in the fivefold dataframe (2-6)
+                    cosines[(i+5)] = cosine(subjectData$Parameter1, fivefold[, (i + 6)]) #to get the correct columns in the fivefold dataframe (7-11)
+                }
+
+                mean(cosines[1:5]) #cosine similarity of parameter 1
+                mean(cosines[6:10]) #cosine similarity of parameter 2
+
 
 Tutorial
 ==========
