@@ -1,9 +1,47 @@
 Compare Competing Accounts of Behavior
 **********
 
+Now we're in the home stretch. 
+We've gone through all of these steps to get here: the point where we can now draw conclusions about human decision-making and how it is influenced by their social preferences. 
+
 Goals During this Stage
 ==========
 
+We're going to compare models against each other now. 
+While we've already determined what the best model is, we haven't yet tested the hypotheses that it embodies. 
+
+
+.. tab-set::
+
+    .. tab-item:: Plain English
+
+        We're going to compare MFIs for various models within subjects using uncorrected paired t-tests. 
+        Remember that we have to exclude any subjects for whom the model perfectly explains behavior. 
+        Also, if we hypothesized that our favored model would outperform other models, we should use directional tests.
+
+        .. Note::
+
+            You should never correct for multiple comparisons when testing computational models against each other. 
+            Your model fits the data best: you're testing the best model, and the best model only, against all of the other models in your set. 
+            One of those models in your model set will have the lowest lower boundary of their confidence interval - this is the model we want to test against (this is usually the second-best performing model but not necessarily). 
+            There is no reason to compromise our power when we are making multiple comparisons only to facilitate testing your model against the best challenger.
+
+    .. tab-item:: R
+
+        excluded1 = which(subjectData$modelSS == 0 | altSubjectData$modelAlt1SS == 0)
+        excluded2 = which(subjectData$modelSS == 0 | altSubjectData$mode2Alt1SS == 0)
+
+        t.test(subjectData$modelAIC[-excluded1], altSubjectData$modelAlt1AIC[-excluded1], paired = T, alternative = 'less') #favored model should be less than the other model (i.e. better model fit)
+        t.test(subjectData$modelAIC[-excluded2], altSubjectData$modelAlt2AIC[-excluded2], paired = T, alternative = 'less')
+
+
+    .. tab-item:: MatLab
+
+        
+
+    .. tab-item:: Python
+
+        
 
 Tutorial
 ==========

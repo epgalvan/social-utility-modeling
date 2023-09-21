@@ -26,249 +26,25 @@ These tasks are often amended to answer specific research questions.
 Thus, if we know the standard game design we can think about how to change it to answer our research questions.
 
 
-Prisoner's Dilemma
-===========
+.. dropdown:: Prisoner's Dilemma
 
-.. tab-set::
+    .. tab-set::
 
-    .. tab-item:: Task Design
+        .. tab-item:: Task Design
 
-        .. figure:: pd_gif.gif
-            :figwidth: 100%
-            :align: center
-        
-        Both Players make a simaltaneous decision about whether to cooperate or defect. 
-        If both players cooperate, they usually receive a nice payout. 
-        If one player cooperates and the other defects, the defector receives a much larger payout than the cooperator. 
-        However, if both players defect, they both get nothing. 
-
-    .. tab-item:: Experimental Variables
-        
-        .. grid:: 2
+            .. figure:: pd_gif.gif
+                :figwidth: 100%
+                :align: center
             
-            .. grid-item-card:: Independant Variables
-                :columns: 12
+            Both Players make a simaltaneous decision about whether to cooperate or defect. 
+            If both players cooperate, they usually receive a nice payout. 
+            If one player cooperates and the other defects, the defector receives a much larger payout than the cooperator. 
+            However, if both players defect, they both get nothing. 
 
-                * None
-
-            .. grid-item-card:: Constants
-                :columns: 12
-
-                * Cooperate-Cooperate Outcome 
-                * Cooperate-Defect Outcome
-                * Defect-Cooperate Outcome
-                * Defect-Defect Outcome
-
-            .. grid-item-card:: Dependant Variables
-                :columns: 12
-
-                * Cooperation Decision
-
-    .. tab-item:: Typical Behaivor
-
-        * 37% of the time people cooperate (`Mengel, 2017`_)
-        * What causes defection is debated - risk and temptation are difficult to disentangle in this situation
-        * Almost unusable for our purposes due to the fact that it is a risky choice and not many variables can be manipulated - often used in an iterated design to study strategic decision-making
-
-    .. tab-item:: Notable Variants
-
-        1. Asymetric Costs/Benefits
-        2. Sequential Decision-Making
-
-Public Goods Game
-=============
-
-.. tab-set::
-
-    .. tab-item:: Task Design
-
-        .. figure:: pgg_gif.gif
-            :figwidth: 100%
-            :align: center
-
-        All Players receive an Endowment (money given by the experimenter to use in the game) and make a simaltaneous decision about how much to contribute to a community pot. 
-        The community pot is multiplied and equally distributed among all players, regardless of contribution. 
-        Payouts are the sum of money not contributed to the community pot and money received from the community pot.
-
-    .. tab-item:: Experimental Variables
-
-        .. grid:: 2
-
-            .. grid-item-card:: Independant Variables
-                :columns: 12
-
-                * None
-
-            .. grid-item-card:: Constants
-                :columns: 12
-
-                * Community Pot Multiplier
-                * Endowment Amounts
-
-            .. grid-item-card:: Dependant Variables
-                :columns: 12
-
-                * Contribution Amount (Individual)
-                * Total Wealth (Group)
-
-    .. tab-item:: Typical Behavior
-
-        * Most people give at least something, average giving behavior is 37.7% of the Endowment (`Zelmer, 2003`_)
-        * Considered to measure cooperation
-        * To use in utility modeling, it may require this game be played sequentially to make this a non-risky choice - more often used in repeated interactions to study group-level dynamics (i.e. Total Wealth accumulated over a certain number of trials)
-
-    .. tab-item:: Notable Variants
-
-        1. Asymetric Costs/Benefits
-        2. Asymetric Endowments
-        3. Earned Endowments
-        4. Minimum Combined Contributions
-        5. Sequential Decision-Making
-
-Ultimatum Game 
-================
-
-.. tab-set::
-
-    .. tab-item:: Task Design
-
-        .. figure:: ug_gif.gif
-            :figwidth: 100%
-            :align: center
-
-        The Proposer receives an Endowment and makes an Ultimatum Offer to the Responder. 
-        The Responder decides to accept the Ultimatum Offer - in which case both players receive the division according to the Ultimatum - or reject it - in which case both players receive nothing.
-
-    .. tab-item:: Experimental Variables
-
-        .. grid:: 2
-
-            .. grid-item:: **Proposer**
+        .. tab-item:: Experimental Variables
             
-                .. grid-item-card:: Independant Variables
-                    :columns: 12
-
-                    * None
-
-                .. grid-item-card:: Constants
-                    :columns: 12
-
-                    * Endowment Amount
-
-                .. grid-item-card:: Dependant Variables
-                    :columns: 12
-
-                    * Offer Amount
-
-            .. grid-item:: **Responder**
-            
-                .. grid-item-card:: Independant Variables
-                    :columns: 12
-
-                    * Offer Amount
-
-                .. grid-item-card:: Constants
-                    :columns: 12
-
-                    * Endowment Amount
-
-                .. grid-item-card:: Dependant Variables
-                    :columns: 12
-
-                    * Ultimatum Response
-
-    .. tab-item:: Typical Behavior
-
-        .. grid:: 2
-
-            .. grid-item-card:: Proposer
-                :columns: 12
-
-                * Most proposers offer around 40% of the Endowment (`Camerer, 2011`_)
-                * Ultimatums reflect first order-beliefs and thus, Proposing Behavior consider to measure Strategic Bargaining
-
-            .. grid-item-card:: Responder
-                :columns: 12
+            .. grid:: 2
                 
-                * 99% of people accept Ultimatums of 50% of the Endowment, 90% of people accept Ultimatums of 40% of the Endowment
-                * 65% of people accept Ultimatums of 30% of the Endowment
-                * 50% of people accept Ultimatums of 20% of the Endowment
-                * 70% of people accept Ultimatums 10% of Endomment
-                * Responses measure tolerance of unfairness
-
-    .. tab-item:: Notable Variants
-
-        1. Offer Game
-        2. Demand Game
-        3. Three-Player Ultimatum Game
-        4. Proposer's Endowment
-        5. Earned Endowment
-
-Dictator Game
-=========
-
-.. tab-set::
-
-    .. tab-item:: Task Design
-
-        .. figure:: dg_gif.gif
-            :figwidth: 100%
-            :align: center
-
-    .. tab-item:: Experimental Variables
-
-        .. grid:: 2
-
-            .. grid-item-card:: Independant Variables
-                :columns: 12
-
-                * None
-
-            .. grid-item-card:: Constants
-                :columns: 12
-
-                * Endowment Amount
-
-            .. grid-item-card:: Dependant Variables
-                :columns: 12
-
-                * Given Amount
-
-    .. tab-item:: Typical Behavior
-
-        * Most Dictators offer around 20-30% of the Endowment (`Camerer, 2011`_)
-        * Given Amount is taken as measure of fairness or altruism
-
-    .. tab-item:: Notable Variants
-        
-        1. Impunity Game
-        2. Taking Game
-        3. Three-Player Dictator Game
-        4. Earned Roles
-        5. Earned Endowment
-
-Trust Game
-=============
-
-.. tab-set::
-
-    .. tab-item:: Task Design
-
-        .. figure:: tg_gif.gif
-            :figwidth: 100%
-            :align: center
-
-        The Investor is given an Endowment. 
-        They must then decide how much to invest and how much to keep for themselves. 
-        Any money kept is guaranteed payout. 
-        Any money invested is multiplied and given to the Trustee who must then decide how much to keep and how much to return.
-
-    .. tab-item:: Experimental Variables
-
-        .. grid:: 2
-
-            .. grid-item:: **Investor**
-            
                 .. grid-item-card:: Independant Variables
                     :columns: 12
 
@@ -277,79 +53,45 @@ Trust Game
                 .. grid-item-card:: Constants
                     :columns: 12
 
-                    * Endowment Amount
-                    * Investment Multiplier
+                    * Cooperate-Cooperate Outcome 
+                    * Cooperate-Defect Outcome
+                    * Defect-Cooperate Outcome
+                    * Defect-Defect Outcome
 
                 .. grid-item-card:: Dependant Variables
                     :columns: 12
 
-                    * Invested Amount
+                    * Cooperation Decision
 
-            .. grid-item:: **Trustee**
-            
-                .. grid-item-card:: Independant Variables
-                    :columns: 12
+        .. tab-item:: Typical Behaivor
 
-                    * Investment Amount
+            * 37% of the time people cooperate (`Mengel, 2017`_)
+            * What causes defection is debated - risk and temptation are difficult to disentangle in this situation
+            * Almost unusable for our purposes due to the fact that it is a risky choice and not many variables can be manipulated - often used in an iterated design to study strategic decision-making
 
-                .. grid-item-card:: Constants
-                    :columns: 12
+        .. tab-item:: Notable Variants
 
-                    * Endowment Amount
-                    * Investment Multiplier
+            1. Asymetric Costs/Benefits
+            2. Sequential Decision-Making
 
-                .. grid-item-card:: Dependant Variables
-                    :columns: 12
+.. dropdown:: Public Goods Game
 
-                    * Returned Amount
+    .. tab-set::
 
-    .. tab-item:: Typical Behavior
+        .. tab-item:: Task Design
 
-        .. grid:: 2
+            .. figure:: pgg_gif.gif
+                :figwidth: 100%
+                :align: center
 
-            .. grid-item-card:: Investor
-                :columns: 12
+            All Players receive an Endowment (money given by the experimenter to use in the game) and make a simaltaneous decision about how much to contribute to a community pot. 
+            The community pot is multiplied and equally distributed among all players, regardless of contribution. 
+            Payouts are the sum of money not contributed to the community pot and money received from the community pot.
 
-                * Average Investment Amount is 51.7% of the Endowment (`Houser, Schunk, & Winter, 2006`_)
-                * Investment Amount is considered a measure of Incentivized Trust- i.e. risk perception and preferences - but is also confounded with prosocial preferences
+        .. tab-item:: Experimental Variables
 
-            .. grid-item-card:: Trustee
-                :columns: 12
-                
-                * Average Returned Amount is approximatley 40% of the Multiplied Investment and is generally consistent irrespective of the multiplier (`van Baar et al., 2020`_)
-                * Returned Amount is considered to be a measure of Positive Reciprocity
-                * Most people believe that the Investor expects them return 50% of the Mutliplied Investment (`van Baar, Chang, & Sanfey, 2019`_)
+            .. grid:: 2
 
-    .. tab-item:: Notable Variants
-
-        1. Dishonest Salesman Game
-        2. Trading Game
-        3. Lending Game
-        4. Earned Endowments
-        5. Gain/Loss Outcomes
-        6. Hidden Multiplier Trust Game
-
-Justice Game
-==============
-
-.. tab-set::
-
-    .. tab-item:: Task Design
-
-        .. figure:: jg_gif.gif
-            :figwidth: 100%
-            :align: center
-
-        Both Players are given an Endowment and the Taker is allowed to take a certain amount of the Victim's Endowment - usually a maximum of 50% of the Endowment. 
-        Then, the Victim is allowed to spend a certain amount of money to destroy the Taker's money. 
-        The money destroyed is usually 3 times what the Victim spent. 
-
-    .. tab-item:: Experimental Variables
-
-        .. grid:: 2
-
-            .. grid-item:: **Taker**
-            
                 .. grid-item-card:: Independant Variables
                     :columns: 12
 
@@ -358,57 +100,309 @@ Justice Game
                 .. grid-item-card:: Constants
                     :columns: 12
 
+                    * Community Pot Multiplier
                     * Endowment Amounts
-                    * Maximum Taking Amount
-                    * Maximum Destroying Amount
-                    * Punishment Multiplier
 
                 .. grid-item-card:: Dependant Variables
                     :columns: 12
 
-                    * Taken Amount
+                    * Contribution Amount (Individual)
+                    * Total Wealth (Group)
 
-            .. grid-item:: **Victim**
-            
+        .. tab-item:: Typical Behavior
+
+            * Most people give at least something, average giving behavior is 37.7% of the Endowment (`Zelmer, 2003`_)
+            * Considered to measure cooperation
+            * To use in utility modeling, it may require this game be played sequentially to make this a non-risky choice - more often used in repeated interactions to study group-level dynamics (i.e. Total Wealth accumulated over a certain number of trials)
+
+        .. tab-item:: Notable Variants
+
+            1. Asymetric Costs/Benefits
+            2. Asymetric Endowments
+            3. Earned Endowments
+            4. Minimum Combined Contributions
+            5. Sequential Decision-Making
+
+.. dropdown:: Ultimatum Game 
+
+    .. tab-set::
+
+        .. tab-item:: Task Design
+
+            .. figure:: ug_gif.gif
+                :figwidth: 100%
+                :align: center
+
+            The Proposer receives an Endowment and makes an Ultimatum Offer to the Responder. 
+            The Responder decides to accept the Ultimatum Offer - in which case both players receive the division according to the Ultimatum - or reject it - in which case both players receive nothing.
+
+        .. tab-item:: Experimental Variables
+
+            .. grid:: 2
+
+                .. grid-item:: **Proposer**
+                
+                    .. grid-item-card:: Independant Variables
+                        :columns: 12
+
+                        * None
+
+                    .. grid-item-card:: Constants
+                        :columns: 12
+
+                        * Endowment Amount
+
+                    .. grid-item-card:: Dependant Variables
+                        :columns: 12
+
+                        * Offer Amount
+
+                .. grid-item:: **Responder**
+                
+                    .. grid-item-card:: Independant Variables
+                        :columns: 12
+
+                        * Offer Amount
+
+                    .. grid-item-card:: Constants
+                        :columns: 12
+
+                        * Endowment Amount
+
+                    .. grid-item-card:: Dependant Variables
+                        :columns: 12
+
+                        * Ultimatum Response
+
+        .. tab-item:: Typical Behavior
+
+            .. grid:: 2
+
+                .. grid-item-card:: Proposer
+                    :columns: 12
+
+                    * Most proposers offer around 40% of the Endowment (`Camerer, 2011`_)
+                    * Ultimatums reflect first order-beliefs and thus, Proposing Behavior consider to measure Strategic Bargaining
+
+                .. grid-item-card:: Responder
+                    :columns: 12
+                    
+                    * 99% of people accept Ultimatums of 50% of the Endowment, 90% of people accept Ultimatums of 40% of the Endowment
+                    * 65% of people accept Ultimatums of 30% of the Endowment
+                    * 50% of people accept Ultimatums of 20% of the Endowment
+                    * 70% of people accept Ultimatums 10% of Endomment
+                    * Responses measure tolerance of unfairness
+
+        .. tab-item:: Notable Variants
+
+            1. Offer Game
+            2. Demand Game
+            3. Three-Player Ultimatum Game
+            4. Proposer's Endowment
+            5. Earned Endowment
+
+.. dropdown:: Dictator Game
+
+    .. tab-set::
+
+        .. tab-item:: Task Design
+
+            .. figure:: dg_gif.gif
+                :figwidth: 100%
+                :align: center
+
+        .. tab-item:: Experimental Variables
+
+            .. grid:: 2
+
                 .. grid-item-card:: Independant Variables
                     :columns: 12
 
-                    * Taken Amount
+                    * None
 
                 .. grid-item-card:: Constants
                     :columns: 12
 
-                    * Endowment Amounts
-                    * Maximum Taking Amount
-                    * Maximum Destroying Amount
-                    * Punishment Multiplier
+                    * Endowment Amount
 
                 .. grid-item-card:: Dependant Variables
                     :columns: 12
 
-                    * Punishment Amount
+                    * Given Amount
 
-    .. tab-item:: Typical Behavior
+        .. tab-item:: Typical Behavior
 
-        .. grid:: 2
+            * Most Dictators offer around 20-30% of the Endowment (`Camerer, 2011`_)
+            * Given Amount is taken as measure of fairness or altruism
 
-            .. grid-item-card:: Taker
-                :columns: 12
+        .. tab-item:: Notable Variants
+            
+            1. Impunity Game
+            2. Taking Game
+            3. Three-Player Dictator Game
+            4. Earned Roles
+            5. Earned Endowment
 
-                * Average Taken Amount is 58.5% of the Victim's Endowment (`Bosman & Winden, 2000`_)
-                * Taken Amount is considered to measure risk tolerance and one's willingness to be unfair
-                * Average expected destruction rate is 24% of the Taker's Endowment (`Bosman & Winden, 2002`_)
+.. dropdown:: Trust Game
 
-            .. grid-item-card:: Victim
-                :columns: 12
+    .. tab-set::
+
+        .. tab-item:: Task Design
+
+            .. figure:: tg_gif.gif
+                :figwidth: 100%
+                :align: center
+
+            The Investor is given an Endowment. 
+            They must then decide how much to invest and how much to keep for themselves. 
+            Any money kept is guaranteed payout. 
+            Any money invested is multiplied and given to the Trustee who must then decide how much to keep and how much to return.
+
+        .. tab-item:: Experimental Variables
+
+            .. grid:: 2
+
+                .. grid-item:: **Investor**
                 
-                * Average Amount spent on Punishment is 15.6% of the Taken Amount (`Bosman & Winden, 2002`_)
-                * Punishment Amount is considered to measure tolerance for unfairness
+                    .. grid-item-card:: Independant Variables
+                        :columns: 12
 
-    .. tab-item:: Notable Variants
+                        * None
 
-        1. Three-Player Justice Game
-        2. Three-Player Compensation Game
-        3. Earned Endowments
-        4. Asymetric Endowments
-        5. Earned Roles
+                    .. grid-item-card:: Constants
+                        :columns: 12
+
+                        * Endowment Amount
+                        * Investment Multiplier
+
+                    .. grid-item-card:: Dependant Variables
+                        :columns: 12
+
+                        * Invested Amount
+
+                .. grid-item:: **Trustee**
+                
+                    .. grid-item-card:: Independant Variables
+                        :columns: 12
+
+                        * Investment Amount
+
+                    .. grid-item-card:: Constants
+                        :columns: 12
+
+                        * Endowment Amount
+                        * Investment Multiplier
+
+                    .. grid-item-card:: Dependant Variables
+                        :columns: 12
+
+                        * Returned Amount
+
+        .. tab-item:: Typical Behavior
+
+            .. grid:: 2
+
+                .. grid-item-card:: Investor
+                    :columns: 12
+
+                    * Average Investment Amount is 51.7% of the Endowment (`Houser, Schunk, & Winter, 2006`_)
+                    * Investment Amount is considered a measure of Incentivized Trust- i.e. risk perception and preferences - but is also confounded with prosocial preferences
+
+                .. grid-item-card:: Trustee
+                    :columns: 12
+                    
+                    * Average Returned Amount is approximatley 40% of the Multiplied Investment and is generally consistent irrespective of the multiplier (`van Baar et al., 2020`_)
+                    * Returned Amount is considered to be a measure of Positive Reciprocity
+                    * Most people believe that the Investor expects them return 50% of the Mutliplied Investment (`van Baar, Chang, & Sanfey, 2019`_)
+
+        .. tab-item:: Notable Variants
+
+            1. Dishonest Salesman Game
+            2. Trading Game
+            3. Lending Game
+            4. Earned Endowments
+            5. Gain/Loss Outcomes
+            6. Hidden Multiplier Trust Game
+
+.. dropdown:: Justice Game
+
+    .. tab-set::
+
+        .. tab-item:: Task Design
+
+            .. figure:: jg_gif.gif
+                :figwidth: 100%
+                :align: center
+
+            Both Players are given an Endowment and the Taker is allowed to take a certain amount of the Victim's Endowment - usually a maximum of 50% of the Endowment. 
+            Then, the Victim is allowed to spend a certain amount of money to destroy the Taker's money. 
+            The money destroyed is usually 3 times what the Victim spent. 
+
+        .. tab-item:: Experimental Variables
+
+            .. grid:: 2
+
+                .. grid-item:: **Taker**
+                
+                    .. grid-item-card:: Independant Variables
+                        :columns: 12
+
+                        * None
+
+                    .. grid-item-card:: Constants
+                        :columns: 12
+
+                        * Endowment Amounts
+                        * Maximum Taking Amount
+                        * Maximum Destroying Amount
+                        * Punishment Multiplier
+
+                    .. grid-item-card:: Dependant Variables
+                        :columns: 12
+
+                        * Taken Amount
+
+                .. grid-item:: **Victim**
+                
+                    .. grid-item-card:: Independant Variables
+                        :columns: 12
+
+                        * Taken Amount
+
+                    .. grid-item-card:: Constants
+                        :columns: 12
+
+                        * Endowment Amounts
+                        * Maximum Taking Amount
+                        * Maximum Destroying Amount
+                        * Punishment Multiplier
+
+                    .. grid-item-card:: Dependant Variables
+                        :columns: 12
+
+                        * Punishment Amount
+
+        .. tab-item:: Typical Behavior
+
+            .. grid:: 2
+
+                .. grid-item-card:: Taker
+                    :columns: 12
+
+                    * Average Taken Amount is 58.5% of the Victim's Endowment (`Bosman & Winden, 2000`_)
+                    * Taken Amount is considered to measure risk tolerance and one's willingness to be unfair
+                    * Average expected destruction rate is 24% of the Taker's Endowment (`Bosman & Winden, 2002`_)
+
+                .. grid-item-card:: Victim
+                    :columns: 12
+                    
+                    * Average Amount spent on Punishment is 15.6% of the Taken Amount (`Bosman & Winden, 2002`_)
+                    * Punishment Amount is considered to measure tolerance for unfairness
+
+        .. tab-item:: Notable Variants
+
+            1. Three-Player Justice Game
+            2. Three-Player Compensation Game
+            3. Earned Endowments
+            4. Asymetric Endowments
+            5. Earned Roles
