@@ -4,6 +4,9 @@ Test for Individual Differences
 Goals During this Stage
 ==========
 
+We've tested the model and, perhaps, a specific hypothesis about how this changes as a function of :bdg-primary:`Condition`. 
+One advantage of computational modeling in general is that it allows us to tailor analyses to specifically and explicitly test certain hypotheses. 
+Now, we can actually explicitly test whether or not people are different from each other, or if our findings indicate a tendency that is true of all people in the same way. 
 
 Tutorial
 ==========

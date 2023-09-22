@@ -1,9 +1,50 @@
 Test Modulatory Hypotheses
 **********
 
+.. _homoscedasticity: https://social-utility-modeling.readthedocs.io/en/latest/2_4_0.html
+
 Goals During this Stage
 ==========
 
+To test how :bdg-success:`Free Parameters` are modulated by :bdg-primary:`Condition`. 
+In experiments where you use multiple :bdg-primary:`Conditions`, you may choose to recover :bdg-success:`Free Parameters` for seperate :bdg-primary:`Conditions`. 
+Thus, you may wish to use these :bdg-success:`Free Parameters` as a proxy for how preferences change as a function of your :bdg-primary:`Condition`. 
+Before you jump to testing, you have to check a few boxes - you must prove that you can reliably estimate :bdg-success:`Free Parameters`.  
+
+There are also a few more new things that we have to check. Let's take a look at each. 
+
+.. dropdown:: Preliminary Validation
+
+    .. dropdown:: Robust and Reliable :bdg-success:`Free Parameters`
+
+        As we said before, we have to prove that our recovery of :bdg-success:`Free Parameters` is robust. 
+        This is a step above what we previously did - essentially, fivefold validation allowed us to rule out the idea that our :bdg-success:`Free Parameters` were overfitted (therefore enabling them to improve their performance by capturing little quirks in the data). 
+        We need to take this a step further to use these directly in statistical analyses: we need to show that treating recovered :bdg-success:`Free Parameters` as a continuous scale measure is appropriate. 
+        If the following are false, you should be okay to proceed:
+        
+        1. Your utility equation applies a nonlinear transfomration to your :bdg-success:`Free Parameters` - this means that an increase in one unit of your :bdg-success:`Free Parameter` scale is not equal for all values of the :bdg-success:`Free Parameter` so this analysis is probably inappropriate
+        2. The recovery of your :bdg-success:`Free Parameter` that you want to test is independent of the other :bdg-success:`Free Parameters` in your model - if your :bdg-success:`Free Parameter` values only interact with other :bdg-success:`Free Parameters` you will have to apply a transformation to account for this dependency (see tutorial 2 for an example of this)
+        3. Remember that assumption of `homoscedasticity`_ that we said wasn't super important? Well, now it is. If your data is heteroscedastic, recovery of :bdg-success:`Free Parameters` could be differentially overfit or underfit at certain values of the :bdg-primary:`Independent Variable` which makes these :bdg-success:`Free Parameters` unreliable. You will have to re-estimate your :bdg-success:`Free Parameters` using an alternative estimator (i.e. Robust Maximum Likelihood Estimation or Weighted Least Squares)
+
+    .. dropdown:: Meaningful :bdg-primary:`Condition` Differences
+
+        ..tab-set:: 
+
+            ..tab-item:: Plain English
+
+                So you've now shown that your :bdg-success:`Free Parameters` are robust and reliable - what's left to do other than test?
+                Something really important actually: you have to prove that you are even justified in recovering different :bdg-success:`Free Parameters` in each :bdg-primary:`Condition`. 
+                Even if you show that :bdg-success:`Free Parameters` are meaningfully different across :bdg-primary:`Conditions`, the test results are not valid if you have not proven that :bdg-success:`Subjects` had different preferences in one :bdg-primary:`Condition` compared to another.
+
+                So, we're going to go back and create a model which does not differentiate between :bdg-primary:`Conditions` - training all of the data at once. 
+                Since our demo did not have a design with multiple :bdg-primary:`Conditions`, let's 
+
+            ..tab-item:: R
+
+                ::
+
+
+.. dropdown:: Testing a Modulatory Hypothesis
 
 Tutorial
 ==========
