@@ -89,20 +89,25 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
                 obj_function = function(params, decisions, method = "OLS") {
                     Parameter1 = params[1]
                     Parameter2 = params[2]
+
+                    trialList = data.frame() #must redefine within function
                     
                     predicted_utility = vector('numeric', length(trialList[,1]))
-                    chosen = decisions + 1
+                    observed_utility = vector('numeric', length(trialList[,1]))
                     for (k in 1:length(trialList[,1])){
                         IV = trialList[k, 1]
                         Constant = trialList[k, 2]
-                        Choices = seq(0, (I * M), 1)
+                        Choices = #
                         
                         Utility = vector('numeric', length(Choices))
                         for (n in 1:length(Choices)){
-                        Utility[n] = utility(Parameter1, Parameter2, construct1(IV, Constant, Choices[n]), construct2(IV, Constant, Choices[n]), construct3(IV, Constant, Choices[n]))
+                            Utility[n] = utility(Parameter1, Parameter2, 
+                                                 construct1(IV, Constant, Choices[n]), 
+                                                 construct2(IV, Constant, Choices[n]), 
+                                                 construct3(IV, Constant, Choices[n]))
                         }
                         predicted_utility[k] = max(Utility)
-                        observed_utility[k] = Utility[chosen[k]]
+                        observed_utility[k] = Utility[k]
                     }
                     if (method == "OLS"){
                         return(sum((predicted_utility - observed_utility)**2))
@@ -121,17 +126,22 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
                     end
                     Parameter1 = params(1);
                     Parameter2 = params(2);
+
+                    trialList = cell() #must redefine within function
                     
                     predicted_utility = zeros(length(trialList), 1);
-                    chosen = decisions + 1;
+                    observed_utility = zeros(length(trialList), 1);
                     for k = 1:length(trialList)
                         IV = trialList(k, 1);
                         Constant = trialList(k, 2);
-                        Choices = 0:(I * M);
+                        Choices = #something;
                         
                         Utility = zeros(length(Choices), 1);
                         for n = 1:length(Choices)
-                            Utility(n) = utility(Parameter1, Parameter2, construct1(IV, Constant, Choices(n)), construct2(IV, Constant, Choices(n)), construct3(IV, Constant, Choices(n)));
+                            Utility(n) = utility(Parameter1, Parameter2, 
+                                                 construct1(IV, Constant, Choices(n)), 
+                                                 construct2(IV, Constant, Choices(n)), 
+                                                 construct3(IV, Constant, Choices(n)));
                         end
                         predicted_utility(k) = max(Utility);
                         observed_utility(k) = Utility(chosen(k));
@@ -155,13 +165,15 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
                     Parameter1 = params[0]
                     Parameter2 = params[1]
 
+                    trialList = np.array() #must redefine within funciton
+
                     predicted_utility = np.zeros(len(trialList))
-                    chosen = decisions + 1
+                    observed_utility = np.zeros(len(trialList))
 
                     for k in range(len(trialList)):
                         IV = trialList[k, 0]
                         Constant = trialList[k, 1]
-                        Choices = np.arange(0, (I * M) + 1, 1)
+                        Choices = #something 
 
                         Utility = np.zeros(len(Choices))
                         for n in range(len(Choices)):

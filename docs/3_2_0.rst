@@ -34,14 +34,126 @@ There are also a few more new things that we have to check. Let's take a look at
 
                 So you've now shown that your :bdg-success:`Free Parameters` are robust and reliable - what's left to do other than test?
                 Something really important actually: you have to prove that you are even justified in recovering different :bdg-success:`Free Parameters` in each :bdg-primary:`Condition`. 
-                Even if you show that :bdg-success:`Free Parameters` are meaningfully different across :bdg-primary:`Conditions`, the test results are not valid if you have not proven that :bdg-success:`Subjects` had different preferences in one :bdg-primary:`Condition` compared to another.
+                Even if you show that :bdg-success:`Free Parameters` are meaningfully different across :bdg-primary:`Conditions`, the test results are not valid if you have not proven that the :bdg-danger:`Decisions` that :bdg-success:`Subjects` make differ between :bdg-primary:`Conditions`.
 
                 So, we're going to go back and create a model which does not differentiate between :bdg-primary:`Conditions` - training all of the data at once. 
-                Since our demo did not have a design with multiple :bdg-primary:`Conditions`, let's 
+                Since our demo did not have a design with multiple :bdg-primary:`Conditions`, we'll create a complete example here.
 
             ..tab-item:: R
 
                 ::
+                    obj_function_aao = function(params, decisions, method = "OLS") {
+                        Parameter1 = params[1]
+                        Parameter2 = params[2]
+
+                        trialList = #must redefine and also must be of the same length as decisions
+
+                        predicted_utility = vector('numeric', length(trialList[,1]))
+                        observed_utility = vector('numeric', length(trialList[,1]))
+
+                        for (k in 1:length(trialList[,1])){
+                            IV = trialList[k, 1]
+                            Constant = trialList[k, 2]
+                            Choices = #something
+
+                            Utility = vector('numeric', length(Choices))
+                            for (n in 1:length(Choices)){
+                            Utility[n] = utility(Parameter1, Parameter2, construct1(IV, Constant, Choices[n]), construct2(IV, Constant, Choices[n]), construct3(IV, Constant, Choices[n]))
+                            }
+                            predicted_utility[k] = max(Utility)
+                            observed_utility[k] = Utility[chosen[k]]
+                        }
+                        if (method == "OLS"){
+                            return(sum((predicted_utility - observed_utility)**2))
+                        } else if (method == "MLE"){
+                            return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                        }
+                    }
+
+                    for (i in 1:length(included_subjects)){
+                        datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                        df = read.csv2(datafile) #this will have variables called IV, Decisions, Condition, and information about the original order of trials (i.e. trialsTask.thisIndex) - it will also have information about the number of blocks
+                        reorder = df$trialsTask.thisIndex + 1
+
+                        df$Prediction = vector('numeric', length(df$IV))
+                        Par1_PerCondition = vector('numeric', length(levels(df$Condition)))
+                        Par2_PerCondition = vector('numeric', length(levels(df$Condition)))
+                        SS_PerCondition = vector('numeric', length(levels(df$Condition)))
+                        Deviance_PerCondition = vector('numeric', length(levels(df$Condition))) #to calculate NLL later
+
+                        for (c in 1:length(levels(df$Condition))){  
+
+                            reorder_these_trials = reorder[which(df$Condition == levels(df$Condition)[c])]
+
+                            result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                            lb = lower_bounds, ub = upper_bounds,
+                                            decisions = df$Decisions[reorder_these_trials])
+
+                            #Just Added
+
+                            closestPoint = which(as.numeric(freeParameters[,1]) == as.numeric(round(result$par[1])) & as.numeric(freeParameters[,2]) == as.numeric(round(result$par[2])))
+                            Prediction = vector('numeric')
+                            for (k in 1:length(df$Decisions)){
+                                Utility = vector('numeric', length(Choices))
+                                for (n in 1:length(Choices)){
+                                    Utility[n] = utility(parameter1 = results$par[1],
+                                                        parameter2 = results$par[2],
+                                                        construct1 = construct1(df$IV[k], df$Constant[k], Choices[n]),
+                                                        construct2 = construct2(df$IV[k], df$Constant[k], Choices[n])),
+                                                        construct3 = construct3(df$IV[k], df$Constant[k], Choices[n])
+                                }
+                                correct_choice = which(Utility == max(Utility))
+                                if (length(correct_choice) > 1){
+                                    correct_choice = correct_choice[sample(correct_choice, 1)]
+                                }
+                                Prediction[k] = Choices[correct_choice]
+                            }
+
+                            Deviance_PerCondition[c] = dnorm(df$Decision, mean = Prediction)
+                            SS_PerCondition[c] = sum((df$Decision - Prediction)**2)
+                            df$Prediction[which(df$Condition == levels(df$Condition)[c])[reorder_these_trials]] = Prediction
+                        }
+                        NLL_PerCondition = -2 * log(sum(Deviance_PerCondition))
+
+                        result = fmincon(obj_function_aao,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                         lb = lower_bounds, ub = upper_bounds,
+                                         decisions = df$Decisions)
+
+                        df$PredictionAAO = vector('numeric')
+                        for (k in 1:length(df$Decisions)){
+                            Utility = vector('numeric', length(Choices))
+                            for (n in 1:length(Choices)){
+                                Utility[n] = utility(parameter1 = results$par[1],
+                                                    parameter2 = results$par[2],
+                                                    construct1 = construct1(df$IV[k], df$Constant[k], Choices[n]),
+                                                    construct2 = construct2(df$IV[k], df$Constant[k], Choices[n])),
+                                                    construct3 = construct3(df$IV[k], df$Constant[k], Choices[n])
+                            }
+                            correct_choice = which(Utility == max(Utility))
+                            if (length(correct_choice) > 1){
+                                correct_choice = correct_choice[sample(correct_choice, 1)]
+                            }
+                            df$PredictionAAO[k] = Choices[correct_choice]
+                        }
+
+                        NLL_AAO = -2 * log(sum(dnorm(df$Decision, mean = df$Prediction)))
+                        SS_AAO = sum((df$Decision - df$Prediction)**2)
+
+                        subjectData[i, ] = c(included_subjects[i], sum(SS_PerCondition), NLL_PerCondition, SS_AAO, NLL_AAO, 
+                                             Par1_PerCondition, Par2_PerCondition, result$par[1], result$par[2])
+                        
+                        start = length(subjectData[, 1]) + 1
+                        end = start + length(df$Decisions)
+                        trialData[start:end, 1] = included_subjects[i]
+                        trialData[start:end, 2] = df$IV
+                        trialData[start:end, 3] = df$Constant
+                        trialData[start:end, 4] = df$Decision
+                        trialData[start:end, 5] = df$Condition
+                        trialData[start:end, 6] = df$Prediction
+                        trialData[start:end, 7] = df$PredictionAAO
+
+                    }
+                    colnames(subjectData) = c('SubjectID', ) #levels(df$Condition) will always be in the same order for all subjects so conditions will be saved in the same columns
 
 
 .. dropdown:: Testing a Modulatory Hypothesis
