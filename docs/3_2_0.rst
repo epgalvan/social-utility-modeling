@@ -167,5 +167,36 @@ There are also a few more new things that we have to check. Let's take a look at
 
 .. dropdown:: Testing a Modulatory Hypothesis
 
+    .. tab-set:: 
+
+            .. tab-item:: Plain English
+
+                Now, if we've shown that people do indeed make different :bdg-danger:`Decisions` in each :bdg-primary:`Condition` and are convinced that our :bdg-success:`Free Parameters` can be trusted as a valid continuous measure of :bdg-success:`Subjects`' preferences, we can now test our modulatory hypotheses. 
+                To reiterate, these are hypotheses about directional, group-level differences: you've already shown that preferences change and now you want to show how they specifically change as a function of :bdg-primary:`Condition`.
+                Occasionally, if you have more than two :bdg-primary:`Conditions`, you might also want to first do an omnibus test for :bdg-primary:`Condition` effects and then you might also do post-hoc tests after. 
+                We'll show you how to do both of these. 
+
+            .. tab-item:: R
+
+                ::
+
+                    t.test(subjectData$Parameter1_Condition1, subjectData$Parameter1_Condition2, paired = T) #change in parameter 1 between condition 1 and 2
+
+                    #now we need to put this data in long format to do a linear mixed effects model
+
+                    ombinusData = data.frame(c(subjectData$Parameter1_Condition1, subjectData$Parameter1_Condition2, subjectData$Parameter1_Condition3), 
+                                             rep(c('Condition 1', 'Condition 2', 'Condition 3'), each = length(subjectData$SubjectID)),
+                                             rep(subjectData$SubjectID, times = 3))
+                    colnames(omnibusData) = c('Parameter1', 'Condition', 'SubjectID')
+
+                    ombinusModulatoryEffect = lmer(data = ombnibusData, Parameter1 ~ Condition + (1 | SubjectID)) #our omnnibus test
+
+                    summary(ombinusModulatoryEffect) #if omnibus test is signficiant, proceed to post hoc tests below
+
+                    library(emmeans)
+                    Parameter1_PostHocModulationEffect = emmeans(ombinusModulatoryEffect, "Parameter1")
+                    summary(pairs(Parameter1_PostHocModulationEffect)) #post hoc pairwise test across condition
+
+
 Tutorial
 ==========
