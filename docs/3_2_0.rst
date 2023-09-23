@@ -6,12 +6,9 @@ Test Modulatory Hypotheses
 Goals During this Stage
 ==========
 
-To test how :bdg-success:`Free Parameters` are modulated by :bdg-primary:`Condition`. 
-In experiments where you use multiple :bdg-primary:`Conditions`, you may choose to recover :bdg-success:`Free Parameters` for seperate :bdg-primary:`Conditions`. 
+In experiments where you use multiple :bdg-primary:`Conditions`, you will end up recovering :bdg-success:`Free Parameters` for seperate :bdg-primary:`Conditions`. 
 Thus, you may wish to use these :bdg-success:`Free Parameters` as a proxy for how preferences change as a function of your :bdg-primary:`Condition`. 
-Before you jump to testing, you have to check a few boxes - you must prove that you can reliably estimate :bdg-success:`Free Parameters`.  
-
-There are also a few more new things that we have to check. Let's take a look at each. 
+Before you jump to testing, there are also a few more new things that we have to check. Let's take a look at each. 
 
 .. dropdown:: Preliminary Validation
 
