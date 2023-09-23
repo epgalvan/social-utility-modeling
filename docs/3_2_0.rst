@@ -28,9 +28,9 @@ There are also a few more new things that we have to check. Let's take a look at
 
     .. dropdown:: Meaningful :bdg-primary:`Condition` Differences
 
-        ..tab-set:: 
+        .. tab-set:: 
 
-            ..tab-item:: Plain English
+            .. tab-item:: Plain English
 
                 So you've now shown that your :bdg-success:`Free Parameters` are robust and reliable - what's left to do other than test?
                 Something really important actually: you have to prove that you are even justified in recovering different :bdg-success:`Free Parameters` in each :bdg-primary:`Condition`. 
@@ -39,7 +39,7 @@ There are also a few more new things that we have to check. Let's take a look at
                 So, we're going to go back and create a model which does not differentiate between :bdg-primary:`Conditions` - training all of the data at once. 
                 Since our demo did not have a design with multiple :bdg-primary:`Conditions`, we'll create a complete example here.
 
-            ..tab-item:: R
+            .. tab-item:: R
 
                 ::
                     obj_function_aao = function(params, decisions, method = "OLS") {
