@@ -42,7 +42,7 @@ There are also a few more new things that we have to check. Let's take a look at
             .. tab-item:: R
 
                 ::
-                    
+
                     obj_function_aao = function(params, decisions, method = "OLS") {
                         Parameter1 = params[1]
                         Parameter2 = params[2]
@@ -154,7 +154,15 @@ There are also a few more new things that we have to check. Let's take a look at
                         trialData[start:end, 7] = df$PredictionAAO
 
                     }
-                    colnames(subjectData) = c('SubjectID', ) #levels(df$Condition) will always be in the same order for all subjects so conditions will be saved in the same columns
+                    colnames(subjectData) = c('SubjectID', 'modelSS_PerCondition', 'modelNLL_PerCondition', 'modelSS_AllAtOnce', 'modelNLL_AllAtOnce',
+                                              'Parameter1_Condition1', ..., 'Parameter2_Condition1', ..., 'Parameter1_AllAtOnce', 'Parameter2_AllAtOnce') 
+                    #levels(df$Condition) will always be in the same order for all subjects so conditions will be saved in the same columns
+                    colnames(trailData) = c('SubjectID', 'IV', 'Constant', 'Decision', 'Prediction_PerCondition', 'Prediction_AllAtOnce')
+
+                    subjectData$AIC_PerCondition = length(df$IV) * log(subjectData$SS_PerCondition/length(df$IV)) + 2 * 2 * (length(levels(df$Condition)))
+                    subjectData$AIC_AllAtOnce = length(df$IV) * log(subjectData$SS_AllAtOnce/length(df$IV)) + 2 * 2 * (length(levels(df$Condition)))
+
+                    t.test(subjectData$AIC_PerCondition, subjectData$AIC_AllAtOnce, paired = T)
 
 
 .. dropdown:: Testing a Modulatory Hypothesis
