@@ -22,7 +22,7 @@ There are also a few more new things that we have to check. Let's take a look at
         We need to take this a step further to use these directly in statistical analyses: we need to show that treating recovered :bdg-success:`Free Parameters` as a continuous scale measure is appropriate. 
         If the following are false, you should be okay to proceed:
         
-        1. Your utility equation applies a nonlinear transfomration to your :bdg-success:`Free Parameters` - this means that an increase in one unit of your :bdg-success:`Free Parameter` scale is not equal for all values of the :bdg-success:`Free Parameter` so this analysis is probably inappropriate
+        1. Your utility equation applies a nonlinear transformation to your :bdg-success:`Free Parameters` - this means that an increase in one unit of your :bdg-success:`Free Parameter` scale is not equal for all values of the :bdg-success:`Free Parameter` so this analysis is probably inappropriate
         2. The recovery of your :bdg-success:`Free Parameter` that you want to test is independent of the other :bdg-success:`Free Parameters` in your model - if your :bdg-success:`Free Parameter` values only interact with other :bdg-success:`Free Parameters` you will have to apply a transformation to account for this dependency (see tutorial 2 for an example of this)
         3. Remember that assumption of `homoscedasticity`_ that we said wasn't super important? Well, now it is. If your data is heteroscedastic, recovery of :bdg-success:`Free Parameters` could be differentially overfit or underfit at certain values of the :bdg-primary:`Independent Variable` which makes these :bdg-success:`Free Parameters` unreliable. You will have to re-estimate your :bdg-success:`Free Parameters` using an alternative estimator (i.e. Robust Maximum Likelihood Estimation or Weighted Least Squares)
 
@@ -42,6 +42,7 @@ There are also a few more new things that we have to check. Let's take a look at
             .. tab-item:: R
 
                 ::
+                    
                     obj_function_aao = function(params, decisions, method = "OLS") {
                         Parameter1 = params[1]
                         Parameter2 = params[2]
