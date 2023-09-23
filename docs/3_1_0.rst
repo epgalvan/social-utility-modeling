@@ -1,6 +1,14 @@
 Compare Competing Accounts of Behavior
 **********
 
+.. article-info::
+    :avatar: dnl_plastic.png
+    :avatar-link: https://www.decisionneurosciencelab.com/
+    :author: Elijah Galvan
+    :date: September 1, 2023
+    :read-time: 10 min read
+    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
+
 Now we're in the home stretch. 
 We've gone through all of these steps to get here: the point where we can now draw conclusions about human decision-making and how it is influenced by their social preferences. 
 

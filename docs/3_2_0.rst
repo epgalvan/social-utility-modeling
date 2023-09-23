@@ -1,13 +1,21 @@
 Test Modulatory Hypotheses
 **********
 
+.. article-info::
+    :avatar: dnl_plastic.png
+    :avatar-link: https://www.decisionneurosciencelab.com/
+    :author: Elijah Galvan
+    :date: September 1, 2023
+    :read-time: 10 min read
+    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
+
 .. _homoscedasticity: https://social-utility-modeling.readthedocs.io/en/latest/2_4_0.html
 
 Goals During this Stage
 ==========
 
 In experiments where you use multiple :bdg-primary:`Conditions`, you will end up recovering :bdg-success:`Free Parameters` for seperate :bdg-primary:`Conditions`. 
-Thus, you may wish to use these :bdg-success:`Free Parameters` as a proxy for how preferences change as a function of your :bdg-primary:`Condition`. 
+Thus, you may wish to use these :bdg-success:`Free Parameters` as a proxy for how preferences change as a function of your :bdg-primary:`Condition` - these would be Modulatory Hypotheses (i.e. how :bdg-primary:`Conditions` modulate the data generation process). 
 Before you jump to testing, there are also a few more new things that we have to check. Let's take a look at each. 
 
 .. dropdown:: Preliminary Validation
@@ -15,7 +23,7 @@ Before you jump to testing, there are also a few more new things that we have to
     .. dropdown:: Robust and Reliable :bdg-success:`Free Parameters`
 
         As we said before, we have to prove that our recovery of :bdg-success:`Free Parameters` is robust. 
-        This is a step above what we previously did - essentially, fivefold validation allowed us to rule out the idea that our :bdg-success:`Free Parameters` were overfitted (therefore enabling them to improve their performance by capturing little quirks in the data). 
+        This is a step above what we previously did - essentially, fivefold validation allowed us to rule out the idea that our :bdg-success:`Free Parameters` were overfitted meaning that our model wasn't performing so well because it was just capturing little quirks in the data. 
         We need to take this a step further to use these directly in statistical analyses: we need to show that treating recovered :bdg-success:`Free Parameters` as a continuous scale measure is appropriate. 
         If the following are false, you should be okay to proceed:
         
@@ -181,17 +189,17 @@ Before you jump to testing, there are also a few more new things that we have to
 
                     #now we need to put this data in long format to do a linear mixed effects model
 
-                    ombinusData = data.frame(c(subjectData$Parameter1_Condition1, subjectData$Parameter1_Condition2, subjectData$Parameter1_Condition3), 
+                    omnibusData = data.frame(c(subjectData$Parameter1_Condition1, subjectData$Parameter1_Condition2, subjectData$Parameter1_Condition3), 
                                              rep(c('Condition 1', 'Condition 2', 'Condition 3'), each = length(subjectData$SubjectID)),
                                              rep(subjectData$SubjectID, times = 3))
                     colnames(omnibusData) = c('Parameter1', 'Condition', 'SubjectID')
 
-                    ombinusModulatoryEffect = lmer(data = ombnibusData, Parameter1 ~ Condition + (1 | SubjectID)) #our omnnibus test
+                    ombnibusModulatoryEffect = lmer(data = ombnibusData, Parameter1 ~ Condition + (1 | SubjectID)) #our omnnibus test
 
-                    summary(ombinusModulatoryEffect) #if omnibus test is signficiant, proceed to post hoc tests below
+                    summary(ombnibusModulatoryEffect) #if omnibus test is signficiant, proceed to post hoc tests below
 
                     library(emmeans)
-                    Parameter1_PostHocModulationEffect = emmeans(ombinusModulatoryEffect, "Parameter1")
+                    Parameter1_PostHocModulationEffect = emmeans(ombnibusModulatoryEffect, "Parameter1")
                     summary(pairs(Parameter1_PostHocModulationEffect)) #post hoc pairwise test across condition
 
 
