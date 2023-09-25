@@ -202,6 +202,46 @@ Before you jump to testing, there are also a few more new things that we have to
                     Parameter1_PostHocModulationEffect = emmeans(ombnibusModulatoryEffect, "Parameter1")
                     summary(pairs(Parameter1_PostHocModulationEffect)) #post hoc pairwise test across condition
 
+.. dropdown:: Using Categorical Clusters to Test Modulatory Hypotheses
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            Sometimes, treating :bdg-success:`Free Parameters` as an outcome measure doesn't tell us everything that we want to know about the strategies that people use to make :bdg-danger:`Decisions`. 
+            This is one time where using a priori clustering can come in handy: rather than saying :bdg-success:`Free Parameter 1` changed a certain amount between :bdg-primary:`Condition 1` and :bdg-primary:`Condition 2` and that :bdg-success:`Free Parameter 2` changed a certain amount, 
+            we summarize behavioral patterns in a way that accounts for both at once and also tells us something about how the prevalence of each strategy changed betweeen :bdg-primary:`Conditions`. 
+            To do this, we want to use a Chi-Square Test. 
+            
+
+        .. tab-item:: R
+
+            :: 
+
+                subjectData$Strategy_Condition1 = vector('character', length(subjectData$SubjectID))
+                subjectData$Strategy_Condition2 = vector('character', length(subjectData$SubjectID))
+                subjectData$Strategy_Condition3 = vector('character', length(subjectData$SubjectID))
+                subjectData$Strategy_Condition4 = vector('character', length(subjectData$SubjectID))
+                for (i in 1:length(subjectData$SubjectID)){
+                subjectData$Strategy_Condition1[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition1[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition1[i], 2))]
+                subjectData$Strategy_Condition2[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition2[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition2[i], 2))]
+                subjectData$Strategy_Condition3[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition3[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition3[i], 2))]
+                subjectData$Strategy_Condition4[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition4[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition4[i], 2))]
+                }
+
+                conditions = c('condition1', 'condition2', 'condition3', 'condition4')
+                strategies = c('strategy1', 'strategy2', 'strategy3')
+                group_by_condition = data.frame()
+                columns = #columns of subjectData where Condition1-4 are kept
+
+                for (i in 1:4){
+                    for (j in 1:3){
+                        group_by_condition[i, j] = sum(subjectData[, columns[i]] == strategies[j])
+                    }
+                }
+                colnames(group_by_condition) = strategies
+                rownames(group_by_condition) = conditions
+                chisq.test(group_by_condition)
 
 Tutorial
 ==========
