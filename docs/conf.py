@@ -1,7 +1,7 @@
 # Configuration file for the Sphinx documentation builder.
 # -- Project information
 
-project = 'Utility Models in Social Decision-Making Handbook'
+project = 'Utility Modeling Handbook'
 copyright = '2023, Elijah Galvan'
 author = 'Elijah Galvan'
 

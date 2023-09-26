@@ -1,4 +1,4 @@
-Utility Models for Social Decision-Making Wiki
+Utility Models for Study Social Decision-Making Handbook
 **********************
 
 In this handbook, we will walk, step-by-step, through the process of computationally modeling behavior in value-based social decision-making tasks - complete with conceptual and one implemented example. 
