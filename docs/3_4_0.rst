@@ -37,12 +37,10 @@ We're not going to bother using conceptual examples, all implemented examples ar
    +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
    | 2+ Orthagonal Categorical Variables     | Multiple Regression (Ex. 10)    | Cluster Strength Analysis (Ex. 11) | Logistic Regression (Ex. 12)       |
    +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
-   | Any 2+ Orthagonal Variables             | Multiple Regression (Ex. 13)    | Matrix Correlation (Ex. 14) *      | Logistic Regression (Ex. 15)       |
+   | Any 2+ Variables                        | Multiple Regression (Ex. 13)    | Matrix Correlation (Ex. 14)        | Logistic Regression (Ex. 15)       |
    +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
    | Any 2+ Continuous Variables             | Matrix Correlation (Ex. 16)     | Matrix Correlation (Ex. 17)        | Cluster Strength Analysis (Ex. 18) |
    +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
-
-``* Only if all variables are continuous``
 
 Examples
 ==========
