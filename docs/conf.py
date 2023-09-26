@@ -1,7 +1,7 @@
 # Configuration file for the Sphinx documentation builder.
 # -- Project information
 
-project = 'Social Utility Modeling Wiki'
+project = 'Utility Models in Social Decision-Making Handbook'
 copyright = '2023, Elijah Galvan'
 author = 'Elijah Galvan'
 

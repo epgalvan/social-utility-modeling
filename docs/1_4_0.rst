@@ -9,8 +9,11 @@ Model the Data Generation Process
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-Goals During this Stage
+Lesson
 ================
+
+Goals During this Stage
+---------------
 
 We want to mathematically model the data generation process - in other words, develop an equation that predicts what all people will decide in each trial.
 
@@ -18,6 +21,9 @@ We want to mathematically model the data generation process - in other words, de
 
     Mathematically modeling the data generation process is the most difficult step in the computational modeling process: there is no objectively correct way to go about it. 
     With that said, I believe that this is achievable in a timely manner when given the correct goals and a useful framework. 
+
+How to Achieve this Goal
+------------
 
 1. For each motive you have identified, create a function which takes :bdg-danger:`Decisions`, :bdg-primary:`Independent Variables`, and :bdg-primary:`Constants` as inputs, 
 and outputs a value which reflects the :bdg-secondary:`Construct Value` of such a motive based on :bdg-danger:`Decisions`.
@@ -144,8 +150,11 @@ Otherwise, think about how you can fix it so that it will make sense.
 
         :bdg-secondary:`SN2 Vio` = `Squared Normalized Norm Violation` = [0, 0.25]
 
-Tutorial 1 - van Baar, Chang, & Sanfey, 2019
+Tutorials
 ================
+
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
+-------------------
 
 .. Note::
 

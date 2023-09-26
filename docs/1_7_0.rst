@@ -9,15 +9,48 @@ A Priori Clustering
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-Goals During this Stage
+Lesson
 ================
+
+Goals During this Stage
+---------------
 
 To examine our model predictions in an efficient way and to potentially generate theoretical, sampling invariant, theoretically valid a priori groupings. 
 Essentially, this a valid, unbiased way to *classify* subjects' behavior in your task without making any arbitrary assertions about who falls into which group.
 
 .. _different clustering algorithms: https://www.freecodecamp.org/news/8-clustering-algorithms-in-machine-learning-that-all-data-scientists-should-know/
 
-.. dropdown:: Clustering Algorithms
+How to Achieve this Goal
+------------
+
+.. Note::
+    
+    This section will differ from the previous sections: rather than provide conceptual examples about how to implement it, we'll primarily talk about the reasons to use this approach and what it can be used for.
+    The implementation examples will be in reference to the first tutorial.
+
+.. dropdown:: Choosing an Approach to Grouping
+
+    Canonically, there have been 2 approaches to grouping: clustering and binning. 
+
+    Binning is simply the researcher *asserting* that it is the case that groups 1 and 2 are differentiable on X or Y: the grouping is only as valid as the researcher's reasoning.
+    Further, this approach is theoretically only valid when specified a priori (in a preregistration).  
+
+    On the other hand, Clustering is an empirical, data-driven approach which provides post-hoc explanations. 
+    Essentially, whichever Clustering Algorithm you use searches for the best solution to the problem you offer it. 
+    Thus, the groups are determined by the observed data and can obviously be biased therein. 
+
+    Here, we clearly don't have any real data: we want to cluster the simulated model predictions. 
+    This is the most ideal situation: since we can simulate as much data as we want and therefore exhaustively represent the variance in expected behavior. 
+    Here, we also group based on the model predictions (i.e. our hypotheses) - which means that our clustered groupings are a logical extension of our psychological theory in the context of our Experimental Paradigm and :bdg-primary:`Trial Set`.
+    This enables us to overcome the limitations of both clustering (post-hoc, sampling dependency, atheoretical) and binning (arbitrariness, overreliance on reasoning, etc.). 
+
+    However, the validity of a priori clustering requires that our model be highly generalizable: all :bdg-secondary:`Constructs` must have the same value on the same :bdg-primary:`Trial` for each subject and there are no :bdg-success:`Free Parameters` in your model which do not translate to psychologically meaningful differences.. 
+    So, for instance, this might preclude using binary choice tasks which often require :bdg-success:`Free Parameters` to model response bias parameters (preference for left-versus-right) and inverse heat parameters (probability of behaving preference-congruent) for example. 
+    It also requires that all :bdg-secondary:`Constructs` are directly computed from :bdg-primary:`Experimental Variables` and not self-report measures for instance. 
+    In this study, the experimenters asked what the participant thought the Investor expected for all trials: although this would be a theoretically superior way to mathematically calculate :bdg-secondary-line:`Guilt`, using the a priori clustering to group subjects would be conceptually problematic. 
+    In these cases, it is always good to make sure that the generalized :bdg-secondary:`Constructs` is highly correlated with the questionnaire measure and that using either value leads to the same behavioral conclusions - not just taking for granted that these are distinctions without differences. 
+
+.. dropdown:: Choosing a Clustering Algorithm
 
     Clustering Algorithms are generally used to determine 1) how many groups are in a data set and 2) the group that people belong to in a data set. 
     They do this by taking one observation of multiple variables (columns) for many people (rows). 
@@ -42,28 +75,6 @@ Essentially, this a valid, unbiased way to *classify* subjects' behavior in your
 
         There are many `different clustering algorithms`_ out there, but I'll only be talking about HAC because it is basic, I'm agnostic about clustering algorithms, and I'm familiar with it. 
         You might have a strong opinion or motivation - in principle, any clustering algorithm can be applied and your needs and knowledge might dictate that others are preferable and that's perfectly valid. 
-
-.. dropdown:: A Priori Clustering
-
-    Canonically, there have been 2 approaches to grouping: clustering and binning. 
-
-    Binning is simply the researcher *asserting* that it is the case that groups 1 and 2 are differentiable on X or Y: the grouping is only as valid as the researcher's reasoning.
-    Further, this approach is theoretically only valid when specified a priori (in a preregistration).  
-
-    On the other hand, Clustering is an empirical, data-driven approach which provides ad-hoc explanations. 
-    Essentially, whichever Clustering Algorithm you use searches for the best solution to the problem you offer it. 
-    Thus, the groups are determined by the observed data and can obviously be biased therein. 
-
-    Here, we clearly don't have any real data: we want to cluster the simulated model predictions. 
-    This is the most ideal situation: since we can simulate as much data as we want and therefore exhaustively represent the variance in expected behavior. 
-    Here, we also group based on the model predictions (i.e. our hypotheses) - which means that our clustered groupings are a logical extension of our psychological theory in the context of our Experimental Paradigm and Trial Set.
-    This enables us to overcome the limitations of both clustering (ad-hoc, sampling dependency, atheoretical) and binning (arbitrariness, overreliance on reasoning, etc.). 
-
-    However, the validity of a priori clustering requires that our model be highly generalizable: all :bdg-secondary:`Constructs` must have the same value on the same :bdg-primary:`Trial` for each subject and there are no :bdg-success:`Free Parameters` in your model which do not translate to psychologically meaningful differences.. 
-    So, for instance, this might preclude using binary choice tasks which often require :bdg-success:`Free Parameters` to model response bias parameters (preference for left-versus-right) and inverse heat parameters (probability of behaving preference-congruent) for example. 
-    It also requires that all :bdg-secondary:`Constructs` are directly computed from :bdg-primary:`Experimental Variables` and not self-report measures for instance. 
-    In this study, the experimenters asked what the participant thought the Investor expected for all trials: although this would be a theoretically superior way to mathematically calculate :bdg-secondary-line:`Guilt`, using the a priori clustering to group subjects would be conceptually problematic. 
-    In these cases, it is always good to make sure that the generalized :bdg-secondary:`Constructs` is highly correlated with the questionnaire measure and that using either value leads to the same behavioral conclusions - not just taking for granted that these are distinctions without differences. 
 
 .. dropdown:: Informing a Change in the of :bdg-primary:`Trial Set`
 
@@ -133,8 +144,11 @@ Essentially, this a valid, unbiased way to *classify* subjects' behavior in your
                 :figwidth: 100%
                 :align: center
 
-Tutorial 1 - van Baar, Chang, & Sanfey, 2019
+Tutorials
 ================
+
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
+-------------------
 
 .. dropdown:: Cluster Your Data Using HAC
 

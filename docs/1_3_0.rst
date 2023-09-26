@@ -9,27 +9,38 @@ Outline the Data Generation Process
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-Goals During this Stage
+Lesson
 ================
+
+Goals During this Stage
+---------------
 
 Before we can start to develop an mathematical model of behavior, we have to establish a conceptual model of how :bdg-danger:`Decisions` are made in your scenario that comports with your hypotheses. 
 
-
-The central theoretical question we want our Equation to answer is this:
-
-What :bdg-success:`Meaningful Psychological Differences Between People` determine how much :bdg-warning:`Utility` they derive from their :bdg-danger:`Decisions` in any situation of interest, 
-where the situation as defined by the :bdg-primary:`Independent Variables` and :bdg-primary:`Constants`.
+How to Achieve this Goal
+------------    
 
 1. For each hypothesis, think of the central appetitive or aversive motive that would lead people to make such :bdg-danger:`Decisions`
 2. Think about *how* the :bdg-danger:`Decisions` people make enable them to act on their environment ( :bdg-primary:`Independent Variables` and :bdg-primary:`Constants` ) to avoid or obtain whatever is motivating them according to each hypothesis
 3. Now think about *how* other :bdg-danger:`Decisions` that people could make would prevent them from avoiding or obtaining whatever is motivating them according to each hypothesis.
 4. Taking a step back now, identify the dimensions which are implied by the :bdg-success:`Meaningful Psychological Differences Between People` you have identified in your hypotheses - what way are these people quantitatively different?
 
-By now, you should have a conceptual model of how :bdg-primary:`Independent Variables`, :bdg-primary:`Constants` , and :bdg-danger:`Decisions` relate to the :bdg-success:`Meaningful Psychological Differences Between People` identified by each hypothesis, 
-so you can proceed to actually designing the equation. 
+.. Note::
+    
+    The central theoretical question we want our Equation to answer is this:
+
+    What :bdg-success:`Meaningful Psychological Differences Between People` determine how much :bdg-warning:`Utility` they derive from their :bdg-danger:`Decisions` in any situation of interest, 
+    where the situation as defined by the :bdg-primary:`Independent Variables` and :bdg-primary:`Constants`.
+
+    Following these steps should enable you to answer this question in a conceptual way: 
+    you now have a conceptual model of how :bdg-primary:`Independent Variables`, :bdg-primary:`Constants` , and :bdg-danger:`Decisions` relate to the :bdg-success:`Meaningful Psychological Differences Between People` identified by each hypothesis. 
+    In the next step you are going to translate your conceptual answer to a mathematical one by creating a :bdg-warning:`Utility` equation.
+
+Tutorials
+================
 
 Tutorial 1 - van Baar, Chang, & Sanfey, 2019
-================
+-------------------
 
 .. dropdown:: For each hypothesis, think of the central appetitive or aversive motive that would lead people to make such :bdg-danger:`Decisions`.
 
