@@ -16,5 +16,77 @@ We've tested the model and, perhaps, a specific hypothesis about how this change
 One advantage of computational modeling in general is that it allows us to tailor analyses to specifically and explicitly test certain hypotheses. 
 Now, we can actually explicitly test whether or not people are different from each other, or if our findings indicate a tendency that is true of all people in the same way. 
 
+.. dropdown:: Embodying No Individual Differences
+
+    .. tab-set::
+
+        .. tab-item:: Plain English
+
+            We've already identified the best model and now we want to see if the instance that we proved was best - where we estimated :bdg-success:`Free Parameters` for each :bdg-success:`Subjects` - was justified in its complexity. 
+            Even if our best model captures 'individual differences' - i.e. multiple potential strategies - it does not necessarily mean that :bdg-success:`Subjects` are different. 
+            Instead it indicates that this multinorm model is able to capture behavior that is not explained by any simplification of it. 
+            Testing for individual differences invovles training an instance of our model over data where we do not differentiate between :bdg-success:`Subjects` and we then compare this model's performance to a 
+
+        .. tab-item:: R
+
+            :: 
+
+                obj_function = function(params, df, method = "OLS") {
+                    Parameter1 = params[1]
+                    Parameter2 = params[2]
+
+                    decisions = df$Decision
+
+                    predicted_utility = vector('numeric', length(df[,1]))
+                    observed_utility = vector('numeric', length(df[,1]))
+                    for (k in 1:length(df[,1])){
+                        IV = df[k, 1]
+                        Constant = df[k, 2]
+                        Choices = #
+
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                            Utility[n] = utility(Parameter1, Parameter2,
+                                                construct1(IV, Constant, Choices[n]),
+                                                construct2(IV, Constant, Choices[n]),
+                                                construct3(IV, Constant, Choices[n]))
+                        }
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[k]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                }
+
+                result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                 lb = lower_bounds, ub = upper_bounds,
+                                 df = trailData)
+
+                trialData$PredictedNID = vector('numeric', length(trialData$SubjectID))
+                for (i in 1:length(trialData$IV)){
+                    Utility = vector('numeric', length(Choices))
+                    for (j in 1:length(Choices)){
+                        Utility[j] = utility(parameter1 = results$par[1],
+                                             parameter2 = results$par[2],
+                                             construct1 = construct1(trialData$IV[k], trialData$Constant[k], Choices[n]),
+                                             construct2 = construct2(trialData$IV[k], trialData$Constant[k], Choices[n])),
+                                             construct3 = construct3(trialData$IV[k], trialData$Constant[k], Choices[n])
+                    }
+                    trialData$PredictedNID[i] = Choices[which(Utility == max(Utility))]
+                }
+
+                subjectData$SS_NID = vector('numeric', length(trialData$SubjectID))
+                for (i in 1:length(subjectData$SubjectID)){
+                    trials = which(subjectData$SubjectID[i] == trialData$SubjectID)
+                    subjectData$SS_NID[i] = sum((trialData$Decision - trialData$PredictedNID)**2)
+                }
+
+                # number of parameter divided by the number of people (i.e. number of parameters for each person)
+                subjectData$AIC_NID = length(trialList$IV) * log(subjectData$SS_NID/length(trialList$IV)) + 2 * (2/length(subjectData$SubjectID)) 
+
+                t.test(subjectData$AIC_NID, subjectData$model_AIC, paired = T)
 Tutorial
 ==========
