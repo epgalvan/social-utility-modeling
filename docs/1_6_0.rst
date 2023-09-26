@@ -12,7 +12,7 @@ Compare Recovered Parameters
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 To recover :bdg-success:`Free Parameters` from our simulated data and to compare the recovered :bdg-success:`Free Parameters` to our true :bdg-success:`Free Parameters`

@@ -12,7 +12,7 @@ Compute Model Fit Index
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 To compare models in terms of how well they predict :bdg-danger:`Decisions` made by each :bdg-success:`Subjects`, accounting for how parsimonious each model is. 

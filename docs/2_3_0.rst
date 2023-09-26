@@ -12,7 +12,7 @@ Identify the Best Model
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 To determine which model is best. 

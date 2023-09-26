@@ -12,7 +12,7 @@ Correlate with Other Variables/Constructs
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 We want to try to characterize *why* some :bdg-success:`Subjects` make different :bdg-danger:`Decisions` than others.

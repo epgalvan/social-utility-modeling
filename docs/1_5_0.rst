@@ -12,7 +12,7 @@ Simulating Data
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 Now we want to plug in all of the inputs that we know (experimental variables and free parameters) into the data generation process (the computational model) and see what it outputs.

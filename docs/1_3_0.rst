@@ -12,7 +12,7 @@ Outline the Data Generation Process
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 Before we can start to develop an mathematical model of behavior, we have to establish a conceptual model of how :bdg-danger:`Decisions` are made in your scenario that comports with your hypotheses. 

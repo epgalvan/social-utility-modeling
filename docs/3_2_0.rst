@@ -14,7 +14,7 @@ Test Modulatory Hypotheses
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 To see how :bdg-primary:`Conditions` affect :bdg-success:`Free Parameters`.

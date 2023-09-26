@@ -12,7 +12,7 @@ Experimental Design
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 To create an experimental paradigm where every potential answer to your research question has a distinguishable behavioral trend over the course of the experiment.

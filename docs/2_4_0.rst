@@ -12,7 +12,7 @@ Validate the Best Model
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 We want to see if the model is actually valid: 

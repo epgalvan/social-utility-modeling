@@ -12,7 +12,7 @@ A Priori Clustering
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 To examine our model predictions in an efficient way and to potentially generate theoretical, sampling invariant, theoretically valid a priori groupings. 

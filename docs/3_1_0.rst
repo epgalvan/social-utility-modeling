@@ -15,7 +15,7 @@ We've gone through all of these steps to get here: the point where we can now dr
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 We're going to compare models against each other now. 

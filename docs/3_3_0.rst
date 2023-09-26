@@ -12,7 +12,7 @@ Test for Individual Differences
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 We want to explicitly test whether or not people are different from each other, or if our findings indicate a tendency that is true of all people in the same way. 

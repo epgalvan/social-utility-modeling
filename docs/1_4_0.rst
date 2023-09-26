@@ -12,7 +12,7 @@ Model the Data Generation Process
 Lesson
 ================
 
-Goals During this Stage
+Goal During this Stage
 ---------------
 
 We want to mathematically model the data generation process - in other words, develop an equation that predicts what all people will decide in each trial.
