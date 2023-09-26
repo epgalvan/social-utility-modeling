@@ -35,7 +35,7 @@ We're not going to bother using conceptual examples, all implemented examples ar
    +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
    | 1 Continuous Variable                   | Correlation (Ex. 7)             | Matrix Correlation (Ex. 8)         | Logistic Regression (Ex. 9)        |
    +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
-   | 2+ Orthagonal Categorical Variables     | Multiple Regression (Ex. 10)    | Cluster Strength Analysis (Ex. 11) | Logistic Regression (Ex. 12)       |
+   | 2+ Categorical Variables                | Multiple Regression (Ex. 10)    | Cluster Strength Analysis (Ex. 11) | Logistic Regression (Ex. 12)       |
    +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
    | Any 2+ Variables                        | Multiple Regression (Ex. 13)    | Matrix Correlation (Ex. 14)        | Logistic Regression (Ex. 15)       |
    +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
