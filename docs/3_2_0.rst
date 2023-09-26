@@ -17,8 +17,12 @@ Lesson
 Goals During this Stage
 ---------------
 
-In experiments where you use multiple :bdg-primary:`Conditions`, you will end up recovering :bdg-success:`Free Parameters` for seperate :bdg-primary:`Conditions`. 
-Thus, you may wish to use these :bdg-success:`Free Parameters` as a proxy for how preferences change as a function of your :bdg-primary:`Condition` - these would be Modulatory Hypotheses (i.e. how :bdg-primary:`Conditions` modulate the data generation process). 
+To see how :bdg-primary:`Conditions` affect :bdg-success:`Free Parameters`.
+
+.. Note::
+
+    In experiments where you use multiple :bdg-primary:`Conditions`, you will end up recovering :bdg-success:`Free Parameters` for seperate :bdg-primary:`Conditions`. 
+    Thus, you may wish to use these :bdg-success:`Free Parameters` as a proxy for how preferences change as a function of your :bdg-primary:`Condition` - these would be Modulatory Hypotheses (i.e. how :bdg-primary:`Conditions` modulate the data generation process). 
 
 How to Achieve this Goal
 ------------

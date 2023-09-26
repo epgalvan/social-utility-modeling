@@ -15,12 +15,34 @@ Lesson
 Goals During this Stage
 ---------------
 
-Now, we want to try to identify why some :bdg-success:`Subjects` make different :bdg-danger:`Decisions` than others.
+We want to try to characterize *why* some :bdg-success:`Subjects` make different :bdg-danger:`Decisions` than others.
 
 How to Achieve this Goal
 ------------
 
-Our answer to this question 
+Our answer to this question depends entirely on what we want to focus on: this table should help you determine what you may want to use. 
+We're not going to bother using conceptual examples, all implemented examples are shown below
 
-Tutorial
+.. table::
+   :widths: auto
+
+   +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
+   |                                         | 1 :bdg-success:`Free Parameter` | 2+ :bdg-success:`Free Parameters`  | Cluster or Bin                     |
+   +=========================================+=================================+====================================+====================================+
+   | 1 Binary Variable                       | 2 Sample t-test (Ex. 1)         | Cluster Strength Analysis (Ex. 2)  | Chi-Square (Ex. 3)                 |
+   +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
+   | 1 Categorical Variable with 3+ Levels   | One-Way ANOVA (Ex. 4)           | Cluster Strength Analysis (Ex. 5)  | Chi-Square (Ex. 6)                 |
+   +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
+   | 1 Continuous Variable                   | Correlation (Ex. 7)             | Matrix Correlation (Ex. 8)         | Logistic Regression (Ex. 9)        |
+   +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
+   | 2+ Orthagonal Categorical Variables     | Multiple Regression (Ex. 10)    | Cluster Strength Analysis (Ex. 11) | Logistic Regression (Ex. 12)       |
+   +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
+   | Any 2+ Orthagonal Variables             | Multiple Regression (Ex. 13)    | Matrix Correlation (Ex. 14) *      | Logistic Regression (Ex. 15)       |
+   +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
+   | Any 2+ Continuous Variables             | Matrix Correlation (Ex. 16)     | Matrix Correlation (Ex. 17)        | Cluster Strength Analysis (Ex. 18) |
+   +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
+
+``* Only if all variables are continuous``
+
+Examples
 ==========
