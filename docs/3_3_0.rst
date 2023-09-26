@@ -9,12 +9,16 @@ Test for Individual Differences
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-Goals During this Stage
-==========
+Lesson
+================
 
-We've tested the model and, perhaps, a specific hypothesis about how this changes as a function of :bdg-primary:`Condition`. 
-One advantage of computational modeling in general is that it allows us to tailor analyses to specifically and explicitly test certain hypotheses. 
-Now, we can actually explicitly test whether or not people are different from each other, or if our findings indicate a tendency that is true of all people in the same way. 
+Goals During this Stage
+---------------
+
+We want to explicitly test whether or not people are different from each other, or if our findings indicate a tendency that is true of all people in the same way. 
+
+How to Achieve this Goal
+------------
 
 .. dropdown:: Embodying No Individual Differences
 

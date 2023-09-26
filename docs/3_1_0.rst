@@ -12,11 +12,17 @@ Compare Competing Accounts of Behavior
 Now we're in the home stretch. 
 We've gone through all of these steps to get here: the point where we can now draw conclusions about human decision-making and how it is influenced by their social preferences. 
 
+Lesson
+================
+
 Goals During this Stage
-==========
+---------------
 
 We're going to compare models against each other now. 
 While we've already determined what the best model is, we haven't yet tested the hypotheses that it embodies. 
+
+How to Achieve this Goal
+------------
 
 .. dropdown:: Hypothesis Testing via Model Comparison
 

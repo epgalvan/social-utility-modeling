@@ -79,7 +79,7 @@ Otherwise, think about how you can fix it so that it will make sense.
     .. Note:: 
 
         In most cases, you should not apply a nonlinear transformation to your :bdg-success:`Free Parameters`. 
-        Doing so strongly limits the interpretability of distance in your parameter space.  
+        This is because the value of :bdg-success:`Free Parameters` becomes uninterpretable.  
 
     :bdg-warning:`Utility` =   
 
@@ -164,7 +164,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
     Please be aware that no examples are given in the documentation for alternative models.
 
 
-.. dropdown:: For each motive you have identified, create a function which takes :bdg-danger:`Decisions` as an input, where :bdg-primary:`Independent Variables` and :bdg-primary:`Constants` are already defined, and outputs a value which scales with motive as a function of :bdg-danger:`Decisions`.
+.. dropdown:: Create a `Construct Value` Function 
 
     .. dropdown:: Greed
 
@@ -322,7 +322,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                     def guilt(investment, believed_multiplier, returned, multiplier):
                         return ((((investment * believed_multiplier)/2 - returned) / (investment * multiplier))**2)
 
-.. dropdown:: Identify which :bdg-success:`Free Parameters` are relevant for each :bdg-secondary:`Construct Value` in determining :bdg-warning:`Utility`
+.. dropdown:: Identify Relevant :bdg-success:`Free Parameters` for each :bdg-secondary:`Construct Value`
 
     1. :bdg-secondary-line:`Payout Maximization` - :bdg-success-line:`D1`  
     2. :bdg-secondary-line:`Equity Achieved` - :bdg-success-line:`D1` & :bdg-success-line:`D2` 
@@ -337,7 +337,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         
         The dimension we created dichtomize one preference against another: thus, we can just as reasonably take the inverse.
 
-.. dropdown:: Identify how each :bdg-secondary:`Construct Value` mathematically interacts with the relevant :bdg-success:`Free Parameters` to determine :bdg-warning:`Utility`
+.. dropdown:: Propose an Interaction Between :bdg-secondary:`Construct Value` and :bdg-success:`Free Parameters`
 
     :bdg-warning:`Utility` = :bdg-secondary-line:`Payout_Maximization` × :bdg-success-line:`Θ`  - (1 - :bdg-success-line:`Θ` ) × min( :bdg-secondary-line:`Guilt` +  :bdg-success-line:`Φ` , :bdg-secondary-line:`Inequity` -  :bdg-success-line:`Φ` )
     

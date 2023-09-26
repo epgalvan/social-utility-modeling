@@ -9,10 +9,18 @@ Correlate with Other Variables/Constructs
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
-Goals During this Stage
-==========
+Lesson
+================
 
-Now, we want
+Goals During this Stage
+---------------
+
+Now, we want to try to identify why some :bdg-success:`Subjects` make different :bdg-danger:`Decisions` than others.
+
+How to Achieve this Goal
+------------
+
+Our answer to this question 
 
 Tutorial
 ==========

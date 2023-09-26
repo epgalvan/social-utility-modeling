@@ -9,8 +9,11 @@ Identify the Best Model
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
+Lesson
+================
+
 Goals During this Stage
-==========
+---------------
 
 By now we have computed our selected MFI for each :bdg-success:`Subject`, indicating how well our model explains their behavior: namely the :bdg-danger:`Decisions` that they make. 
 What we want now is to figure out which model is best. 

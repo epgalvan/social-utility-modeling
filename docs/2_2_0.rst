@@ -9,8 +9,11 @@ Compute Model Fit Index
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
+Lesson
+================
+
 Goals During this Stage
-==========
+---------------
 
 So now we should have the predicted :bdg-danger:`Decisions` for each :bdg-success:`Subject` which we can compare to the actual :bdg-danger:`Decisions` they made. 
 We mentioned already that this will enable us to determine how well the model performed, but how do we actually do this?

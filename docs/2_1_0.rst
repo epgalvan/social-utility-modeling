@@ -9,12 +9,17 @@ Recovering Free Parameters
     :read-time: 10 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
+Lesson
+================
+
 Goals During this Stage
-==========
+---------------
 
 Now that we have our data, our first objective is to determine what the :bdg-success:`Free Parameters` are for each :bdg-success:`Subject`. 
 This is because we need to know *who* our :bdg-success:`Subjects` are according to our model. 
-This will enable us to test how well our model performed and classify what kind of :bdg-success:`Subjects` we have if we are using an a priori clustering approach
+
+How to Achieve this Goal
+------------
 
 .. dropdown:: Preallocating and Defining Functions
 

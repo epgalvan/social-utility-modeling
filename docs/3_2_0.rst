@@ -11,14 +11,21 @@ Test Modulatory Hypotheses
 
 .. _homoscedasticity: https://social-utility-modeling.readthedocs.io/en/latest/2_4_0.html
 
+Lesson
+================
+
 Goals During this Stage
-==========
+---------------
 
 In experiments where you use multiple :bdg-primary:`Conditions`, you will end up recovering :bdg-success:`Free Parameters` for seperate :bdg-primary:`Conditions`. 
 Thus, you may wish to use these :bdg-success:`Free Parameters` as a proxy for how preferences change as a function of your :bdg-primary:`Condition` - these would be Modulatory Hypotheses (i.e. how :bdg-primary:`Conditions` modulate the data generation process). 
-Before you jump to testing, there are also a few more new things that we have to check. Let's take a look at each. 
+
+How to Achieve this Goal
+------------
 
 .. dropdown:: Preliminary Validation
+
+    Before you jump to testing, there are also a few more new things that we have to check. Let's take a look at each. 
 
     .. dropdown:: Robust and Reliable :bdg-success:`Free Parameters`
 
