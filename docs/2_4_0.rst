@@ -15,8 +15,8 @@ Lesson
 Goals During this Stage
 ---------------
 
-In the last stage, we identified the best model in our model set - now we want to see if the model is actually valid. 
-Essentially, there are two things that we need to prove in order for our model to be valid: first, we have to show that our model accurately captures the data generation process and, second, we have to show that our parameter recovery process is robust.
+We want to see if the model is actually valid: 
+there are two things that we need to prove in order for our model to be valid: first, we have to show that our model accurately captures the data generation process and, second, we have to show that our parameter recovery process is robust.
 
 How to Achieve this Goal
 ------------

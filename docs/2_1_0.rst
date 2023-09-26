@@ -16,7 +16,6 @@ Goals During this Stage
 ---------------
 
 Now that we have our data, our first objective is to determine what the :bdg-success:`Free Parameters` are for each :bdg-success:`Subject`. 
-This is because we need to know *who* our :bdg-success:`Subjects` are according to our model. 
 
 How to Achieve this Goal
 ------------
