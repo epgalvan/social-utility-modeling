@@ -19,6 +19,9 @@ Overview
     :read-time: 2 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
+Before Data Collection
+==========
+
 .. dropdown:: Choosing a Tutorial
 
     We will have 4 tutorials that you can complete: 
@@ -33,9 +36,6 @@ Overview
 
     If you are selecting a tutorial and don't have a preference based on the description above, I recommend doing the first tutorial to start out. 
     I learned how to do computational modeling using this dataset myself and I think it's a really nice, intuitive exemplar that should be pretty easy to follow and latch your knowledge onto. 
-
-Before Data Collection
-==========
 
 Compared to linear modeling approaches to data analysis, computational modeling requires much more planning and thoughtfulness before any data is collected. 
 Typically, when conducting experiments whose data you intend to analyze using linear modeling (this includes t-tests, ANOVAs, simple regression, linear mixed effects modeling, and other such techniques), you must hone in on a design that allows you to gain some combination of experimental and statistical control over changes observed in the dependent variable; after this, you’re essentially free to conduct your experiment. 
