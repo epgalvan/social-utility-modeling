@@ -26,7 +26,7 @@ Overview
     1. `van Baar, Chang, & Sanfey, 2019`_ - this looked at different social motives across people (data for `Tutorial 1`_ available here)
     2. `Galvan & Sanfey, 2024`_ - this looked at different social motives across people and across conditions (data for `Tutorial 2`_ available here)
     3. `Crockett et al., 2014`_ - this looked at how a certain social motive changed across conditions in a binary choice task (data for `Tutorial 3`_ available here, note that this data will come from `Yu et al., 2022`_ since the 2014 paper's dataset is not publicly available)
-    4. `Li et al., 2022`_ - this looked at competing social motives within a person in a binary choice task (data for `Tutorial 1`_ available here)
+    4. `Li et al., 2022`_ - this looked at competing social motives within a person in a binary choice task (data for `Tutorial 4`_ available here)
 
     For all tutorials, we will work through each step as though we want to conduct the research ourselves. 
     So don't read the articles just yet - let's work through this process together first! 
