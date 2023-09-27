@@ -251,7 +251,33 @@ How to Achieve this Goal
 
         .. tab-item:: MatLab
 
+            ::
+
+                excluded = find(isinf(subjectData.modelAIC) | isinf(altSubjectData.modelAlt1AIC) | isinf(altSubjectData.modelAlt2AIC));
+                averageAIC = [mean(subjectData.modelAIC(~excluded)), mean(altSubjectData.modelAlt1AIC(~excluded)), mean(altSubjectData.modelAlt2AIC(~excluded))];
+                fullAIC = length(trialData.SubjectID) * log(sum(subjectData.modelSS)/length(trialData.SubjectID)) + (2 * k * length(subjectData.SubjectID));
+                fullAICAlt1 = length(trialData.SubjectID) * log(sum(altSubjectData.modelAlt1SS)/length(trialData.SubjectID)) + (2 * 0 * length(subjectData.SubjectID));
+                fullAICAlt2 = length(trialData.SubjectID) * log(sum(altSubjectData.modelAlt2SS)/length(trialData.SubjectID)) + (2 * 0 * length(subjectData.SubjectID));
+
+                [~, bestModel] = min(averageAIC); % best model based on average performance per subject
+                [~, bestModelFullDataset] = min([fullAIC, fullAICAlt1, fullAICAlt2]); % best model based on all data observations
+                bestModel = {'Favored Model', 'Alternative Model 1', 'Alternative Model 2'}{bestModel};
+                bestModelFullDataset = {'Favored Model', 'Alternative Model 1', 'Alternative Model 2'}{bestModelFullDataset};
+
+
         .. tab-item:: Python
 
-Tutorial
+            ::
+                
+                excluded = np.where(np.isinf(subjectData['modelAIC']) | np.isinf(altSubjectData['modelAlt1AIC']) | np.isinf(altSubjectData['modelAlt2AIC']))[0]
+                averageAIC = [np.mean(subjectData['modelAIC'][~excluded]), np.mean(altSubjectData['modelAlt1AIC'][~excluded]), np.mean(altSubjectData['modelAlt2AIC'][~excluded])]
+                fullAIC = len(trialData['SubjectID']) * np.log(np.sum(subjectData['modelSS']) / len(trialData['SubjectID'])) + (2 * k * len(subjectData['SubjectID']))
+                fullAICAlt1 = len(trialData['SubjectID']) * np.log(np.sum(altSubjectData['modelAlt1SS']) / len(trialData['SubjectID'])) + (2 * 0 * len(subjectData['SubjectID']))
+                fullAICAlt2 = len(trialData['SubjectID']) * np.log(np.sum(altSubjectData['modelAlt2SS']) / len(trialData['SubjectID'])) + (2 * 0 * len(subjectData['SubjectID']))
+
+                bestModel = ['Favored Model', 'Alternative Model 1', 'Alternative Model 2'][np.argmin(averageAIC)]  # best model based on average performance per subject
+                bestModelFullDataset = ['Favored Model', 'Alternative Model 1', 'Alternative Model 2'][np.argmin([fullAIC, fullAICAlt1, fullAICAlt2])]  # best model based on all data observations
+
+
+Tutorials
 ==========

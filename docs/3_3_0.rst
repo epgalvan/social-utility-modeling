@@ -35,7 +35,7 @@ How to Achieve this Goal
 
             :: 
 
-                obj_function = function(params, df, method = "OLS") {
+                obj_function_nid = function(params, df, method = "OLS") {
                     Parameter1 = params[1]
                     Parameter2 = params[2]
 
@@ -65,7 +65,7 @@ How to Achieve this Goal
                     }
                 }
 
-                result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                result = fmincon(obj_function_nid,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                  lb = lower_bounds, ub = upper_bounds,
                                  df = trailData)
 
@@ -92,5 +92,121 @@ How to Achieve this Goal
                 subjectData$AIC_NID = length(trialList$IV) * log(subjectData$SS_NID/length(trialList$IV)) + 2 * (2/length(subjectData$SubjectID)) 
 
                 t.test(subjectData$AIC_NID, subjectData$model_AIC, paired = T)
-Tutorial
+
+        .. tab-item:: MatLab
+
+            ::
+
+                function result = obj_function_nid(params, df, method)
+                    Parameter1 = params(1);
+                    Parameter2 = params(2);
+
+                    decisions = df.Decision;
+
+                    predicted_utility = zeros(length(df), 1);
+                    observed_utility = zeros(length(df), 1);
+                    
+                    for k = 1:length(df)
+                        IV = df(k, 1);
+                        Constant = df(k, 2);
+                        Choices = [];  % You need to define Choices here
+                        
+                        Utility = zeros(length(Choices), 1);
+                        for n = 1:length(Choices)
+                            Utility(n) = utility(Parameter1, Parameter2, ...
+                                construct1(IV, Constant, Choices(n)), ...
+                                construct2(IV, Constant, Choices(n)), ...
+                                construct3(IV, Constant, Choices(n)));
+                        end
+                        predicted_utility(k) = max(Utility);
+                        observed_utility(k) = Utility(k);
+                    end
+                    
+                    if strcmp(method, 'OLS')
+                        result = sum((predicted_utility - observed_utility).^2);
+                    elseif strcmp(method, 'MLE')
+                        result = -1 * sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                    end
+                end
+
+                options = optimoptions('fmincon', 'Algorithm', 'interior-point');
+                result = fmincon(@(params) obj_function_nid(params, trailData, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+
+                trialData.PredictedNID = zeros(length(trialData.SubjectID), 1);
+                for i = 1:length(trialData.IV)
+                    Utility = zeros(length(Choices), 1);
+                    for j = 1:length(Choices)
+                        Utility(j) = utility(result(1), result(2), ...
+                            construct1(trialData.IV(i), trialData.Constant(i), Choices(j)), ...
+                            construct2(trialData.IV(i), trialData.Constant(i), Choices(j)), ...
+                            construct3(trialData.IV(i), trialData.Constant(i), Choices(j)));
+                    end
+                    [~, idx] = max(Utility);
+                    trialData.PredictedNID(i) = Choices(idx);
+                end
+
+                subjectData.SS_NID = zeros(length(subjectData.SubjectID), 1);
+                for i = 1:length(subjectData.SubjectID)
+                    trials = find(subjectData.SubjectID(i) == trialData.SubjectID);
+                    subjectData.SS_NID(i) = sum((trialData.Decision(trials) - trialData.PredictedNID(trials)).^2);
+                end
+
+                subjectData.AIC_NID = length(trialList.IV) * log(subjectData.SS_NID / length(trialList.IV)) + 2 * (2 / length(subjectData.SubjectID));
+
+                ttest(subjectData.AIC_NID, subjectData.model_AIC, 'paired');
+
+        .. tab-item:: Python
+            
+            ::
+
+                def obj_function_nid(params, df, method):
+                    Parameter1 = params[0]
+                    Parameter2 = params[1]
+
+                    decisions = df['Decision'].values
+
+                    predicted_utility = np.zeros(len(df))
+                    observed_utility = np.zeros(len(df))
+
+                    for k in range(len(df)):
+                        IV = df.iloc[k, 0]
+                        Constant = df.iloc[k, 1]
+                        Choices = []  # Define Choices here
+
+                        Utility = np.zeros(len(Choices))
+                        for n in range(len(Choices)):
+                            Utility[n] = utility(Parameter1, Parameter2,
+                                                construct1(IV, Constant, Choices[n]),
+                                                construct2(IV, Constant, Choices[n]),
+                                                construct3(IV, Constant, Choices[n]))
+                        predicted_utility[k] = np.max(Utility)
+                        observed_utility[k] = Utility[k]
+
+                    if method == 'OLS':
+                        return np.sum((predicted_utility - observed_utility) ** 2)
+                    elif method == 'MLE':
+                        return -1 * np.sum(np.log(norm.pdf(observed_utility, loc=predicted_utility, scale=sd)))
+
+                result = minimize(lambda params: obj_function_nid(params, trailData, 'OLS'), initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
+
+                trialData['PredictedNID'] = np.zeros(len(trialData['SubjectID']))
+                for i in range(len(trialData['IV'])):
+                    Utility = np.zeros(len(Choices))
+                    for j in range(len(Choices)):
+                        Utility[j] = utility(result.x[0], result.x[1],
+                                            construct1(trialData['IV'].iloc[i], trialData['Constant'].iloc[i], Choices[j]),
+                                            construct2(trialData['IV'].iloc[i], trialData['Constant'].iloc[i], Choices[j]),
+                                            construct3(trialData['IV'].iloc[i], trialData['Constant'].iloc[i], Choices[j]))
+                    trialData['PredictedNID'].iloc[i] = Choices[np.argmax(Utility)]
+
+                subjectData['SS_NID'] = np.zeros(len(subjectData['SubjectID']))
+                for i in range(len(subjectData['SubjectID'])):
+                    trials = np.where(subjectData['SubjectID'].iloc[i] == trialData['SubjectID'])[0]
+                    subjectData['SS_NID'].iloc[i] = np.sum((trialData['Decision'].iloc[trials] - trialData['PredictedNID'].iloc[trials]) ** 2)
+
+                subjectData['AIC_NID'] = len(trialList['IV']) * np.log(subjectData['SS_NID'] / len(trialList['IV'])) + 2 * (2 / len(subjectData['SubjectID']))
+
+                ttest_rel(subjectData['AIC_NID'], subjectData['model_AIC'])
+
+Tutorials
 ==========

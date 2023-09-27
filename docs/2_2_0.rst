@@ -64,9 +64,27 @@ How to Achieve this Goal
 
         .. tab-item:: MatLab
 
+            ::
+
+                N = length(trialList(:, 1));
+                k = 2;
+                subjectData.modelAIC = N * log(subjectData.modelSS/N) + 2*k;
+                subjectData.modelAICStandard = subjectData.modelNLL + 2*k;
+                subjectData.modelBIC = N * log(subjectData.modelSS/N) + log(N)*k;
+                subjectData.modelBICStandard = subjectData.modelNLL + log(N)*k;
+
+
         .. tab-item:: Python
 
-        
+            ::
 
-Tutorial
+                N = len(trialList[:, 0])
+                k = 2
+                subjectData['modelAIC'] = N * np.log(subjectData['modelSS']/N) + 2*k
+                subjectData['modelAICStandard'] = subjectData['modelNLL'] + 2*k
+                subjectData['modelBIC'] = N * np.log(subjectData['modelSS']/N) + np.log(N)*k
+                subjectData['modelBICStandard'] = subjectData['modelNLL'] + np.log(N)*k
+
+
+Tutorials
 ==========

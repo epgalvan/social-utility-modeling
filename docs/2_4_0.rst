@@ -85,7 +85,55 @@ How to Achieve this Goal
 
             .. tab-item:: MatLab
 
+                ::
+
+                    modelPredictions = fitlm(trialData, 'Decisions ~ Prediction');
+                    summary(modelPredictions); % R-squared
+
+                    % We can identify if we're missing a strategy using a density plot of MFIs - a plot with a group of really high AICs with a group of lower AICs would suggest a missing strategy
+                    figure;
+                    ksdensity(subjectData.modelAIC);
+
+                    % If we're missing something, let's identify the worst-explained quartile of subjects according to our model            
+                    worstExplained = find(subjectData.modelAIC > str2double(summary(subjectData.modelAIC).Variables{5, 1}));
+                    figure;
+                    for i = 1:length(worstExplained)
+                        subjectIndex = worstExplained(i);
+                        subplot(length(worstExplained), 1, i);
+                        scatter(trialData.IV(trialData.SubjectID == subjectData.SubjectID(subjectIndex)), trialData.DV(trialData.SubjectID == subjectData.SubjectID(subjectIndex)), 'filled');
+                        hold on;
+                        lsline;
+                        hold off;
+                    end
+
+
             .. tab-item:: Python
+
+                ::
+
+                    import statsmodels.api as sm
+                    import seaborn as sns
+                    import matplotlib.pyplot as plt
+
+                    modelPredictions = sm.OLS(trialData['Decisions'], sm.add_constant(trialData['Prediction'])).fit()
+                    print(modelPredictions.summary())  # R-squared
+
+                    # We can identify if we're missing a strategy using a density plot of MFIs - a plot with a group of really high AICs with a group of lower AICs would suggest a missing strategy
+                    sns.kdeplot(subjectData['modelAIC'])
+
+                    # If we're missing something, let's identify the worst-explained quartile of subjects according to our model
+                    worstExplained = subjectData[subjectData['modelAIC'] > float(subjectData['modelAIC'].describe()['75%'])].index
+                    plt.figure(figsize=(8, 6))
+                    for i, subjectIndex in enumerate(worstExplained):
+                        plt.subplot(len(worstExplained), 1, i + 1)
+                        sns.scatterplot(x=trialData.loc[trialData['SubjectID'] == subjectData.loc[subjectIndex, 'SubjectID'], 'IV'],
+                                        y=trialData.loc[trialData['SubjectID'] == subjectData.loc[subjectIndex, 'SubjectID'], 'DV'], 
+                                        hue=trialData['SubjectID'])
+                        sns.regplot(x=trialData.loc[trialData['SubjectID'] == subjectData.loc[subjectIndex, 'SubjectID'], 'IV'],
+                                    y=trialData.loc[trialData['SubjectID'] == subjectData.loc[subjectIndex, 'SubjectID'], 'DV'], 
+                                    scatter=False)
+                    plt.show()
+
 
     .. dropdown:: Visually Checking Assumptions
 
@@ -110,7 +158,27 @@ How to Achieve this Goal
                         
                 .. tab-item:: MatLab
 
+                    ::
+
+                        scatter(trialData.Prediction, trialData.Decision);
+                        hold on;
+                        loess_smooth = fitloess(trialData.Prediction, trialData.Decision);
+                        plot(loess_smooth);
+                        plot(trialData.Prediction, trialData.Prediction, 'k--');
+                        hold off;
+
+
                 .. tab-item:: Python
+
+                    ::
+
+                        plt.scatter(trialData['Prediction'], trialData['Decision'])
+                        lowess = sm.nonparametric.lowess(trialData['Decision'], trialData['Prediction'])
+                        plt.plot(lowess[:, 0], lowess[:, 1], 'r-')
+                        plt.plot(trialData['Prediction'], trialData['Prediction'], 'k--')
+                        plt.show()
+
+
 
         .. dropdown:: Normality of Error
 
@@ -208,6 +276,35 @@ How to Achieve this Goal
                     summary(ri_model)
                     library(MuMin)
                     r.squaredGLMM(ri_model) #if conditional Rsq is between 0 and 0.05 lower than the multiple Rsq, that's good enough
+
+            .. tab-item:: MatLab
+
+                ::
+
+                    ris_model = fitlme(trialData, 'Decision ~ Prediction + (1 + Prediction | SubjectID)');
+                    disp(ris_model);
+                    ri_model = fitlme(trialData, 'Decision ~ Prediction + (1 | SubjectID)');
+                    disp(ri_model);
+                    disp(ri_model.Rsquared); #if conditional Rsq is between 0 and 0.05 lower than the multiple Rsq, that's good enough
+
+            .. tab-item:: Python
+
+                ::
+
+                    import statsmodels.api as sm
+                    import r2glmm
+
+                    ris_model = sm.MixedLM.from_formula('Decision ~ Prediction + (1 + Prediction | SubjectID)', data=trialData)
+                    result_ris = ris_model.fit()
+                    print(result_ris.summary())
+
+                    ri_model = sm.MixedLM.from_formula('Decision ~ Prediction + (1 | SubjectID)', data=trialData)
+                    result_ri = ri_model.fit()
+                    print(result_ri.summary())
+
+                    r_squared = r2glmm.get_r2(result_ri)
+                    print(r_squared) #if conditional Rsq is between 0 and 0.05 lower than the multiple Rsq, that's good enough
+
 
 .. dropdown:: Validating Parameter Recovery Process
 
@@ -320,6 +417,175 @@ How to Achieve this Goal
                     mean(cosines[1:5]) #cosine similarity of parameter 1
                     mean(cosines[6:10]) #cosine similarity of parameter 2
 
+            .. tab-item:: MatLab
 
-Tutorial
+                ::
+
+                    function obj_function_ff = define_obj_function(params, decisions, wh)
+                        Parameter1 = params(1);
+                        Parameter2 = params(2);
+
+                        % df should be defined as a table or array with your independent variables and constants
+                        % Choices should be defined as an array
+                        decisions = decisions(setdiff(1:end, wh));
+                        predicted_u = zeros(1, length(decisions));
+                        observed_u = predicted_u;
+
+                        for j = 1:length(df.IV)
+                            u = zeros(1, length(redistribution_rate));
+                            for k = 1:length(Choices)
+                                u(k) = Utility(Parameter1, Parameter2, ...
+                                    construct1(df.IV(j), df.Constant(j), Choices(n)), ...
+                                    construct2(df.IV(j), df.Constant(j), Choices(n)), ...
+                                    construct3(df.IV(j), df.Constant(j), Choices(n)));
+                            end
+                            predicted_u(j) = max(u);
+                            observed_u(j) = u(rr(j) * 10 + 1);
+                        end
+                        obj_function_ff = sum((predicted_u - observed_u).^2);
+                    end
+
+                    fivefold = [];
+
+                    for i = 1:length(included_subjects)
+                        datafile = strcat(parentfolder, included_subjects{i}, restoffilepath);
+                        df = readtable(datafile);
+                        reorder = df.trialsTask_thisIndex + 1;
+
+                        order = randperm(20);
+                        Parameter1_ff = zeros(1, 5);
+                        Parameter2_ff = zeros(1, 5);
+                        SS_ff = 0;
+                        Prediction_ff = zeros(1, length(df.Decision));
+                        
+                        for z = 1:5
+                            j = (z - 1) * 4 + 1;
+                            n = z * 4;
+                            withheld = order(j:n);
+                            m = ((i - 1) * 5) + z;
+
+                            options = optimset('fmincon');
+                            options.Display = 'off';
+                            result_ff = fmincon(@(params) obj_function_ff(params, df.Decision(reorder), withheld), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+                            
+                            Parameter1_ff(m) = result_ff(1);
+                            Parameter2_ff(m) = result_ff(2);
+                            
+                            for n = 1:length(withheld)
+                                utility = zeros(1, length(Choices));
+                                for q = 1:length(Choices)
+                                    utility(q) = Utility(result_ff(1), result_ff(2), ...
+                                        construct1(df.IV(withheld(n)), df.Constant(withheld(n)), Choices(q)), ...
+                                        construct2(df.IV(withheld(n)), df.Constant(withheld(n)), Choices(q)), ...
+                                        construct3(df.IV(withheld(n)), df.Constant(withheld(n)), Choices(q)));
+                                end
+                                [~, max_utility_idx] = max(utility);
+                                Prediction_ff(withheld(n)) = Choices(max_utility_idx);
+                            end
+                        end
+                        
+                        SS_ff = sum((df.Decision - Prediction_ff).^2);
+                        fivefold(i, 1:11) = [SS_ff, Parameter1_ff, Parameter2_ff];
+                    end
+
+                    fivefold.Properties.VariableNames = {'SS', 'Par1_fold1', 'Par1_fold2', 'Par1_fold3', 'Par1_fold4', 'Par1_fold5', ...
+                        'Par2_fold1', 'Par2_fold2', 'Par2_fold3', 'Par2_fold4', 'Par2_fold5'};
+
+                    root_mean_squared_error_change = sqrt(mean(fivefold.SS) / length(df.IV)) - sqrt(mean(subjectData.modelSS) / length(df.IV));
+                    fivefold.AIC = length(df.IV) * log(fivefold.SS / length(df.IV)) + 2 * 2;
+                    ttest_result = ttest(fivefold.AIC, subjectData.AIC, 'paired', true);
+
+                    cosines = zeros(1, 10);
+                    for i = 1:5
+                        cosines(i) = cosine(subjectData.Parameter1, fivefold{:, i + 1});
+                        cosines(i + 5) = cosine(subjectData.Parameter1, fivefold{:, i + 6});
+                    end
+
+                    mean_cosine_parameter1 = mean(cosines(1:5));
+                    mean_cosine_parameter2 = mean(cosines(6:10));
+
+
+            .. tab-item:: Python
+                
+                ::
+
+                    from scipy.stats import ttest_rel
+                    from lsa.cosine import cosine
+
+                    def obj_function_ff(params, decisions, wh):
+                        Parameter1 = params[0]
+                        Parameter2 = params[1]
+
+                        # df should be defined as a DataFrame with your independent variables and constants
+                        # Choices should be defined as an array
+                        decisions = [decisions[i] for i in range(len(decisions)) if i not in wh]
+                        predicted_u = [0] * len(decisions)
+                        observed_u = predicted_u
+
+                        for j in range(len(df['IV'])):
+                            u = [0] * len(redistribution_rate)
+                            for k in range(len(Choices)):
+                                u[k] = Utility(Parameter1, Parameter2,
+                                                construct1(df['IV'][j], df['Constant'][j], Choices[n]),
+                                                construct2(df['IV'][j], df['Constant'][j], Choices[n]),
+                                                construct3(df['IV'][j], df['Constant'][j], Choices[n]))
+                            predicted_u[j] = max(u)
+                            observed_u[j] = u[rr[j] * 10 + 1]
+
+                        return sum([(predicted_u[i] - observed_u[i])**2 for i in range(len(predicted_u))])
+
+                    fivefold = pd.DataFrame()
+
+                    for i in range(len(included_subjects)):
+                        datafile = parentfolder + included_subjects[i] + restoffilepath
+                        df = pd.read_csv(datafile, sep=';')
+                        reorder = df['trialsTask.thisIndex'] + 1
+
+                        order = np.random.permutation(20)
+                        Parameter1_ff = np.zeros(5)
+                        Parameter2_ff = np.zeros(5)
+                        SS_ff = 0
+                        Prediction_ff = np.zeros(len(df['Decision']))
+
+                        for z in range(1, 6):
+                            j = (z - 1) * 4
+                            n = z * 4
+                            withheld = order[j:n]
+                            m = ((i - 1) * 5) + z
+
+                            result_ff = fmincon(obj_function_ff, x0=initial_params, args=(df['Decision'][reorder], withheld),
+                                                bounds=(lower_bounds, upper_bounds))
+
+                            Parameter1_ff[m - 1] = result_ff[0]
+                            Parameter2_ff[m - 1] = result_ff[1]
+
+                            for n in withheld:
+                                utility = np.zeros(len(Choices))
+                                for q in range(len(Choices)):
+                                    utility[q] = Utility(result_ff[0], result_ff[1],
+                                                        construct1(df['IV'][n], df['Constant'][n], Choices[q]),
+                                                        construct2(df['IV'][n], df['Constant'][n], Choices[q]),
+                                                        construct3(df['IV'][n], df['Constant'][n], Choices[q]))
+                                max_utility_idx = np.argmax(utility)
+                                Prediction_ff[n] = Choices[max_utility_idx]
+
+                        SS_ff = sum((df['Decision'] - Prediction_ff)**2)
+                        fivefold.loc[i, 0:10] = [SS_ff] + list(Parameter1_ff) + list(Parameter2_ff)
+
+                    fivefold.columns = ['SS', 'Par1_fold1', 'Par1_fold2', 'Par1_fold3', 'Par1_fold4', 'Par1_fold5',
+                                        'Par2_fold1', 'Par2_fold2', 'Par2_fold3', 'Par2_fold4', 'Par2_fold5']
+
+                    root_mean_squared_error_change = np.sqrt(fivefold['SS'].mean() / len(df['IV'])) - np.sqrt(subjectData['modelSS'].mean() / len(df['IV']))
+                    fivefold['AIC'] = len(df['IV']) * np.log(fivefold['SS'] / len(df['IV'])) + 2 * 2
+                    ttest_result = ttest_rel(fivefold['AIC'], subjectData['AIC'])
+
+                    cosines = np.zeros(10)
+                    for i in range(5):
+                        cosines[i] = cosine(subjectData['Parameter1'], fivefold.iloc[:, i + 1])
+                        cosines[i + 5] = cosine(subjectData['Parameter1'], fivefold.iloc[:, i + 6])
+
+                    mean_cosine_parameter1 = np.mean(cosines[0:5])
+                    mean_cosine_parameter2 = np.mean(cosines[5:10])
+
+Tutorials
 ==========

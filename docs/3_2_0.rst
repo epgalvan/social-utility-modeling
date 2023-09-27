@@ -180,6 +180,210 @@ How to Achieve this Goal
 
                     t.test(subjectData$AIC_PerCondition, subjectData$AIC_AllAtOnce, paired = T)
 
+            .. tab-item:: MatLab
+
+                ::
+
+                    function obj_function_aao = obj_function(params, decisions, method)
+                        Parameter1 = params(1);
+                        Parameter2 = params(2);
+
+                        trialList = % must redefine and also must be of the same length as decisions
+
+                        predicted_utility = zeros(1, length(trialList(:, 1)));
+                        observed_utility = zeros(1, length(trialList(:, 1)));
+
+                        for k = 1:length(trialList(:, 1))
+                            IV = trialList(k, 1);
+                            Constant = trialList(k, 2);
+                            Choices = % something
+
+                            Utility = zeros(1, length(Choices));
+                            for n = 1:length(Choices)
+                                Utility(n) = utility(Parameter1, Parameter2, construct1(IV, Constant, Choices(n)), construct2(IV, Constant, Choices(n)), construct3(IV, Constant, Choices(n)));
+                            end
+                            predicted_utility(k) = max(Utility);
+                            observed_utility(k) = Utility(chosen(k));
+                        end
+
+                        if strcmp(method, 'OLS')
+                            obj_function_aao = sum((predicted_utility - observed_utility).^2);
+                        elseif strcmp(method, 'MLE')
+                            obj_function_aao = -1 * sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                        end
+                    end
+
+                    for i = 1:length(included_subjects)
+                        datafile = strcat(parentfolder, included_subjects(i), restoffilepath);
+                        df = readtable(datafile);
+                        reorder = df.trialsTask.thisIndex + 1;
+
+                        df.Prediction = zeros(1, length(df.IV));
+                        Par1_PerCondition = zeros(1, length(unique(df.Condition)));
+                        Par2_PerCondition = zeros(1, length(unique(df.Condition)));
+                        SS_PerCondition = zeros(1, length(unique(df.Condition)));
+                        Deviance_PerCondition = zeros(1, length(unique(df.Condition)));
+
+                        for c = 1:length(unique(df.Condition))
+                            reorder_these_trials = reorder(df.Condition == unique(df.Condition)(c));
+
+                            result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, df.Decisions(reorder_these_trials));
+
+                            closestPoint = find(freeParameters(:, 1) == round(result(1)) & freeParameters(:, 2) == round(result(2)));
+                            Prediction = zeros(1, length(df.Decisions));
+                            for k = 1:length(df.Decisions)
+                                Utility = zeros(1, length(Choices));
+                                for n = 1:length(Choices)
+                                    Utility(n) = utility(result(1), result(2), construct1(df.IV(k), df.Constant(k), Choices(n)), construct2(df.IV(k), df.Constant(k), Choices(n)), construct3(df.IV(k), df.Constant(k), Choices(n)));
+                                end
+                                correct_choice = find(Utility == max(Utility));
+                                if length(correct_choice) > 1
+                                    correct_choice = correct_choice(randi(length(correct_choice)));
+                                end
+                                Prediction(k) = Choices(correct_choice);
+                            end
+
+                            Deviance_PerCondition(c) = normpdf(df.Decision, Prediction);
+                            SS_PerCondition(c) = sum((df.Decision - Prediction).^2);
+                            df.Prediction(df.Condition == unique(df.Condition)(c) & reorder_these_trials) = Prediction;
+                        end
+                        NLL_PerCondition = -2 * sum(log(Deviance_PerCondition));
+
+                        result = fmincon(@obj_function_aao, initial_params, [], [], [], [], lower_bounds, upper_bounds, df.Decisions);
+
+                        df.PredictionAAO = zeros(1, length(df.Decisions));
+                        for k = 1:length(df.Decisions)
+                            Utility = zeros(1, length(Choices));
+                            for n = 1:length(Choices)
+                                Utility(n) = utility(result(1), result(2), construct1(df.IV(k), df.Constant(k), Choices(n)), construct2(df.IV(k), df.Constant(k), Choices(n)), construct3(df.IV(k), df.Constant(k), Choices(n)));
+                            end
+                            correct_choice = find(Utility == max(Utility));
+                            if length(correct_choice) > 1
+                                correct_choice = correct_choice(randi(length(correct_choice)));
+                            end
+                            df.PredictionAAO(k) = Choices(correct_choice);
+                        end
+
+                        NLL_AAO = -2 * sum(log(normpdf(df.Decision, df.Prediction)));
+                        SS_AAO = sum((df.Decision - df.Prediction).^2);
+
+                        subjectData(i, :) = [included_subjects(i), sum(SS_PerCondition), NLL_PerCondition, SS_AAO, NLL_AAO, Par1_PerCondition, Par2_PerCondition, result(1), result(2)];
+
+                        start = size(subjectData, 1) + 1;
+                        endIdx = start + length(df.Decisions) - 1;
+                        trialData(start:endIdx, 1) = included_subjects(i);
+                        trialData(start:endIdx, 2) = df.IV;
+                        trialData(start:endIdx, 3) = df.Constant;
+                        trialData(start:endIdx, 4) = df.Decision;
+                        trialData(start:endIdx, 5) = df.Condition;
+                        trialData(start:endIdx, 6) = df.Prediction;
+                        trialData(start:endIdx, 7) = df.PredictionAAO;
+                    end
+
+                    subjectData.Properties.VariableNames = {'SubjectID', 'modelSS_PerCondition', 'modelNLL_PerCondition', 'modelSS_AllAtOnce', 'modelNLL_AllAtOnce', 'Parameter1_Condition1', 'Parameter2_Condition1', 'Parameter1_Condition2', 'Parameter2_Condition2', 'Parameter1_AllAtOnce', 'Parameter2_AllAtOnce'};
+                    trailData.Properties.VariableNames = {'SubjectID', 'IV', 'Constant', 'Decision', 'Prediction_PerCondition', 'Prediction_AllAtOnce'};
+
+                    subjectData.AIC_PerCondition = length(df.IV) * log(subjectData.modelSS_PerCondition/length(df.IV)) + 2 * 2 * length(unique(df.Condition));
+                    subjectData.AIC_AllAtOnce = length(df.IV) * log(subjectData.modelSS_AllAtOnce/length(df.IV)) + 2 * 2 * length(unique(df.Condition));
+
+                    ttest(subjectData.AIC_PerCondition, subjectData.AIC_AllAtOnce, 'Paired', true);
+
+            .. tab-item:: Python
+                
+                ::
+
+                    def obj_function(params, decisions, method):
+                        Parameter1 = params[0]
+                        Parameter2 = params[1]
+
+                        trialList = # must redefine and also must be of the same length as decisions
+
+                        predicted_utility = np.zeros(len(trialList[:, 0]))
+                        observed_utility = np.zeros(len(trialList[:, 0]))
+
+                        for k in range(len(trialList[:, 0])):
+                            IV = trialList[k, 0]
+                            Constant = trialList[k, 1]
+                            Choices = # something
+
+                            Utility = np.zeros(len(Choices))
+                            for n in range(len(Choices)):
+                                Utility[n] = utility(Parameter1, Parameter2, construct1(IV, Constant, Choices[n]), construct2(IV, Constant, Choices[n]), construct3(IV, Constant, Choices[n]))
+                            predicted_utility[k] = max(Utility)
+                            observed_utility[k] = Utility[chosen[k]]
+
+                        if method == 'OLS':
+                            return np.sum((predicted_utility - observed_utility)**2)
+                        elif method == 'MLE':
+                            return -1 * np.sum(np.log(norm.pdf(observed_utility, loc=predicted_utility, scale=sd)))
+
+                    for i in range(len(included_subjects)):
+                        datafile = parentfolder + included_subjects[i] + restoffilepath
+                        df = pd.read_csv(datafile)
+                        reorder = df['trialsTask.thisIndex'] + 1
+
+                        df['Prediction'] = np.zeros(len(df['IV']))
+                        Par1_PerCondition = np.zeros(len(df['Condition'].unique()))
+                        Par2_PerCondition = np.zeros(len(df['Condition'].unique()))
+                        SS_PerCondition = np.zeros(len(df['Condition'].unique()))
+                        Deviance_PerCondition = np.zeros(len(df['Condition'].unique()))
+
+                        for c in range(len(df['Condition'].unique())):
+                            reorder_these_trials = reorder[df['Condition'] == df['Condition'].unique()[c]]
+
+                            result = minimize(obj_function, initial_params, args=(df['Decisions'][reorder_these_trials],), bounds=list(zip(lower_bounds, upper_bounds)))
+
+                            closestPoint = np.where((freeParameters[:, 0] == round(result.x[0])) & (freeParameters[:, 1] == round(result.x[1])))
+                            Prediction = np.zeros(len(df['Decisions']))
+                            for k in range(len(df['Decisions'])):
+                                Utility = np.zeros(len(Choices))
+                                for n in range(len(Choices)):
+                                    Utility[n] = utility(result.x[0], result.x[1], construct1(df['IV'][k], df['Constant'][k], Choices[n]), construct2(df['IV'][k], df['Constant'][k], Choices[n]), construct3(df['IV'][k], df['Constant'][k], Choices[n]))
+                                correct_choice = np.where(Utility == max(Utility))
+                                if len(correct_choice) > 1:
+                                    correct_choice = correct_choice[np.random.choice(len(correct_choice))]
+                                Prediction[k] = Choices[correct_choice[0]]
+
+                            Deviance_PerCondition[c] = norm.pdf(df['Decision'], Prediction)
+                            SS_PerCondition[c] = np.sum((df['Decision'] - Prediction)**2)
+                            df['Prediction'][df['Condition'] == df['Condition'].unique()[c] & reorder_these_trials] = Prediction
+                        NLL_PerCondition = -2 * np.sum(np.log(Deviance_PerCondition))
+
+                        result = minimize(obj_function_aao, initial_params, args=(df['Decisions'],), bounds=list(zip(lower_bounds, upper_bounds)))
+
+                        df['PredictionAAO'] = np.zeros(len(df['Decisions']))
+                        for k in range(len(df['Decisions'])):
+                            Utility = np.zeros(len(Choices))
+                            for n in range(len(Choices)):
+                                Utility[n] = utility(result.x[0], result.x[1], construct1(df['IV'][k], df['Constant'][k], Choices[n]), construct2(df['IV'][k], df['Constant'][k], Choices[n]), construct3(df['IV'][k], df['Constant'][k], Choices[n]))
+                            correct_choice = np.where(Utility == max(Utility))
+                            if len(correct_choice) > 1:
+                                correct_choice = correct_choice[np.random.choice(len(correct_choice))]
+                            df['PredictionAAO'][k] = Choices[correct_choice[0]]
+
+                        NLL_AAO = -2 * np.sum(np.log(norm.pdf(df['Decision'], df['Prediction'])))
+                        SS_AAO = np.sum((df['Decision'] - df['Prediction'])**2)
+
+                        subjectData[i, :] = [included_subjects[i], np.sum(SS_PerCondition), NLL_PerCondition, SS_AAO, NLL_AAO, Par1_PerCondition, Par2_PerCondition, result.x[0], result.x[1]]
+
+                        start = subjectData.shape[0] + 1
+                        endIdx = start + len(df['Decisions']) - 1
+                        trialData[start:endIdx, 0] = included_subjects[i]
+                        trialData[start:endIdx, 1] = df['IV']
+                        trialData[start:endIdx, 2] = df['Constant']
+                        trialData[start:endIdx, 3] = df['Decision']
+                        trialData[start:endIdx, 4] = df['Condition']
+                        trialData[start:endIdx, 5] = df['Prediction']
+                        trialData[start:endIdx, 6] = df['PredictionAAO']
+
+                    subjectData.columns = ['SubjectID', 'modelSS_PerCondition', 'modelNLL_PerCondition', 'modelSS_AllAtOnce', 'modelNLL_AllAtOnce', 'Parameter1_Condition1', 'Parameter2_Condition1', 'Parameter1_Condition2', 'Parameter2_Condition2', 'Parameter1_AllAtOnce', 'Parameter2_AllAtOnce']
+
+                    subjectData['AIC_PerCondition'] = len(df['IV']) * np.log(subjectData['modelSS_PerCondition'] / len(df['IV'])) + 2 * 2 * len(df['Condition'].unique())
+                    subjectData['AIC_AllAtOnce'] = len(df['IV']) * np.log(subjectData['modelSS_AllAtOnce'] / len(df['IV'])) + 2 * 2 * len(df['Condition'].unique())
+
+                    ttest_rel(subjectData['AIC_PerCondition'], subjectData['AIC_AllAtOnce'])
+
+
 
 .. dropdown:: Testing a Modulatory Hypothesis
 
@@ -210,8 +414,60 @@ How to Achieve this Goal
                     summary(ombnibusModulatoryEffect) #if omnibus test is signficiant, proceed to post hoc tests below
 
                     library(emmeans)
-                    Parameter1_PostHocModulationEffect = emmeans(ombnibusModulatoryEffect, "Parameter1")
+                    Parameter1_PostHocModulationEffect = emmeans(ombnibusModulatoryEffect, "Condition")
                     summary(pairs(Parameter1_PostHocModulationEffect)) #post hoc pairwise test across condition
+
+            .. tab-item:: MatLab
+
+                ::
+
+                    % t-test
+                    [h, p, ci, stats] = ttest(subjectData.Parameter1_Condition1, subjectData.Parameter1_Condition2, 'paired', true);
+
+                    % Put data in long format
+                    omnibusData = table([subjectData.Parameter1_Condition1; subjectData.Parameter1_Condition2; subjectData.Parameter1_Condition3], ...
+                        repelem({'Condition 1', 'Condition 2', 'Condition 3'}, length(subjectData.SubjectID)), ...
+                        repmat(subjectData.SubjectID, 1, 3), ...
+                        'VariableNames', {'Parameter1', 'Condition', 'SubjectID'});
+
+                    % Fit linear mixed effects model
+                    omnibusModulatoryEffect = fitlme(omnibusData, 'Parameter1 ~ Condition + (1|SubjectID)');
+
+                    % Display summary
+                    disp(omnibusModulatoryEffect);
+
+                    % Perform post hoc tests
+                    Parameter1_PostHocModulationEffect = emmeans(omnibusModulatoryEffect, 'Condition');
+                    disp(pairs(Parameter1_PostHocModulationEffect));
+
+            .. tab-item:: Python
+                
+                ::
+
+                    from statsmodels.formula.api import mixedlm
+                    from pingouin import pairwise_tukey
+
+                    # t-test
+                    t_stat, p_val = sm.stats.ttest_rel(subjectData['Parameter1_Condition1'], subjectData['Parameter1_Condition2'])
+
+                    # Put data in long format
+                    data_dict = {
+                        'Parameter1': subjectData['Parameter1_Condition1'].append([subjectData['Parameter1_Condition2'], subjectData['Parameter1_Condition3']]),
+                        'Condition': ['Condition 1', 'Condition 2', 'Condition 3'] * len(subjectData['SubjectID']),
+                        'SubjectID': list(subjectData['SubjectID']) * 3
+                    }
+                    omnibusData = pd.DataFrame(data_dict)
+
+                    # Fit linear mixed effects model
+                    omnibusModulatoryEffect = mixedlm('Parameter1 ~ Condition', omnibusData, groups=omnibusData['SubjectID']).fit()
+
+                    # Display summary
+                    print(omnibusModulatoryEffect.summary())
+
+                    # Perform post hoc tests
+                    posthoc_results = pairwise_tukey(data=omnibusData, dv='Parameter1', between='Condition')
+                    print(posthoc_results)
+
 
 .. dropdown:: Using Categorical Clusters to Test Modulatory Hypotheses
 
@@ -254,5 +510,63 @@ How to Achieve this Goal
                 rownames(group_by_condition) = conditions
                 chisq.test(group_by_condition)
 
-Tutorial
+        .. tab-item:: MatLab
+
+            ::
+
+                subjectData.Strategy_Condition1 = cell(1, length(subjectData.SubjectID));
+                subjectData.Strategy_Condition2 = cell(1, length(subjectData.SubjectID));
+                subjectData.Strategy_Condition3 = cell(1, length(subjectData.SubjectID));
+                subjectData.Strategy_Condition4 = cell(1, length(subjectData.SubjectID));
+                for i = 1:length(subjectData.SubjectID)
+                    subjectData.Strategy_Condition1{i} = freeParameters.Strategy(round(freeParameters.Parameter1, 2) == round(subjectData.Parameter1_Condition1(i), 2) & round(freeParameters.Parameter2, 2) == round(subjectData.Parameter2_Condition1(i), 2));
+                    subjectData.Strategy_Condition2{i} = freeParameters.Strategy(round(freeParameters.Parameter1, 2) == round(subjectData.Parameter1_Condition2(i), 2) & round(freeParameters.Parameter2, 2) == round(subjectData.Parameter2_Condition2(i), 2));
+                    subjectData.Strategy_Condition3{i} = freeParameters.Strategy(round(freeParameters.Parameter1, 2) == round(subjectData.Parameter1_Condition3(i), 2) & round(freeParameters.Parameter2, 2) == round(subjectData.Parameter2_Condition3(i), 2));
+                    subjectData.Strategy_Condition4{i} = freeParameters.Strategy(round(freeParameters.Parameter1, 2) == round(subjectData.Parameter1_Condition4(i), 2) & round(freeParameters.Parameter2, 2) == round(subjectData.Parameter2_Condition4(i), 2));
+                end
+
+                conditions = {'condition1', 'condition2', 'condition3', 'condition4'};
+                strategies = {'strategy1', 'strategy2', 'strategy3'};
+                group_by_condition = zeros(4, 3);
+                columns = % columns of subjectData where Condition1-4 are kept
+
+                for i = 1:4
+                    for j = 1:3
+                        group_by_condition(i, j) = sum(strcmp(subjectData.(columns{i}), strategies{j}));
+                    end
+                end
+
+                group_by_condition = array2table(group_by_condition, 'VariableNames', strategies, 'RowNames', conditions);
+                chisqtest(group_by_condition)
+
+        .. tab-item:: Python
+            
+            ::
+
+                from scipy.stats import chi2_contingency
+
+                subjectData['Strategy_Condition1'] = [None] * len(subjectData['SubjectID'])
+                subjectData['Strategy_Condition2'] = [None] * len(subjectData['SubjectID'])
+                subjectData['Strategy_Condition3'] = [None] * len(subjectData['SubjectID'])
+                subjectData['Strategy_Condition4'] = [None] * len(subjectData['SubjectID'])
+
+                for i in range(len(subjectData['SubjectID'])):
+                    subjectData.at[i, 'Strategy_Condition1'] = freeParameters['Strategy'][(np.round(freeParameters['Parameter1'], 2) == np.round(subjectData['Parameter1_Condition1'][i], 2)) & (np.round(freeParameters['Parameter2'], 2) == np.round(subjectData['Parameter2_Condition1'][i], 2))]
+                    subjectData.at[i, 'Strategy_Condition2'] = freeParameters['Strategy'][(np.round(freeParameters['Parameter1'], 2) == np.round(subjectData['Parameter1_Condition2'][i], 2)) & (np.round(freeParameters['Parameter2'], 2) == np.round(subjectData['Parameter2_Condition2'][i], 2))]
+                    subjectData.at[i, 'Strategy_Condition3'] = freeParameters['Strategy'][(np.round(freeParameters['Parameter1'], 2) == np.round(subjectData['Parameter1_Condition3'][i], 2)) & (np.round(freeParameters['Parameter2'], 2) == np.round(subjectData['Parameter2_Condition3'][i], 2))]
+                    subjectData.at[i, 'Strategy_Condition4'] = freeParameters['Strategy'][(np.round(freeParameters['Parameter1'], 2) == np.round(subjectData['Parameter1_Condition4'][i], 2)) & (np.round(freeParameters['Parameter2'], 2) == np.round(subjectData['Parameter2_Condition4'][i], 2))]
+
+                conditions = ['condition1', 'condition2', 'condition3', 'condition4']
+                strategies = ['strategy1', 'strategy2', 'strategy3']
+                group_by_condition = pd.DataFrame(0, index=conditions, columns=strategies)
+                columns = []  # columns of subjectData where Condition1-4 are kept
+
+                for i in range(4):
+                    for j in range(3):
+                        group_by_condition.iloc[i, j] = np.sum(subjectData[columns[i]] == strategies[j])
+
+                chi2, p, _, _ = chi2_contingency(group_by_condition)
+
+
+Tutorials
 ==========

@@ -54,9 +54,32 @@ How to Achieve this Goal
 
         .. tab-item:: MatLab
 
-            
+            ::
+
+                excluded1 = find(subjectData.modelSS == 0 | altSubjectData.modelAlt1SS == 0);
+                excluded2 = find(subjectData.modelSS == 0 | altSubjectData.modelAlt2SS == 0);
+
+                [~, p1] = ttest(subjectData.modelAIC(setdiff(1:end, excluded1)), altSubjectData.modelAlt1AIC(setdiff(1:end, excluded1)), 'Tail', 'left');
+                [~, p2] = ttest(subjectData.modelAIC(setdiff(1:end, excluded2)), altSubjectData.modelAlt2AIC(setdiff(1:end, excluded2)), 'Tail', 'left');
+
 
         .. tab-item:: Python
 
-Tutorial
+            ::
+                
+                from scipy.stats import ttest_rel
+
+                excluded1 = np.where((subjectData['modelSS'] == 0) | (altSubjectData['modelAlt1SS'] == 0))[0]
+                excluded2 = np.where((subjectData['modelSS'] == 0) | (altSubjectData['modelAlt2SS'] == 0))[0]
+
+                _, p1 = ttest_rel(subjectData['modelAIC'][np.setdiff1d(np.arange(len(subjectData)), excluded1)],
+                                altSubjectData['modelAlt1AIC'][np.setdiff1d(np.arange(len(altSubjectData)), excluded1)],
+                                alternative='less')
+
+                _, p2 = ttest_rel(subjectData['modelAIC'][np.setdiff1d(np.arange(len(subjectData)), excluded2)],
+                                altSubjectData['modelAlt2AIC'][np.setdiff1d(np.arange(len(altSubjectData)), excluded2)],
+                                alternative='less')
+
+
+Tutorials
 ==========

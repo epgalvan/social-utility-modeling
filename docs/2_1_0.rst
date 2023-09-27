@@ -49,6 +49,7 @@ How to Achieve this Goal
                 ::
 
                     all_subjects = read.csv2() #a file with all subject names
+                    excluded_subjects = #
                     included_subjects = all_subjects$subjectID[-which(all_subjects$subjectID == excluded_subjects)]
 
                     parentfolder = '' #the parentfolder where the subject folder/file is
@@ -61,9 +62,29 @@ How to Achieve this Goal
 
                 ::
 
+                    all_subjects = readtable('all_subjects.csv'); % Assuming your file is named 'all_subjects.csv'
+                    excluded_subjects = [1, 3, 5]; % Replace with the subject IDs to be excluded
+                    included_subjects = all_subjects.subjectID(~ismember(all_subjects.subjectID, excluded_subjects));
+
+                    parentfolder = ''; % Insert your parent folder path
+                    restoffilepath = ''; % Insert the rest of the file path
+
+                    trialData = table();
+                    subjectData = table();
+
             .. tab-item:: Python
                 
                 ::
+
+                    all_subjects = pd.read_csv('all_subjects.csv', sep=';') # Assuming your file is named 'all_subjects.csv'
+                    excluded_subjects = [1, 3, 5]  # Replace with the subject IDs to be excluded
+                    included_subjects = all_subjects[~all_subjects['subjectID'].isin(excluded_subjects)]['subjectID']
+                    
+                    parentfolder = ''  # Insert your parent folder path
+                    restoffilepath = ''  # Insert the rest of the file path
+
+                    trialData = pd.DataFrame()
+                    subjectData = pd.DataFrame()
 
 .. dropdown:: Define the :bdg-success:`Subject` Loop
 
@@ -119,9 +140,32 @@ How to Achieve this Goal
 
                 ::
 
+                    for i = 1:length(included_subjects)
+                        datafile = strcat(parentfolder, included_subjects{i}, restoffilepath); % produces a character vector 'parentfolder/included_subjects{i}**.filetype'
+                        df = readtable(datafile);
+                        reorder = df.trialsTask_thisIndex + 1;
+
+                        % Determine Free Parameters
+
+                        subjectData(i, :) = %to determine
+                        trialData(start:end, :) = %to determine
+                    end
+
+
             .. tab-item:: Python
                 
                 ::
+
+                    for i in range(len(included_subjects)):
+                        datafile = parentfolder + included_subjects[i] + restoffilepath # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                        df = pd.read_csv(datafile)
+                        reorder = df['trialsTask_thisIndex'] + 1
+
+                        # Determine Free Parameters
+
+                        subjectData[i, :] = #to determine
+                        trialData[start:end, :] = #to determine
+
 
 .. dropdown:: Recover :bdg-success:`Free Parameters`
 
@@ -172,9 +216,35 @@ How to Achieve this Goal
 
                 ::
 
+                    for i = 1:length(included_subjects)
+                        datafile = strcat(parentfolder, included_subjects{i}, restoffilepath); % produces a character vector 'parentfolder/included_subjects{i}**.filetype'
+                        df = readtable(datafile);
+                        reorder = df.trialsTask_thisIndex + 1;
+
+                        % Just Added
+
+                        options = optimoptions('fmincon', 'Display', 'off');
+                        result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+                        
+                        % Determine Predictions
+                    end
+
+
             .. tab-item:: Python
                 
                 ::
+
+                    for i in range(len(included_subjects)):
+                        datafile = parentfolder + included_subjects[i] + restoffilepath  # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                        df = np.genfromtxt(datafile, delimiter=',', skip_header=1)
+                        reorder = df[:, df_header.index('trialsTask_thisIndex')] + 1
+
+                        # Just Added
+
+                        result = fmin_con(obj_function, x0=initial_params, bounds=(lower_bounds, upper_bounds))
+
+                        # Determine Predictions
+
 
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success:`Free Parameters`
 
@@ -258,9 +328,82 @@ How to Achieve this Goal
 
                 ::
 
+                    for i = 1:length(included_subjects)
+                        datafile = strcat(parentfolder, included_subjects{i}, restoffilepath); % produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                        df = readtable(datafile);
+                        reorder = df.trialsTask_thisIndex + 1;
+                        result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, df.Decisions);
+
+                        % Just Added
+
+                        closestPoint = find(str2double(freeParameters(:,1)) == round(result(1)) & str2double(freeParameters(:,2)) == round(result(2)));
+                        df.Prediction = zeros(size(df.Decisions));
+                        for k = 1:length(df.Decisions)
+                            Utility = zeros(size(Choices));
+                            for n = 1:length(Choices)
+                                Utility(n) = utility(result(1), result(2), construct1(df.IV(k), df.Constant(k), Choices(n)), construct2(df.IV(k), df.Constant(k), Choices(n)), construct3(df.IV(k), df.Constant(k), Choices(n)));
+                            end
+                            correct_choice = find(Utility == max(Utility));
+                            if length(correct_choice) > 1
+                                correct_choice = correct_choice(randi(length(correct_choice), 1));
+                            end
+                            df.Prediction(k) = Choices(correct_choice);
+                        end
+
+                        model_NLL = -2 * log(sum(normpdf(df.Decision, df.Prediction)));
+                        model_SS = sum((df.Decision - df.Prediction).^2);
+
+                        subjectData(i, :) = [included_subjects{i}, result(1), result(2), freeParameters.Strategy(closestPoint), model_NLL, model_SS]; 
+                        start = size(subjectData, 1) + 1;
+                        end_ = start + length(df.Decisions);
+                        trialData(start:end_, 1) = included_subjects{i};
+                        trialData(start:end_, 2) = df.IV;
+                        trialData(start:end_, 3) = df.Constant;
+                        trialData(start:end_, 4) = df.Decision;
+                        trialData(start:end_, 5) = df.Prediction;
+                    end
+                    subjectData.Properties.VariableNames = {'SubjectID', 'Parameter1', 'Parameter2', 'Strategy', 'modelNLL', 'modelSS'};
+                    trialData.Properties.VariableNames = {'SubjectID', 'IV', 'Constant', 'Decision', 'Prediction'};
+
+
             .. tab-item:: Python
                 
                 ::
 
-Tutorial
+                    for i in range(len(included_subjects)):
+                        datafile = parentfolder + included_subjects[i] + restoffilepath  # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                        df = pd.read_csv(datafile, sep='\t')
+                        reorder = df['trialsTask_thisIndex'] + 1
+                        result = fmincon(obj_function, x0=initial_params, A=None, b=None, Aeq=None, beq=None, lb=lower_bounds, ub=upper_bounds, decisions=df['Decisions'])
+
+                        # Just Added
+
+                        closestPoint = np.where((freeParameters[:, 0].astype(float) == round(result[0])) & (freeParameters[:, 1].astype(float) == round(result[1])))[0]
+                        df['Prediction'] = np.zeros(len(df['Decisions']))
+                        for k in range(len(df['Decisions'])):
+                            Utility = np.zeros(len(Choices))
+                            for n in range(len(Choices)):
+                                Utility[n] = utility(result[0], result[1], construct1(df['IV'][k], df['Constant'][k], Choices[n]), construct2(df['IV'][k], df['Constant'][k], Choices[n]), construct3(df['IV'][k], df['Constant'][k], Choices[n]))
+                            correct_choice = np.where(Utility == max(Utility))[0]
+                            if len(correct_choice) > 1:
+                                correct_choice = np.random.choice(correct_choice, 1)
+                            df['Prediction'][k] = Choices[correct_choice[0]]
+
+                        model_NLL = -2 * np.log(np.sum(norm.pdf(df['Decision'], df['Prediction'])))
+                        model_SS = np.sum((df['Decision'] - df['Prediction'])**2)
+
+                        subjectData[i, :] = [included_subjects[i], result[0], result[1], freeParameters['Strategy'][closestPoint[0]], model_NLL, model_SS]
+                        start = subjectData.shape[0] + 1
+                        end_ = start + len(df['Decisions'])
+                        trialData[start:end_, 0] = included_subjects[i]
+                        trialData[start:end_, 1] = df['IV']
+                        trialData[start:end_, 2] = df['Constant']
+                        trialData[start:end_, 3] = df['Decision']
+                        trialData[start:end_, 4] = df['Prediction']
+
+                    subjectData.columns = ['SubjectID', 'Parameter1', 'Parameter2', 'Strategy', 'modelNLL', 'modelSS']
+                    trialData.columns = ['SubjectID', 'IV', 'Constant', 'Decision', 'Prediction']
+
+
+Tutorials
 ==========
