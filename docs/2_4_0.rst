@@ -202,7 +202,29 @@ How to Achieve this Goal
                         
                 .. tab-item:: MatLab
 
+                    ::
+
+                        rng('default'); % Set random number generator seed for reproducibility
+                        normvals = normrnd(0, std(trialData.Prediction - trialData.Decision), 1000, 1);
+
+                        figure;
+                        hold on;
+                        histogram(trialData.Prediction - trialData.Decision, 'Normalization', 'pdf', 'EdgeColor', 'b', 'FaceColor', 'none');
+                        histogram(normvals, 'Normalization', 'pdf', 'EdgeColor', 'r', 'FaceColor', 'none');
+                        legend('Actual', 'Predicted');
+
+
                 .. tab-item:: Python
+
+                    ::
+
+                        np.random.seed(0)  # Set random number generator seed for reproducibility
+                        normvals = np.random.normal(0, np.std(trialData['Prediction'] - trialData['Decision']), 1000)
+
+                        plt.hist(trialData['Prediction'] - trialData['Decision'], bins='auto', density=True, color='b', edgecolor='b', alpha=0.5)
+                        plt.hist(normvals, bins='auto', density=True, color='r', edgecolor='r', alpha=0.5)
+                        plt.legend(['Actual', 'Predicted'])
+                        plt.show()
 
 
         .. dropdown:: Independence of Error
@@ -225,7 +247,27 @@ How to Achieve this Goal
                         
                 .. tab-item:: MatLab
 
+                    ::
+
+                        x = trialData.IV;
+                        y = trialData.Prediction - trialData.Decision;
+                        loess = fit(x, y, 'loess');
+                        scatter(x, y);
+                        hold on;
+                        plot(loess, x, y);
+                        hold off;
+
                 .. tab-item:: Python
+
+                    ::
+
+                        x = trialData['IV']
+                        y = trialData['Prediction'] - trialData['Decision']
+
+                        lowess = sm.nonparametric.lowess(y, x, frac=0.25)  # Adjust the frac parameter as needed
+                        plt.scatter(x, y)
+                        plt.plot(lowess[:, 0], lowess[:, 1], 'r-')
+                        plt.show()
 
         .. dropdown:: Homoscedasticty
 
@@ -249,7 +291,34 @@ How to Achieve this Goal
                         
                 .. tab-item:: MatLab
 
+                    ::
+
+                        x = trialData.IV;
+                        y = trialData.Prediction - trialData.Decision;
+                        loessSmoothing = fit(x, y, 'loess');
+                        plot(loessSmoothing, x, y);
+                        hold on;
+                        plot(x, y, 'o', 'MarkerEdgeColor', 'b', 'MarkerFaceColor', 'b', 'MarkerSize', 5);
+                        legend('LOESS Smoothed Line', 'Data Points');
+                        xlabel('IV');
+                        ylabel('Prediction - Decision');
+                        hold off;
+
                 .. tab-item:: Python
+
+                    ::
+                        x = trialData['IV']
+                        y = trialData['Prediction'] - trialData['Decision']
+
+                        lowess = sm.nonparametric.lowess(y, x, frac=0.3)  # Adjust frac as needed
+                        smoothed_x, smoothed_y = lowess.T
+
+                        plt.plot(smoothed_x, smoothed_y, label='LOESS Smoothed Line')
+                        plt.scatter(x, y, marker='o', edgecolors='b', facecolors='b', s=50, label='Data Points')
+                        plt.legend()
+                        plt.xlabel('IV')
+                        plt.ylabel('Prediction - Decision')
+                        plt.show()
 
     .. dropdown:: Assessing Independence of Observations
 

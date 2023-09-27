@@ -105,8 +105,99 @@ How to Achieve this Goal
 
         .. tab-item:: MatLab
 
+                ::
+
+                    function utility = utility_alt1(construct1)
+                        % Your utility calculation for utility_alt1 goes here
+                        utility = 0; % Placeholder value, replace with actual calculation
+                    end
+
+                    function utility = utility_alt2(construct1, construct2, parameter1)
+                        % Your utility calculation for utility_alt2 goes here
+                        utility = 0; % Placeholder value, replace with actual calculation
+                    end
+
+                    function obj_value = obj_function_alt2(param, decisions, method)
+                        Parameter1 = param(1);
+                        
+                        trialList = []; % Define trialList here
+                        
+                        predicted_utility = zeros(size(trialList, 1), 1);
+                        chosen = decisions + 1;
+                        
+                        for k = 1:size(trialList, 1)
+                            IV = trialList(k, 1);
+                            Constant = trialList(k, 2);
+                            Choices = 0:(I * M); % Define I and M
+                            
+                            Utility = zeros(size(Choices));
+                            
+                            for n = 1:length(Choices)
+                                Utility(n) = utility_alt2(Parameter1, construct1(IV, Constant, Choices(n)));
+                            end
+                            
+                            predicted_utility(k) = max(Utility);
+                            observed_utility(k) = Utility(chosen(k));
+                        end
+                        
+                        if strcmp(method, 'OLS')
+                            obj_value = sum((predicted_utility - observed_utility).^2);
+                        elseif strcmp(method, 'MLE')
+                            obj_value = -sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                        end
+                    end
+
+                    % Define initial_param_alt2, lower_bound_alt2, and upper_bound_alt2 here
+
+                    altSubjectData = table(); % Create an empty table for altSubjectData
+
         .. tab-item:: Python
 
+                ::
+
+                    from scipy.stats import norm
+
+                    def utility_alt1(construct1):
+                        # Your utility calculation for utility_alt1 goes here
+                        utility = 0  # Placeholder value, replace with actual calculation
+                        return utility
+
+                    def utility_alt2(construct1, construct2, parameter1):
+                        # Your utility calculation for utility_alt2 goes here
+                        utility = 0  # Placeholder value, replace with actual calculation
+                        return utility
+
+                    def obj_function_alt2(param, decisions, method="OLS"):
+                        Parameter1 = param[0]  # MATLAB-style indexing
+                        
+                        trialList = np.array([])  # Define trialList here
+                        
+                        predicted_utility = np.zeros(len(trialList))
+                        chosen = decisions + 1
+                        
+                        for k in range(len(trialList)):
+                            IV = trialList[k, 0]
+                            Constant = trialList[k, 1]
+                            Choices = np.arange(0, I * M + 1)  # Define I and M
+                            
+                            Utility = np.zeros(len(Choices))
+                            
+                            for n in range(len(Choices)):
+                                Utility[n] = utility_alt2(Parameter1, construct1(IV, Constant, Choices[n]))
+                            
+                            predicted_utility[k] = np.max(Utility)
+                            observed_utility[k] = Utility[chosen[k]]
+                        
+                        if method == "OLS":
+                            obj_value = np.sum((predicted_utility - observed_utility)**2)
+                        elif method == "MLE":
+                            obj_value = -np.sum(np.log(norm.pdf(observed_utility, predicted_utility, sd)))
+                        
+                        return obj_value
+
+                    # Define initial_param_alt2, lower_bound_alt2, and upper_bound_alt2 here
+
+                    altSubjectData = pd.DataFrame()  # Create an empty DataFrame for altSubjectData
 
 
 .. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
@@ -139,7 +230,32 @@ How to Achieve this Goal
 
         .. tab-item:: MatLab
 
+                    ::
+
+                        for i = 1:length(included_subjects)
+                            datafile = strcat(parentfolder, included_subjects{i}, restoffilepath); % produces a character vector 'parentfolder/included_subjects{i}**.filetype'
+                            df = readtable(datafile);
+                            reorder = df.trialsTask.thisIndex + 1;
+
+                            result_alt2 = fmincon(@obj_function_alt2, initial_param_alt2, [], [], [], [], lower_bound_alt2, upper_bound_alt2, [], optimset('Display', 'off'), df.Decisions);
+
+                            % Determine Predictions
+                        end
+
+
         .. tab-item:: Python
+
+                    ::
+
+                        for i in range(len(included_subjects)):
+                            datafile = parentfolder + included_subjects[i] + restoffilepath  # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                            df = pd.read_csv(datafile, sep='\t')
+                            reorder = df['trialsTask.thisIndex'] + 1
+
+                            result_alt2 = optimize.minimize(obj_function_alt2, initial_param_alt2, bounds=list(zip(lower_bound_alt2, upper_bound_alt2)), args=(df['Decisions'],))
+
+                            # Determine Predictions
+
 
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
 
@@ -199,9 +315,91 @@ How to Achieve this Goal
 
                 ::
 
+                    for i = 1:length(included_subjects)
+                        datafile = strcat(parentfolder, included_subjects{i}, restoffilepath);
+                        df = readtable(datafile);
+                        reorder = df.trialsTask.thisIndex + 1;
+
+                        result_alt2 = fmincon(@(x) obj_function_alt2(x, df.Decisions), initial_param_alt2, [], [], [], [], lower_bound_alt2, upper_bound_alt2);
+
+                        % Just Added
+                        df.PredictionAlt1 = zeros(size(df.Decisions));
+                        df.PredictionAlt2 = df.PredictionAlt1;
+                        
+                        for k = 1:length(df.Decisions)
+                            UtilityAlt1 = zeros(size(Choices));
+                            UtilityAlt2 = zeros(size(Choices));
+                            
+                            for n = 1:length(Choices)
+                                UtilityAlt1(n) = utility_alt1(construct1(df.IV(k), df.Constant(k), Choices(n)));
+                                UtilityAlt2(n) = utility_alt2(result_alt2(1), construct1(df.IV(k), df.Constant(k), Choices(n)), construct2(df.IV(k), df.Constant(k), Choices(n)));
+                            end
+                            
+                            [~, correct_choice_alt1] = max(UtilityAlt1);
+                            [~, correct_choice_alt2] = max(UtilityAlt2);
+                            
+                            if length(correct_choice_alt1) > 1
+                                correct_choice_alt1 = correct_choice_alt1(randi(length(correct_choice_alt1)));
+                            end
+                            
+                            df.PredictionAlt1(k) = Choices(correct_choice_alt1);
+                            df.PredictionAlt2(k) = Choices(correct_choice_alt2);
+                        end
+
+                        model_NLL_Alt1 = -2 * sum(log(normpdf(df.Decisions, df.PredictionAlt1)));
+                        model_SS_Alt1 = sum((df.Decisions - df.PredictionAlt1).^2);
+                        model_NLL_Alt2 = -2 * sum(log(normpdf(df.Decisions, df.PredictionAlt2)));
+                        model_SS_Alt2 = sum((df.Decisions - df.PredictionAlt2).^2);
+
+                        altSubjectData(i, :) = [included_subjects{i}, result_alt2(1), model_NLL_Alt1, model_SS_Alt1, model_NLL_Alt2, model_SS_Alt2];
+                        % add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
+                    end
+
+                    subjectData.Properties.VariableNames = {'SubjectID', 'Parameter1_Alt2', 'alt1_modelNLL', 'alt1_modelSS', 'alt2_modelNLL', 'alt2_modelSS'};
+
+
             .. tab-item:: Python
                 
                 ::
+
+                    for i in range(len(included_subjects)):
+                        datafile = parentfolder + included_subjects[i] + restoffilepath
+                        df = pd.read_csv(datafile, delimiter=',')
+                        reorder = df['trialsTask.thisIndex'] + 1
+
+                        result_alt2 = minimize(lambda x: obj_function_alt2(x, df['Decisions']), initial_param_alt2, bounds=list(zip(lower_bound_alt2, upper_bound_alt2)))
+
+                        # Just Added
+                        df['PredictionAlt1'] = np.zeros(len(df['Decisions']))
+                        df['PredictionAlt2'] = df['PredictionAlt1']
+
+                        for k in range(len(df['Decisions'])):
+                            UtilityAlt1 = np.zeros(len(Choices))
+                            UtilityAlt2 = np.zeros(len(Choices))
+
+                            for n in range(len(Choices)):
+                                UtilityAlt1[n] = utility_alt1(construct1(df['IV'][k], df['Constant'][k], Choices[n]))
+                                UtilityAlt2[n] = utility_alt2(result_alt2.x[0], construct1(df['IV'][k], df['Constant'][k], Choices[n]), construct2(df['IV'][k], df['Constant'][k], Choices[n]))
+
+                            correct_choice_alt1 = np.argmax(UtilityAlt1)
+                            correct_choice_alt2 = np.argmax(UtilityAlt2)
+
+                            if len(correct_choice_alt1) > 1:
+                                correct_choice_alt1 = np.random.choice(correct_choice_alt1, 1)
+
+                            df['PredictionAlt1'][k] = Choices[correct_choice_alt1]
+                            df['PredictionAlt2'][k] = Choices[correct_choice_alt2]
+
+                        model_NLL_Alt1 = -2 * np.sum(np.log(np.random.normal(df['Decisions'], df['PredictionAlt1'])))
+                        model_SS_Alt1 = np.sum((df['Decisions'] - df['PredictionAlt1'])**2)
+                        model_NLL_Alt2 = -2 * np.sum(np.log(np.random.normal(df['Decisions'], df['PredictionAlt2'])))
+                        model_SS_Alt2 = np.sum((df['Decisions'] - df['PredictionAlt2'])**2)
+
+                        altSubjectData[i, :] = [included_subjects[i], result_alt2.x[0], model_NLL_Alt1, model_SS_Alt1, model_NLL_Alt2, model_SS_Alt2]
+                        # add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
+
+                    subjectData.columns = ['SubjectID', 'Parameter1_Alt2', 'alt1_modelNLL', 'alt1_modelSS', 'alt2_modelNLL', 'alt2_modelSS']
+
 
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`, for Each Alternative Model
 
@@ -220,7 +418,19 @@ How to Achieve this Goal
 
         .. tab-item:: MatLab
 
+            ::
+
+                altSubjectData.modelAlt1AIC = N * log(altSubjectData.modelSS_Alt1/N) + 2*0;
+                altSubjectData.modelAlt2AIC = N * log(altSubjectData.modelSS_Alt2/N) + 2*1;
+
+
         .. tab-item:: Python
+
+            ::
+
+                altSubjectData['modelAlt1AIC'] = N * log(altSubjectData['modelSS_Alt1']/N) + 2*0
+                altSubjectData['modelAlt2AIC'] = N * log(altSubjectData['modelSS_Alt2']/N) + 2*1
+
 
 .. dropdown:: Compare Model Performance
 
