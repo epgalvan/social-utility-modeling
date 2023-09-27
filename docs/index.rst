@@ -1,7 +1,7 @@
 Utility Models for Study Social Decision-Making Handbook
 **********************
 
-In this handbook, we will walk, step-by-step, through the process of computationally modeling behavior in value-based social decision-making tasks - complete with conceptual and one implemented example. 
+In this handbook, we will walk, step-by-step, through the process of computationally modeling behavior in value-based social decision-making tasks - complete with conceptual examples and four fully fledged walk-throughs that you can complete yourself. 
 You can expect to learn about what utility models are, why one would use them to capture behavior in social decision-making paradigms, and how to computationally implement them. 
 There is no required foreknowledge to conceptually understand the course, but a basic knowledge of statistical programming (i.e. MatLab, R, or Python) is of course required to implement this in your own research. 
 
@@ -43,3 +43,6 @@ There is no required foreknowledge to conceptually understand the course, but a 
     Test Modulatory Hypotheses <3_2_0.rst> 
     Test for Individual Differences <3_3_0.rst> 
     Explain Individual Differences <3_4_0.rst> 
+
+A special thank you to Alan Sanfey, Molly Crockett, Jeroen van Baar, {} for allowing me to create a tutorial based on their data. 
+Your commitment to fair, free, and accessible education is appreciated immensely.
