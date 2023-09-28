@@ -34,10 +34,6 @@ Tutorials
 Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 -------------------
 
-We're trying to identify an experimental design which allows to answer the following question: 
-**What motivates people to reciprocate trust in single-shot interactions?**
-
-
 .. dropdown:: Generate Hypotheses
 
     Well, we already know that some people do not reciprocate trust in single-shot interactions so let's jot down ``Greed`` as our first proposed answer. 

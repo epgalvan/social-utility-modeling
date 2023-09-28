@@ -153,9 +153,6 @@ Otherwise, think about how you can fix it so that it will make sense.
 Tutorials
 ================
 
-Tutorial 1 - van Baar, Chang, & Sanfey, 2019
--------------------
-
 .. Note::
 
     If you want to have practice finding the correct model, leave the dropdowns alone and skip to the next section once you have finished both steps in this section. 
@@ -163,6 +160,8 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
     Otherwise, check the answers in the dropdowns below. 
     Please be aware that no examples are given in the documentation for alternative models.
 
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
+-------------------
 
 .. dropdown:: Create `Construct Value` Functions 
 
