@@ -296,8 +296,7 @@ How to Achieve this Goal
                 
 .. dropdown:: Verifying :bdg-success:`Free Parameter` Recovery Process
 
-    I recommend using graphs to visualize the error in your parameter recovery process. 
-    See the example below. 
+    See Tuturial 1 below. 
 
 .. dropdown:: Fixing Nonspecific Models
 
