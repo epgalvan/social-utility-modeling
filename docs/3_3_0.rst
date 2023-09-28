@@ -1,16 +1,15 @@
 Test for Individual Differences
-**********
-
-.. article-info::
-    :avatar: dnl_plastic.png
-    :avatar-link: https://www.decisionneurosciencelab.com/
-    :author: Elijah Galvan
-    :date: September 1, 2023
-    :read-time: 10 min read
-    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
-
+*********
 Lesson
 ================
+
+.. article-info::
+    :avatar: UCLA_Suit.jpg
+    :avatar-link: https://www.decisionneurosciencelab.com/elijahgalvan
+    :author: Elijah Galvan
+    :date: September 1, 2023
+    :read-time: 12 min read
+    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
 
 Goal During this Stage
 ---------------

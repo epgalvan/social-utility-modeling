@@ -12,6 +12,14 @@ Choosing a Tutorial to Follow
 .. _Tutorial 3: https://osf.io/ardcu/
 .. _Tutorial 4: https://osf.io/zd2tg/
 
+.. article-info::
+    :avatar: UCLA_Suit.jpg
+    :avatar-link: https://www.decisionneurosciencelab.com/elijahgalvan
+    :author: Elijah Galvan
+    :date: September 1, 2023
+    :read-time: 2 min read
+    :class-container: sd-p-2 sd-outline-muted sd-rounded-1
+
 We will have 4 tutorials that you can complete: 
 
 1. `van Baar, Chang, & Sanfey, 2019`_ - this looked at different social motives across people (data for `Tutorial 1`_ available here)

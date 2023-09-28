@@ -1,16 +1,16 @@
 Explain Individual Differences
 **********
 
+Lesson
+================
+
 .. article-info::
     :avatar: dnl_plastic.png
     :avatar-link: https://www.decisionneurosciencelab.com/
     :author: Elijah Galvan
     :date: September 1, 2023
-    :read-time: 10 min read
+    :read-time: 7 min read
     :class-container: sd-p-2 sd-outline-muted sd-rounded-1
-
-Lesson
-================
 
 Goal During this Stage
 ---------------
@@ -42,5 +42,9 @@ We're not going to bother using conceptual examples, all implemented examples ar
    | Any 2+ Continuous Variables             | Matrix Correlation (Ex. 16)     | Matrix Correlation (Ex. 17)        | Cluster Strength Analysis (Ex. 18) |
    +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
 
+Individual Difference Measures to Consider
+----------------
+
+
 Examples
-==========
+===========

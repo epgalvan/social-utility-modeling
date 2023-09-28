@@ -12,8 +12,8 @@ Experimental Paradigms
 .. _Bosman & Winden, 2002: https://www.sciencedirect.com/science/article/pii/S0167487010000887#s0155
 
 .. article-info::
-    :avatar: dnl_plastic.png
-    :avatar-link: https://www.decisionneurosciencelab.com/
+    :avatar: UCLA_Suit.jpg
+    :avatar-link: https://www.decisionneurosciencelab.com/elijahgalvan
     :author: Elijah Galvan
     :date: September 1, 2023
     :read-time: 10 min read
