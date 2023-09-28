@@ -1,0 +1,26 @@
+Choosing a Tutorial to Follow 
+****************
+
+.. _van Baar, Chang, & Sanfey, 2019: https://www.nature.com/articles/s41467-019-09161-6#Sec10
+.. _Galvan & Sanfey, 2024: https://www.example.com
+.. _Crockett et al., 2014: https://www.pnas.org/doi/10.1073/pnas.1408988111
+.. _Li et al., 2022: https://www.pnas.org/doi/full/10.1073/pnas.2209078119?doi=10.1073/pnas.2209078119
+.. _Yu et al., 2022: https://journals.sagepub.com/doi/full/10.1177/09567976221122765?casa_token=8TiPlm-lODgAAAAA%3Anh1QA8iXA7MSH9H7ebeHpnCOhpPT6T06s6GClDGMYFCaAB3vwvNjlu9A-ChfjceLfkex-z28syYHfA
+
+.. _Tutorial 1: https://www.example.com
+.. _Tutorial 2: https://www.example.com
+.. _Tutorial 3: https://osf.io/ardcu/
+.. _Tutorial 4: https://osf.io/zd2tg/
+
+We will have 4 tutorials that you can complete: 
+
+1. `van Baar, Chang, & Sanfey, 2019`_ - this looked at different social motives across people (data for `Tutorial 1`_ available here)
+2. `Galvan & Sanfey, 2024`_ - this looked at different social motives across people and across conditions (data for `Tutorial 2`_ available here)
+3. `Crockett et al., 2014`_ - this looked at how a certain social motive changed across conditions in a binary choice task (data for `Tutorial 3`_ available here, note that this data will come from `Yu et al., 2022`_ since the 2014 paper's dataset is not publicly available)
+4. `Li et al., 2022`_ - this looked at competing social motives within a person in a binary choice task (data for `Tutorial 4`_ available here)
+
+For all tutorials, we will work through each step as though we want to conduct the research ourselves. 
+So don't read the articles just yet - let's work through this process together first! 
+
+If you are selecting a tutorial and don't have a preference based on the description above, I recommend doing the first tutorial to start out. 
+I learned how to do computational modeling using this dataset myself and I think it's a really nice, intuitive exemplar that should be pretty easy to follow and latch your knowledge onto.

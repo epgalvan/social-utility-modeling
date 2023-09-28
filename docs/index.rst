@@ -13,6 +13,7 @@ There is no required foreknowledge to conceptually understand the course, but a 
     Computational versus Linear Modeling <0_2_0.rst>
     Experimental Paradigms <0_3_0.rst>
     Overview <0_4_0.rst>
+    Choosing a Tutorial <0_5_0.rst>
 
 .. toctree::
    :maxdepth: 1
