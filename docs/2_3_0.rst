@@ -491,3 +491,33 @@ How to Achieve this Goal
 
 Tutorials
 ==========
+
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
+----------------------
+
+.. dropdown:: Create :bdg-warning:`Utility` Equations for our Alternative Models
+.. dropdown:: Preallocating and Defining Functions
+.. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
+.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
+.. dropdown:: Compute Model Fit Index for Each :bdg-success`Subject`, for Each Alternative Model
+.. dropdown:: Compare Model Performance
+
+Tutorial 2 - Galvan & Sanfey, 2024
+-------------------
+
+.. dropdown:: Create :bdg-warning:`Utility` Equations for our Alternative Models
+.. dropdown:: Preallocating and Defining Functions
+.. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
+.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
+.. dropdown:: Compute Model Fit Index for Each :bdg-success`Subject`, for Each Alternative Model
+.. dropdown:: Compare Model Performance
+
+Tutorial 3 - Crockett et al., 2014
+-------------------
+
+.. dropdown:: Create :bdg-warning:`Utility` Equations for our Alternative Models
+.. dropdown:: Preallocating and Defining Functions
+.. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
+.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
+.. dropdown:: Compute Model Fit Index for Each :bdg-success`Subject`, for Each Alternative Model
+.. dropdown:: Compare Model Performance

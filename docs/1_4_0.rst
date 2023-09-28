@@ -25,7 +25,7 @@ We want to mathematically model the data generation process - in other words, de
 How to Achieve this Goal
 ------------
 
-1. For each motive you have identified, create a function which takes :bdg-danger:`Decisions`, :bdg-primary:`Independent Variables`, and :bdg-primary:`Constants` as inputs, 
+1. Create `Construct Value` Functions - for each motive you have identified, create a function which takes :bdg-danger:`Decisions`, :bdg-primary:`Independent Variables`, and :bdg-primary:`Constants` as inputs, 
 and outputs a value which reflects the :bdg-secondary:`Construct Value` of such a motive based on :bdg-danger:`Decisions`.
 
 .. dropdown:: Conceptual Examples of :bdg-secondary:`Construct Value` Formulations
@@ -70,9 +70,9 @@ and outputs a value which reflects the :bdg-secondary:`Construct Value` of such 
 If you plot the output (let's call this our :bdg-secondary:`Construct Values` ) against :bdg-danger:`Decisions` for a few trials (with a few example combinations of :bdg-primary:`Independent Variables` ) and it makes sense to you, then great job! 
 Otherwise, think about how you can fix it so that it will make sense. 
 
-2. Identify which :bdg-success:`Free Parameters` are relevant for each :bdg-secondary:`Construct Value` in determining :bdg-warning:`Utility`
+2. Identify Relevant :bdg-success:`Free Parameters` for each :bdg-secondary:`Construct Value` - identify which :bdg-success:`Free Parameters` are relevant for each :bdg-secondary:`Construct Value` in determining :bdg-warning:`Utility`
 
-3. Identify how each :bdg-secondary:`Construct Value` mathematically interacts with the relevant :bdg-success:`Free Parameters` to determine :bdg-warning:`Utility`.
+3. Propose a :bdg-warning:`Utility` Equation - identify how each :bdg-secondary:`Construct Value` mathematically interacts with the relevant :bdg-success:`Free Parameters` to determine :bdg-warning:`Utility`.
 
 .. dropdown:: General :bdg-warning:`Utility` Equation Formulation
 
@@ -164,7 +164,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
     Please be aware that no examples are given in the documentation for alternative models.
 
 
-.. dropdown:: Create a `Construct Value` Function 
+.. dropdown:: Create `Construct Value` Functions 
 
     .. dropdown:: Greed
 
@@ -337,7 +337,24 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         
         The dimension we created dichtomize one preference against another: thus, we can just as reasonably take the inverse.
 
-.. dropdown:: Propose an Interaction Between :bdg-secondary:`Construct Value` and :bdg-success:`Free Parameters`
+.. dropdown:: Propose a :bdg-warning:`Utility` Equation
 
     :bdg-warning:`Utility` = :bdg-secondary-line:`Payout_Maximization` × :bdg-success-line:`Θ`  - (1 - :bdg-success-line:`Θ` ) × min( :bdg-secondary-line:`Guilt` +  :bdg-success-line:`Φ` , :bdg-secondary-line:`Inequity` -  :bdg-success-line:`Φ` )
-    
+
+Tutorial 2 - Galvan & Sanfey, 2024
+-------------------
+
+.. dropdown:: Create `Construct Value` Functions
+
+.. dropdown:: Identify Relevant :bdg-success:`Free Parameters` for each :bdg-secondary:`Construct Value`
+
+.. dropdown:: Propose a :bdg-warning:`Utility` Equation
+
+Tutorial 3 - Crockett et al., 2014
+-------------------
+
+.. dropdown:: Create `Construct Value` Functions
+
+.. dropdown:: Identify Relevant :bdg-success:`Free Parameters` for each :bdg-secondary:`Construct Value`
+
+.. dropdown:: Propose a :bdg-warning:`Utility` Equation

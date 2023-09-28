@@ -39,9 +39,6 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
 
     If the :bdg-success:`Free Parameters` we recover from the the predicted :bdg-danger:`Decisions` are similar enough to the :bdg-success:`Free Parameters` which created the data, we can be confident that the :bdg-success:`Free Parameters` we recover from subjects' :bdg-danger:`Decisions` will be useful estimates of their preferences in this task. 
 
-How to Achieve this Goal
-------------
-
 .. dropdown:: Defining Error Between Expected :bdg-warning:`Utility` and Observed :bdg-warning:`Utility`. 
 
     So how do we recover :bdg-success:`Free Parameters` from :bdg-danger:`Decisions`? 
@@ -69,6 +66,9 @@ How to Achieve this Goal
     We're going to use OLS since that it what they used in the paper, though it should be noted that the objective function that I will call will have an argument to choose between the two. 
     These will be based on a normal distribution - the same assumption as is made by OLS. 
     Predictably, the choice of MLE versus OLS has no bearing on the results.
+
+How to Achieve this Goal
+------------
 
 .. dropdown:: Objective Functions
 
@@ -294,7 +294,7 @@ How to Achieve this Goal
                     parameter1_recovered[i] = result.x[0]
                     parameter2_recovered[i] = result.x[1]
                 
-.. dropdown:: Verifying Parameter Recovery Process
+.. dropdown:: Verifying :bdg-success:`Free Parameter` Recovery Process
 
     I recommend using graphs to visualize the error in your parameter recovery process. 
     See the example below. 
@@ -497,7 +497,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                     theta_recovered[i] = result.x[0]
                     phi_recovered[i] = result.x[1]
 
-.. dropdown:: Verifying Parameter Recovery Process
+.. dropdown:: Verifying :bdg-success:`Free Parameter` Recovery Process
 
     .. tab-set::
         
@@ -600,3 +600,22 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 plt.ylim(-0.1, 0.1)
                 plt.show()
 
+Tutorial 2 - Galvan & Sanfey, 2024
+-------------------
+
+.. dropdown:: Objective Functions
+
+.. dropdown:: Optimizers
+
+.. dropdown:: Verifying :bdg-success:`Free Parameter` Recovery Process 
+
+.. dropdown:: Fixing Nonspecific Models
+
+Tutorial 3 - Crockett et al., 2014
+-------------------
+
+.. dropdown:: Objective Functions
+
+.. dropdown:: Optimizers
+
+.. dropdown:: Verifying :bdg-success:`Free Parameter` Recovery Process 

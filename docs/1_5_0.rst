@@ -802,3 +802,25 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                                 non_specific[i] += 1
 
                             predictions[i, k] = Choices[correct_choice[0]]
+
+Tutorial 2 - Galvan & Sanfey, 2024
+-------------------
+
+.. dropdown:: Preallocating, Defining Functions, Defining Trial List, and Defining Parameters
+
+.. dropdown:: Define the :bdg-success:`Free Parameter` Loop
+
+.. dropdown:: Define the :bdg-primary:`Trial` Loop
+
+.. dropdown:: Define the :bdg-danger:`Decision` Loop
+
+Tutorial 3 - Crockett et al., 2014
+-------------------
+
+.. dropdown:: Preallocating, Defining Functions, Defining Trial List, and Defining Parameters
+
+.. dropdown:: Define the :bdg-success:`Free Parameter` Loop
+
+.. dropdown:: Define the :bdg-primary:`Trial` Loop
+
+.. dropdown:: Define the :bdg-danger:`Decision` Loop

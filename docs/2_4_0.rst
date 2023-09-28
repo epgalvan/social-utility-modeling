@@ -658,3 +658,21 @@ How to Achieve this Goal
 
 Tutorials
 ==========
+
+Tutorial 1 - van Baar, Chang, & Sanfey, 2019
+----------------------
+
+.. dropdown:: Assessing Accuracy in Capturing the Data Generation Process
+.. dropdown:: Validating Parameter Recovery Process
+
+Tutorial 2 - Galvan & Sanfey, 2024
+-------------------
+
+.. dropdown:: Assessing Accuracy in Capturing the Data Generation Process
+.. dropdown:: Validating Parameter Recovery Process
+
+Tutorial 3 - Crockett et al., 2014
+-------------------
+
+.. dropdown:: Assessing Accuracy in Capturing the Data Generation Process
+.. dropdown:: Validating Parameter Recovery Process

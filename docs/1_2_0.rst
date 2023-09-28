@@ -119,3 +119,25 @@ We're trying to identify an experimental design which allows to answer the follo
     Here, they opted for 80 which is quite a lot of trials. 
     They could have certainly done this with 60 trials (they had 40 trials with the Multiplier as 4 and 20 each with the Multiplier as 2 and 6). 
     Generally, you can feel quite safe with 20 trials per condition but, having worked with the data, I can say that they could have been fine with as few as 10 trials per condition though I will only recommend a minimum of 20 per condition.
+
+Tutorial 2 - Galvan & Sanfey, 2024
+-------------------
+
+.. dropdown:: Generate Hypotheses
+
+.. dropdown:: Create a Task
+
+.. dropdown:: Identify Unintended Behavioral Patterns
+
+.. dropdown:: Design the Experiment
+
+Tutorial 3 - Crockett et al., 2014
+-------------------
+
+.. dropdown:: Generate Hypotheses
+
+.. dropdown:: Create a Task
+
+.. dropdown:: Identify Unintended Behavioral Patterns
+
+.. dropdown:: Design the Experiment

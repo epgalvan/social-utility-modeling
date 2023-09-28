@@ -20,10 +20,10 @@ Before we can start to develop an mathematical model of behavior, we have to est
 How to Achieve this Goal
 ------------    
 
-1. For each hypothesis, think of the central appetitive or aversive motive that would lead people to make such :bdg-danger:`Decisions`
-2. Think about *how* the :bdg-danger:`Decisions` people make enable them to act on their environment ( :bdg-primary:`Independent Variables` and :bdg-primary:`Constants` ) to avoid or obtain whatever is motivating them according to each hypothesis
-3. Now think about *how* other :bdg-danger:`Decisions` that people could make would prevent them from avoiding or obtaining whatever is motivating them according to each hypothesis.
-4. Taking a step back now, identify the dimensions which are implied by the :bdg-success:`Meaningful Psychological Differences Between People` you have identified in your hypotheses - what way are these people quantitatively different?
+1. Identify Motives Per Hypothesis - for each hypothesis, think of the central appetitive or aversive motive that would lead people to make such :bdg-danger:`Decisions`
+2. Identify Behavioral Patterns Predicted by Each Hypothesis - think about *how* the :bdg-danger:`Decisions` people make enable them to act on their environment ( :bdg-primary:`Independent Variables` and :bdg-primary:`Constants` ) to avoid or obtain whatever is motivating them according to each hypothesis
+3. Explain How Other Behaviors Prevent Preferences From Being Met - now think about *how* other :bdg-danger:`Decisions` that people could make would prevent them from avoiding or obtaining whatever is motivating them according to each hypothesis.
+4. Identify Dimenions of Differences Between People - taking a step back now, identify the dimensions which are implied by the :bdg-success:`Meaningful Psychological Differences Between People` you have identified in your hypotheses - what way are these people quantitatively different?
 
 .. Note::
     
@@ -42,25 +42,25 @@ Tutorials
 Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 -------------------
 
-.. dropdown:: For each hypothesis, think of the central appetitive or aversive motive that would lead people to make such :bdg-danger:`Decisions`.
+.. dropdown:: Identify Motives Per Hypothesis
 
     1. Greed - a desire to obtain money (or an aversion to losing money)
     2. Inequity Aversion - an aversion to creating inequity (or a desire to achieve equity)    
     3. Guilt Aversion - an aversion to violating others' expectations (or a desire to meet others' expectation)
 
-.. dropdown:: Think about *how* the :bdg-danger:`Decisions` people make enable them to act on their environment ( :bdg-primary:`Independent Variables` and :bdg-primary:`Constants` ) to avoid or obtain whatever is motivating them according to each hypothesis.
+.. dropdown:: Identify Behavioral Patterns Predicted by Each Hypothesis
 
     1. Greed - people keep and take as much money as they can
     2. Inequity Aversion - people give back enough money so that them and their partner have an equal amount     
     3. Guilt Aversion - people give back enough money so that their partners' expectations are met
 
-.. dropdown:: Now think about *how* other :bdg-danger:`Decisions` that people could make would prevent them from avoiding or obtaining whatever is motivating them according to each hypothesis.
+.. dropdown:: Explain How Other Behaviors Prevent Preferences From Being Met
 
     1. Greed - not keeping (or taking) as much money as one possibly can does not maximize one's payoff
     2. Inequity Aversion - not giving enough money back so that them and their partner have an equal amount results in inequity
     3. Guilt Aversion - not giving their partner what they expect results in the violation of another person's expectations which results in feeling guilty
 
-.. dropdown:: Taking a step back now, identify the dimensions which are implied by the :bdg-success:`Meaningful Psychological Differences Between People` you have identified in your hypotheses - what way are these people quantitatively different?
+.. dropdown:: Identify Dimenions of Differences Between People
 
     1. Greedy people act in their own material self-interest while both Inequity Averse and Guilt Averse people act in others' self-interest
     2. Inequity Averse people act in others' material self-interest based on a desire to maintain equality - to be objectively fair
@@ -79,6 +79,24 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         :figwidth: 100%
         :align: center
 
-Do we have a conceptual model of how :bdg-primary:`Independent Variables`, :bdg-primary:`Constants` , and :bdg-danger:`Decisions` relate to the :bdg-success:`Meaningful Psychological Differences Between People` identified by each hypothesis? 
+Tutorial 2 - Galvan & Sanfey, 2024
+-------------------
 
-Yes we do, so let's proceed to actually designing the equation!
+.. dropdown:: Identify Motives Per Hypothesis
+
+.. dropdown:: Identify Behavioral Patterns Predicted by Each Hypothesis
+
+.. dropdown:: Explain How Other Behaviors Prevent Preferences From Being Met
+
+.. dropdown:: Identify Dimenions of Differences Between People    
+
+Tutorial 3 - Crockett et al., 2014
+-------------------
+
+.. dropdown:: Identify Motives Per Hypothesis
+
+.. dropdown:: Identify Behavioral Patterns Predicted by Each Hypothesis
+
+.. dropdown:: Explain How Other Behaviors Prevent Preferences From Being Met
+
+.. dropdown:: Identify Dimenions of Differences Between People
