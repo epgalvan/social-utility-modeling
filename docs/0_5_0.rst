@@ -29,6 +29,11 @@ We will have 4 tutorials that you can complete:
 
 For all tutorials, we will work through each step as though we want to conduct the research ourselves. 
 So don't read the articles just yet - let's work through this process together first! 
+I would really discourage you from doing all the tutorials at once - on your first read-through, choose one tutorial to follow and always try to fully understand the lesson before moving on to the tutorial. 
 
 If you are selecting a tutorial and don't have a preference based on the description above, I recommend doing the first tutorial to start out. 
-I learned how to do computational modeling using this dataset myself and I think it's a really nice, intuitive exemplar that should be pretty easy to follow and latch your knowledge onto.
+I learned how to do computational modeling using this dataset myself and I think it's a really nice, intuitive exemplar that should be pretty easy to follow and latch your knowledge onto. 
+
+If you are going to be creating your own model rather than using an existing model, I would recommend doing my paper (tutorial 2) on your second go-around. 
+Since I created the model, experiment, and trialset myself (rather recently), this tutorial is less straightforward: it takes you through the process of making improvements in the Before Data Collection stages. 
+Thus, you can get some insight into how to handle roadblocks along the way. 

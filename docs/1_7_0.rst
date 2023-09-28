@@ -151,7 +151,6 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 -------------------
 
 .. dropdown:: Choosing an Approach to Grouping
-    
 .. dropdown:: Cluster Your Data Using HAC
 
     .. tab-set::
@@ -429,9 +428,51 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Cluster Your Data Using HAC
 
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
 .. dropdown:: Idenitfy Where Your Clusters are
 
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
 .. dropdown:: Examine Model Predictions Efficiently
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

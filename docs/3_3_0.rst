@@ -215,12 +215,54 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
 .. dropdown:: Embodying No Individual Differences
 
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------
 
 .. dropdown:: Embodying No Individual Differences
 
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
 Tutorial 3 - Crockett et al., 2014
 -------------------
 
 .. dropdown:: Embodying No Individual Differences
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::

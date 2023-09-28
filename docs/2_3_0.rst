@@ -496,28 +496,280 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 ----------------------
 
 .. dropdown:: Create :bdg-warning:`Utility` Equations for our Alternative Models
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Preallocating and Defining Functions
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Compute Model Fit Index for Each :bdg-success`Subject`, for Each Alternative Model
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Compare Model Performance
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------
 
 .. dropdown:: Create :bdg-warning:`Utility` Equations for our Alternative Models
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Preallocating and Defining Functions
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Compute Model Fit Index for Each :bdg-success`Subject`, for Each Alternative Model
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Compare Model Performance
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 Tutorial 3 - Crockett et al., 2014
 -------------------
 
 .. dropdown:: Create :bdg-warning:`Utility` Equations for our Alternative Models
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Preallocating and Defining Functions
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Compute Model Fit Index for Each :bdg-success`Subject`, for Each Alternative Model
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Compare Model Performance
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::

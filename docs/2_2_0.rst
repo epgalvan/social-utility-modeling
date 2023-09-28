@@ -101,16 +101,100 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 ----------------------
 
 .. dropdown:: Select a Model Fit Index
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------
 
 .. dropdown:: Select a Model Fit Index
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 Tutorial 3 - Crockett et al., 2014
 -------------------
 
 .. dropdown:: Select a Model Fit Index
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::

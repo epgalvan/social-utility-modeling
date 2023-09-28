@@ -580,12 +580,96 @@ Tutorial 2 - Galvan & Sanfey, 2024
 -------------------
 
 .. dropdown:: Preliminary Validation
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Testing a Modulatory Hypothesis
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Using Categorical Clusters to Test Modulatory Hypotheses
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 Tutorial 3 - Crockett et al., 2014
 -------------------
 
 .. dropdown:: Preliminary Validation
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Testing a Modulatory Hypothesis
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Using Categorical Clusters to Test Modulatory Hypotheses
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::

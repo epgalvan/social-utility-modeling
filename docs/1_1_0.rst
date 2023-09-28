@@ -49,8 +49,6 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Create a Research Question
 
-    
-
 Tutorial 3 - Crockett et al., 2014
 -------------------
 

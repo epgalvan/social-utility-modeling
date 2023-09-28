@@ -605,17 +605,115 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Objective Functions
 
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
 .. dropdown:: Optimizers
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 .. dropdown:: Verifying :bdg-success:`Free Parameter` Recovery Process 
 
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
 .. dropdown:: Fixing Nonspecific Models
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 Tutorial 3 - Crockett et al., 2014
 -------------------
 
 .. dropdown:: Objective Functions
 
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
 .. dropdown:: Optimizers
 
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
 .. dropdown:: Verifying :bdg-success:`Free Parameter` Recovery Process 
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::

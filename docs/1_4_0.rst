@@ -345,6 +345,20 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Create `Construct Value` Functions
 
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
 .. dropdown:: Identify Relevant :bdg-success:`Free Parameters` for each :bdg-secondary:`Construct Value`
 
 .. dropdown:: Propose a :bdg-warning:`Utility` Equation
@@ -353,6 +367,20 @@ Tutorial 3 - Crockett et al., 2014
 -------------------
 
 .. dropdown:: Create `Construct Value` Functions
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 .. dropdown:: Identify Relevant :bdg-success:`Free Parameters` for each :bdg-secondary:`Construct Value`
 

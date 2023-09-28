@@ -412,22 +412,191 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 ----------------------
 
 .. dropdown:: Preallocating and Defining Functions
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
 .. dropdown:: Define the :bdg-success:`Subject` Loop
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Recover :bdg-success:`Free Parameters`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success:`Free Parameters`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------
 
 .. dropdown:: Preallocating and Defining Functions
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Define the :bdg-success:`Subject` Loop
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Recover :bdg-success:`Free Parameters`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success:`Free Parameters`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 
 Tutorial 3 - Crockett et al., 2014
 -------------------
 
 .. dropdown:: Preallocating and Defining Functions
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Define the :bdg-success:`Subject` Loop
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Recover :bdg-success:`Free Parameters`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success:`Free Parameters`
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::

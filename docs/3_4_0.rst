@@ -15,13 +15,35 @@ Lesson
 Goal During this Stage
 ---------------
 
-We want to try to characterize *why* some :bdg-success:`Subjects` make different :bdg-danger:`Decisions` than others.
+We want to try to characterize *why* some :bdg-success:`Subjects` make different :bdg-danger:`Decisions` than others. 
+Thus, we are going to use demographic factors and/or dispositional psychological factors to try to predict these differences.
 
 How to Achieve this Goal
 ------------
 
+.. dropdown:: Common Dispositional Psychological Factors to Consider
+
+    .. Note:: 
+
+        I'm not an expert on the psychometrics of any of these psychological factors: I've just provided these to give you something to start with and think about in terms of how you want to predict behavior.
+
+    **Personality** - Big Five Personality Inventory or HEXACO Personality Inventory
+
+    **Morality** - Moral Foundations Questionnaire
+
+    **Individualism/Collectivism** - Auckland Individualism-Collectivism Scale (AICS)
+
+    **Dark Triad** - Short Dark Triad (SD3)
+
+    **Social Dominance** - Social Dominance Orienation Scale
+
+    **Emotional Intelligence** - Rotterdam Emotional Intelligence Scale
+
+    **Approach/Avoidance Tendencies** - BIS/BAS Scale
+
+
 Our answer to this question depends entirely on what we want to focus on: this table should help you determine what you may want to use. 
-We're not going to bother using conceptual examples, all implemented examples are shown below
+We're not going to bother using conceptual examples, all implemented examples are shown below.
 
 .. table::
    :widths: auto
@@ -42,9 +64,313 @@ We're not going to bother using conceptual examples, all implemented examples ar
    | Any 2+ Continuous Variables             | Matrix Correlation (Ex. 16)     | Matrix Correlation (Ex. 17)        | Cluster Strength Analysis (Ex. 18) |
    +-----------------------------------------+---------------------------------+------------------------------------+------------------------------------+
 
-Individual Difference Measures to Consider
-----------------
+.. dropdown:: Miscellaneous Examples
 
+    Example 19: Using Weighted Averages of :bdg-success:`Free Parameters` over :bdg-primary:`Conditions` as Predictors of Preference-Relevant Atittudes
 
 Examples
 ===========
+
+.. dropdown:: Example 1
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 2
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 3 
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 4 
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 5
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 6
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 7
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 8
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 9
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 10
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 11
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 12
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 13
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 14
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 15
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 16
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 17
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 18
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Example 19
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
