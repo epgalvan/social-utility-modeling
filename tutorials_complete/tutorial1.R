@@ -119,3 +119,12 @@ qplot(x = theta_true, y = phi_true, color = distance, size = distance, geom = 'p
 distance_new = (2*(theta_recovered - theta_true))**2 + (5*(0.5-theta_true)*(phi_recovered - phi_true))**2
 qplot(x = theta_true, y = phi_true, color = distance_new, size = distance_new, geom = 'point') + scale_radius(limits=c(0, sqrt(2)), range=c(0, 20))
 
+################ 1_7_0
+
+### Cluster Your Data Using HAC
+
+distance_mat = dist(predictions, method = 'euclidean')
+set.seed(240)
+hierarchical = hclust(distance_mat, method = 'average')
+plot(hierarchical)
+fit = cutree(hierarchical, k = 4)

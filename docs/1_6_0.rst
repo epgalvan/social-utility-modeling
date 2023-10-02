@@ -63,9 +63,9 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
         OLS assumes that the errors are normally distributed, and it provides estimates that are unbiased and have the minimum variance among linear unbiased estimators. 
         OLS is computationally efficient and easy to interpret.``
 
-    We're going to use OLS since that it what they used in the paper, though it should be noted that the objective function that I will call will have an argument to choose between the two. 
-    These will be based on a normal distribution - the same assumption as is made by OLS. 
-    Predictably, the choice of MLE versus OLS has no bearing on the results.
+    We're going to whichever was used in each paper for the tutorials, so the objective function that I will call will have an argument to choose between the two. 
+    MLE will be based on a normal distribution - the same assumption as is made by OLS. 
+    Predictably, the choice of MLE versus OLS has no bearing on the results in any paper.
 
 How to Achieve this Goal
 ------------

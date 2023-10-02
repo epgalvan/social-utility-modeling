@@ -151,6 +151,13 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 -------------------
 
 .. dropdown:: Choosing an Approach to Grouping
+
+    Our four choices are: no grouping, binning, a priori clustering, or post-hoc clustering. 
+    Since we want to study people based on the strategy that they use to make decisions and our model is not using noise parameters, let's group. 
+    The reason we don't have to include noise parameters is because we are offering several choices per trial, so a priori clustering is on the table. 
+    Binning isn't appropriate here because we're looking for 4 strategies and the cutoffs between these strategies are kind of fuzzy - we don't want to arbitrarily assign boundaries between strategies if we can avoid it. 
+    Post-hoc clustering isn't preferable when we can group a priori, so let's do that.
+
 .. dropdown:: Cluster Your Data Using HAC
 
     .. tab-set::
