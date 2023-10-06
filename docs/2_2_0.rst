@@ -102,19 +102,13 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
 .. dropdown:: Select a Model Fit Index
 
-    .. tab-set::
+    They used the nonstandard AIC formulation for this (i.e. assuming a normal distribution of error). 
+    This was appropriate because the true data generation process for reciprocation decisions might be substantially different: 
+    some inequity-averse people might always use a fixed percent of the pot, ignoring how much the investor kept in their decisions and, similarly, 
+    some guilt-averse people might do the inverse. 
+    More to the point, this formualtion of guilt-aversion did not use self-reported believed expectations which means that they are trying approximate this on average. 
+    Thus, AIC is better than BIC since the true data generation process is not (believed to be) in the set of models that we are comparing.
 
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`
 
     .. tab-set::
@@ -122,6 +116,10 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         .. tab-item:: R
 
             ::
+
+                N = length(trialList[, 1])
+                k = 2
+                subjectData$modelAIC = N * log(subjectData$modelSS/N) + 2*k
 
         .. tab-item:: MatLab
 

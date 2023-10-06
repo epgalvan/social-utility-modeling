@@ -495,7 +495,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                     }
 
                     utility = function(theta, phi, guilt, inequity, payout){
-                        return(theta*payout + (1-theta)*min(guilt + phi, inequity - phi))
+                        return(theta*payout - (1-theta)*min(guilt + phi, inequity - phi))
                     }
 
                     freeParameters = data.frame(theta = rep(seq(0, 0.5, 0.005), each = 101), 
@@ -522,7 +522,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                     end
 
                     function value = utility(theta, phi, guilt, inequity, payout)
-                        value = (theta*payout + (1-theta)*min(guilt + phi, inequity - phi));
+                        value = (theta*payout - (1-theta)*min(guilt + phi, inequity - phi));
                     end
 
                     thetaRange = 0:0.005:0.5;
@@ -567,7 +567,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                         return ((investment * believed_multiplier / 2 - returned) / (investment * multiplier))
 
                     def utility(theta, phi, guilt, inequity, payout){
-                        return(theta*payout + (1-theta)*min(guilt + phi, inequity - phi))
+                        return(theta*payout - (1-theta)*min(guilt + phi, inequity - phi))
                     }
                         
                     theta = np.repeat(np.arange(0, 0.505, 0.005), repeats=101)
@@ -719,13 +719,13 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                             for (n in 1:length(Choices)){
                                 Utility[n] = utility(theta = Theta,
                                                     phi = Phi,
-                                                    guilt = guilt(I, B, Choices[n]),
+                                                    guilt = guilt(I, B, Choices[n], M),
                                                     inequity = inequity(I, M, Choices[n], E),
-                                                    payout = payout_maximization(I, M, R))
+                                                    payout = payout_maximization(I, M, Choices[n]))
                             }
                             correct_choice = which(Utility == max(Utility))
                             if (length(correct_choice) > 1){
-                                correct_choice = correct_choice[sample(correct_choice, 1)]
+                                correct_choice = correct_choice[sample(1:length(correct_choice), 1)]
                                 non_specific[i] =+ 1
                             }
                             predictions[i,k] = Choices[correct_choice]
@@ -755,13 +755,13 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                                 for n = 1:height(Choices(:,1))
                                     Utility(n) = utility(theta = Theta,
                                                          phi = Phi,
-                                                         guilt = guilt(I, B, Choices(n)),
+                                                         guilt = guilt(I, B, Choices(n), M),
                                                          inequity = inequity(I, M, Choices(n), E),
-                                                         payout = payout_maximization(I, M, R))
+                                                         payout = payout_maximization(I, M, Choices(n)))
                                 end
                                 correct_choice = find(Utility == max(Utility));
                                 if numel(correct_choice) > 1
-                                    correct_choice = correct_choice(randi(numel(correct_choice)));
+                                    correct_choice = correct_choice(randi(numel([1:height(correct_choice)])));
                                     freeParameters(i,j).non_specific(k) = freeParameters(i,j).non_specific(k) + 1;
                                 end
                                 freeParameters(i,j).predictions(k) = Choices(correct_choice)
@@ -792,13 +792,13 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                             for n in range(len(Choices)):
                                 Utility[n] = utility(theta=Theta,
                                                     phi=Phi,
-                                                    guilt=guilt(I, B, Choices[n]),
+                                                    guilt=guilt(I, B, Choices[n], M),
                                                     inequity=inequity(I, M, Choices[n], E),
-                                                    payout=payout_maximization(I, M, R))
+                                                    payout=payout_maximization(I, M, Choices[n]))
                             
                             correct_choice = [idx for idx, val in enumerate(Utility) if val == max(Utility)]
                             if len(correct_choice) > 1:
-                                correct_choice = random.sample(correct_choice, 1)
+                                correct_choice = random.sample(range(len(correct_choice)), 1)
                                 non_specific[i] += 1
 
                             predictions[i, k] = Choices[correct_choice[0]]

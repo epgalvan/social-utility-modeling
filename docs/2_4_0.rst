@@ -456,14 +456,14 @@ How to Achieve this Goal
                             Parameter1_ff[m] = result_ff$par[1]
                             Parameter2_ff[m] = result_ff$par[2]
                             for (n in 1:length(withheld)){
-                                utility = vector('numeric', length(Choices))
+                                utility_choices = vector('numeric', length(Choices))
                                 for (q in 1:length(Choices)){
-                                    utility[q] = Utility(result_ff$par[1], result_ff$par[2],
+                                    utility_choices[q] = utility(result_ff$par[1], result_ff$par[2],
                                                         construct1(df$IV[withheld[n]], df$Constant[withheld[n]], Choices[q]),
                                                         construct2(df$IV[withheld[n]], df$Constant[withheld[n]], Choices[q]),
                                                         construct3(df$IV[withheld[n]], df$Constant[withheld[n]], Choices[q]))
                                 }
-                                Prediction_ff[withheld[n]] = Choices[which(utility == max(utility))]
+                                Prediction_ff[withheld[n]] = Choices[which(utility_choices == max(utility_choices))]
                             }
                         }
                         SS_ff = sum((df$Decision - Prediction_ff)**2)
@@ -503,10 +503,10 @@ How to Achieve this Goal
                         for j = 1:length(df.IV)
                             u = zeros(1, length(redistribution_rate));
                             for k = 1:length(Choices)
-                                u(k) = Utility(Parameter1, Parameter2, ...
-                                    construct1(df.IV(j), df.Constant(j), Choices(n)), ...
-                                    construct2(df.IV(j), df.Constant(j), Choices(n)), ...
-                                    construct3(df.IV(j), df.Constant(j), Choices(n)));
+                                u(k) = utility(Parameter1, Parameter2, ...
+                                               construct1(df.IV(j), df.Constant(j), Choices(n)), ...
+                                               construct2(df.IV(j), df.Constant(j), Choices(n)), ...
+                                               construct3(df.IV(j), df.Constant(j), Choices(n)));
                             end
                             predicted_u(j) = max(u);
                             observed_u(j) = u(rr(j) * 10 + 1);
@@ -541,14 +541,14 @@ How to Achieve this Goal
                             Parameter2_ff(m) = result_ff(2);
                             
                             for n = 1:length(withheld)
-                                utility = zeros(1, length(Choices));
+                                utility_choices = zeros(1, length(Choices));
                                 for q = 1:length(Choices)
-                                    utility(q) = Utility(result_ff(1), result_ff(2), ...
-                                        construct1(df.IV(withheld(n)), df.Constant(withheld(n)), Choices(q)), ...
-                                        construct2(df.IV(withheld(n)), df.Constant(withheld(n)), Choices(q)), ...
-                                        construct3(df.IV(withheld(n)), df.Constant(withheld(n)), Choices(q)));
+                                    utility_choices(q) = utility(result_ff(1), result_ff(2), ...
+                                                                 construct1(df.IV(withheld(n)), df.Constant(withheld(n)), Choices(q)), ...
+                                                                 construct2(df.IV(withheld(n)), df.Constant(withheld(n)), Choices(q)), ...
+                                                                 construct3(df.IV(withheld(n)), df.Constant(withheld(n)), Choices(q)));
                                 end
-                                [~, max_utility_idx] = max(utility);
+                                [~, max_utility_idx] = max(utility_choices);
                                 Prediction_ff(withheld(n)) = Choices(max_utility_idx);
                             end
                         end
@@ -629,13 +629,13 @@ How to Achieve this Goal
                             Parameter2_ff[m - 1] = result_ff[1]
 
                             for n in withheld:
-                                utility = np.zeros(len(Choices))
+                                utility_choices = np.zeros(len(Choices))
                                 for q in range(len(Choices)):
-                                    utility[q] = Utility(result_ff[0], result_ff[1],
-                                                        construct1(df['IV'][n], df['Constant'][n], Choices[q]),
-                                                        construct2(df['IV'][n], df['Constant'][n], Choices[q]),
-                                                        construct3(df['IV'][n], df['Constant'][n], Choices[q]))
-                                max_utility_idx = np.argmax(utility)
+                                    utility_choices[q] = utility(result_ff[0], result_ff[1],
+                                                                 construct1(df['IV'][n], df['Constant'][n], Choices[q]),
+                                                                 construct2(df['IV'][n], df['Constant'][n], Choices[q]),
+                                                                 construct3(df['IV'][n], df['Constant'][n], Choices[q]))
+                                max_utility_idx = np.argmax(utility_choices)
                                 Prediction_ff[n] = Choices[max_utility_idx]
 
                         SS_ff = sum((df['Decision'] - Prediction_ff)**2)
@@ -670,6 +670,23 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                ### Model Performance
+
+                modelPredictions = lm(data = trialData, Returned ~ Prediction)
+                summary(modelPredictions) # R-squared
+
+                ### Visually Checking Assumptions
+
+                qplot(x = trialData$Prediction, y = as.numeric(trialData$Returned), geom = 'smooth') + 
+                geom_abline(slope = 1, intercept = 0) + labs(x = 'Prediction', y = 'Observed') + lims(x = c(0, 30), y = c(0, 30)) # linearity
+
+                normvals = rnorm(1000, mean = 0, sd = sd(trialData$Prediction - as.numeric(trialData$Returned)))
+                qplot(x = trialData$Prediction - as.numeric(trialData$Returned), geom = 'density', bw = 1, color = 'Actual') + 
+                geom_density(aes(x = normvals, color = 'Predicted'), bw = 1) + labs(x = 'Prediction - Observed', y = 'Density') #normality
+
+                qplot(x = trialData$Investment, y = (trialData$Prediction-as.numeric(trialData$Returned)), group = as.factor(trialData$Multiplier), color = as.factor(trialData$Multiplier), geom = 'smooth')  + 
+                labs(x = 'Investment', y = 'Prediction - Observed', color = 'Multiplier') #independence of error and homoscedasticity
+
         .. tab-item:: MatLab
 
             ::
@@ -684,6 +701,64 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         .. tab-item:: R
 
             ::
+
+                fivefold = data.frame() #preallocate for parameters and errors from the fivefold validation to go into
+
+                for (i in 1:length(included_subjects)){
+                df = trialData[which(included_subjects[i] == trialData$Subject), ]
+                order = sample(length(df$Returned))
+                Theta_ff = vector('numeric', length = 5)
+                Phi_ff = vector('numeric', length = 5)
+                SS_ff = 0
+                Prediction_ff = vector('numeric', length(df$Returned))
+                for (z in 1:5){
+                    j = round((z - 1) * (length(df$Returned)/5) + 1)
+                    n = round(z * (length(df$Returned)/5))
+                    withheld = order[j:n]
+                    m = ((i - 1) * 5) + z
+                    
+                    result_ff = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                        lb = lower_bounds, ub = upper_bounds,
+                                        df = df[-withheld,])
+                    
+                    Theta_ff[z] = result_ff$par[1]
+                    Phi_ff[z] = result_ff$par[2]
+                    for (n in 1:length(withheld)){
+                    if (df$Investment[withheld[n]] > 10) {
+                        Choices = seq(0, (df$Investment[withheld[n]] * df$Multiplier[withheld[n]]), round((df$Investment[withheld[n]]*df$Multiplier[withheld[n]])/10))
+                    } else {
+                        Choices = seq(0, (df$Investment[withheld[n]] * df$Multiplier[withheld[n]]), 1)
+                    }
+                    utility_choices = vector('numeric', length(Choices))
+                    for (q in 1:length(Choices)){
+                        utility_choices[q] = utility(theta = result_ff$par[1], 
+                                            phi = result_ff$par[2],
+                                            guilt = guilt(df$Investment[withheld[n]], believed_multiplier = 4, Choices[q], df$Multiplier[withheld[n]]),
+                                            payout = payout_maximization(df$Investment[withheld[n]], df$Multiplier[withheld[n]], Choices[q]),
+                                            inequity = inequity(df$Investment[withheld[n]], df$Multiplier[withheld[n]], Choices[q], endowment = 10))
+                    }
+                    Prediction_ff[withheld[n]] = Choices[which(utility_choices == max(utility_choices))[1]]
+                    }
+                }
+                SS_ff = sum((as.numeric(df$Returned) - Prediction_ff)**2)
+                fivefold[i, 1:12] = c(SS_ff, Theta_ff, Phi_ff, included_subjects[i])
+                }
+                colnames(fivefold) = c('SS', 'Par1_fold1', 'Par1_fold2', 'Par1_fold3', 'Par1_fold4', 'Par1_fold5', 
+                                    'Par2_fold1', 'Par2_fold2', 'Par2_fold3', 'Par2_fold4', 'Par2_fold5', 'SubjectID')
+
+                sqrt(mean(fivefold$SS)/length(df$Investment)) - sqrt(mean(subjectData$modelSS)/length(df$Investment)) #the change in root mean squared error, per trial
+                fivefold$AIC = length(df$Investment) * log(fivefold$SS/length(df$Investment)) + 2 * 2
+                t.test(fivefold$AIC, subjectData$modelAIC, paired = T) #test fivefold MFI against normal MFI for this model
+
+                library(lsa)
+                cosines = vector('numeric', length = 10)
+                for (i in 1:5){
+                    cosines[i] = cosine(subjectData$Theta, fivefold[, (i + 1)]) #to get the correct columns in the fivefold dataframe (2-6)
+                    cosines[(i+5)] = cosine(subjectData$Phi, fivefold[, (i + 6)]) #to get the correct columns in the fivefold dataframe (7-11)
+                }
+
+                mean(cosines[1:5]) #cosine similarity of parameter 1
+                mean(cosines[6:10]) #cosine similarity of parameter 2
 
         .. tab-item:: MatLab
 

@@ -310,7 +310,7 @@ How to Achieve this Goal
                         model_NLL = -2 * log(sum(dnorm(df$Decision, mean = df$Prediction)))
                         model_SS = sum((df$Decision - df$Prediction)**2)
 
-                        subjectData[i, ] = c(included_subjects[i], result$par[1], result$par[2],  freeParameters$Strategy[closestPoint], model_NLL, modelSS) 
+                        subjectData[i, ] = c(included_subjects[i], result$par[1], result$par[2],  freeParameters$Strategy[closestPoint], model_NLL, model_SS) 
                                             #add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
                         
                         start = length(subjectData[, 1]) + 1
@@ -419,6 +419,54 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                included_subjects = c(t(read.csv2('C:/Users/DELL/Downloads/tutorial1_Data/subjectsIncluded_batch1.csv', sep=',', header = F)), 
+                                      t(read.csv2('C:/Users/DELL/Downloads/tutorial1_Data/subjectsIncluded_batch2.csv', sep=',', header = F)))
+
+                trialData = read.csv2("C:/Users/DELL/Downloads/tutorial1_Data/allDataLong.csv", sep =',')
+                trialData$Prediction = vector('numeric', length(trialData$Subject))
+                trialData$Strategy = vector('numeric', length(trialData$Subject))
+                trialData = trialData[-which(trialData$Investment == 0), ]
+                trialData = trialData[-which(is.na(as.numeric(trialData$Returned))),]
+
+
+                subjectData = data.frame()
+                trialList = read.csv2("C:/Users/DELL/Downloads/tutorial1_Data/trialSet.csv", sep =',', )
+                trialList = trialList[,2:3]
+                trialList$Believed_Multiplier = 4
+                trialList$Endowment = 10
+
+                obj_function = function(params, df, method = "OLS") {
+                    Theta = params[1]
+                    Phi = params[2]
+                    
+                    predicted_utility = vector('numeric', length(df[,1]))
+                    observed_utility = vector('numeric', length(df[,1]))
+                    chosen = as.numeric(df[,4]) + 1
+                    for (k in 1:length(df[,1])){
+                        I = df[k, 2]
+                        M = df[k, 3]
+                        B = 4
+                        E = 10
+                        if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+                        
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                            Utility[n] = utility(theta = Theta, 
+                                                phi = Phi, 
+                                                guilt = guilt(I, B, Choices[n], M), 
+                                                inequity = inequity(I, M, Choices[n], E), 
+                                                payout = payout_maximization(I, M, Choices[n]))
+                        }
+                    predicted_utility[k] = max(Utility)
+                    observed_utility[k] = Utility[chosen[k]]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                } #must redefine since we are using a diferent trialList
+
         .. tab-item:: MatLab
 
             ::
@@ -434,6 +482,13 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         .. tab-item:: R
 
             ::
+                
+                for (i in 1:length(included_subjects)){
+                    df = trialData[which(included_subjects[i] == trialData$Subject), ]
+
+                    #Recover Free Parameters
+
+                }
 
         .. tab-item:: MatLab
 
@@ -450,6 +505,16 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                for (i in 1:length(included_subjects)){
+                    df = trialData[which(included_subjects[i] == trialData$Subject), ]
+                    result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                    lb = lower_bounds, ub = upper_bounds,
+                                    df = df)
+                    
+                    # Determine Predictions
+
+                }
+
         .. tab-item:: MatLab
 
             ::
@@ -464,6 +529,47 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         .. tab-item:: R
 
             ::
+
+                for (i in 1:length(included_subjects)){
+                    df = trialData[which(included_subjects[i] == trialData$Subject), ]
+                    result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                    lb = lower_bounds, ub = upper_bounds,
+                                    df = df)
+                    
+                    closestPoint = which(as.numeric(freeParameters[,1], 3) == (round(result$par[1]/2, 2))*2 & 
+                                            ((round((as.numeric(freeParameters[,2]) + 0.1)*5, 2))/5) - 0.1 == ((round((result$par[2] + 0.1)*5, 2))/5) - 0.1)
+                    for (k in 1:length(df$Returned)){
+                        I = df$Investment[k]
+                        M = df$Multiplier[k]
+                        R = df$Returned[k]
+                        B = 4
+                        E = 10
+                        if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                            Utility[n] = utility(theta = result$par[1], 
+                                                phi = result$par[2], 
+                                                guilt = guilt(I, B, Choices[n], M), 
+                                                inequity = inequity(I, M, Choices[n], E), 
+                                                payout = payout_maximization(I, M, Choices[n]))
+                        }
+                        correct_choice = which(Utility == max(Utility))
+                        if (length(correct_choice) > 1){
+                            correct_choice = correct_choice[sample(1:length(correct_choice), 1)]
+                        }
+                        df$Prediction[k] = Choices[correct_choice]
+                    }
+                    
+                    model_NLL = -2 * log(sum(dnorm(as.numeric(df$Returned), mean = df$Prediction)))
+                    model_SS = sum((as.numeric(df$Returned) - df$Prediction)**2)
+                    
+                    subjectData[i, 1:6] = c(included_subjects[i], result$par[1], result$par[2], freeParameters$Strategy[closestPoint], model_NLL, model_SS) 
+
+                    trialData$Prediction[which(included_subjects[i] == trialData$Subject)] = df$Prediction
+                    trialData$Strategy[which(included_subjects[i] == trialData$Subject)] = freeParameters$Strategy[closestPoint]
+                }
+                colnames(subjectData) = c('SubjectID', 'Theta', 'Phi', 'Strategy', 'modelNLL', 'modelSS')
+
 
         .. tab-item:: MatLab
 

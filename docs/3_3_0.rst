@@ -66,7 +66,7 @@ How to Achieve this Goal
 
                 result = fmincon(obj_function_nid,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                  lb = lower_bounds, ub = upper_bounds,
-                                 df = trailData)
+                                 df = trialData)
 
                 trialData$PredictedNID = vector('numeric', length(trialData$SubjectID))
                 for (i in 1:length(trialData$IV)){
@@ -75,16 +75,16 @@ How to Achieve this Goal
                         Utility[j] = utility(parameter1 = results$par[1],
                                              parameter2 = results$par[2],
                                              construct1 = construct1(trialData$IV[k], trialData$Constant[k], Choices[n]),
-                                             construct2 = construct2(trialData$IV[k], trialData$Constant[k], Choices[n])),
-                                             construct3 = construct3(trialData$IV[k], trialData$Constant[k], Choices[n])
+                                             construct2 = construct2(trialData$IV[k], trialData$Constant[k], Choices[n]),
+                                             construct3 = construct3(trialData$IV[k], trialData$Constant[k], Choices[n]))
                     }
                     trialData$PredictedNID[i] = Choices[which(Utility == max(Utility))]
                 }
 
-                subjectData$SS_NID = vector('numeric', length(trialData$SubjectID))
+                subjectData$SS_NID = vector('numeric', length(subjectDatasubjectData$SubjectID))
                 for (i in 1:length(subjectData$SubjectID)){
                     trials = which(subjectData$SubjectID[i] == trialData$SubjectID)
-                    subjectData$SS_NID[i] = sum((trialData$Decision - trialData$PredictedNID)**2)
+                    subjectData$SS_NID[i] = sum((trialData$Decision[trials] - trialData$PredictedNID[trials])**2)
                 }
 
                 # number of parameter divided by the number of people (i.e. number of parameters for each person)
@@ -129,16 +129,16 @@ How to Achieve this Goal
                 end
 
                 options = optimoptions('fmincon', 'Algorithm', 'interior-point');
-                result = fmincon(@(params) obj_function_nid(params, trailData, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+                result = fmincon(@(params) obj_function_nid(params, trialData, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
 
                 trialData.PredictedNID = zeros(length(trialData.SubjectID), 1);
                 for i = 1:length(trialData.IV)
                     Utility = zeros(length(Choices), 1);
                     for j = 1:length(Choices)
                         Utility(j) = utility(result(1), result(2), ...
-                            construct1(trialData.IV(i), trialData.Constant(i), Choices(j)), ...
-                            construct2(trialData.IV(i), trialData.Constant(i), Choices(j)), ...
-                            construct3(trialData.IV(i), trialData.Constant(i), Choices(j)));
+                                             construct1(trialData.IV(i), trialData.Constant(i), Choices(j)), ...
+                                             construct2(trialData.IV(i), trialData.Constant(i), Choices(j)), ...
+                                             construct3(trialData.IV(i), trialData.Constant(i), Choices(j)));
                     end
                     [~, idx] = max(Utility);
                     trialData.PredictedNID(i) = Choices(idx);
@@ -186,16 +186,16 @@ How to Achieve this Goal
                     elif method == 'MLE':
                         return -1 * np.sum(np.log(norm.pdf(observed_utility, loc=predicted_utility, scale=sd)))
 
-                result = minimize(lambda params: obj_function_nid(params, trailData, 'OLS'), initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
+                result = minimize(lambda params: obj_function_nid(params, trialData, 'OLS'), initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
 
                 trialData['PredictedNID'] = np.zeros(len(trialData['SubjectID']))
                 for i in range(len(trialData['IV'])):
                     Utility = np.zeros(len(Choices))
                     for j in range(len(Choices)):
                         Utility[j] = utility(result.x[0], result.x[1],
-                                            construct1(trialData['IV'].iloc[i], trialData['Constant'].iloc[i], Choices[j]),
-                                            construct2(trialData['IV'].iloc[i], trialData['Constant'].iloc[i], Choices[j]),
-                                            construct3(trialData['IV'].iloc[i], trialData['Constant'].iloc[i], Choices[j]))
+                                             construct1(trialData['IV'].iloc[i], trialData['Constant'].iloc[i], Choices[j]),
+                                             construct2(trialData['IV'].iloc[i], trialData['Constant'].iloc[i], Choices[j]),
+                                             construct3(trialData['IV'].iloc[i], trialData['Constant'].iloc[i], Choices[j]))
                     trialData['PredictedNID'].iloc[i] = Choices[np.argmax(Utility)]
 
                 subjectData['SS_NID'] = np.zeros(len(subjectData['SubjectID']))
@@ -220,6 +220,56 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         .. tab-item:: R
 
             ::
+
+                result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                    lb = lower_bounds, ub = upper_bounds,
+                    df = trialData)
+
+                trialData$PredictedNID = vector('numeric', length(trialData$Subject))
+                for (i in 1:length(trialData$Subject)){
+                    if (trialData$Investment[i] > 10) {
+                        Choices = seq(0, (trialData$Investment[i] * trialData$Multiplier[i]), round((trialData$Investment[i]*trialData$Multiplier[i])/10))
+                    } else {
+                        Choices = seq(0, (trialData$Investment[i] * trialData$Multiplier[i]), 1)
+                    }
+                    Utility = vector('numeric', length(Choices))
+                    for (n in 1:length(Choices)){
+                        Utility[n] = utility(theta = result$par[1],
+                                            phi = result$par[2],
+                                            payout = payout_maximization(trialData$Investment[i], trialData$Multiplier[i], Choices[n]),
+                                            guilt = guilt(trialData$Investment[i], believed_multiplier = 4, Choices[n], trialData$Multiplier[i]),
+                                            inequity = inequity(trialData$Investment[i], trialData$Multiplier[i], Choices[n], endowment = 10))
+                    }
+                trialData$PredictedNID[i] = Choices[which(Utility == max(Utility))]
+                }
+                subjectData$SS_NID = vector('numeric', length(subjectData$SubjectID))
+                
+                for (i in 1:length(subjectData$SubjectID)){
+                    trials = which(subjectData$SubjectID[i] == trialData$Subject)
+                    subjectData$SS_NID[i] = sum((as.numeric(trialData$Returned[trials]) - trialData$PredictedNID[trials])**2)
+                }
+
+                # number of parameter divided by the number of people (i.e. number of parameters for each person)
+                subjectData$AIC_NID = length(df$Investment) * log(subjectData$SS_NID/length(df$Investment)) + 2 * (2/length(subjectData$SubjectID))
+
+                t.test(subjectData$modelAIC, subjectData$AIC_NID, paired = T)
+
+                summary(lm(data = trialData, Returned ~ PredictedNID))
+
+                aic_id = c(mean(subjectData$modelAIC), mean(subjectData$AIC_NID))
+
+                qplot(y = aic_id,
+                      x = as.factor(c('Individual Differences', 'No Individual Differences')), 
+                      fill = as.factor(c('Individual Differences', 'No Individual Differences')),
+                      color = '',
+                      geom = 'col') + 
+                    labs(x = 'Model', y = 'AIC', fill = NULL) + lims(y = c(-5, 155)) +
+                    theme_minimal() + 
+                    geom_signif(comparisons = list(c('Individual Differences', 'No Individual Differences')), y_position = 135, textsize = 0, tip_length = 0.15)+
+                    annotate("text", x = 1.5, y = 135, 
+                            label = "p = 0.18", vjust = -1, size = 4) + 
+                    scale_fill_manual(values = c(rgb(218, 165, 32, maxColorValue = 255), rgb(132.5, 132.5, 132.5, maxColorValue = 255))) + 
+                    scale_color_manual(values = c(rgb(0, 0, 0, maxColorValue = 255)))
 
         .. tab-item:: MatLab
 

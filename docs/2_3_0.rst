@@ -306,10 +306,9 @@ How to Achieve this Goal
                         model_NLL_Alt2 = -2 * log(sum(dnorm(df$Decision, mean = df$PredictionAlt2)))
                         model_SS_Alt2 = sum((df$Decision - df$PredictionAlt2)**2)
 
-                        altSubjectData[i, ] = c(included_subjects[i], result_alt2$par[1], model_NLL_Alt1, model_SS_Alt1, model_NLL_Alt2, model_SS_Alt2) 
-                        #add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
+                        altSubjectData[i, 1:6] = c(included_subjects[i], result_alt2$par[1], model_NLL_Alt1, model_SS_Alt1, model_NLL_Alt2, model_SS_Alt2) 
                     }
-                    colnames(subjectData) = c('SubjectID', 'Parameter1_Alt2', 'alt1_modelNLL', 'alt1_modelSS', 'alt2_modelNLL', 'alt2_modelSS')
+                    colnames(altSubjectData) = c('SubjectID', 'Parameter1_Alt2', 'alt1_modelNLL', 'alt1_modelSS', 'alt2_modelNLL', 'alt2_modelSS')
 
             .. tab-item:: MatLab
 
@@ -351,11 +350,10 @@ How to Achieve this Goal
                         model_NLL_Alt2 = -2 * sum(log(normpdf(df.Decisions, df.PredictionAlt2)));
                         model_SS_Alt2 = sum((df.Decisions - df.PredictionAlt2).^2);
 
-                        altSubjectData(i, :) = [included_subjects{i}, result_alt2(1), model_NLL_Alt1, model_SS_Alt1, model_NLL_Alt2, model_SS_Alt2];
-                        % add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
+                        altSubjectData(i, 1:6) = [included_subjects{i}, result_alt2(1), model_NLL_Alt1, model_SS_Alt1, model_NLL_Alt2, model_SS_Alt2];
                     end
 
-                    subjectData.Properties.VariableNames = {'SubjectID', 'Parameter1_Alt2', 'alt1_modelNLL', 'alt1_modelSS', 'alt2_modelNLL', 'alt2_modelSS'};
+                    altSubjectData.Properties.VariableNames = {'SubjectID', 'Parameter1_Alt2', 'alt1_modelNLL', 'alt1_modelSS', 'alt2_modelNLL', 'alt2_modelSS'};
 
 
             .. tab-item:: Python
@@ -395,10 +393,9 @@ How to Achieve this Goal
                         model_NLL_Alt2 = -2 * np.sum(np.log(np.random.normal(df['Decisions'], df['PredictionAlt2'])))
                         model_SS_Alt2 = np.sum((df['Decisions'] - df['PredictionAlt2'])**2)
 
-                        altSubjectData[i, :] = [included_subjects[i], result_alt2.x[0], model_NLL_Alt1, model_SS_Alt1, model_NLL_Alt2, model_SS_Alt2]
-                        # add any additional subject-level variables; if we have a priori clusters, you can include the strategy like we've done here
+                        altSubjectData[i, 1:6] = [included_subjects[i], result_alt2.x[0], model_NLL_Alt1, model_SS_Alt1, model_NLL_Alt2, model_SS_Alt2]
 
-                    subjectData.columns = ['SubjectID', 'Parameter1_Alt2', 'alt1_modelNLL', 'alt1_modelSS', 'alt2_modelNLL', 'alt2_modelSS']
+                    altSubjectData.columns = ['SubjectID', 'Parameter1_Alt2', 'alt1_modelNLL', 'alt1_modelSS', 'alt2_modelNLL', 'alt2_modelSS']
 
 
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`, for Each Alternative Model
@@ -450,8 +447,8 @@ How to Achieve this Goal
 
             :: 
 
-                excluded = which(is.inf(subjectData$modelAIC) | is.inf(altSubjectData$modelAlt1AIC) | is.inf(altSubjectData$modelAlt2AIC))
-                averageAIC = (mean(subjectData$modelAIC[-excluded]), mean(altSubjectData$modelAlt1AIC[-excluded]), mean(altSubjectData$modelAlt2AIC[-excluded]))
+                excluded = which(is.infinite(subjectData$modelAIC) | is.infinite(altSubjectData$modelAlt1AIC) | is.infinite(altSubjectData$modelAlt2AIC))
+                averageAIC = c(mean(subjectData$modelAIC[-excluded]), mean(altSubjectData$modelAlt1AIC[-excluded]), mean(altSubjectData$modelAlt2AIC[-excluded]))
                 fullAIC = length(trialData$SubjectID) * log(sum(subjectData$modelSS)/length(trialData$SubjectID)) + (2 * k * length(subjectData$SubjectID))
                 fullAICAlt1 = length(trialData$SubjectID) * log(sum(altSubjectData$modelAlt1SS)/length(trialData$SubjectID)) + (2 * 0 * length(subjectData$SubjectID))
                 fullAICAlt2 = length(trialData$SubjectID) * log(sum(altSubjectData$modelAlt2SS)/length(trialData$SubjectID)) + (2 * 0 * length(subjectData$SubjectID))
@@ -503,6 +500,16 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                utility_greed = function(greed){
+                    return(greed)
+                }
+                utility_guilt = function(theta, greed, guilt){
+                    return(theta * greed - (1 - theta) * guilt)
+                }
+                utility_inequity = function(theta, greed, inequity){
+                    return(theta * greed - (1 - theta) * inequity)
+                }
+
         .. tab-item:: MatLab
 
             ::
@@ -517,6 +524,65 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         .. tab-item:: R
 
             ::
+
+                obj_function_guilt = function(params, df, method = "OLS") {
+                    Theta = params[1]
+                    
+                    predicted_utility = vector('numeric', length(df[,1]))
+                    observed_utility = vector('numeric', length(df[,1]))
+                    chosen = as.numeric(df[,4]) + 1
+                    for (k in 1:length(df[,1])){
+                        I = df[k, 2]
+                        M = df[k, 3]
+                        B = 4
+                        E = 10
+                        if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+                        
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                        Utility[n] = utility_guilt(theta = Theta, 
+                                                    greed = payout_maximization(I, M, Choices[n]), 
+                                                    guilt = guilt(I, B, Choices[n], M))
+                        }
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[chosen[k]]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                } 
+                obj_function_inequity = function(params, df, method = "OLS") {
+                    Theta = params[1]
+                    
+                    predicted_utility = vector('numeric', length(df[,1]))
+                    observed_utility = vector('numeric', length(df[,1]))
+                    chosen = as.numeric(df[,4]) + 1
+                    for (k in 1:length(df[,1])){
+                        I = df[k, 2]
+                        M = df[k, 3]
+                        B = 4
+                        E = 10
+                        if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+                        
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                        Utility[n] = utility_inequity(theta = Theta, 
+                                                        greed = payout_maximization(I, M, Choices[n]), 
+                                                        inequity = inequity(I, M, Choices[n], E))
+                        }
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[chosen[k]]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                } 
+
+                altSubjectData = data.frame()
 
         .. tab-item:: MatLab
 
@@ -533,6 +599,16 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                for (i in 1:length(included_subjects)){
+                    df = trialData[which(included_subjects[i] == trialData$Subject), ]
+  
+                    result_guilt = optim(fn = obj_function_guilt, par = 0.5, lower = 0, upper = 1, df = df, method = 'L-BFGS-B')
+                    result_inequity = optim(fn = obj_function_inequity, par = 0.5, lower = 0, upper = 1, df = df, method = 'L-BFGS-B')
+
+                    #Determine Model Predictions using result_guilt$pars and result_inequity$pars
+
+                }
+
         .. tab-item:: MatLab
 
             ::
@@ -547,6 +623,65 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         .. tab-item:: R
 
             ::
+
+                for (i in 1:length(included_subjects)){
+                    df = trialData[which(included_subjects[i] == trialData$Subject), ]
+  
+                    result_guilt = optim(fn = obj_function_guilt, par = 0.5, lower = 0, upper = 1, df = df, method = 'L-BFGS-B')
+                    result_inequity = optim(fn = obj_function_inequity, par = 0.5, lower = 0, upper = 1, df = df, method = 'L-BFGS-B')
+
+                    #Just Added
+
+                    df$PredictionGreed = vector('numeric', length(df$Subject))
+                    df$PredictionGuilt = df$PredictionAlt1
+                    df$PredictionInequity = df$PredictionAlt1
+                    for (k in 1:length(df$Returned)){
+                        I = df$Investment[k]
+                        M = df$Multiplier[k]
+                        R = df$Returned[k]
+                        B = 4
+                        E = 10
+                        if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+                        UtilityGreed = vector('numeric', length(Choices))
+                        UtilityGuilt = vector('numeric', length(Choices))
+                        UtilityInequity = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                            UtilityGreed[n] = utility_greed(greed = payout_maximization(I, M, Choices[n]))
+                            UtilityGuilt[n] = utility_guilt(theta = result_guilt$par[1],
+                                                            greed = payout_maximization(I, M, Choices[n]),
+                                                            guilt = guilt(I, B, Choices[n], M))
+                            UtilityInequity[n] = utility_inequity(theta = result_guilt$par[1],
+                                                                greed = payout_maximization(I, M, Choices[n]),
+                                                                inequity = inequity(I, M, Choices[n], E))
+                        }
+                        correct_choice_greed = which(UtilityGreed == max(UtilityGreed))
+                        correct_choice_guilt = which(UtilityGuilt == max(UtilityGuilt))
+                        correct_choice_inequity = which(UtilityInequity == max(UtilityInequity))
+                        if (length(correct_choice_greed) > 1){
+                            correct_choice_greed = correct_choice_greed[sample(correct_choice_greed, 1)]
+                        }
+                        if (length(correct_choice_guilt) > 1){
+                            correct_choice_guilt = correct_choice_guilt[sample(correct_choice_guilt, 1)]
+                        }
+                        if (length(correct_choice_inequity) > 1){
+                            correct_choice_inequity = correct_choice_inequity[sample(correct_choice_inequity, 1)]
+                        }
+                        df$PredictionGreed[k] = Choices[correct_choice_greed]
+                        df$PredictionGuilt[k] = Choices[correct_choice_guilt]
+                        df$PredictionInequity[k] = Choices[correct_choice_inequity]
+                    }
+  
+                    model_NLL_Greed = -2 * log(sum(dnorm(as.numeric(df$Returned), mean = df$PredictionGreed)))
+                    model_SS_Greed = sum((as.numeric(df$Returned) - df$PredictionGreed)**2)
+                    model_NLL_Guilt = -2 * log(sum(dnorm(as.numeric(df$Returned), mean = df$PredictionGuilt)))
+                    model_SS_Guilt = sum((as.numeric(df$Returned) - df$PredictionGuilt)**2)
+                    model_NLL_Inequity = -2 * log(sum(dnorm(as.numeric(df$Returned), mean = df$PredictionInequity)))
+                    model_SS_Inequity = sum((as.numeric(df$Returned) - df$PredictionInequity)**2)
+                    
+                    altSubjectData[i, 1:9] = c(included_subjects[i], result_guilt$par[1], result_inequity$par[1], model_NLL_Greed, model_SS_Greed, model_NLL_Guilt, model_SS_Guilt, model_NLL_Inequity, model_SS_Inequity)
+                }
+                colnames(altSubjectData) = c('SubjectID', 'guilt_theta', 'inequity_theta', 'greed_modelNLL', 'greed_modelSS', 'guilt_modelNLL', 'guilt_modelSS', 'inequity_ModelNLL', 'inequity_ModelSS')
+
 
         .. tab-item:: MatLab
 
@@ -563,6 +698,10 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                altSubjectData$modelAICGreed = N * log(altSubjectData$greed_modelSS/N) + 2*0
+                altSubjectData$modelAICGuilt = N * log(altSubjectData$guilt_modelSS/N) + 2*1
+                altSubjectData$modelAICInequity = N * log(altSubjectData$inequity_ModelSS/N) + 2*1
+
         .. tab-item:: MatLab
 
             ::
@@ -577,6 +716,16 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         .. tab-item:: R
 
             ::
+
+                #subjects excluded from analyses not included in dataset
+                averageAIC = c(mean(subjectData$modelAIC), mean(altSubjectData$modelAICGreed), mean(altSubjectData$modelAICGuilt), mean(altSubjectData$modelAICInequity))
+                fullAIC = length(trialData$Subject) * log(sum(subjectData$modelSS)/length(trialData$Subject)) + (2 * k * length(subjectData$Subject))
+                fullAICGreed = length(trialData$Subject) * log(sum(altSubjectData$greed_modelSS)/length(trialData$Subject)) + (2 * 0 * length(subjectData$Subject))
+                fullAICGuilt = length(trialData$Subject) * log(sum(altSubjectData$guilt_modelSS)/length(trialData$Subject)) + (2 * 1 * length(subjectData$Subject))
+                fullAICInequity = length(trialData$Subject) * log(sum(altSubjectData$inequity_ModelSS)/length(trialData$Subject)) + (2 * 1 * length(subjectData$Subject))
+
+                bestModel = c("Moral Strategies Model", "Greed Model", "Guilt Model", "Inequity Model")[which(averageAIC == min(averageAIC))] #best model based on average performance per subject
+                bestModelFullDataset = c("Moral Strategies Model", "Greed Model", "Guilt Model", "Inequity Model")[which(c(fullAIC, fullAICGreed, fullAICGuilt, fullAICInequity) == min(c(fullAIC, fullAICGreed, fullAICGuilt, fullAICInequity)))] #best model based on all data observations
 
         .. tab-item:: MatLab
 

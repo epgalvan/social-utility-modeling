@@ -440,7 +440,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 phi_true = rep(seq(-0.1, 0.1, 0.02), times = 11)
 
                 for (i in 1:length(theta_true)) {
-                    this_idx = which(theta_true[i] == freeParameters$theta & phi_true[i] == freeParameters$phi)                
+                    this_idx = which(round(theta_true[i] * 2, 2)/2 == round(freeParameters$theta * 2, 2)/2 & round(phi_true[i] * 5, 2)/5 == round(freeParameters$phi * 5, 2)) #R is sometimes finnicky about dealing with numbers to different decimal places           
                     result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                         lb = lower_bounds, ub = upper_bounds,
                                         decisions = as.numeric(predictions[this_idx,]))

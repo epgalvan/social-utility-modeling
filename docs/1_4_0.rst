@@ -238,7 +238,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 ::
 
                     inequity = function(investment, multiplier, returned, endowment){
-                        return(((investment * multiplier - returned)/(investment * multiplier - endowment - investment))**2)
+                        return((((investment * multiplier - returned)/(investment * multiplier + endowment - investment)) - 0.5)**2)
                     }
 
             .. tab-item:: MatLab
@@ -246,7 +246,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 ::
 
                     function value = inequity(investment, multiplier, returned, endowment)
-                        value = ((investment * multiplier - returned)/(investment * multiplier - endowment - investment))^2;
+                        value = (((investment * multiplier - returned)/(investment * multiplier + endowment - investment)) - 0.5)^2;
                     end
 
 
@@ -255,7 +255,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 :: 
                     
                     def inequity(investment, multiplier, returned, endowment):
-                        return(((investment * multiplier - returned)/(investment * multiplier - endowment - investment))**2)
+                        return((((investment * multiplier - returned)/(investment * multiplier + endowment - investment)) - 0.5)**2)
                 
     .. dropdown:: Guilt Aversion
 

@@ -95,6 +95,30 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                t.test(subjectData$modelAIC, altSubjectData$modelAICGreed, paired = T) #negative mean difference/t value means that first term is lower than second term and lower MFI is better
+                t.test(subjectData$modelAIC, altSubjectData$modelAICGuilt, paired = T)
+                t.test(subjectData$modelAIC, altSubjectData$modelAICInequity, paired = T)
+
+                library(ggsignif)
+                aic = c(mean(subjectData$modelAIC), mean(altSubjectData$modelAICGreed), mean(altSubjectData$modelAICGuilt), mean(altSubjectData$modelAICInequity))
+                qplot(y = aic,
+                    x = as.factor(c('Moral Strategies Model', 'Greed Model', 'Guilt Model', 'Inequity Model')), 
+                    fill = as.factor(c('Moral Strategies Model', 'Greed Model', 'Guilt Model', 'Inequity Model')), 
+                    color = '',
+                    geom = 'col') + 
+                    labs(x = 'Model', y = 'AIC', fill = NULL, color = NULL) + 
+                    theme_minimal() + scale_color_manual(values = c(rgb(0, 0, 0, maxColorValue = 255))) + 
+                    scale_fill_manual(values = c(rgb(132.5, 132.5, 132.5, maxColorValue = 255), 
+                                                rgb(132.5, 132.5, 132.5, maxColorValue = 255), 
+                                                rgb(132.5, 132.5, 132.5, maxColorValue = 255), 
+                                                rgb(218, 165, 32, maxColorValue = 255))) + 
+                    geom_signif(comparisons = list(c('Moral Strategies Model', 'Greed Model')), y = 341, textsize = 0)+
+                    geom_signif(comparisons = list(c('Moral Strategies Model', 'Guilt Model')), y = 328, textsize = 0)+
+                    geom_signif(comparisons = list(c('Moral Strategies Model', 'Inequity Model')), y = 315, textsize = 0) +
+                    annotate("text", x = 2.5, label = "***", y = 358, size = 4)+ # 3 for p < 0.001, 2 for p < 0.01, 1 for p < 0.05 usually
+                    annotate("text", x = 3, label = "***", y = 345, size = 4)+
+                    annotate("text", x = 3.5, label = "***", y = 332, size = 4)
+
         .. tab-item:: MatLab
 
             ::
