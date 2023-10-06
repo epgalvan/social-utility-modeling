@@ -31,12 +31,5 @@ templates_path = ['_templates']
 
 html_theme = 'sphinx_rtd_theme'
 
-html_context = {
-    'css_files': [
-        'https://media.readthedocs.org/css/sphinx_rtd_theme.css',
-        'https://media.readthedocs.org/css/readthedocs-doc-embed.css',
-    ],
-}
-
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
