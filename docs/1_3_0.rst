@@ -68,12 +68,12 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
     Dimensions:
 
-    * :bdg-success:`D1` - ranges from prosociality (low) to greed (high)
-    * :bdg-success:`D2` - ranges from acting based on perceived fairness (low) to objective fairness (high)
+    * :bdg-success-line:`D1` - ranges from prosociality (low) to greed (high)
+    * :bdg-success-line:`D2` - ranges from acting based on perceived fairness (low) to objective fairness (high)
 
-    In our lab, to keep things simple we always refer to :bdg-success:`D1` as Θ (Theta) and we associate low values with prosocial preferences and associate high values with selfish preferences. 
+    In our lab, to keep things simple we always refer to :bdg-success-line:`D1` as Θ (Theta) and we associate low values with prosocial preferences and associate high values with selfish preferences. 
 
-    We also always refer to :bdg-success:`D2` as Φ (Phi) and we select which social norm it will refer to on an arbitrary basis. 
+    We also always refer to :bdg-success-line:`D2` as Φ (Phi) and we select which social norm it will refer to on an arbitrary basis. 
 
     .. figure:: dimension_hmtg.png
         :figwidth: 100%
@@ -84,11 +84,29 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Identify Motives Per Hypothesis
 
+    1. Payout-Maximization - a desire to obtain money (or an aversion to losing money)
+    2. Equality-seeking - a desire for everyone to have the same amount (or an aversion to people having different amounts)
+    3. Equity-seeking - a desire to preserve the preexisting distribution of resources (or an aversion to changing this distribution)
+
 .. dropdown:: Identify Behavioral Patterns Predicted by Each Hypothesis
+
+    1. Payout-Maximization - people redistribute as a means by which to get as much money as possible
+    2. Equality-seeking - people redistribute to ensure everyone has the same amount
+    3. Equity-seeking - people redistribute to ensure that everyone has what they were initially allocated
 
 .. dropdown:: Explain How Other Behaviors Prevent Preferences From Being Met
 
-.. dropdown:: Identify Dimenions of Differences Between People    
+    1. Payout-Maximization - not redistributing in order to receive as much money as one possibly can does not maximize one's payoff
+    2. Equality-seeking - not redistributing as much as possible prevents everyone from having the same amount
+    3. Equity-seeking - redistributing takes money away from people who deserve to keep it
+
+.. dropdown:: Identify Dimenions of Differences Between People   
+
+    * :bdg-success-line:`D1` - ranges from prosociality (low) to greed (high)
+    * :bdg-success-line:`D2` - ranges from equity (low) to equality (high)
+
+    So *Payout-Maximizers* are characterized at all high values of :bdg-success-line:`D1` while *Equity-seekers* and *Equality-seekers* are characterized at low values of :bdg-success-line:`D1`.
+    Meanwhile *Equity-seekers* and *Equality-seekers* are differentiated by :bdg-success-line:`D2`
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

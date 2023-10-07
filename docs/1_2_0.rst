@@ -121,11 +121,64 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Generate Hypotheses
 
+    We think that there are three norms which characterize how benefit from redistribution can (or not) play a role in redistribution decisions. 
+    The first would be principled support for redistribution - irrespective of whether you gain or lose from redistribution you support it.
+
+    1. Equality-seeking
+
+    Next would be the inverse, or principled opposition to redistribution - irrespective of whether you gain or lose from redistribution you oppose it.
+
+    2. Equity-seeking
+
+    Last would be self-interest - you support redistribution when it benefits you and oppose it when you lose from it.
+
+    3. Payout-Maximization
+
+    These are 3 explanations and there is a possibility of a fourth wherein one opposes redistribution when it benefits them and supports it when it hurts them. 
+    However, let's exclude this for now: previous research gives us no reason to think that people would do this. 
+    We'll keep this fourth norm in mind in the event that we find ourselves missing explanatory power.
+
 .. dropdown:: Create a Task
+
+    We are looking a (re-)distributive norms so we should start from a task that is used to study the distribution of resources: the Dictator Game. 
+    However, in the standard Dictator Game, the Dictator makes a distribution decision, not a redistribution decision. 
+    So, we need to manipulate the task so the resources are already distributed and the Dictator has to change this redistribution. 
+    Also, we have aspirations to study societal redistribution, not interpersonal redistribution: thus, the 2 player design of the Dictator Game is inappropriate and we should have more people. 
+    
+    In order rectify both of these shortcomings, we'll propose the Redistribution Game. 
+    The Redistribution Game will be played by 10 people, with 100 tokens distributed between these people. 
+    The Dictator will get the chance to redistribute this money: now, we need to determine how to do this. 
+    Either the Dictator can move money between players directly or the Dictator can apply something which resembles a uniform tax rate to determine redistribution. 
+    The second option is much simpler for Dictators to do, so let's go with that - nice, our task is designed! 
+    So we've checked the ``Identify a psychologically relevant task`` box.
+    So, working under this logic, we should now identify if any of our plausible answers predict the same behavior in the Redistribution Game.
+
+    The answer for *Equity-seeking* and *Equality-seeking* is clearly yes: both norms indicate that you should select a certain tax rate (0% or 100%). 
+    So what about *Payout-Maximization*? 
+    This is a bit trickier - we have to ensure that Dictator's economic status changes across :bdg-primary:`Trials` - in some trials they have to stand to benefit and in others they have to stand to lose. 
+    So, we'll design our :bdg-primary:`Trial Set` around this - since the number of tokens is always 100, we'll give the :bdg-success:`Subject` a different number of tokens each time. 
+    So we've checked the ``Hypothesized accounts produce distinct patterns of behavior`` box.
+    
+    Here, we're going to have to be careful to ensure that our :bdg-primary:`Trial Set` doesn't tip :bdg-success:`Subjects` off - there should be a lot of ways that 100 tokens can be divided between 10 people. 
+    Thus, if there are always the same number of tokens allocated to each other player, our task won't be believable. 
+    We'll keep that in mind for later.
 
 .. dropdown:: Identify Unintended Behavioral Patterns
 
+    Couldn't identify any unintended behavior.
+
 .. dropdown:: Design the Experiment
+
+    We'll want a within-subjects design. 
+
+    What about manipulations? 
+    Well, previous research suggests that the (perceived) cause of inequality is really a powerful factor in determining redistribution preferences. 
+    So, if we allocate the 100 tokens based on different attributes, we can study this! 
+    Let's do that - we'll study how redistributive preferences change across :bdg-primary:`Conditions` as well, where these are the cause of inequality. 
+    Our causes of inequality will be merit (earned advantages), entitlement (unearned advantages), corruption (stolen advantages), and luck. 
+    These should be manipulated within-subjects as well. 
+
+    We'll do 20 trials per :bdg-primary:`Condition`, following the lead of tutorial 1.
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

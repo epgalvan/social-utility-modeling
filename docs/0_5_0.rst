@@ -33,7 +33,3 @@ I would really discourage you from doing all the tutorials at once - on your fir
 
 If you are selecting a tutorial and don't have a preference based on the description above, I recommend doing the first tutorial to start out. 
 I learned how to do computational modeling using this dataset myself and I think it's a really nice, intuitive exemplar that should be pretty easy to follow and latch your knowledge onto. 
-
-If you are going to be creating your own model rather than using an existing model, I would recommend doing my paper (tutorial 2) on your second go-around. 
-Since I created the model, experiment, and trialset myself (rather recently), this tutorial is less straightforward: it takes you through the process of making improvements in the Before Data Collection stages. 
-Thus, you can get some insight into how to handle roadblocks along the way. 

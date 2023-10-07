@@ -345,23 +345,133 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Create `Construct Value` Functions
 
-    .. tab-set::
+    .. dropdown:: Outcome under Tax rate
 
-        .. tab-item:: R
+        As you may have noticed, our conceptions of redistribution preferences treats redistribution itself (i.e. the selected tax rate) as a *means* by which people achieve certain outcomes - maximizing payout, producing equality, or producing equity. 
+        Thus, we need to write a function called new_value which computes each person's outcome under a given tax rate, given their :bdg-primary-line:`Initial Allocation`.
 
-            ::
+        .. tab-set::
 
-        .. tab-item:: MatLab
+            .. tab-item:: Plain English
 
-            ::
+                First, we take this player's :bdg-primary-line:`Initial Allocation` and we subtract it from the amount that they lose to taxation under a given :bdg-danger-line:`Tax Rate`. 
+                Then, we add this to what they receive as a redistributed amount under a given :bdg-danger-line:`Tax Rate` - this is their :bdg-danger-line:`Outcome`. 
+                What they receive as a redistributed amount under a given :bdg-danger-line:`Tax Rate` is the :bdg-danger-line:`Tax Rate` times the :bdg-primary-line:`Number of Tokens in Game`, divided by the :bdg-primary-line:`Number of Players in Game`.
+                The :bdg-primary-line:`Number of Tokens in Game` is a constant (100) as is the :bdg-primary-line:`Number of Players in Game` (10).
+                And, since we are only dealing in whole tokens, we need to round this number to the nearest integer.
 
-        .. tab-item:: Python
+            .. tab-item:: R
 
-            ::
+                ::
+
+                    new_value = function(initial_allocation, tax_rate_decimal, number_tokens_game = 100, number_players_game = 10){
+                        return(round(initial_allocation - (tax_rate_decimal * initial_allocation) + ((number_tokens_game * tax_rate_decimal)/(number_players_game))))
+                    }
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+
+                ::
+
+    .. dropdown:: Payout-Maximization
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                The extent to which one has engaged in :bdg-secondary-line:`Payout-Maximization` can be expressed as the proportion of how much they decided to keep for themselves out of how much they *could* have kept for themselves. 
+                We'll take, as an argument, the potential outcomes for oneself for all possible :bdg-danger-line:`Tax Rates`.
+
+            .. tab-item:: R
+
+                ::
+
+                    payout_maximization = function(chosen_outcome_self, possible_outcomes_self){
+                        return(chosen_outcome_self/max(possible_outcomes_self))
+                    }
+
+            .. tab-item:: MatLab
+
+                ::                 
+
+
+            .. tab-item:: Python
+
+                :: 
+                    
+
+    .. dropdown:: Equality-Seeking
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                The extent to which people have engaged in :bdg-secondary-line:`Equality-seeking` is the extent to which they have redistributed with a tax rate of 100%. 
+                However, focusing on :bdg-danger-line:`Outcomes` for all players, it is characterized as the extent to which one has minimized inequality for all players. 
+                Thus, :bdg-primary-line:`Perfect Equality Outcomes` would be where all players had the same amount - i.e. the :bdg-primary-line:`Number of Tokens in Game` (100) divided by the :bdg-primary-line:`Number of Players in Game` (10). 
+                Consequently, produced inequality is formulated as the sum of squared errors between :bdg-danger-line:`Chosen Outcomes` and :bdg-primary-line:`Perfect Equality Outcomes` divded by 
+                the sum of squared errors between :bdg-primary-line:`Perfect Inequality Outcomes` and :bdg-danger-line:`Perfect Equity Outcomes`. 
+                Then, we conceive of produced equality as the inverse of produced inequality: if produced inequality is 1 (i.e. the highest possible value) then produced equality is 0 
+                while if produced inequality is 0 (i.e. the lowest possible value) then produced equality is 1 (the highest possible value).
+
+            .. tab-item:: R
+
+                ::
+
+                    equality = function(chosen_outcomes_all, intial_allocations_all, perfect_equality = 100/10){
+                        return((1 - sum((chosen_outcomes_all - perfect_equality)**2)/sum((intial_allocations_all - perfect_equality)**2)))
+                    }
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+
+                :: 
+                    
+    .. dropdown:: Equity-Seeking
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                The extent to which people have engaged in :bdg-secondary-line:`Equity-seeking` is the extent to which they have not redistributed. 
+                However, focusing on :bdg-danger-line:`Outcomes` for all players, it is characterized as the extent to which one has minimized inequity for all players. 
+                Thus, :bdg-primary-line:`Perfect Equality Outcomes` is equivalent to :bdg-primary-line:`Perfect Inequity Outcomes` would be where all players had the same amount - i.e. the :bdg-primary-line:`Number of Tokens in Game` (100) divided by the :bdg-primary-line:`Number of Players in Game` (10). 
+                Consequently, produced inequality is formulated as the sum of squared errors between :bdg-danger-line:`Outcomes` and :bdg-primary-line:`Perfect Equity` (i.e. :bdg-primary-line:`Initial Allocations`) divded by 
+                the sum of squared errors between :bdg-primary-line:`Perfect Equity` and the :bdg-primary-line:`Perfect Inequity`. 
+                Then, we conceive of produced equity as the inverse of produced inequity: if produced inequity is 1 (i.e. the highest possible value) then produced equity is 0 
+                while if produced inequity is 0 (i.e. the lowest possible value) then produced equity is 1 (the highest possible value).
+
+            .. tab-item:: R
+
+                ::
+
+                    equity = function(chosen_outcomes_all, intial_allocations_all, perfect_inequity = 100/10){
+                        return((1 - sum((chosen_outcomes_all - intial_allocations_all)**2)/sum((perfect_equality - intial_allocations_all)**2)))
+                    }
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+
+                :: 
 
 .. dropdown:: Identify Relevant :bdg-success:`Free Parameters` for each :bdg-secondary:`Construct Value`
 
+    1. :bdg-secondary-line:`Payout-Maximization` - :bdg-success-line:`D1`  
+    2. :bdg-secondary-line:`Equity-Seeking` - :bdg-success-line:`D1` & :bdg-success-line:`D2` 
+    3. :bdg-secondary-line:`Equality-Seeking` - :bdg-success-line:`D1` & :bdg-success-line:`D2` 
+
 .. dropdown:: Propose a :bdg-warning:`Utility` Equation
+
+    :bdg-warning:`Utility` = :bdg-secondary-line:`Payout_Maximization` × :bdg-success-line:`Θ`  + (1 - :bdg-success-line:`Θ` ) × (( :bdg-secondary-line:`Equality` +  :bdg-success-line:`Φ` ) × :bdg-secondary-line:`Equity` × ( 1 -  :bdg-success-line:`Φ` ))
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

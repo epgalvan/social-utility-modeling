@@ -49,7 +49,16 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Create a Research Question
 
+    In society, attitudes towards redistribution (taking from the rich and giving to the poor) vary and the relationship between benefit from redistribution and support for it are not consistent. 
+    We want to know why that is.
+
+    Thus, our goal is to answer the following question:
+
+    **In scenarios where resources are allocated unequally, what motivates people's decisions to either redistribute or not?**
+
 Tutorial 3 - Crockett et al., 2014
 -------------------
 
 .. dropdown:: Create a Research Question
+
+    
