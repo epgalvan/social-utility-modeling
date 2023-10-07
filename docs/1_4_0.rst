@@ -471,7 +471,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Propose a :bdg-warning:`Utility` Equation
 
-    :bdg-warning:`Utility` = :bdg-secondary-line:`Payout_Maximization` × :bdg-success-line:`Θ`  + (1 - :bdg-success-line:`Θ` ) × (( :bdg-secondary-line:`Equality` +  :bdg-success-line:`Φ` ) × :bdg-secondary-line:`Equity` × ( 1 -  :bdg-success-line:`Φ` ))
+    :bdg-warning:`Utility` = :bdg-secondary-line:`Payout_Maximization` × :bdg-success-line:`Θ`  + (1 - :bdg-success-line:`Θ` ) × (( :bdg-secondary-line:`Equality` +  :bdg-success-line:`Φ` ) + :bdg-secondary-line:`Equity` × ( 1 -  :bdg-success-line:`Φ` ))
 
 Tutorial 3 - Crockett et al., 2014
 -------------------
