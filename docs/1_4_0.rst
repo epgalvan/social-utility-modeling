@@ -345,7 +345,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Create `Construct Value` Functions
 
-    .. dropdown:: Outcome under Tax rate
+    .. Note::
 
         As you may have noticed, our conceptions of redistribution preferences treats redistribution itself (i.e. the selected tax rate) as a *means* by which people achieve certain outcomes - maximizing payout, producing equality, or producing equity. 
         Thus, we need to write a function called new_value which computes each person's outcome under a given tax rate, given their :bdg-primary-line:`Initial Allocation`.
