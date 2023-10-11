@@ -134,26 +134,25 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Select a Model Fit Index
 
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
-.. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`
+    We used the nonstandard AIC formulation for this (i.e. assuming a normal distribution of error). 
+    This was appropriate because the true data generation process for redistribution decisions might be substantially different: 
+    our model only focuses on outcomes as a consequence of redistribution, which might not be true: some people might chose redistribution rates based on a fixed number irrespective of outcomes generated. 
+    Thus, AIC is better than BIC since the true data generation process is not (believed to be) in the set of models that we are comparing.
+    
+.. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`, Per :bdg-primary:`Condition`
 
     .. tab-set::
 
         .. tab-item:: R
 
             ::
+
+                N = length(df[, 1])
+                k = 2
+                subjectData$AICMerit = N * log(subjectData$SSMerit/N) + 2*k
+                subjectData$AICEntitlement = N * log(subjectData$SSEntitlement/N) + 2*k
+                subjectData$AICCorruption = N * log(subjectData$SSCorruption/N) + 2*k
+                subjectData$AICLuck = N * log(subjectData$SSLuck/N) + 2*k
 
         .. tab-item:: MatLab
 

@@ -433,6 +433,12 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Choosing an Approach to Grouping
 
+    Our four choices are: no grouping, binning, a priori clustering, or post-hoc clustering. 
+    Since we want to study people based on the strategy that they use to make decisions and our model is not using noise parameters, let's group. 
+    The reason we don't have to include noise parameters is because we are offering several choices per trial, so a priori clustering is on the table. 
+    Binning isn't appropriate here because we're looking for 4 strategies and the cutoffs between these strategies are kind of fuzzy - we don't want to arbitrarily assign boundaries between strategies if we can avoid it. 
+    Post-hoc clustering isn't preferable when we can group a priori, so let's do that.
+
 .. dropdown:: Cluster Your Data Using HAC
 
     .. tab-set::
@@ -440,6 +446,12 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
+                distance_mat = dist(predictions, method = 'euclidean')
+                set.seed(240)
+                hierarchical = hclust(distance_mat, method = 'average')
+                plot(hierarchical)
+                fit = cutree(hierarchical, k = 4)
 
         .. tab-item:: MatLab
 
@@ -456,6 +468,14 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+                freeParameters$Strategy = as.character(fit)
+                freeParameters$Strategy[which(freeParameters$Strategy == freeParameters$Strategy[1])] = 'Equity-Seeking'
+                freeParameters$Strategy[which(freeParameters$Strategy == freeParameters$Strategy[10101])] = 'Equality-Seeking'
+                freeParameters$Strategy[which(freeParameters$Strategy != 'Equity-Seeking' & freeParameters$Strategy != 'Equality-Seeking' & freeParameters$Strategy != 'Guilt-Averse')] = 'Payout-Maximizers'; 
+                freeParameters$Strategy = as.factor(freeParameters$Strategy) #Strategy clusters
+                model_space = ggplot(data = freeParameters, aes(x = theta, y = phi, color = Strategy)) + 
+                    labs(x = 'Theta', y = 'Phi', color = 'Strategy') + geom_point(size = 2.5) + 
+                    scale_color_manual(values = c(rgb(0,130,229, maxColorValue = 255), rgb(255,25,0, maxColorValue = 255), rgb(174,0,255, maxColorValue = 255))); model_space
 
         .. tab-item:: MatLab
 
@@ -472,6 +492,24 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
+                toPlot = data.frame()
+                for (i in 1:length(freeParameters[,1])){
+                    replacement = ((i - 1) * 20 + 1):(i * 20)
+                    toPlot[replacement, 1] = freeParameters$Strategy[i]
+                    toPlot[replacement, 2] = as.numeric(trialList[, 1])
+                    toPlot[replacement, 3] = as.numeric(predictions[i, 1:20])
+                    toPlot[replacement, 4] = new_value(trialList[, 1], as.numeric(predictions[i, 1:20])) - trialList[, 1]
+                }
+                colnames(toPlot) = c('Strategy', 'Initial_Allocation', 'Tax_Rate', 'Payout_Change')
+
+                ggplot(data = toPlot, aes(x = Initial_Allocation, y = Payout_Change, group = Strategy, color = Strategy)) + geom_smooth(se = TRUE) + 
+                       scale_color_manual(values = c(rgb(0,130,229, maxColorValue = 255), rgb(255,25,0, maxColorValue = 255), rgb(174,0,255, maxColorValue = 255))) + 
+                                          lims(x = c(0, 10), y = c(0, 30)) + labs(x = 'Initial Allocation', 'Payout Change')
+
+                ggplot(data = toPlot, aes(x = Initial_Allocation, y = Tax_Rate, group = Strategy, color = Strategy)) + geom_smooth(se = TRUE) + 
+                       scale_color_manual(values = c(rgb(0,130,229, maxColorValue = 255), rgb(255,25,0, maxColorValue = 255), rgb(174,0,255, maxColorValue = 255))) + 
+                                          lims(x = c(0, 10), y = c(0, 30)) + labs(x = 'Initial Allocation', 'Tax Rate')
 
         .. tab-item:: MatLab
 

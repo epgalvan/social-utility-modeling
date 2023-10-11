@@ -746,6 +746,25 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                utilityP = function(payout){
+                    return(payout)
+                }
+                utilityL = function(equality){
+                    return(equality)
+                }
+                utilityT = function(equity){
+                    return(equity)
+                }
+                utilityPL = function(payout, equality, theta){
+                    return(theta * payout + (1 - theta) * equality)
+                }
+                utilityPT = function(payout, equity, theta){
+                    return(theta * payout + (1 - theta) * equity)
+                }
+                utilityLT = function(equity, equality, phi){
+                    return(phi * equality + (1 - phi) * equity)
+                }
+
         .. tab-item:: MatLab
 
             ::

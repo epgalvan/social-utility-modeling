@@ -70,21 +70,9 @@ How to Achieve this Goal
 
             ::
 
-                trialList = data.frame(IndependentVariable = vector(), Constant = vector())
+                trialList = data.frame(IV = vector(), Constant = vector())
 
                 # choices = vector()
-
-                construct1 = function(iv, constant, choice){
-                    return(construct_value)
-                }
-
-                construct2 = function(iv, constant, choice){
-                    return(construct_value)
-                }
-
-                construct3 = function(iv, constant, choice){
-                    return(construct_value)
-                }
 
                 utility = function(construct1, construct2, construct3, parameter1, parameter2){
                     return(utility)
@@ -477,22 +465,11 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
                 ::
 
+                    #Construct Value Formulations Above this
                     trialList = data.frame(Investment = rep(seq(1, 10, 1), times = 6),
                                            Multiplier = rep(c(2, 4, 6), each = 20),
                                            Believed_Multiplier = rep(4, 60),
                                            Endowment = rep(10, 60))
-
-                    payout_maximization = function(investment, multiplier, returned){
-                        return(((investment * multiplier) - returned)/(investment * multiplier))
-                    }
-
-                    inequity = function(investment, multiplier, returned, endowment){
-                        return((0.5-((investment * multiplier - returned)/(investment * multiplier + endowment - investment)))**2)
-                    }
-
-                    guilt = function(investment, believed_multiplier, returned, multiplier){
-                        return((((investment * believed_multiplier)/2 - returned)/(investment * multiplier))**2)
-                    }
 
                     utility = function(theta, phi, guilt, inequity, payout){
                         return(theta*payout - (1-theta)*min(guilt + phi, inequity - phi))
@@ -814,6 +791,57 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                #first, create a noisy resource distribution that has gini between 0.3 and 0.4 where the maximum benefit or loss is approximately going to be 10 tokens
+                shares = seq(0.05,0.95, 0.1)**1.25
+                df = data.frame()
+                for (k in 1:10){
+                    df[1:20, k] = rnorm(20, mean=shares[k], sd=0.01*sum(shares))
+                    df[which(df[,k] < 0),] = 0
+                }
+
+                #second, convert to a rounded percent
+                for (k in 1:length(df[,1])) {
+                    df[k,1:10] = round((df[k,1:10]/sum(df[k,1:10]))*100)
+                }
+
+                #third, ensure that there are exactly 100 tokens on each trial
+                for (k in 1:length(df[,1])) {
+                    if (sum(df[k,1:10]) < 100){
+                        for (j in 1:(100-sum(df[k,1:10]))){
+                        i = sample(1:10, 1)
+                        df[k, i] = df[k, i] + 1
+                        }
+                    } 
+                    if (sum(df[k,1:10]) > 100){
+                        for (j in 1:(sum(df[k,1:10]) - 100)){
+                        i = sample(which(df[k,1:10] > 0), 1)
+                        df[k, i] = df[k, i] - 1
+                        }
+                    }
+                }
+
+                trialList = data.frame()
+
+                #fourth, ensure that our subject is in each decile the same number of times
+                for (k in 1:length(df[,1])){
+                    i = round((k/2)+0.05) #because this function rounds down on even numbers and up on odd numbers
+                    trialList[k, 1] = df[k, i]
+                    intermediate = df[k, -i]
+                    trialList[k, 2:10] = intermediate[1,sample(9)] #to insure that other players on screen are not all 
+                }
+
+                #trialList above
+                choices = seq(0, 1, 0.1) #tax rate
+
+                utility = function(theta, phi, Equity, Equality, Payout){
+                    return((theta * Payout) + ((1 - theta) * ((phi * Equality) + ((1 - phi) * Equity))))
+                }
+
+                freeParameters = data.frame(theta = seq(0, 1, 0.01),
+                                            phi = seq(0, 1, 0.01))
+
+                predictions = data.frame()
+
         .. tab-item:: MatLab
 
             ::
@@ -829,6 +857,15 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
+                non_specific = rep(0, length(freeParameters[,1])) # Just Added This Line
+
+                for (i in 1:length(freeParameters[,1])){
+                    Theta = freeParameters[i,1]
+                    Phi = freeParameters[i,2]
+
+                    #Define Trials
+                }
 
         .. tab-item:: MatLab
 
@@ -846,6 +883,19 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                non_specific = rep(0, length(freeParameters[,1])) # Just Added This Line
+
+                for (i in 1:length(freeParameters[,1])){
+                    Theta = freeParameters[i,1]
+                    Phi = freeParameters[i,2]
+
+                    #Just Added
+                    for (k in 1:length(trialList[,1])){
+
+                        #Determine Predicted Decisions
+                    }
+                }
+
         .. tab-item:: MatLab
 
             ::
@@ -861,6 +911,31 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
+                non_specific = rep(0, length(freeParameters[,1])) # Just Added This Line
+
+                for (i in 1:length(freeParameters[,1])){
+                    Theta = freeParameters[i,1]
+                    Phi = freeParameters[i,2]
+                    for (k in 1:length(trialList[,1])){
+
+                        # Just Added
+                        Utility = vector('numeric', length(choices))
+                        for (n in 1:length(choices)){
+                            Utility[n] = utility(theta = Theta,
+                                                 phi = Phi,
+                                                 Equity = equity(new_value(trialList[k, 1:10], choices[n]), trialList[k, 1:10], choices[n]),
+                                                 Equality = equality(new_value(trialList[k, 1:10], choices[n]), trialList[k, 1:10], choices[n]),
+                                                 Payout = payout(new_value(trialList[k, 1], choices[n]), trialList[k, 1], choices[n]))
+                        }
+                        correct_choice = which(Utility == max(Utility))
+                        if (length(correct_choice) > 1){
+                            correct_choice = correct_choice[sample(correct_choice, 1)]
+                            non_specific[i] =+ 1
+                        }
+                        predictions[i,k] = Choices[correct_choice]
+                    }
+                }
 
         .. tab-item:: MatLab
 

@@ -590,6 +590,31 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                all_subjects = read.csv2('C:/Users/DELL/Downloads/prolific_export_648c19e5420c9b10a79589a4.csv', sep = ',') 
+                potentially_excluded_subjects = read.csv2('C:/Users/DELL/Downloads/prolific_export_6437e471bec005411b1503ea.csv', sep = ',')
+
+                k = 0
+                for (i in 1:length(potentially_excluded_subjects$Participant.id)){
+                    k = k + sum(potentially_excluded_subjects$Participant.id[i] == all_subjects$Participant.id)
+                }
+                actual_excluded_subjects = vector('character', k)
+                j = 0
+                for (i in 1:length(potentially_excluded_subjects$Participant.id)){
+                    if (sum(potentially_excluded_subjects$Participant.id[i] == all_subjects$Participant.id) == 1) {
+                        j = j + 1
+                        actual_excluded_subjects[j] = which(potentially_excluded_subjects$Participant.id[i] == all_subjects)
+                    }
+                }
+                included_subjects = all_subjects[-actual_excluded_subjects]
+
+                parentfolder = 'C:/Users/DELL/rdb_all_modded/' #the parentfolder where the subject folder/file is
+                restoffilepath = '.csv' #everything after the subject folder/file name
+
+                trialData = data.frame()
+                subjectData = data.frame()
+
+                conditions = c('merit', 'entitlement', 'corruption', 'luck')
+
         .. tab-item:: MatLab
 
             ::
@@ -597,13 +622,32 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: Python
 
             ::
-.. dropdown:: Define the :bdg-success:`Subject` Loop
+.. dropdown:: Define the :bdg-success:`Subject` and :bdg-primary:`Condition` Loops
 
     .. tab-set::
 
         .. tab-item:: R
 
             ::
+
+                for (i in 1:length(included_subjects)){
+                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    fullData = read.csv2(datafile)
+
+                    thetaPerCondition = vector('numeric', length(conditions))
+                    phiPerCondition = vector('numeric', length(conditions))
+                    strategyPerCondition = vector('numeric', length(conditions))
+                    SSPerCondition = vector('numeric', length(conditions))
+
+                    for (j in 1:length(conditions)){
+
+                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48), 33] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                        df$redistributionRate = df$redistributionRate/100 #converting to a decimal from a percent
+                        
+                        #Determine Free Parameters for Each Condition
+                        
+                    }
+                }
 
         .. tab-item:: MatLab
 
@@ -612,13 +656,41 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: Python
 
             ::
-.. dropdown:: Recover :bdg-success:`Free Parameters`
+.. dropdown:: Recover :bdg-success:`Free Parameters` for each :bdg-primary:`Condition`
 
     .. tab-set::
 
         .. tab-item:: R
 
             ::
+
+                for (i in 1:length(included_subjects)){
+                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    fullData = read.csv2(datafile)
+
+                    thetaPerCondition = vector('numeric', length(conditions))
+                    phiPerCondition = vector('numeric', length(conditions))
+                    strategyPerCondition = vector('numeric', length(conditions))
+                    SSPerCondition = vector('numeric', length(conditions))
+
+                    for (j in 1:length(conditions)){
+
+                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48), 33] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                        df$redistributionRate = df$redistributionRate/100 #converting to a decimal from a percent
+
+                        #Just Added
+
+                        result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                        lb = lower_bounds, ub = upper_bounds,
+                                        df = df)
+                        thetaPerCondition[j] = result$par[1]
+                        phiPerCondition[j] = result$par[2]
+                        closestPoint = which(as.numeric(freeParameters[,1]) == round(result$par[1], 2) & as.numeric(freeParameters[,2]) == round(result$par[2], 2))
+                        strategyPerCondition[j] = freeParameters$Strategy[closestPoint]
+
+                        #Determine Predictions
+                    }
+                }
 
         .. tab-item:: MatLab
 
@@ -634,6 +706,70 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
+                for (i in 1:length(included_subjects)){
+                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    fullData = read.csv2(datafile)
+
+                    thetaPerCondition = vector('numeric', length(conditions))
+                    phiPerCondition = vector('numeric', length(conditions))
+                    strategyPerCondition = vector('numeric', length(conditions))
+                    SSPerCondition = vector('numeric', length(conditions))
+
+                    for (j in 1:length(conditions)){
+
+                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48), 33] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                        df$redistributionRate = df$redistributionRate/100 #converting to a decimal from a percent
+
+                        result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                        lb = lower_bounds, ub = upper_bounds,
+                                        df = df)
+                        thetaPerCondition[j] = result$par[1]
+                        phiPerCondition[j] = result$par[2]
+                        closestPoint = which(as.numeric(freeParameters[,1]) == round(result$par[1], 2) & as.numeric(freeParameters[,2]) == round(result$par[2], 2))
+                        strategyPerCondition[j] = freeParameters$Strategy[closestPoint]
+
+                        #Just Added
+
+                        df$Prediction = vector('numeric')
+                        for (k in 1:length(df$redistributionRate)){
+                            Utility = vector('numeric', length(Choices))
+                            for (n in 1:length(Choices)){
+                                Utility[n] = utility(theta = thetaPerCondition[j],
+                                                    phi = phiPerCondition[j],
+                                                    Equity = equity(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                    Equality = equality(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                    Payout = payout(new_value(df[k, 1], choices[n]), df[k, 1], choices[n]))
+                            }
+                            correct_choice = which(Utility == max(Utility))
+                            df$predictedRR[k] = Choices[correct_choice[sample(length(correct_choice), 1)]]
+                            df$predictedOutcome[k] = new_value(df$myself[k], df$predictedRR[k])
+                            df$actualOutcome[k] = new_value(df$myself[k], df$redistributionRate[k])
+                        }
+                        SSPerCondition[j] = sum((df$predictedOutcome - df$actualOutcome)**2)
+                        fullData[which(fullData$condition == conditions[j]), 76] = df$predictedOutcome
+                        fullData[which(fullData$condition == conditions[j]), 77] = df$predictedRR
+                        fullData[which(fullData$condition == conditions[j]), 78] = df$actualOutcome
+                        fullData[which(fullData$condition == conditions[j]), 79] = freeParameters$Strategy[closestPoint]
+                    }
+
+                    subjectData[i, 1:17] = c(included_subjects[i], thetaPerCondition, phiPerCondition, strategyPerCondition, SSPerCondition)
+
+                    start = length(subjectData[, 1]) + 1
+                    end = start + length(fullData$redistributionRate)
+                    trialData[start:end, 1] = included_subjects[i]
+                    trialData[start:end, 2] = df$redistributionRate
+                    trialData[start:end, 3] = fullData[,78]
+                    trialData[start:end, 4] = fullData[,77]
+                    trialData[start:end, 5] = fullData[,76]
+                    trialData[start:end, 6] = fullData$myself
+                    trialData[start:end, 7] = fullData[, 79]
+                    trialData[start:end, 9] = rep(seq(1, 4), each = length(df$redistributionRate))
+                    trialData[start:end, 10] = seq(1, length(fullData$redistributionRate))
+                    trialData[start:end, 11] = fullData$condition
+                }
+                colnames(subjectData) = c('SubjectID', 'thetaMerit', 'thetaEntitlement', 'thetaCorruption', 'thetaLuck', 'phiMerit', 'phiEntitlement', 'phiCorruption', 'phiLuck', 'strategyMerit', 'strategyEntitlement', 'strategyCorruption', 'strategyLuck', 'SSMerit', 'SSEntitlement', 'SSCorruption', 'SSLuck')
+                colnames(trialData) = c('SubjectID', 'observedTaxRate', 'observedOutcome', 'predictedTaxRate', 'predictedOutcome', 'initialAllocation', 'strategy', 'blockNumber', 'trialNumber', 'condition')
 
         .. tab-item:: MatLab
 

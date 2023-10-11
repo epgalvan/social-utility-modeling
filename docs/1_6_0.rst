@@ -610,6 +610,33 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                obj_function = function(params, df, method = "OLS") {
+                    Theta = params[1]
+                    Phi = params[2]
+
+                    predicted_utility = vector('numeric', length(df[,1]))
+                    observed_utility = vector('numeric', length(df[,1]))
+                    choices = seq(0, 1, 0.1)
+
+                    for (k in 1:length(df[,1])){
+                        Utility = vector('numeric', length(choices))
+                        for (n in 1:length(choices)){
+                            Utility[n] = utility(theta = Theta,
+                                                 phi = Phi,
+                                                 Equity = equity(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                 Equality = equality(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                 Payout = payout(new_value(df[k, 1], choices[n]), df[k, 1], choices[n]))
+                        }
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[which(df[k, 11] == choices)]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                }
+
         .. tab-item:: MatLab
 
             ::
@@ -625,6 +652,28 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
+                library(pracma)
+
+                initial_params = c(0.5, 0.5)
+                lower_bounds = c(0, 0)
+                upper_bounds = c(1, 1)
+                theta_recovered = vector('numeric', 11**2)
+                phi_recovered = vector('numeric', 11**2)
+                theta_true = rep(seq(0, 1, 0.1), length(seq(0, 1, 0.1)))
+                phi_true = rep(seq(0, 1, 0.1), length(seq(0, 1, 0.1)))
+
+                for (i in 1:length(theta_true)) {
+                    this_idx = which(round(theta_true[i], 2) == round(freeParameters$theta, 2) & round(phi_true[i], 2) == round(freeParameters$phi, 2))
+                    trialList_this = trialList
+                    trialList$Decision = as.numeric(predictions[this_idx, 1:length(trialList[1,])])
+                    result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                        lb = lower_bounds, ub = upper_bounds,
+                                        df = trialList_this)
+
+                    parameter1_recovered[i] = result$par[1]
+                    parameter2_recovered[i] = result$par[2]
+                }
 
         .. tab-item:: MatLab
 
@@ -642,21 +691,13 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
-        .. tab-item:: MatLab
+                library(ggplot2)
 
-            ::
+                distance = (theta_recovered - theta_true)**2 + (phi_recovered - phi_true)**2
+                qplot(x = theta_true, y = phi_true, color = distance, size = distance, geom = 'point') + scale_radius(limits=c(0, sqrt(2)), range=c(0, 20))
 
-        .. tab-item:: Python
-
-            ::
-
-.. dropdown:: Fixing Nonspecific Models
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
+                distance_new = (theta_recovered - theta_true)**2 + (((phi_recovered - 0.5) * theta_recovered) - ((phi_true - 0.5) * theta_true))**2
+                qplot(x = theta_true, y = phi_true, color = distance_new, size = distance_new, geom = 'point') + scale_radius(limits=c(0, sqrt(2)), range=c(0, 20))
 
         .. tab-item:: MatLab
 
