@@ -490,10 +490,10 @@ How to Achieve this Goal
                 subjectData$Strategy_Condition3 = vector('character', length(subjectData$SubjectID))
                 subjectData$Strategy_Condition4 = vector('character', length(subjectData$SubjectID))
                 for (i in 1:length(subjectData$SubjectID)){
-                subjectData$Strategy_Condition1[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition1[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition1[i], 2))]
-                subjectData$Strategy_Condition2[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition2[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition2[i], 2))]
-                subjectData$Strategy_Condition3[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition3[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition3[i], 2))]
-                subjectData$Strategy_Condition4[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition4[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition4[i], 2))]
+                    subjectData$Strategy_Condition1[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition1[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition1[i], 2))]
+                    subjectData$Strategy_Condition2[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition2[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition2[i], 2))]
+                    subjectData$Strategy_Condition3[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition3[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition3[i], 2))]
+                    subjectData$Strategy_Condition4[i] = freeParameters$Strategy[which(round(freeParameters$Parameter1, 2) == round(subjectData$Parameter1_Condition4[i], 2) & round(freeParameters$Parameter2, 2) == round(subjectData$Parameter2_Condition4[i], 2))]
                 }
 
                 conditions = c('condition1', 'condition2', 'condition3', 'condition4')
@@ -581,11 +581,67 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Preliminary Validation
 
+    Theta is a candidate for such an analysis - it is estimated uniquely with respect to Phi and we did not see any significant violations of homodscedasticity in our data. 
+    
+    Phi, on the other hand, is estimated depednent on Theta - remember that both appearances of Phi in our utility equation are where it interacts with Theta. 
+    Thus, we have to account for the fact that Phi is not meaningful at high values of Theta in order to use it in this way.
+
     .. tab-set::
 
         .. tab-item:: R
 
             ::
+
+                ### Robust and Reliable Free Parameters
+
+                subjectData$phiMeritAdjusted = (subjectData$phiMerit - 0.5) #subtracting 0.5 puts 0 where phi weights on equality-seeking and equity-seeking in the same way (i.e. indifference point)
+                subjectData$phiMeritAdjusted = (subjectData$phiMeritAdjusted * (1 - subjectData$thetaMerit)) #the greater theta is, the closer to 0 this adjusted value is
+                subjectData$phiMeritAdjusted = subjectData$phiMeritAdjusted + 0.5 #returning to initial scale value (i.e. 0 to 1 with 0.5 beingthe indifference point)
+
+                subjectData$phiEntitlementAdjusted = ((subjectData$phiEntitlement - 0.5) * (1 - subjectData$thetaEntitlement)) + 0.5
+                subjectData$phiCorruptionAdjusted = ((subjectData$phiCorruption - 0.5) * (1 - subjectData$thetaCorruption)) + 0.5
+                subjectData$phiLuckAdjusted = ((subjectData$phiLuck - 0.5) * (1 - subjectData$thetaLuck)) + 0.5
+
+                ### Meaningful Condition Differences
+
+                subjectData$SSAAO = vector('numeric')
+
+                for (i in 1:length(included_subjects)){
+                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    df = read.csv2(datafile)
+                    df = df[, c(49, 40:48, 33)]
+                    df$redistributionRate = df$redistributionRate/100 #converting to a decimal from a percent
+                    result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                     lb = lower_bounds, ub = upper_bounds,
+                                     df = df)
+
+                    df$PredictionAAO = vector('numeric')
+                    df$ObservedOutcome = new_value(df$myself, df$redistributionRate)
+                    for (k in 1:length(df$redistributionRate)){
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                            Utility[n] = utility(theta = result,
+                                                 phi = phiPerCondition[j],
+                                                 Equity = equity(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                 Equality = equality(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                 Payout = payout(new_value(df[k, 1], choices[n]), df[k, 1], choices[n]))
+                        }
+                        correct_choice = which(Utility == max(Utility))
+                        df$PredictionAAO[k] = new_value(df$myself[k], Choices[correct_choice[sample(length(correct_choice), 1)]])
+                    }
+                    subjectData$SSAAO[i] = sum((df$PredictionAAO - df$ObservedOutcome)**2)
+                }
+                N = length(df[, 1])
+                k = 2
+
+                subjectData$AICAAO = N * log(subjectData$SSAAO/N) + 2*2
+                subjectData$SSCond = subjectData$SSMerit + subjectData$SSEntitlement + subjectData$SSCorruption + subjectData$SSLuck
+                subjectData$AICCond = N * log(subjectData$SSCond/N) + 2*2*length(conditions)
+
+                excluded = which(subjectData$SSCond == 0)
+                t.test(subjectData$AICCond[-excluded], subjectData$AICAAO, paired = T, alternative = 'less')
+
+
 
         .. tab-item:: MatLab
 
@@ -594,6 +650,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: Python
 
             ::
+
 .. dropdown:: Testing a Modulatory Hypothesis
 
     .. tab-set::
@@ -601,6 +658,14 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
+                omnibusData = data.frame(Theta = c(subjectData$thetaMerit, subjectData$thetaEntitlement, subjectData$thetaCorruption, subjectData$thetaLuck),
+                                         Phi = c(subjectData$phiMeritAdjusted, subjectData$phiEntitlementAdjusted, subjectData$phiCorruptionAdjusted, subjectData$phiLuckAdjusted),
+                                         Condition = rep(conditions, each = length(subjectData$SubjectID)),
+                                         SubjectID = rep(subjectData$SubjectID, times = length(conditions)))
+
+                omnibusModulatoryEffectTheta = lmer(data = omnibusData, Theta ~ Condition + (1 | SubjectID))
+                omnibusModulatoryEffectPhi = lmer(data = omnibusData, Phi ~ Condition + (1 | SubjectID))
 
         .. tab-item:: MatLab
 
@@ -616,6 +681,24 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
+                subjectData$strategyMerit = as.factor(subjectData$strategyMerit)
+                subjectData$strategyEntitlement = as.factor(subjectData$strategyEntitlement)
+                subjectData$strategyCorruption = as.factor(subjectData$strategyCorruption)
+                subjectData$strategyLuck = as.factor(subjectData$strategyLuck)
+                strategies = levels(subjectData)
+
+                columns = 10:13 #columns of subject data correspond, in order, to the conditions in the conditions vector
+
+                for (i in 1:length(conditions)){
+                    for (j in 1:length(strategies)){
+                        group_by_condition[i, j] = sum(subjectData[, columns[i]] == strategies[j])
+                    }
+                }
+
+                colnames(group_by_condition) = strategies
+                rownames(group_by_condition) = conditions
+                chisq.test(group_by_condition)
 
         .. tab-item:: MatLab
 

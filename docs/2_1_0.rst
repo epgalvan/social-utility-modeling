@@ -641,7 +641,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
                     for (j in 1:length(conditions)){
 
-                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48), 33] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48, 33)] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
                         df$redistributionRate = df$redistributionRate/100 #converting to a decimal from a percent
                         
                         #Determine Free Parameters for Each Condition
@@ -675,7 +675,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
                     for (j in 1:length(conditions)){
 
-                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48), 33] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48, 33)] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
                         df$redistributionRate = df$redistributionRate/100 #converting to a decimal from a percent
 
                         #Just Added
@@ -708,7 +708,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
             ::
 
                 for (i in 1:length(included_subjects)){
-                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]restoffilepath'
                     fullData = read.csv2(datafile)
 
                     thetaPerCondition = vector('numeric', length(conditions))
@@ -718,7 +718,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
                     for (j in 1:length(conditions)){
 
-                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48), 33] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48, 33)] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
                         df$redistributionRate = df$redistributionRate/100 #converting to a decimal from a percent
 
                         result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
@@ -731,7 +731,10 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
                         #Just Added
 
-                        df$Prediction = vector('numeric')
+                        df$predictedRR = vector('numeric')
+                        df$predictedOutcome = vector('numeric')
+                        df$actualOutcome = vector('numeric')
+
                         for (k in 1:length(df$redistributionRate)){
                             Utility = vector('numeric', length(Choices))
                             for (n in 1:length(Choices)){
@@ -758,7 +761,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
                     start = length(subjectData[, 1]) + 1
                     end = start + length(fullData$redistributionRate)
                     trialData[start:end, 1] = included_subjects[i]
-                    trialData[start:end, 2] = df$redistributionRate
+                    trialData[start:end, 2] = fullData$redistributionRate/100
                     trialData[start:end, 3] = fullData[,78]
                     trialData[start:end, 4] = fullData[,77]
                     trialData[start:end, 5] = fullData[,76]
@@ -767,9 +770,11 @@ Tutorial 2 - Galvan & Sanfey, 2024
                     trialData[start:end, 9] = rep(seq(1, 4), each = length(df$redistributionRate))
                     trialData[start:end, 10] = seq(1, length(fullData$redistributionRate))
                     trialData[start:end, 11] = fullData$condition
+                    trialData[start:end, 12:20] = fullData[, c40:48]
                 }
                 colnames(subjectData) = c('SubjectID', 'thetaMerit', 'thetaEntitlement', 'thetaCorruption', 'thetaLuck', 'phiMerit', 'phiEntitlement', 'phiCorruption', 'phiLuck', 'strategyMerit', 'strategyEntitlement', 'strategyCorruption', 'strategyLuck', 'SSMerit', 'SSEntitlement', 'SSCorruption', 'SSLuck')
-                colnames(trialData) = c('SubjectID', 'observedTaxRate', 'observedOutcome', 'predictedTaxRate', 'predictedOutcome', 'initialAllocation', 'strategy', 'blockNumber', 'trialNumber', 'condition')
+                colnames(trialData) = c('SubjectID', 'observedTaxRate', 'observedOutcome', 'predictedTaxRate', 'predictedOutcome', 'initialAllocation', 'strategy', 'blockNumber', 'trialNumber', 'condition',
+                                        'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9')
 
         .. tab-item:: MatLab
 

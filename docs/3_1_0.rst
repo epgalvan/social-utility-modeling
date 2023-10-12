@@ -138,6 +138,41 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                alpha = 0.05/length(conditions)
+                
+                # Merit Condition
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICPMerit[-excludedM], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICLMerit[-excludedM], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICTMerit[-excludedM], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICPLMerit[-excludedM], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICPTMerit[-excludedM], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICLTMerit[-excludedM], paired = T, conf.level = (1 - alpha), alternative = 'less')
+
+                
+                # Corruption Condition
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICPEntitlement[-excludedE], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICLEntitlement[-excludedE], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICTEntitlement[-excludedE], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICPLEntitlement[-excludedE], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICPTEntitlement[-excludedE], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICLTEntitlement[-excludedE], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                
+                # Corruption Condition
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICPCorruption[-excludedC], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICLCorruption[-excludedC], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICTCorruption[-excludedC], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICPLCorruption[-excludedC], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICPTCorruption[-excludedC], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICLTCorruption[-excludedC], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                
+                # Luck Condition
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICPLuck[-excludedL], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICLLuck[-excludedL], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICTLuck[-excludedL], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICPLLuck[-excludedL], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICPTLuck[-excludedL], paired = T, conf.level = (1 - alpha), alternative = 'less')
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICLTLuck[-excludedL], paired = T, conf.level = (1 - alpha), alternative = 'less')
+
         .. tab-item:: MatLab
 
             ::

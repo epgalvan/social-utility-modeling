@@ -290,6 +290,57 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                trialData$PredictedNID = vector('numeric', length(trialData$SubjectID))
+
+                for (k in 1:length(conditions)){
+
+                    z = which(trialData$condition == conditions[j])
+                    df = trialData[z, c(6, 12:20, 2)]
+
+                    result = fmincon(obj_function_nid,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                    lb = lower_bounds, ub = upper_bounds,
+                                    df = df)
+
+                    for (i in 1:length(df)){
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                            Utility[n] = utility(theta = result$par[1],
+                                                 phi = result$par[2],
+                                                 Equity = equity(new_value(df[i, 1:10], choices[n]), df[i, 1:10], choices[n]),
+                                                 Equality = equality(new_value(df[i, 1:10], choices[n]), df[i, 1:10], choices[n]),
+                                                 Payout = payout(new_value(df[i, 1], choices[n]), df[i, 1], choices[n]))
+                        }
+                        trialData$PredictedNID[z[i]] = Choices[which(Utility == max(Utility))]
+                    }
+                }
+
+                subjectData$SSNIDMerit = vector('numeric', length(subjectDatasubjectData$SubjectID))
+                subjectData$SSNIDEntitlement = vector('numeric', length(subjectDatasubjectData$SubjectID))
+                subjectData$SSNIDCorruption = vector('numeric', length(subjectDatasubjectData$SubjectID))
+                subjectData$SSNIDLuck = vector('numeric', length(subjectDatasubjectData$SubjectID))
+
+                for (i in 1:length(subjectData$SubjectID)){
+                    trialsMerit = which(subjectData$SubjectID[i] == trialData$SubjectID && 'merit' == trialData$Condition)
+                    trialsEntitlement = which(subjectData$SubjectID[i] == trialData$SubjectID && 'entitlement' == trialData$Condition)
+                    trialsCorruption = which(subjectData$SubjectID[i] == trialData$SubjectID && 'corruption' == trialData$Condition)
+                    trialsLuck = which(subjectData$SubjectID[i] == trialData$SubjectID && 'luck' == trialData$Condition)
+                    
+                    subjectData$SSNIDMerit[i] = sum((trialData$observedTaxRate[trialsMerit] - trialData$PredictedNID[trialsMerit])**2)
+                    subjectData$SSNIDEntitlement[i] = sum((trialData$observedTaxRate[trialsEntitlement] - trialData$PredictedNID[trialsEntitlement])**2)
+                    subjectData$SSNIDCorruption[i] = sum((trialData$observedTaxRate[trialsCorruption] - trialData$PredictedNID[trialsCorruption])**2)
+                    subjectData$SSNIDLuck[i] = sum((trialData$observedTaxRate[trialsLuck] - trialData$PredictedNID[trialsLuck])**2)
+                }
+
+                subjectData$AICNIDMerit = length(trialsMerit) * log(subjectData$SSNIDMerit/length(trialsMerit)) + 2 * (2/length(subjectData$SubjectID))
+                subjectData$AICNIDEntitlement = length(trialsEntitlement) * log(subjectData$SSNIDEntitlement/length(trialsEntitlement)) + 2 * (2/length(subjectData$SubjectID))
+                subjectData$AICNIDCorruption = length(trialsCorruption) * log(subjectData$SSNIDCorruption/length(trialsCorruption)) + 2 * (2/length(subjectData$SubjectID))
+                subjectData$AICNIDLuck = length(trialsLuck) * log(subjectData$SSNIDLuck/length(trialsLuck)) + 2 * (2/length(subjectData$SubjectID))
+
+                t.test(subjectData$AICMerit, subjectData$AICNIDMerit, paired = T, alternative = 'less', conf.int = (1 - alpha))
+                t.test(subjectData$AICEntitlement, subjectData$AICNIDEntitlement, paired = T, alternative = 'less', conf.int = (1 - alpha))
+                t.test(subjectData$AICCorruption, subjectData$AICNIDCorruption, paired = T, alternative = 'less', conf.int = (1 - alpha))
+                t.test(subjectData$AICLuck, subjectData$AICNIDLuck, paired = T, alternative = 'less', conf.int = (1 - alpha))
+
         .. tab-item:: MatLab
 
             ::
