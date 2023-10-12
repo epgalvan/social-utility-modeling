@@ -779,6 +779,26 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                ### Model Performance
+
+                taxRatePredictions = lm(data = trialData, observedTaxRate ~ predictedTaxRate)
+                summary(taxRatePredictions) # R-squared predicting the subject's tax rate
+
+                payoutPredictions = lm(data = trialData, observedOutcome ~ predictedOutcome)
+                summary(payoutPredictions) # R-squared predicting the subject's payout, we're going to focus on this
+
+                ### Visually Checking Assumptions
+
+                qplot(x = trialData$predictedOutcome, y = trialData$observedOutcome, geom = 'smooth') +
+                geom_abline(slope = 1, intercept = 0) + labs(x = 'Prediction', y = 'Observed') + lims(x = c(0, 30), y = c(0, 30)) # linearity
+
+                normvals = rnorm(1000, mean = 0, sd = sd(trialData$predictedOutcome - trialData$observedOutcome))
+                qplot(x = (trialData$predictedOutcome - trialData$observedOutcome), geom = 'density', bw = 1, color = 'Actual') +
+                geom_density(aes(x = normvals, color = 'Predicted'), bw = 1) + labs(x = 'Prediction - Observed', y = 'Density') #normality
+
+                qplot(x = trialData$initialAllocation, y = (trialData$predictedOutcome - trialData$observedOutcome), group = as.factor(trialData$Multiplier), color = as.factor(trialData$Multiplier), geom = 'smooth')  +
+                labs(x = 'Initial Allocation', y = 'Prediction - Observed', color = 'Multiplier') #independence of error and homoscedasticity
+
         .. tab-item:: MatLab
 
             ::
@@ -793,6 +813,103 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
+                fivefold = data.frame()
+
+                for (i in 1:length(included_subjects)){
+                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    fullData = read.csv2(datafile)
+
+                    thetaPerCondition = vector('numeric', length(conditions) * 5)
+                    phiPerCondition = vector('numeric', length(conditions) * 5)
+                    SSPerCondition = vector('numeric', length(conditions))
+
+                    for (j in 1:length(conditions)){
+
+                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48), 33] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                        df$redistributionRate = df$redistributionRate/100 #converting to a decimal from a percent
+
+                        order = sample(20)
+
+                        for (z in 1:5){
+                            j = (z - 1) * 4 + 1
+                            n = z * 4
+                            withheld = order[j:n]
+                            m = ((j - 1) * 5) + z
+                            result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                                             lb = lower_bounds, ub = upper_bounds,
+                                             df = df[-withheld,])  
+
+                            thetaPerCondition[m] = result$par[1]
+                            phiPerCondition[m] = result$par[2]   
+                            for (k in 1:length(withheld)){
+                                y = withheld[k]
+                                Utility = vector('numeric', length(Choices))
+                                for (n in 1:length(Choices)){
+                                    Utility[n] = utility(theta = thetaPerCondition[m],
+                                                         phi = phiPerCondition[m],
+                                                         Equity = equity(new_value(df[y, 1:10], choices[n]), df[y, 1:10], choices[n]),
+                                                         Equality = equality(new_value(df[y, 1:10], choices[n]), df[y, 1:10], choices[n]),
+                                                         Payout = payout(new_value(df[y, 1], choices[n]), df[y, 1], choices[n]))
+                                }
+                                correct_choice = which(Utility == max(Utility))
+                                predictedOutcome = new_value(df$myself[y], Choices[correct_choice[sample(length(correct_choice), 1)]])
+                                observedOutcome = new_value(df$myself[y], df$redistributionRate)
+                                SSPerCondition = SSPerCondition + (observedOutcome - predictedOutcome)**2
+                            }
+                        }
+                    }
+
+                    fivefold[i, 1:45] = c(included_subjects[i], thetaPerCondition, phiPerCondition, SSPerCondition)
+                }
+                colnames(fivefold) = c('SubjectID', 
+                                       'thetaMeritF1', 'thetaMeritF2', 'thetaMeritF3', 'thetaMeritF4', 'thetaMeritF5',
+                                       'thetaEntitlementF1', 'thetaEntitlementF2', 'thetaEntitlementF3', 'thetaEntitlementF4', 'thetaEntitlementF5', 
+                                       'thetaCorruptionF1', 'thetaCorruptionF2', 'thetaCorruptionF3', 'thetaCorruptionF4', 'thetaCorruptionF5', 
+                                       'thetaLuckF1', 'thetaLuckF2', 'thetaLuckF3', 'thetaLuckF4', 'thetaLuckF5', 
+                                       'phiMeritF1', 'phiMeritF2', 'phiMeritF3', 'phiMeritF4', 'phiMeritF5', 
+                                       'phiEntitlementF1', 'phiEntitlementF2', 'phiEntitlementF3', 'phiEntitlementF4', 'phiEntitlementF5', 
+                                       'phiCorruptionF1', 'phiCorruptionF2', 'phiCorruptionF3', 'phiCorruptionF4', 'phiCorruptionF5', 
+                                       'phiLuckF1', 'phiLuckF2', 'phiLuckF3', 'phiLuckF4', 'phiLuckF5', 
+                                       'SSMerit', 'SSEntitlement', 'SSCorruption', 'SSLuck')
+
+                sqrt(mean(fivefold$SSMerit)/length(df$redistributionRate)) - sqrt(mean(subjectData$SSMerit)/length(df$redistributionRate)) #the change in root mean squared error, per trial in merit condition
+                sqrt(mean(fivefold$SSEntitlement)/length(df$redistributionRate)) - sqrt(mean(subjectData$SSEntitlement)/length(df$redistributionRate)) #the change in root mean squared error, per trial in entilement condition
+                sqrt(mean(fivefold$SSCorruption)/length(df$redistributionRate)) - sqrt(mean(subjectData$SSCorruption)/length(df$redistributionRate)) #the change in root mean squared error, per trial in corruption condition
+                sqrt(mean(fivefold$SSLuck)/length(df$redistributionRate)) - sqrt(mean(subjectData$SSLuck)/length(df$redistributionRate)) #the change in root mean squared error, per trial in luck condition
+
+                fivefold$AICMerit = length(df$redistributionRate) * log(fivefold$SSMerit/length(df$redistributionRate)) + 2 * 2
+                fivefold$AICEntitlement = length(df$redistributionRate) * log(fivefold$SSEntitlement/length(df$redistributionRate)) + 2 * 2
+                fivefold$AICCorruption = length(df$redistributionRate) * log(fivefold$SSCorruption/length(df$redistributionRate)) + 2 * 2
+                fivefold$AICLuck = length(df$redistributionRate) * log(fivefold$SSLuck/length(df$redistributionRate)) + 2 * 2
+
+                t.test(fivefold$AICMerit, subjectData$AIC, paired = T) #test fivefold MFI against normal MFI for this model
+                t.test(fivefold$AICEntitlement, subjectData$AICEntitlement, paired = T) #test fivefold MFI against normal MFI for this model
+                t.test(fivefold$AICCorruption, subjectData$AICCorruption, paired = T) #test fivefold MFI against normal MFI for this model
+                t.test(fivefold$AICLuck, subjectData$AICLuck, paired = T) #test fivefold MFI against normal MFI for this model
+
+                library(lsa)
+                cosines = vector('numeric', length = length(conditions) * 2 * 5) #number of conditions times number of parameters times the number of folds
+                for (i in 1:5){
+                    for (j in 1:length(conditions)){
+                        k = ((i - 1) * 5) + j
+                        cosines[k] = cosine(subjectData$Parameter1, fivefold[, (k + 1)])
+                        cosines[(k+20)] = cosine(subjectData$Parameter1, fivefold[, (k + 21)])
+                    }
+                }
+
+                mean(cosines[1:5]) #cosine similarity of theta in merit condition
+                mean(cosines[6:10]) #cosine similarity of theta in entitlement condition
+                mean(cosines[11:15]) #cosine similarity of theta in corruption condition
+                mean(cosines[16:20]) #cosine similarity of theta in luck condition
+                mean(cosines[21:25]) #cosine similarity of phi in merit condition
+                mean(cosines[26:30]) #cosine similarity of phi in entitlement condition
+                mean(cosines[31:35]) #cosine similarity of phi in corruption condition
+                mean(cosines[36:40]) #cosine similarity of phi in luck condition
+
+                
+                mean(cosines[1:20]) #cosine similarity of theta across all conditions
+                mean(cosines[21:40]) #cosine similarity of phi across all conditions
 
         .. tab-item:: MatLab
 
