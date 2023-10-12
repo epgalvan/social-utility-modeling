@@ -746,23 +746,23 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
-                utilityP = function(payout){
-                    return(payout)
+                utilityP = function(Payout){
+                    return(Payout)
                 }
-                utilityL = function(equality){
-                    return(equality)
+                utilityL = function(Equality){
+                    return(Equality)
                 }
-                utilityT = function(equity){
-                    return(equity)
+                utilityT = function(Equity){
+                    return(Equity)
                 }
-                utilityPL = function(payout, equality, theta){
-                    return(theta * payout + (1 - theta) * equality)
+                utilityPL = function(Payout, Equality, theta){
+                    return(theta * Payout + (1 - theta) * Equality)
                 }
-                utilityPT = function(payout, equity, theta){
-                    return(theta * payout + (1 - theta) * equity)
+                utilityPT = function(Payout, Equity, theta){
+                    return(theta * Payout + (1 - theta) * Equity)
                 }
-                utilityLT = function(equity, equality, phi){
-                    return(phi * equality + (1 - phi) * equity)
+                utilityLT = function(Equity, Equality, phi){
+                    return(phi * Equality + (1 - phi) * Equity)
                 }
 
         .. tab-item:: MatLab
@@ -780,6 +780,80 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                obj_functionPL = function(params, df, method = "OLS") {
+                    Theta = params[1]
+
+                    predicted_utility = vector('numeric', length(df[,1]))
+                    observed_utility = vector('numeric', length(df[,1]))
+                    choices = seq(0, 1, 0.1)
+
+                    for (k in 1:length(df[,1])){
+                        Utility = vector('numeric', length(choices))
+                        for (n in 1:length(choices)){
+                            Utility[n] = utilityPL(theta = Theta,
+                                                   Equality = equality(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                   Payout = payout(new_value(df[k, 1], choices[n]), df[k, 1], choices[n]))
+                        }
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[which(df[k, 11] == choices)]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                }
+
+                obj_functionPT = function(params, df, method = "OLS") {
+                    Theta = params[1]
+
+                    predicted_utility = vector('numeric', length(df[,1]))
+                    observed_utility = vector('numeric', length(df[,1]))
+                    choices = seq(0, 1, 0.1)
+
+                    for (k in 1:length(df[,1])){
+                        Utility = vector('numeric', length(choices))
+                        for (n in 1:length(choices)){
+                            Utility[n] = utilityPT(theta = Theta,
+                                                   Equity = equity(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                   Payout = payout(new_value(df[k, 1], choices[n]), df[k, 1], choices[n]))
+                        }
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[which(df[k, 11] == choices)]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                }
+
+                obj_functionLT = function(params, df, method = "OLS") {
+                    Phi = params[1]
+
+                    predicted_utility = vector('numeric', length(df[,1]))
+                    observed_utility = vector('numeric', length(df[,1]))
+                    choices = seq(0, 1, 0.1)
+
+                    for (k in 1:length(df[,1])){
+                        Utility = vector('numeric', length(choices))
+                        for (n in 1:length(choices)){
+                            Utility[n] = utilityLT(phi = Phi,
+                                                   Equity = equity(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                   Equality = equality(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]))
+                        }
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[which(df[k, 11] == choices)]
+                    }
+                    if (method == "OLS"){
+                        return(sum((predicted_utility - observed_utility)**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+                    }
+                }
+
+                altSubjectData = data.frame()
+
         .. tab-item:: MatLab
 
             ::
@@ -787,13 +861,34 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: Python
 
             ::
-.. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
+.. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject` Per :bdg-primary:`Condition`
 
     .. tab-set::
 
         .. tab-item:: R
 
             ::
+
+                for (i in 1:length(included_subjects)){
+                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    fullData = read.csv2(datafile)
+
+                    parametersPerCondition = vector('numeric', length(conditions) * 3)
+                    SSPerCondition = vector('numeric', length(conditions) * 6)
+
+                    for (j in 1:length(conditions)){
+                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48), 33] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                        df$redistributionRate = df$redistributionRate/100 #converting to a decimal from a percent
+
+                        resultPL = optim(obj_functionPL, par = 0.5, lower = 0, upper = 1, df = df, method = 'L-BFGS-B')
+                        resultPT = optim(obj_functionPT, par = 0.5, lower = 0, upper = 1, df = df, method = 'L-BFGS-B')
+                        resultLT = optim(obj_functionLT, par = 0.5, lower = 0, upper = 1, df = df, method = 'L-BFGS-B')
+                        
+                        parametersPerCondition[(((j - 1) * 3) + 1):(j * 3)] = c(resultPL$par[1], resultPT$par[1], resultLT$par[1])
+
+                        #Determine Predictions
+                    }
+                }
 
         .. tab-item:: MatLab
 
@@ -802,13 +897,93 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: Python
 
             ::
-.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
+.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject` Per :bdg-primary:`Condition`
 
     .. tab-set::
 
         .. tab-item:: R
 
             ::
+
+                for (i in 1:length(included_subjects)){
+                    datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    fullData = read.csv2(datafile)
+
+                    parametersPerCondition = vector('numeric', length(conditions) * 3)
+                    SSPerCondition = vector('numeric', length(conditions) * 6)
+
+                    for (j in 1:length(conditions)){
+                        df = fullData[which(fullData$condition == conditions[j]), c(49, 40:48), 33] #49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                        df$redistributionRate = df$redistributionRate/100 #converting to a decimal from a percent
+
+                        resultPL = optim(obj_functionPL, par = 0.5, lower = 0, upper = 1, df = df, method = 'L-BFGS-B')
+                        resultPT = optim(obj_functionPT, par = 0.5, lower = 0, upper = 1, df = df, method = 'L-BFGS-B')
+                        resultLT = optim(obj_functionLT, par = 0.5, lower = 0, upper = 1, df = df, method = 'L-BFGS-B')
+                        
+                        parametersPerCondition[(((j - 1) * 3) + 1):(j * 3)] = c(resultPL$par[1], resultPT$par[1], resultLT$par[1])
+
+                        #Just Added
+
+                        df$PredictionP = vector('numeric')
+                        df$PredictionL = vector('numeric')
+                        df$PredictionT = vector('numeric')
+                        df$PredictionPT = vector('numeric')
+                        df$PredictionPL = vector('numeric')
+                        df$PredictionLT = vector('numeric')
+                        for (k in 1:length(df$Decisions)){
+                            UtilityP = vector('numeric', length(Choices))
+                            UtilityL = vector('numeric', length(Choices))
+                            UtilityT = vector('numeric', length(Choices))
+                            UtilityPT = vector('numeric', length(Choices))
+                            UtilityPL = vector('numeric', length(Choices))
+                            UtilityLT = vector('numeric', length(Choices))
+                            for (n in 1:length(Choices)){
+                                UtilityP[n] = utilityP(Payout = payout(new_value(df[k, 1], choices[n]), df[k, 1], choices[n]))
+                                UtilityL[n] = utilityL(Equality = equality(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]))
+                                UtilityT[n] = utilityT(Equity = equity(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]))
+                                UtilityPT[n] = utilityPT(theta = resultPT$par[1],
+                                                         Equity = equity(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                         Payout = payout(new_value(df[k, 1], choices[n]), df[k, 1], choices[n]))
+                                UtilityPL[n] = utilityPL(theta = resultPL$par[1],
+                                                         Equality = equality(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                         Payout = payout(new_value(df[k, 1], choices[n]), df[k, 1], choices[n]))
+                                UtilityLT[n] = utilityLT(phi = resultLT$par[1],
+                                                         Equity = equity(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]),
+                                                         Equality = equality(new_value(df[k, 1:10], choices[n]), df[k, 1:10], choices[n]))
+                            }
+                            correct_choiceP = which(UtilityP == max(UtilityP))
+                            correct_choiceL = which(UtilityL == max(UtilityL))
+                            correct_choiceT = which(UtilityT == max(UtilityT))
+                            correct_choicePT = which(UtilityPT == max(UtilityPT))
+                            correct_choicePL = which(UtilityPL == max(UtilityPL))
+                            correct_choiceLT = which(UtilityLT == max(UtilityLT))
+
+                            df$predictedP[k] = new_value(df$myself[k], Choices[correct_choiceP[sample(length(correct_choiceP), 1)]])
+                            df$predictedL[k] = new_value(df$myself[k], Choices[correct_choiceL[sample(length(correct_choiceL), 1)]])
+                            df$predictedT[k] = new_value(df$myself[k], Choices[correct_choiceT[sample(length(correct_choiceT), 1)]])
+                            df$predictedPL[k] = new_value(df$myself[k], Choices[correct_choicePT[sample(length(correct_choicePT), 1)]])
+                            df$predictedPT[k] = new_value(df$myself[k], Choices[correct_choicePL[sample(length(correct_choiceTL), 1)]])
+                            df$predictedLT[k] = new_value(df$myself[k], Choices[correct_choiceLT[sample(length(correct_choiceLT), 1)]])
+                        }
+                        df$Outcome = new_value(df$myself, df$redistributionRate)
+                        SSPerCondition[(((j - 1) * 6) + 1):(j*6)] = c(sum((df$Outcome - df$predictedP)**2), 
+                                                                      sum((df$Outcome - df$predictedL)**2),
+                                                                      sum((df$Outcome - df$predictedT)**2),
+                                                                      sum((df$Outcome - df$predictedPL)**2),
+                                                                      sum((df$Outcome - df$predictedPT)**2),
+                                                                      sum((df$Outcome - df$predictedLT)**2))
+                    }
+                    altSubjectData[i, 1:37] = c(included_subjects[i], parametersPerCondition, SSPerCondition)
+                }
+                colnames(altSubjectData) = c('SubjectID', 
+                                             'thetaPLMerit', 'thetaPTMerit', 'phiLTMerit', 
+                                             'thetaPLEntitlement', 'thetaPTEntitlement', 'phiLTEntitlement', 
+                                             'thetaPLCorruption', 'thetaPTCorruption', 'phiLTCorruption', 
+                                             'thetaPLLuck', 'thetaPTLuck', 'phiLTLuck',
+                                             'SSPMerit', 'SSLMerit', 'SSTMerit', 'SSPLMerit', 'SSPTMerit', 'SSLTMerit',
+                                             'SSPEntitlement', 'SSLEntitlement', 'SSTEntitlement', 'SSPLEntitlement', 'SSPTEntitlement', 'SSLTEntitlement',
+                                             'SSPCorruption', 'SSLCorruption', 'SSTCorruption', 'SSPLCorruption', 'SSPTCorruption', 'SSLTCorruption',
+                                             'SSPLuck', 'SSLLuck', 'SSTLuck', 'SSPLLuck', 'SSPLuck', 'SSLTLuck')
 
         .. tab-item:: MatLab
 
@@ -817,13 +992,44 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: Python
 
             ::
-.. dropdown:: Compute Model Fit Index for Each :bdg-success`Subject`, for Each Alternative Model
+.. dropdown:: Compute Model Fit Index for Each :bdg-success`Subject`, for Each Alternative Model Per :bdg-primary:`Condition`
 
     .. tab-set::
 
         .. tab-item:: R
 
             ::
+
+                N = length(df[, 1])
+                k = 2
+
+                altSubjectData$AICPMerit = N * log(altSubjectData$SSPMerit/N) + 2*k
+                altSubjectData$AICLMerit = N * log(altSubjectData$SSLMerit/N) + 2*k
+                altSubjectData$AICTMerit = N * log(altSubjectData$SSTMerit/N) + 2*k
+                altSubjectData$AICPLMerit = N * log(altSubjectData$SSPLMerit/N) + 2*k
+                altSubjectData$AICPTMerit = N * log(altSubjectData$SSPTMerit/N) + 2*k
+                altSubjectData$AICLTMerit = N * log(altSubjectData$SSLTMerit/N) + 2*k
+
+                altSubjectData$AICPEntitlement = N * log(altSubjectData$SSPEntitlement/N) + 2*k
+                altSubjectData$AICLEntitlement = N * log(altSubjectData$SSLEntitlement/N) + 2*k
+                altSubjectData$AICTEntitlement = N * log(altSubjectData$SSTEntitlement/N) + 2*k
+                altSubjectData$AICPLEntitlement = N * log(altSubjectData$SSPLEntitlement/N) + 2*k
+                altSubjectData$AICPTEntitlement = N * log(altSubjectData$SSPTEntitlement/N) + 2*k
+                altSubjectData$AICLTEntitlement = N * log(altSubjectData$SSLTEntitlement/N) + 2*k
+                
+                altSubjectData$AICPCorruption = N * log(altSubjectData$SSPCorruption/N) + 2*k
+                altSubjectData$AICLCorruption = N * log(altSubjectData$SSLCorruption/N) + 2*k
+                altSubjectData$AICTCorruption = N * log(altSubjectData$SSTCorruption/N) + 2*k
+                altSubjectData$AICPLCorruption = N * log(altSubjectData$SSPLCorruption/N) + 2*k
+                altSubjectData$AICPTCorruption = N * log(altSubjectData$SSPTCorruption/N) + 2*k
+                altSubjectData$AICLTCorruption = N * log(altSubjectData$SSLTCorruption/N) + 2*k
+                
+                altSubjectData$AICPLuck = N * log(altSubjectData$SSPLuck/N) + 2*k
+                altSubjectData$AICLLuck = N * log(altSubjectData$SSLLuck/N) + 2*k
+                altSubjectData$AICTLuck = N * log(altSubjectData$SSTLuck/N) + 2*k
+                altSubjectData$AICPLLuck = N * log(altSubjectData$SSPLLuck/N) + 2*k
+                altSubjectData$AICPTLuck = N * log(altSubjectData$SSPTLuck/N) + 2*k
+                altSubjectData$AICLTLuck = N * log(altSubjectData$SSLTLuck/N) + 2*k
 
         .. tab-item:: MatLab
 
@@ -839,6 +1045,69 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
+                excludedM = which(is.infinite(subjectData$AICMerit)) #any perfectly predicted subjects by alternative models should also be perfectly predicted by the most complex model as well
+                excludedE = which(is.infinite(subjectData$AICEntitlement))
+                excludedC = which(is.infinite(subjectData$AICCorruption))
+                excludedL = which(is.infinite(subjectData$AICLuck))
+
+                models = c('Favored Model', 'Equality Only', 'Equity Only', 'Payout Only', 'Payout-Equality', 'Payout-Equity', 'Equality-Equity')
+
+                bestModelMerit = models[which(c(mean(subjectData$AICMerit[-excluded]),
+                                                mean(altSubjectData$AICPMerit[-excluded]),
+                                                mean(altSubjectData$AICLMerit[-excluded]),
+                                                mean(altSubjectData$AICTMerit[-excluded]),
+                                                mean(altSubjectData$AICPLMerit[-excluded]),
+                                                mean(altSubjectData$AICPTMerit[-excluded]),
+                                                mean(altSubjectData$AICLTMerit[-excluded])) == max(c(mean(subjectData$AICMerit[-excluded]),
+                                                                                                     mean(altSubjectData$AICPMerit[-excluded]),
+                                                                                                     mean(altSubjectData$AICLMerit[-excluded]),
+                                                                                                     mean(altSubjectData$AICTMerit[-excluded]),
+                                                                                                     mean(altSubjectData$AICPLMerit[-excluded]),
+                                                                                                     mean(altSubjectData$AICPTMerit[-excluded]),
+                                                                                                     mean(altSubjectData$AICLTMerit[-excluded]))))]
+
+                bestModelEntitlement = models[which(c(mean(subjectData$AICEntitlement[-excluded]),
+                                                      mean(altSubjectData$AICPEntitlement[-excluded]),
+                                                      mean(altSubjectData$AICLEntitlement[-excluded]),
+                                                      mean(altSubjectData$AICTEntitlement[-excluded]),
+                                                      mean(altSubjectData$AICPLEntitlement[-excluded]),
+                                                      mean(altSubjectData$AICPTEntitlement[-excluded]),
+                                                      mean(altSubjectData$AICLTEntitlement[-excluded])) == max(c(mean(subjectData$AICEntitlement[-excluded]),
+                                                                                                                 mean(altSubjectData$AICPEntitlement[-excluded]),
+                                                                                                                 mean(altSubjectData$AICLEntitlement[-excluded]),
+                                                                                                                 mean(altSubjectData$AICTEntitlement[-excluded]),
+                                                                                                                 mean(altSubjectData$AICPLEntitlement[-excluded]),
+                                                                                                                 mean(altSubjectData$AICPTEntitlement[-excluded]),
+                                                                                                                 mean(altSubjectData$AICLTEntitlement[-excluded]))))]
+
+                bestModelCorruption = models[which(c(mean(subjectData$AICCorruption[-excluded]),
+                                                     mean(altSubjectData$AICPCorruption[-excluded]),
+                                                     mean(altSubjectData$AICLCorruption[-excluded]),
+                                                     mean(altSubjectData$AICTCorruption[-excluded]),
+                                                     mean(altSubjectData$AICPLCorruption[-excluded]),
+                                                     mean(altSubjectData$AICPTCorruption[-excluded]),
+                                                     mean(altSubjectData$AICLTCorruption[-excluded])) == max(c(mean(subjectData$AICCorruption[-excluded]),
+                                                                                                               mean(altSubjectData$AICPCorruption[-excluded]),
+                                                                                                               mean(altSubjectData$AICLCorruption[-excluded]),
+                                                                                                               mean(altSubjectData$AICTCorruption[-excluded]),
+                                                                                                               mean(altSubjectData$AICPLCorruption[-excluded]),
+                                                                                                               mean(altSubjectData$AICPTCorruption[-excluded]),
+                                                                                                               mean(altSubjectData$AICLTCorruption[-excluded]))))]
+
+                bestModelLuck = models[which(c(mean(subjectData$AICLuck[-excluded]),
+                                               mean(altSubjectData$AICPLuck[-excluded]),
+                                               mean(altSubjectData$AICLLuck[-excluded]),
+                                               mean(altSubjectData$AICTLuck[-excluded]),
+                                               mean(altSubjectData$AICPLLuck[-excluded]),
+                                               mean(altSubjectData$AICPTLuck[-excluded]),
+                                               mean(altSubjectData$AICLTLuck[-excluded])) == max(c(mean(subjectData$AICLuck[-excluded]),
+                                                                                                   mean(altSubjectData$AICPLuck[-excluded]),
+                                                                                                   mean(altSubjectData$AICLLuck[-excluded]),
+                                                                                                   mean(altSubjectData$AICTLuck[-excluded]),
+                                                                                                   mean(altSubjectData$AICPLLuck[-excluded]),
+                                                                                                   mean(altSubjectData$AICPTLuck[-excluded]),
+                                                                                                   mean(altSubjectData$AICLTLuck[-excluded]))))]
 
         .. tab-item:: MatLab
 
