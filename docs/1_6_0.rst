@@ -70,8 +70,9 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
 .. Note:: Modeling Binary vs. Continuous Choice Tasks
 
     We always assume (and with good reason, in the case of these tasks) that the distribution of :bdg-danger:`Decisions` is normal. 
-    Now, even if we don't give them the option to return a fraction of a token - meaning we have an interval, not continuous scale - it's okay to treat it as though it is continuous. 
-    Then, since our data should indicate the central tendency, if our model predicts 10 tokens and the :bdg-success:`Subject` actually chooses 12, our error in prediction is 2 tokens. 
+    Now, even if we don't give them the option to return a fraction of a token - meaning we have an interval, rather than a continuous scale - common statistical practice is to treat it as continuous, rather than categorical. 
+    In other words, if our model predicts 10 tokens and the :bdg-success:`Subject` actually chooses 12, our error in prediction is better specified as 2 tokens rather than just **WRONG**. 
+    Continuous (or interval) choice tasks aim to elicit :bdg-danger:`Decisions` which indicate the average and modal response in a given situation (i.e. the central tendency). 
     Consequently, since 1) our model predicts the central tendency, 2) the distribution around this tendency is normal (an assumption that we'll check later), and 3) our :bdg-success:`Free Parameter` recovery process 
     is based on the normaility of this distribution (depending on the estimator we use) we don't need to explicitly model this probability distribution. 
 
@@ -83,21 +84,21 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
     If we assume that the distribution of these choices is normal, this means something slightly different: using the above picture, let's imagine a scenario where our :bdg-success:`Subject` has a choice between 10 tokens and 12 tokens. 
     We need to draw a line between these different :bdg-danger:`Decisions` - let's draw this right between 10 and 12 at 11. 
     Here, we can say that 84% of the time (the proportion of the area under this curve which is left of 11 tokens) this :bdg-success:`Subject` will choose the 10 token option and that 16% of the time they'll choose the 12 token option. 
-    In other words, if we give this :bdg-success:`Subject` the exact same choice between 10 tokens and 12 tokens, we would expect that - on average - they would choose 10 tokens 86 times and 12 tokens 14 times. 
+    In other words, if we give this :bdg-success:`Subject` the exact same choice between 10 tokens and 12 tokens 100 times, we would expect that - on average - they would choose 10 tokens 86 times and 12 tokens 14 times. 
 
     .. figure:: 1_6_discrete.png
         :figwidth: 100%
         :align: center
     
-    Obviously, this is entirely out of the question - :bdg-success:`Subjects` will disengage after seeing the exact same :bdg-primary:`Trial` after 10 or 20 times and having to make the same :bdg-danger:`Decision` just as many times. 
-    The alternative is to actually model this probabilistic, noisy :bdg-danger:`Decision` process - characterizing how random or noisy this process is. 
+    Obviously, this is entirely out of the question - :bdg-success:`Subjects` will disengage after seeing the exact same :bdg-primary:`Trial` and having to make the same :bdg-danger:`Decision` after 10 or 20 times, much less 100 times. 
+    Thus, the only realistic solution is to actually model this probabilistic, noisy :bdg-danger:`Decision` process - characterizing how random or noisy this process is. 
     Here, the model will aim to characterize how probable the :bdg-success:`Subject` is to make either possible :bdg-danger:`Decision`. 
 
     Revisiting the above example, if the :bdg-success:`Subject` chooses the 12 tokens, what is our model error?
 
     A. 12- 10 = 2 tokens
-    B. Wrong Answer = 1 
-    C. 0.84
+    B. Wrong Answer = 1 (Binary)
+    C. 1 - Area Left of midpoint between 12 and 10 tokens = 0.84
 
     .. dropdown:: Answer
 
