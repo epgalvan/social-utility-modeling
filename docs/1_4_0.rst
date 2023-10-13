@@ -338,7 +338,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
 .. dropdown:: Propose a :bdg-warning:`Utility` Equation
 
-    :bdg-warning:`Utility` = :bdg-secondary-line:`Payout_Maximization` × :bdg-success-line:`Θ`  - (1 - :bdg-success-line:`Θ` ) × min( :bdg-secondary-line:`Guilt` +  :bdg-success-line:`Φ` , :bdg-secondary-line:`Inequity` -  :bdg-success-line:`Φ` )
+    :bdg-warning-line:`Utility` = :bdg-secondary-line:`Payout_Maximization` × :bdg-success-line:`Θ`  - (1 - :bdg-success-line:`Θ` ) × min( :bdg-secondary-line:`Guilt` +  :bdg-success-line:`Φ` , :bdg-secondary-line:`Inequity` -  :bdg-success-line:`Φ` )
 
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------
@@ -471,27 +471,70 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
 .. dropdown:: Propose a :bdg-warning:`Utility` Equation
 
-    :bdg-warning:`Utility` = :bdg-secondary-line:`Payout_Maximization` × :bdg-success-line:`Θ`  + (1 - :bdg-success-line:`Θ` ) × (( :bdg-secondary-line:`Equality` +  :bdg-success-line:`Φ` ) + :bdg-secondary-line:`Equity` × ( 1 -  :bdg-success-line:`Φ` ))
+    :bdg-warning-line:`Utility` = :bdg-secondary-line:`Payout_Maximization` × :bdg-success-line:`Θ`  + (1 - :bdg-success-line:`Θ` ) × (( :bdg-secondary-line:`Equality` +  :bdg-success-line:`Φ` ) + :bdg-secondary-line:`Equity` × ( 1 -  :bdg-success-line:`Φ` ))
 
 Tutorial 3 - Crockett et al., 2014
 -------------------
 
 .. dropdown:: Create `Construct Value` Functions
 
-    .. tab-set::
+    .. dropdown:: Harm Aversion
 
-        .. tab-item:: R
+        .. tab-set::
 
-            ::
+            .. tab-item:: Plain English
 
-        .. tab-item:: MatLab
+                Here, the :bdg-secondary-line:`Harm` caused by a certain choice is the relative change in the number of shocks experienced. 
 
-            ::
+            .. tab-item:: R
 
-        .. tab-item:: Python
+                ::
 
-            ::
+                    harm = function(shocksThisChoice, shocksOtherChoice){
+                        return(shocksThisChoice - shocksOtherChoice)
+                    }
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+
+                ::
+
+    .. dropdown:: Payout-Maximization
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                Here, the extent to which one has maximized :bdg-secondary-line:`Payout` is the relative change in the amount of money one has received. 
+
+            .. tab-item:: R
+
+                ::
+
+                    payout = function(moneyThisChoice, moneyOtherChoice){
+                        return(moneyThisChoice - moneyOtherChoice)
+                    }
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+
+                ::
 
 .. dropdown:: Identify Relevant :bdg-success:`Free Parameters` for each :bdg-secondary:`Construct Value`
 
+    1. :bdg-secondary-line:`Harm` - :bdg-success-line:`D1` & :bdg-success-line:`D2`
+    2. :bdg-secondary-line:`Payout` - :bdg-success-line:`D1` & :bdg-success-line:`D2`
+
 .. dropdown:: Propose a :bdg-warning:`Utility` Equation
+
+    :bdg-warning-line:`Utility` = ( :bdg-success-line:`κ` × **LM** × :bdg-secondary-line:`Payout`) + ((1 - :bdg-success-line:`κ` ) × **LS** × :bdg-secondary-line:`Harm`)
+
+        where **LM** is :bdg-success-line:`λ` if :bdg-secondary-line:`Payout` < 0, else it is 1 and
+        
+        **LS** is :bdg-success-line:`λ` if :bdg-secondary-line:`Harm` > 0, else it is 1

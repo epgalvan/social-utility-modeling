@@ -956,6 +956,23 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
+                trialList = data.frame(Recipient = rep(c('Self', 'Other'), each = 100),
+                                       MoneyA = 10,
+                                       MoneyB = rep(rep(seq(11, 20), each = 10), times = 2),
+                                       ShocksA = rep(rep(seq(0, 9), times = 10), times = 2),
+                                       ShocksB = 10)
+
+                utility = function(Payout, Harm, kappa, lambda){
+                    if (Payout < 0) {LM = lambda} else {LM = 1}
+                    if (Harm > 0) {LS = lambda} else {LS = 1}
+                    return((Payout * kappa * LM) + (Harm * (1 - kappa) * LS))
+                }
+
+                freeParameters = data.frame(kappa = seq(0, 1, 0.01), 
+                                            lambda = seq(1, 3, 0.02)) #loss aversion is 2.25 according to CPT, 1 is no loss aversion
+                predictions = data.frame()
+                Choices = c(1, 2)
+
         .. tab-item:: MatLab
 
             ::
@@ -971,6 +988,14 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: R
 
             ::
+
+                for (i in 1:length(freeParameters[,1])){
+                    Kappa = freeParameters[i,1]
+                    Lambda = freeParameters[i,2]
+
+                    #Define Trial Loop
+
+                }
 
         .. tab-item:: MatLab
 
@@ -988,6 +1013,22 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
+                for (i in 1:length(freeParameters[,1])){
+                    Kappa = freeParameters[i,1]
+                    Lambda = freeParameters[i,2]
+
+                    #Just Added
+                    for (k in 1:length(trialList[,1])){
+                        shocksThis = c(trialList$ShocksA[k], trialList$ShocksB[k])
+                        shocksAlternative = c(trialList$ShocksB[k], trialList$ShocksA[k])
+                        moneyThis = c(trialList$MoneyA[k], trialList$MoneyB[k])
+                        moneyAlternative = c(trialList$MoneyB[k], trialList$MoneyA[k])
+                        
+                        # Determine predictions
+
+                    }
+                }
+
         .. tab-item:: MatLab
 
             ::
@@ -1003,6 +1044,28 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: R
 
             ::
+
+                for (i in 1:length(freeParameters[,1])){
+                    Kappa = freeParameters[i,1]
+                    Lambda = freeParameters[i,2]
+                    for (k in 1:length(trialList[,1])){
+                        shocksThis = c(trialList$ShocksA[k], trialList$ShocksB[k])
+                        shocksAlternative = c(trialList$ShocksB[k], trialList$ShocksA[k])
+                        moneyThis = c(trialList$MoneyA[k], trialList$MoneyB[k])
+                        moneyAlternative = c(trialList$MoneyB[k], trialList$MoneyA[k])
+
+                        # Just Added
+                        Utility = vector('numeric', length(Choices))
+                        for (n in 1:length(Choices)){
+                            Utility[n] = utility(Payout = harm(shocksThis[n], shocksAlternative[n]),
+                                                Harm = payout(moneyThis[n], moneyAlternative[n]),
+                                                kappa = Kappa,
+                                                lambda = Lambda)
+                        }
+                        correct_choice = which(Utility == max(Utility))
+                        predictions[i,k] = Choices[correct_choice[sample(length(correct_choice), 1)]]
+                    }
+                }
 
         .. tab-item:: MatLab
 

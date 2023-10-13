@@ -23,7 +23,7 @@ How to Achieve this Goal
 1. Generate Hypotheses - propose potential answers to your research question
 2. Create a Task in which you can tell which answer to your research question is correct
 3. Identify Unintended Behavioral Patterns in your task - could people switch between using one answer and using another answer in your task?
-4. Designing the Experiment - can we use within subjects? should we add multiple :bdg-secondary:`Conditions`?
+4. Designing the Experiment - can we use within subjects and should we add multiple :bdg-primary:`Conditions`?
 
 .. _Fehr & Schmidt, 1999: https://www.jstor.org/stable/2586885
 .. _Güth, Huck, & Ockenfels, 1996: https://watermark.silverchair.com/ej0593.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAArwwggK4BgkqhkiG9w0BBwagggKpMIICpQIBADCCAp4GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM0kS3Uly_ObRPbcUAAgEQgIICbzUl-Dos5GklEcqxw3kQB8LTHgDSppBeGwY9tARYQOfzMyZMtCD6GIZyKM1abYRWbpvvGPa-ijL1fTgY9pFGgsB0hEJy8llt36vmRyhDfYc6BXymuM41E5Ej6KLjAcLmPzem-lbO98lYsTM4fc6yYeOrKnSSoMOH17nWdsP5tOjj2AxgcQ1gDsrG5Zjlfajm2TJI5Q53NmyVIdE9CAN60Y1IaGpI3IRjw9V9m7aq-XRjVc5e10sitM7eBxLofayNPADkq7qychLu_KZSv6YPgWMGSaKmx9GOOy2j9t9QJdFv-56Nnqos1tQ4-s9AOA4U-SUvlQz6WDImyahqB7wZuRID2CBztVPPU8cPGxEAPvo92-IFs9h1VXB-oi-Yjvsf59ziuKg8456DIjaBxsSyZWE6zbrVyJ3Xhv26JSAml-3xflrr5mSzZ7J3qK6RxiGRKzI9LxAJvA6mCmjT0OdbybVm8Va6Y1tyVuLFSZhRKICHoFdSkze2HcKfDHOZQhtckF5OHuZfqlfjs5sJxZNnjz0l3r25iNq0sjat4VWa_us6NHqkobvSetsXAL_A8JdO7sHoJYfw0XA8PpWhcJ3ygxgt2H9fjkh0UnBqVgnewoEyzzHUNHRQXXE1wJACsixq3K6ZM_WcuXJhr2fjJLybjf0SXxFKrfRXkwGeBCX8F6lyuBX2uvlGfaebhbuOzbFoJ1-HHnRP8YW0rLF-ZMkqXvQNvZougiLpx9fya2PMnaCZdvir7HYOflbz-tb-9XYG7tgF3LisM1f1-900xZ-zzr6LaeKRMPTpGZEOC6-RfR8kjKUH8EXunTOPM7KQNDtq
@@ -181,6 +181,36 @@ Tutorial 2 - Galvan & Sanfey, 2024
     We'll do 20 trials per :bdg-primary:`Condition`, following the lead of tutorial 1.
 
 Tutorial 3 - Crockett et al., 2014
+-------------------
+
+.. dropdown:: Generate Hypotheses
+    
+    1. People are more willing to harm others for money than themselves 
+    2. People are more willing to harm themselves for money than others
+    3. People are equally willing to harm themselves and others
+
+.. dropdown:: Create a Task
+
+    We are interested in a task which concerns the distribution of resources: namely harm and money. 
+    We'll operationalize harm in terms of shocks - these can be ethically administered and cause discomfort that (nearly all) subjects will be very averse to. 
+    To study this distribution decision, we should consider using the Dictator Game. 
+    Here, we might think give subjects and endowment of money and shocks that need to be distributed between themselves and the other person. 
+    However, such a design would not let us tap into a willingness-to-harm tradeoff since it requires that a fixed amount of money and shocks be distributed. 
+    We want there to be an explicit tradeoff: more shocks equals more money - the simplest way to do this would be to give subjects a choice between A) less money, less shocks and B) more money, more shocks.
+    Thus, we'll vary the recipient of the shocks across conditions - sometimes the subject receives the shocks and sometimes someone else does.
+    Across trials, we'll vary how much more shocks and money option B has. 
+    Importantly, the subject will always receive the money and they will always make the choice to subject either themselves or someone else to the shocks. 
+
+.. dropdown:: Identify Unintended Behavioral Patterns
+
+    Our hypotheses capture all of the possibile behavioral patterns across conditions. 
+    Either harm-aversion for oneself is greater-than, less-than, or equal to harm-aversion for others.
+
+.. dropdown:: Design the Experiment
+
+    We'll want a within-subjects design - varying the recipient of the shocks across :bdg-primary:`Conditions`.
+
+Tutorial 4
 -------------------
 
 .. dropdown:: Generate Hypotheses

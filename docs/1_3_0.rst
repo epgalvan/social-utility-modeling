@@ -60,7 +60,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
     2. Inequity Aversion - not giving enough money back so that them and their partner have an equal amount results in inequity
     3. Guilt Aversion - not giving their partner what they expect results in the violation of another person's expectations which results in feeling guilty
 
-.. dropdown:: Identify Dimenions of Differences Between People
+.. dropdown:: Identify Dimensions of Differences Between People
 
     1. Greedy people act in their own material self-interest while both Inequity Averse and Guilt Averse people act in others' self-interest
     2. Inequity Averse people act in others' material self-interest based on a desire to maintain equality - to be objectively fair
@@ -100,7 +100,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
     2. Equality-seeking - not redistributing as much as possible prevents everyone from having the same amount
     3. Equity-seeking - redistributing takes money away from people who deserve to keep it
 
-.. dropdown:: Identify Dimenions of Differences Between People   
+.. dropdown:: Identify Dimensions of Differences Between People   
 
     * :bdg-success-line:`D1` - ranges from prosociality (low) to greed (high)
     * :bdg-success-line:`D2` - ranges from equity (low) to equality (high)
@@ -113,8 +113,34 @@ Tutorial 3 - Crockett et al., 2014
 
 .. dropdown:: Identify Motives Per Hypothesis
 
+    Before answering our question about how harm-aversion changes depending on :bdg-primary-line:`Shock Recipient`, we have to answer a more basic question; namely, 
+    
+    **What motivates decision-making in harm-for-benefit situations?**
+
+    Thus, we have to assess what could motivate behavior in either :bdg-primary:`Condition`? 
+
+    1. Harm-Aversion - a desire to avoid causing harm 
+    2. Payout-Maximization - a desire to obtain money
+
 .. dropdown:: Identify Behavioral Patterns Predicted by Each Hypothesis
+
+    1. Harm-Aversion - people always choose the less harmful option
+    2. Payout-Maximization - people always choose the highest paying option
+
+    However, since we have a binary choice task, we may wish to account for a loss aversion. 
+    This is because, for both choices, there is the option to gain desirable goods (i.e. more money or fewer shocks) but there is, inversely, the option to also lose desirable goods (i.e. less money or more shocks). 
+    To be exhaustive at this stage, we should indeed account for this as it applies to causing more harm or receiving less payout.
+
+    3. Loss-Aversion
 
 .. dropdown:: Explain How Other Behaviors Prevent Preferences From Being Met
 
-.. dropdown:: Identify Dimenions of Differences Between People
+    1. Harm-Aversion - choosing the more harmful option results causing more harm
+    2. Payout-Maximization - choosing the lower paying option results in less money 
+    3. Loss-Aversion - choosing an option with either more shocks or less money is less desirable since it causes one to lose out on the option with either fewer shocks or more money
+
+.. dropdown:: Identify Dimensions of Differences Between People
+
+    * :bdg-success-line:`D1` - ranges from harm-averse (low) to payout-maximizing (high)
+    * :bdg-success-line:`D2` - ranges from valuing losses and gains equally (1) to being very loss-averse (high)
+
