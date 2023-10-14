@@ -956,7 +956,7 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
-                trialList = data.frame(Recipient = rep(c('Self', 'Other'), each = 100),
+                trialList = data.frame(Default = rep(c(1, 2), each = 100),
                                        MoneyA = 10,
                                        MoneyB = rep(rep(seq(11, 20), each = 10), times = 2),
                                        ShocksA = rep(rep(seq(0, 9), times = 10), times = 2),
@@ -971,7 +971,6 @@ Tutorial 3 - Crockett et al., 2014
                 freeParameters = data.frame(kappa = seq(0, 1, 0.01), 
                                             lambda = seq(1, 3, 0.02)) #loss aversion is 2.25 according to CPT, 1 is no loss aversion
                 predictions = data.frame()
-                Choices = c(1, 2)
 
         .. tab-item:: MatLab
 
@@ -1019,10 +1018,10 @@ Tutorial 3 - Crockett et al., 2014
 
                     #Just Added
                     for (k in 1:length(trialList[,1])){
-                        shocksThis = c(trialList$ShocksA[k], trialList$ShocksB[k])
-                        shocksAlternative = c(trialList$ShocksB[k], trialList$ShocksA[k])
-                        moneyThis = c(trialList$MoneyA[k], trialList$MoneyB[k])
-                        moneyAlternative = c(trialList$MoneyB[k], trialList$MoneyA[k])
+                        shocksThis = c(trialList$ShocksA[k], trialList$ShocksB[k])[trialList$Default[k]]
+                        shocksAlternative = c(trialList$ShocksB[k], trialList$ShocksA[k])[trialList$Default[k]]
+                        moneyThis = c(trialList$MoneyA[k], trialList$MoneyB[k])[trialList$Default[k]]
+                        moneyAlternative = c(trialList$MoneyB[k], trialList$MoneyA[k])[trialList$Default[k]]
                         
                         # Determine predictions
 
@@ -1037,7 +1036,7 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
-.. dropdown:: Define the :bdg-danger:`Decision` Loop
+.. dropdown:: Determine the Predicted :bdg-danger:`Decision`
 
     .. tab-set::
 
@@ -1049,21 +1048,24 @@ Tutorial 3 - Crockett et al., 2014
                     Kappa = freeParameters[i,1]
                     Lambda = freeParameters[i,2]
                     for (k in 1:length(trialList[,1])){
-                        shocksThis = c(trialList$ShocksA[k], trialList$ShocksB[k])
-                        shocksAlternative = c(trialList$ShocksB[k], trialList$ShocksA[k])
-                        moneyThis = c(trialList$MoneyA[k], trialList$MoneyB[k])
-                        moneyAlternative = c(trialList$MoneyB[k], trialList$MoneyA[k])
+                        shocksThis = c(trialList$ShocksA[k], trialList$ShocksB[k])[trialList$Default[k]]
+                        shocksAlternative = c(trialList$ShocksB[k], trialList$ShocksA[k])[trialList$Default[k]]
+                        moneyThis = c(trialList$MoneyA[k], trialList$MoneyB[k])[trialList$Default[k]]
+                        moneyAlternative = c(trialList$MoneyB[k], trialList$MoneyA[k])[trialList$Default[k]]
 
                         # Just Added
-                        Utility = vector('numeric', length(Choices))
-                        for (n in 1:length(Choices)){
-                            Utility[n] = utility(Payout = harm(shocksThis[n], shocksAlternative[n]),
-                                                Harm = payout(moneyThis[n], moneyAlternative[n]),
-                                                kappa = Kappa,
-                                                lambda = Lambda)
+                        Utility = utility(Payout = harm(shocksThis, shocksAlternative),
+                                          Harm = payout(moneyThis, moneyAlternative),
+                                          kappa = Kappa,
+                                          lambda = Lambda)
                         }
-                        correct_choice = which(Utility == max(Utility))
-                        predictions[i,k] = Choices[correct_choice[sample(length(correct_choice), 1)]]
+                        if (Utility > 0) { 
+                            predictions[i,k] = 1 #choose alternative
+                        } else if (Utility < 0) {
+                            predictions[i,k] = 0 #don't choose alternative
+                        } else {
+                            predictions[i,k] = sample(c(0, 1), 1) #random
+                        }
                     }
                 }
 

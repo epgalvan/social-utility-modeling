@@ -67,12 +67,12 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
     MLE will be based on a normal distribution - the same assumption as is made by OLS. 
     Predictably, the choice of MLE versus OLS has no bearing on the results in any paper.
 
-.. Note:: Modeling Binary vs. Continuous Choice Tasks
+.. Note:: **Modeling Binary vs. Continuous Choice Tasks**
 
     We always assume (and with good reason, in the case of these tasks) that the distribution of :bdg-danger:`Decisions` is normal. 
     Now, even if we don't give them the option to return a fraction of a token - meaning we have an interval, rather than a continuous scale - common statistical practice is to treat it as continuous, rather than categorical. 
     In other words, if our model predicts 10 tokens and the :bdg-success:`Subject` actually chooses 12, our error in prediction is better specified as 2 tokens rather than just **WRONG**. 
-    Continuous (or interval) choice tasks aim to elicit :bdg-danger:`Decisions` which indicate the average and modal response in a given situation (i.e. the central tendency). 
+    Continuous (or interval) choice tasks aim to elicit :bdg-danger:`Decisions` which indicate the average, modal response in a given situation (i.e. the central tendency). 
     Consequently, since 1) our model predicts the central tendency, 2) the distribution around this tendency is normal (an assumption that we'll check later), and 3) our :bdg-success:`Free Parameter` recovery process 
     is based on the normaility of this distribution (depending on the estimator we use) we don't need to explicitly model this probability distribution. 
 
@@ -93,6 +93,7 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
     Obviously, this is entirely out of the question - :bdg-success:`Subjects` will disengage after seeing the exact same :bdg-primary:`Trial` and having to make the same :bdg-danger:`Decision` after 10 or 20 times, much less 100 times. 
     Thus, the only realistic solution is to actually model this probabilistic, noisy :bdg-danger:`Decision` process - characterizing how random or noisy this process is. 
     Here, the model will aim to characterize how probable the :bdg-success:`Subject` is to make either possible :bdg-danger:`Decision`. 
+    In this way, you are essentially **hedging your model's bets**  which thereby enables your model to overcome sampling error, identifying the central tendency by preventing overcorrection for stochasticity. 
 
     Revisiting the above example, if the :bdg-success:`Subject` chooses the 12 tokens, what is our model error?
 
@@ -114,6 +115,23 @@ To recover :bdg-success:`Free Parameters` from our simulated data and to compare
     .. figure:: 1_6_discrete_utility.png
         :figwidth: 100%
         :align: center
+
+    The way we do this is the following, often referred to as a softmax function. 
+    Here :bdg-warning:`Utility Difference` is referred to as ``DU``
+
+    ::
+
+        Probability | DU =  (1)/(1 + e ** (-1 * gamma * DU))
+
+    .. figure:: 1_6_softmax.png
+        :figwidth: 100%
+        :align: center
+
+    Sometimes, a further noise parameter is added.
+
+    ::
+
+        Probability | DU =  ((1)/(1 + e ** (-1 * gamma * DU))) * (1 - (2 * epsilon)) + epsilon
 
 How to Achieve this Goal
 ------------
@@ -765,6 +783,33 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: R
 
             ::
+
+                obj_function_oneCondition = function(params, df, method = "MLE") { #we want 2 kappa parameters (1 per condition), but we don't yet have conditions
+                    Kappa = params[1]
+                    Lambda = params[2]
+                    Gamma = params[3]
+                    Epsilon = params[4]
+
+                    ProbAlternative = vector('numeric', length(df[,1]))
+                    for (k in 1:length(df[,1])){
+                        moneyDefault = c(df[k, 2], df[k, 3])[df[k, 1]]
+                        moneyAlternative = c(df[k, 3], df[k, 2])[df[k, 1]]
+                        shocksDefault = c(df[k, 4], df[k, 5])[df[k, 1]]
+                        shocksAlternative = c(df[k, 5], df[k, 4])[df[k, 1]]
+                        
+                        DiffUtility = utility(Payout = harm(shocksAlternative, shocksDefault),
+                                              Harm = payout(moneyAlternative, moneyDefault),
+                                              kappa = Kappa,
+                                              lambda = Lambda)
+                        }
+                        ProbAlternative[k] = ((1)/(1 + e ** (-1 * Gamma * DU))) * (1 - (2 * Epsilon)) + Epsilon
+                    }
+                    if (method == "OLS"){
+                        return(sum((ProbAlternative - df[, 6])**2))
+                    } else if (method == "MLE"){
+                        return(-1 * sum(dnorm(df[, 6], mean = ProbAlternative, sd = sd, log = TRUE)))
+                    }
+                }
 
         .. tab-item:: MatLab
 
