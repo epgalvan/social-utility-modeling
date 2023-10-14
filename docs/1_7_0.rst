@@ -523,3 +523,13 @@ Tutorial 3 - Crockett et al., 2014
 -------------------
 
 .. dropdown:: Choosing an Approach to Grouping
+
+    Here, we have noise parameters ( :bdg-success-line:`Gamma` and :bdg-success-line:`Epsilon` ) which immediately rules out the possibility of a priori clustering. 
+    We could still potentially do post-hoc clustering - on both our :bdg-danger:`Decisions` as well as the :bdg-success:`Free Parameters` we recover. 
+    However, clustering :bdg-danger:`Decisions` seems a less-than-optimal approach since we are expecting individual differences between :bdg-success:`Subjects` in terms of how stochastic their :bdg-danger:`Decisions` are. 
+    Consequently, we can cluster :bdg-success:`Free Parameters` - so, should we cluster :bdg-success-line:`Kappa` and/or :bdg-success-line:`Lambda` ?
+
+    Probably not and here's why - our main goal is to study differences *in* :bdg-success-line:`Kappa` between :bdg-primary:`Conditions` - namely when the shocks are administered to the :bdg-primary-line:`Subject` versus :bdg-primary-line:`Others` . 
+    If :bdg-success-line:`Kappa` is lower in the :bdg-primary-line:`Subject Harmed` condition compared to the :bdg-primary-line:`Other Harmed` condition, they are more harm-averse for themselves than others, and vice versa. 
+    So, binning seems more appropriate for our goals here - we'll group people based on if :bdg-success-line:`Kappa` is lower or higher when the shocks are administered to the :bdg-primary-line:`Subject` versus :bdg-primary-line:`Others` . 
+

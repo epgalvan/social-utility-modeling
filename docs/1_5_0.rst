@@ -29,7 +29,7 @@ Now we want to plug in all of the inputs that we know (experimental variables an
 
     .. Note:: 
 
-        Here, the path taken by MatLab will diverge. 
+        Here, the path taken by MatLab will diverge slightly. 
         In comparison with R - which is designed around long format data frames, MatLab is designed around the Matrix. 
         For beginners with access to MatLab and no particular preference about programming language, I would recommend using MatLab. 
         The idea is aligned with the above illustration: each coordinate has a cell in a structure and the contents of the cell are a structure with various fields. 
@@ -38,6 +38,72 @@ Now we want to plug in all of the inputs that we know (experimental variables an
         
         I chose to keep Python in long format just like R - Python is less concise than either MatLab or R so, to reduce the amount of code to keep track of, this was preferable. 
         Nonethless, I think it is still possible to easily switch by translating the MatLab code to Python with ChatGPT.
+
+.. Note:: **Modeling Binary vs. Continuous Choice Tasks**
+
+    We always assume (and with good reason, in the case of these tasks) that the distribution of :bdg-danger:`Decisions` is normal. 
+    Now, even if we don't give them the option to return a fraction of a token - meaning we have an interval, rather than a continuous scale - common statistical practice is to treat it as continuous, rather than categorical. 
+    In other words, if our model predicts 10 tokens and the :bdg-success:`Subject` actually chooses 12, our error in prediction is better specified as 2 tokens rather than just **WRONG**. 
+    Continuous (or interval) choice tasks aim to elicit :bdg-danger:`Decisions` which indicate the average, modal response in a given situation (i.e. the central tendency). 
+    Consequently, since 1) our model predicts the central tendency, 2) the distribution around this tendency is normal (an assumption that we'll check later), and 3) our :bdg-success:`Free Parameter` recovery process 
+    is based on the normaility of this distribution (depending on the estimator we use) we don't need to explicitly model this probability distribution. 
+
+    .. figure:: 1_6_continuous.png
+        :figwidth: 100%
+        :align: center
+
+    In contrast, consider a binary choice. 
+    If we assume that the distribution of these choices is normal, this means something slightly different: using the above picture, let's imagine a scenario where our :bdg-success:`Subject` has a choice between 10 tokens and 12 tokens. 
+    We need to draw a line between these different :bdg-danger:`Decisions` - let's draw this right between 10 and 12 at 11. 
+    Here, we can say that 84% of the time (the proportion of the area under this curve which is left of 11 tokens) this :bdg-success:`Subject` will choose the 10 token option and that 16% of the time they'll choose the 12 token option. 
+    In other words, if we give this :bdg-success:`Subject` the exact same choice between 10 tokens and 12 tokens 100 times, we would expect that - on average - they would choose 10 tokens 86 times and 12 tokens 14 times. 
+
+    .. figure:: 1_6_discrete.png
+        :figwidth: 100%
+        :align: center
+    
+    Obviously, this is entirely out of the question - :bdg-success:`Subjects` will disengage after seeing the exact same :bdg-primary:`Trial` and having to make the same :bdg-danger:`Decision` after 10 or 20 times, much less 100 times. 
+    Thus, the only realistic solution is to actually model this probabilistic, noisy :bdg-danger:`Decision` process - characterizing how random or noisy this process is. 
+    Here, the model will aim to characterize how probable the :bdg-success:`Subject` is to make either possible :bdg-danger:`Decision`. 
+    In this way, you are essentially **hedging your model's bets**  which thereby enables your model to overcome sampling error, identifying the central tendency by preventing overcorrection for stochasticity. 
+
+    Revisiting the above example, if the :bdg-success:`Subject` chooses the 12 tokens, what is our model error?
+
+    A. 12- 10 = 2 tokens
+    B. Wrong Answer = 1 (Binary)
+    C. 1 - Area Left of midpoint between 12 and 10 tokens = 0.84
+
+    .. dropdown:: Answer
+
+        If our model is capturing the noisy, probabilistic nature of decision-making in a binary choice task (which it should, particularly when you don't have an exorbitant amount of :bdg-primary:`Trials` ), our :bdg-success:`Free Parameters`
+        should minimize the probability that our model makes incorrect predictions. 
+        Thus, while technically all three *could* be considered correct, the best answer is 'C'. 
+
+    Now, as we'll see, we're going to recover :bdg-success:`Free Parameters` from :bdg-danger:`Decisions` by recursively trying different :bdg-success:`Free Parameters` , settling on whichever one minimizes the difference betweeen expected 
+    :bdg-warning:`Utility` (based on predicted :bdg-danger:`Decisions` for a set of :bdg-success:`Free Parameters` ) and observed :bdg-warning:`Utility` (based on this same set of :bdg-success:`Free Parameters` and observed :bdg-danger:`Decisions` ). 
+    For binary choice tasks, there is an additonal step - using the difference in :bdg-warning:`Utility` between options to characterize how probable each choice is to be selected
+    (given :bdg-success:`Free Parameters` which characterize how stochastic or random the :bdg-danger:`Decisions` a given :bdg-success:`Subject` makes are). 
+    
+    .. figure:: 1_6_discrete_utility.png
+        :figwidth: 100%
+        :align: center
+
+    The way we do this is the following, often referred to as a softmax function. 
+    Here :bdg-warning:`Utility Difference` is referred to as ``DU``
+
+    ::
+
+        Probability | DU =  (1)/(1 + e ** (-1 * gamma * DU))
+
+    .. figure:: 1_6_softmax.png
+        :figwidth: 100%
+        :align: center
+
+    Sometimes, a further noise parameter is added to capture attention deficits (i.e. not changing to the alternative solely because one's attention waxes and wanes.)
+
+    ::
+
+        Probability | DU =  ((1)/(1 + e ** (-1 * gamma * DU))) * (1 - (2 * epsilon)) + epsilon
 
 How to Achieve this Goal
 ------------    
@@ -968,8 +1034,10 @@ Tutorial 3 - Crockett et al., 2014
                     return((Payout * kappa * LM) + (Harm * (1 - kappa) * LS))
                 }
 
-                freeParameters = data.frame(kappa = seq(0, 1, 0.01), 
-                                            lambda = seq(1, 3, 0.02)) #loss aversion is 2.25 according to CPT, 1 is no loss aversion
+                freeParameters = data.frame(kappa = rep(seq(0, 1, 0.1), 11), #ranging from 0 to 1, the inverse of kappa has the same range as kappa
+                                            lambda = rep(seq(1, 3, 0.2), 11), #loss aversion is 2.25 according to CPT, 1 is no loss aversion
+                                            gamma = sample(seq(0, 2, 0.01), 121), #completely random to low stochasticity
+                                            epsilon = 0) #no additional, non-task related noise
                 predictions = data.frame()
 
         .. tab-item:: MatLab
