@@ -27,6 +27,8 @@ We will have 4 tutorials that you can complete:
 3. `Crockett et al., 2014`_ - this looked at how a certain social motive changed across conditions in a binary choice task (data for `Tutorial 3`_ available here, note that this data will come from `Yu et al., 2022`_ since the 2014 paper's dataset is not publicly available)
 4. `Li et al., 2022`_ - this looked at competing social motives within a person in a binary choice task (data for `Tutorial 4`_ available here)
 
+**Please note that Tutorials 3 & 4 are under development **
+
 For all tutorials, we will work through each step as though we want to conduct the research ourselves. 
 So don't read the articles just yet - let's work through this process together first! 
 I would really discourage you from doing all the tutorials at once - on your first read-through, choose one tutorial to follow and always try to fully understand the lesson before moving on to the tutorial. 

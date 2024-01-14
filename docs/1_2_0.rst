@@ -215,7 +215,7 @@ Tutorial 3 - Crockett et al., 2014
 
     We'll want a within-subjects design - varying the recipient of the shocks across :bdg-primary:`Conditions`.
 
-Tutorial 4
+Tutorial 4 - Li et al., 2022
 -------------------
 
 .. dropdown:: Generate Hypotheses

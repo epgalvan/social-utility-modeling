@@ -533,7 +533,8 @@ Tutorial 3 - Crockett et al., 2014
 
 .. dropdown:: Propose a :bdg-warning:`Utility` Equation
 
-    :bdg-warning-line:`Difference in Utility for Alternative, Compared to Default` = ( :bdg-success-line:`κ` × **LM** × :bdg-secondary-line:`Payout`) + ((1 - :bdg-success-line:`κ` ) × **LS** × :bdg-secondary-line:`Harm`)
+    :bdg-warning-line:`Difference in Utility for Alternative, Compared to Default` = 
+    ( :bdg-success-line:`κ` × **LM** × :bdg-secondary-line:`Payout`) + ((1 - :bdg-success-line:`κ` ) × **LS** × :bdg-secondary-line:`Harm`)
 
         where **LM** is :bdg-success-line:`λ` if :bdg-secondary-line:`Payout` < 0, else it is 1 and
         

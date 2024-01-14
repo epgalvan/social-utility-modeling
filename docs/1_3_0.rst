@@ -127,9 +127,9 @@ Tutorial 3 - Crockett et al., 2014
     1. Harm-Aversion - people always choose the less harmful option
     2. Payout-Maximization - people always choose the highest paying option
 
-    However, since we have a binary choice task, we may wish to account for a loss aversion. 
-    This is because, for both choices, there is the option to gain desirable goods (i.e. more money or fewer shocks) but there is, inversely, the option to also lose desirable goods (i.e. less money or more shocks). 
-    To be exhaustive at this stage, we should indeed account for this as it applies to causing more harm or receiving less payout.
+    However, based on our task, we may wish to account for a loss aversion. 
+    This is because we are giving someone an default value that they must choose to lose out on in favor of something else. 
+    To be exhaustive at this stage, we should indeed account for this as it applies to causing more harm or receiving less payout, depending on what the default is.
 
     3. Loss-Aversion
 
@@ -144,3 +144,21 @@ Tutorial 3 - Crockett et al., 2014
     * :bdg-success-line:`D1` - ranges from harm-averse (low) to payout-maximizing (high)
     * :bdg-success-line:`D2` - ranges from valuing losses and gains equally (1) to being very loss-averse (high)
 
+Tutorial 4 - Li et al., 2022
+-------------------
+
+.. dropdown:: Identify Motives Per Hypothesis
+
+    
+
+.. dropdown:: Identify Behavioral Patterns Predicted by Each Hypothesis
+
+    
+
+.. dropdown:: Explain How Other Behaviors Prevent Preferences From Being Met
+
+    
+
+.. dropdown:: Identify Dimensions of Differences Between People
+
+    

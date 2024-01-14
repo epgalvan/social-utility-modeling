@@ -69,7 +69,7 @@ Tutorial 3 - Crockett et al., 2014
 
     **Are people more harm-averse when they are personally harmed or when someone else is?**
     
-Tutorial 4 - 
+Tutorial 4 - Li et al., 2022
 -------------------
 
 .. dropdown:: Create a Research Question

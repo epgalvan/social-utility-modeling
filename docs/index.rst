@@ -45,7 +45,7 @@ There is no required foreknowledge to conceptually understand the course, but a 
     Test for Individual Differences <3_3_0.rst> 
     Explain Individual Differences <3_4_0.rst> 
 
-A special thank you to Alan Sanfey, Molly Crockett, Jeroen van Baar, {} for allowing me to create a tutorial based on their data. 
+A special thank you to Alan Sanfey, Molly Crockett, Jeroen van Baar, and Christian Ruff for agreeing to allow me to create a tutorial based on their data. 
 Your commitment to fair, free, and accessible education is appreciated immensely.
 
 If you notice typos, grammatical errors, incorrect information, or have suggestions to improve this handbook, email me at epgalvan20@g.ucla.edu.

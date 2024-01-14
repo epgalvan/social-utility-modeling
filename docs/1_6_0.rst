@@ -735,8 +735,7 @@ Tutorial 3 - Crockett et al., 2014
                                               Harm = payout(moneyAlternative, moneyDefault),
                                               kappa = Kappa,
                                               lambda = Lambda)
-                        }
-                        ProbAlternative[k] = ((1)/(1 + e ** (-1 * Gamma * DU))) * (1 - (2 * Epsilon)) + Epsilon
+                        ProbAlternative[k] = ((1)/(1 + exp(-1 * Gamma * DiffUtility))) * (1 - (2 * Epsilon)) + Epsilon
                     }
                     if (method == "OLS"){
                         return(sum((ProbAlternative - df[, 6])**2))

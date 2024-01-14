@@ -952,3 +952,37 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: Python
 
             ::
+
+Tutorial 4 - Li et al., 2022
+-------------------
+
+.. dropdown:: Assessing Accuracy in Capturing the Data Generation Process
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+.. dropdown:: Validating Parameter Recovery Process
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::

@@ -533,3 +533,7 @@ Tutorial 3 - Crockett et al., 2014
     If :bdg-success-line:`Kappa` is lower in the :bdg-primary-line:`Subject Harmed` condition compared to the :bdg-primary-line:`Other Harmed` condition, they are more harm-averse for themselves than others, and vice versa. 
     So, binning seems more appropriate for our goals here - we'll group people based on if :bdg-success-line:`Kappa` is lower or higher when the shocks are administered to the :bdg-primary-line:`Subject` versus :bdg-primary-line:`Others` . 
 
+Tutorial 4 - Li et al., 2022
+-------------------
+
+.. dropdown:: Choosing an Approach to Grouping

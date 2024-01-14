@@ -1031,7 +1031,7 @@ Tutorial 3 - Crockett et al., 2014
                 utility = function(Payout, Harm, kappa, lambda){
                     if (Payout < 0) {LM = lambda} else {LM = 1}
                     if (Harm > 0) {LS = lambda} else {LS = 1}
-                    return((Payout * kappa * LM) + (Harm * (1 - kappa) * LS))
+                    return((Payout * kappa * LM) - (Harm * (1 - kappa) * LS))
                 }
 
                 freeParameters = data.frame(kappa = rep(seq(0, 1, 0.1), 11), #ranging from 0 to 1, the inverse of kappa has the same range as kappa
@@ -1126,7 +1126,6 @@ Tutorial 3 - Crockett et al., 2014
                                           Harm = payout(moneyThis, moneyAlternative),
                                           kappa = Kappa,
                                           lambda = Lambda)
-                        }
                         if (Utility > 0) { 
                             predictions[i,k] = 1 #choose alternative
                         } else if (Utility < 0) {

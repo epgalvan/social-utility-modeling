@@ -756,3 +756,52 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: Python
 
             ::
+
+Tutorial 4 - Li et al., 2022
+-------------------
+
+.. dropdown:: Preliminary Validation
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+.. dropdown:: Testing a Modulatory Hypothesis
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+.. dropdown:: Using Categorical Clusters to Test Modulatory Hypotheses
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
