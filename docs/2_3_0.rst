@@ -769,9 +769,52 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                function u = utilityP(Payout)
+                    u = Payout;
+                end
+
+                function u = utilityL(Equality)
+                    u = Equality;
+                end
+
+                function u = utilityT(Equity)
+                    u = Equity;
+                end
+
+                function u = utilityPL(Payout, Equality, theta)
+                    u = theta * Payout + (1 - theta) * Equality;
+                end
+
+                function u = utilityPT(Payout, Equity, theta)
+                    u = theta * Payout + (1 - theta) * Equity;
+                end
+
+                function u = utilityLT(Equity, Equality, phi)
+                    u = phi * Equality + (1 - phi) * Equity;
+                end
+
         .. tab-item:: Python
 
             ::
+
+                def utilityP(Payout):
+                    return Payout
+
+                def utilityL(Equality):
+                    return Equality
+
+                def utilityT(Equity):
+                    return Equity
+
+                def utilityPL(Payout, Equality, theta):
+                    return theta * Payout + (1 - theta) * Equality
+
+                def utilityPT(Payout, Equity, theta):
+                    return theta * Payout + (1 - theta) * Equity
+
+                def utilityLT(Equity, Equality, phi):
+                    return phi * Equality + (1 - phi) * Equity
+
 .. dropdown:: Preallocating and Defining Functions
 
     .. tab-set::
@@ -858,9 +901,161 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                function objValue = obj_functionPL(params, df, method)
+                    Theta = params(1);
+
+                    predicted_utility = zeros(length(df(:, 1)), 1);
+                    observed_utility = zeros(length(df(:, 1)), 1);
+                    choices = 0:0.1:1;
+
+                    for k = 1:length(df(:, 1))
+                        Utility = zeros(length(choices), 1);
+                        for n = 1:length(choices)
+                            Utility(n) = utilityPL(Theta, ...
+                                                equality(new_value(df(k, 1:10), choices(n)), df(k, 1:10), choices(n)), ...
+                                                payout(new_value(df(k, 1), choices(n)), df(k, 1), choices(n)));
+                        end
+                        predicted_utility(k) = max(Utility);
+                        observed_utility(k) = Utility(df(k, 11) == choices);
+                    end
+
+                    if strcmp(method, 'OLS')
+                        objValue = sum((predicted_utility - observed_utility).^2);
+                    elseif strcmp(method, 'MLE')
+                        objValue = -sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                    end
+                end
+
+                function objValue = obj_functionPT(params, df, method)
+                    Theta = params(1);
+
+                    predicted_utility = zeros(length(df(:, 1)), 1);
+                    observed_utility = zeros(length(df(:, 1)), 1);
+                    choices = 0:0.1:1;
+
+                    for k = 1:length(df(:, 1))
+                        Utility = zeros(length(choices), 1);
+                        for n = 1:length(choices)
+                            Utility(n) = utilityPT(Theta, ...
+                                                equity(new_value(df(k, 1:10), choices(n)), df(k, 1:10), choices(n)), ...
+                                                payout(new_value(df(k, 1), choices(n)), df(k, 1), choices(n)));
+                        end
+                        predicted_utility(k) = max(Utility);
+                        observed_utility(k) = Utility(df(k, 11) == choices);
+                    end
+
+                    if strcmp(method, 'OLS')
+                        objValue = sum((predicted_utility - observed_utility).^2);
+                    elseif strcmp(method, 'MLE')
+                        objValue = -sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                    end
+                end
+
+                function objValue = obj_functionLT(params, df, method)
+                    Phi = params(1);
+
+                    predicted_utility = zeros(length(df(:, 1)), 1);
+                    observed_utility = zeros(length(df(:, 1)), 1);
+                    choices = 0:0.1:1;
+
+                    for k = 1:length(df(:, 1))
+                        Utility = zeros(length(choices), 1);
+                        for n = 1:length(choices)
+                            Utility(n) = utilityLT(Phi, ...
+                                                equity(new_value(df(k, 1:10), choices(n)), df(k, 1:10), choices(n)), ...
+                                                equality(new_value(df(k, 1:10), choices(n)), df(k, 1:10), choices(n)));
+                        end
+                        predicted_utility(k) = max(Utility);
+                        observed_utility(k) = Utility(df(k, 11) == choices);
+                    end
+
+                    if strcmp(method, 'OLS')
+                        objValue = sum((predicted_utility - observed_utility).^2);
+                    elseif strcmp(method, 'MLE')
+                        objValue = -sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                    end
+                end
+
+                altSubjectData = table();
+
         .. tab-item:: Python
 
             ::
+
+                def obj_functionPL(params, df, method="OLS"):
+                    Theta = params[0]
+
+                    predicted_utility = np.zeros(len(df), dtype=float)
+                    observed_utility = np.zeros(len(df), dtype=float)
+                    choices = np.arange(0, 1.1, 0.1)
+
+                    for k in range(len(df)):
+                        Utility = np.zeros(len(choices), dtype=float)
+                        for n in range(len(choices)):
+                            Utility[n] = utilityPL(Theta,
+                                                equality(new_value(df.iloc[k, 1:11], choices[n]), df.iloc[k, 1:11], choices[n]),
+                                                payout(new_value(df.iloc[k, 1], choices[n]), df.iloc[k, 1], choices[n]))
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[df.iloc[k, 11] == choices]
+
+                    if method == "OLS":
+                        obj_value = np.sum((predicted_utility - observed_utility)**2)
+                    elif method == "MLE":
+                        obj_value = -np.sum(np.log(norm.pdf(observed_utility, loc=predicted_utility, scale=sd)))
+
+                    return obj_value
+
+
+                def obj_functionPT(params, df, method="OLS"):
+                    Theta = params[0]
+
+                    predicted_utility = np.zeros(len(df), dtype=float)
+                    observed_utility = np.zeros(len(df), dtype=float)
+                    choices = np.arange(0, 1.1, 0.1)
+
+                    for k in range(len(df)):
+                        Utility = np.zeros(len(choices), dtype=float)
+                        for n in range(len(choices)):
+                            Utility[n] = utilityPT(Theta,
+                                                equity(new_value(df.iloc[k, 1:11], choices[n]), df.iloc[k, 1:11], choices[n]),
+                                                payout(new_value(df.iloc[k, 1], choices[n]), df.iloc[k, 1], choices[n]))
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[df.iloc[k, 11] == choices]
+
+                    if method == "OLS":
+                        obj_value = np.sum((predicted_utility - observed_utility)**2)
+                    elif method == "MLE":
+                        obj_value = -np.sum(np.log(norm.pdf(observed_utility, loc=predicted_utility, scale=sd)))
+
+                    return obj_value
+
+
+                def obj_functionLT(params, df, method="OLS"):
+                    Phi = params[0]
+
+                    predicted_utility = np.zeros(len(df), dtype=float)
+                    observed_utility = np.zeros(len(df), dtype=float)
+                    choices = np.arange(0, 1.1, 0.1)
+
+                    for k in range(len(df)):
+                        Utility = np.zeros(len(choices), dtype=float)
+                        for n in range(len(choices)):
+                            Utility[n] = utilityLT(Phi,
+                                                equity(new_value(df.iloc[k, 1:11], choices[n]), df.iloc[k, 1:11], choices[n]),
+                                                equality(new_value(df.iloc[k, 1:11], choices[n]), df.iloc[k, 1:11], choices[n]))
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[df.iloc[k, 11] == choices]
+
+                    if method == "OLS":
+                        obj_value = np.sum((predicted_utility - observed_utility)**2)
+                    elif method == "MLE":
+                        obj_value = -np.sum(np.log(norm.pdf(observed_utility, loc=predicted_utility, scale=sd)))
+
+                    return obj_value
+
+
+                altSubjectData = pd.DataFrame()
+
 .. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject` Per :bdg-primary:`Condition`
 
     .. tab-set::
@@ -894,9 +1089,43 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                parametersPerCondition = zeros(length(conditions) * 3, 1);
+                SSPerCondition = zeros(length(conditions) * 6, 1);
+
+                for j = 1:length(conditions)
+                    df = fullData(fullData.condition == conditions{j}, [49, 40:48, 33]); % 49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                    df.redistributionRate = df.redistributionRate / 100; % converting to a decimal from a percent
+
+                    resultPL = fmincon(@(params) obj_functionPL(params, df, 'OLS'), 0.5, [], [], [], [], 0, 1);
+                    resultPT = fmincon(@(params) obj_functionPT(params, df, 'OLS'), 0.5, [], [], [], [], 0, 1);
+                    resultLT = fmincon(@(params) obj_functionLT(params, df, 'OLS'), 0.5, [], [], [], [], 0, 1);
+
+                    parametersPerCondition(((j - 1) * 3) + 1 : j * 3) = [resultPL; resultPT; resultLT];
+
+                    % Determine Predictions
+                end
+
         .. tab-item:: Python
 
             ::
+
+                from scipy.optimize import minimize
+
+                parametersPerCondition = np.zeros(len(conditions) * 3)
+                SSPerCondition = np.zeros(len(conditions) * 6)
+
+                for j in range(len(conditions)):
+                    df = fullData[fullData['condition'] == conditions[j]][[49, * range(40, 49), 33]]  # 49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                    df['redistributionRate'] = df['redistributionRate'] / 100  # converting to a decimal from a percent
+
+                    resultPL = minimize(lambda params: obj_functionPL(params, df, 'OLS'), 0.5, bounds=[(0, 1)])
+                    resultPT = minimize(lambda params: obj_functionPT(params, df, 'OLS'), 0.5, bounds=[(0, 1)])
+                    resultLT = minimize(lambda params: obj_functionLT(params, df, 'OLS'), 0.5, bounds=[(0, 1)])
+
+                    parametersPerCondition[((j - 1) * 3):(j * 3)] = [resultPL.x[0], resultPT.x[0], resultLT.x[0]]
+
+                    # Determine Predictions
+
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject` Per :bdg-primary:`Condition`
 
     .. tab-set::
@@ -1035,9 +1264,72 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                N = length(df(:, 1));
+                k = 2;
+
+                altSubjectData.AICPMerit = N * log(altSubjectData.SSPMerit / N) + 2 * k;
+                altSubjectData.AICLMerit = N * log(altSubjectData.SSLMerit / N) + 2 * k;
+                altSubjectData.AICTMerit = N * log(altSubjectData.SSTMerit / N) + 2 * k;
+                altSubjectData.AICPLMerit = N * log(altSubjectData.SSPLMerit / N) + 2 * k;
+                altSubjectData.AICPTMerit = N * log(altSubjectData.SSPTMerit / N) + 2 * k;
+                altSubjectData.AICLTMerit = N * log(altSubjectData.SSLTMerit / N) + 2 * k;
+
+                altSubjectData.AICPEntitlement = N * log(altSubjectData.SSPEntitlement / N) + 2 * k;
+                altSubjectData.AICLEntitlement = N * log(altSubjectData.SSLEntitlement / N) + 2 * k;
+                altSubjectData.AICTEntitlement = N * log(altSubjectData.SSTEntitlement / N) + 2 * k;
+                altSubjectData.AICPLEntitlement = N * log(altSubjectData.SSPLEntitlement / N) + 2 * k;
+                altSubjectData.AICPTEntitlement = N * log(altSubjectData.SSPTEntitlement / N) + 2 * k;
+                altSubjectData.AICLTEntitlement = N * log(altSubjectData.SSLTEntitlement / N) + 2 * k;
+
+                altSubjectData.AICPCorruption = N * log(altSubjectData.SSPCorruption / N) + 2 * k;
+                altSubjectData.AICLCorruption = N * log(altSubjectData.SSLCorruption / N) + 2 * k;
+                altSubjectData.AICTCorruption = N * log(altSubjectData.SSTCorruption / N) + 2 * k;
+                altSubjectData.AICPLCorruption = N * log(altSubjectData.SSPLCorruption / N) + 2 * k;
+                altSubjectData.AICPTCorruption = N * log(altSubjectData.SSPTCorruption / N) + 2 * k;
+                altSubjectData.AICLTCorruption = N * log(altSubjectData.SSLTCorruption / N) + 2 * k;
+
+                altSubjectData.AICPLuck = N * log(altSubjectData.SSPLuck / N) + 2 * k;
+                altSubjectData.AICLLuck = N * log(altSubjectData.SSLLuck / N) + 2 * k;
+                altSubjectData.AICTLuck = N * log(altSubjectData.SSTLuck / N) + 2 * k;
+                altSubjectData.AICPLLuck = N * log(altSubjectData.SSPLLuck / N) + 2 * k;
+                altSubjectData.AICPTLuck = N * log(altSubjectData.SSPTLuck / N) + 2 * k;
+                altSubjectData.AICLTLuck = N * log(altSubjectData.SSLTLuck / N) + 2 * k;
+
         .. tab-item:: Python
 
             ::
+
+                N = len(df)
+                k = 2
+
+                altSubjectData['AICPMerit'] = N * np.log(altSubjectData['SSPMerit'] / N) + 2 * k
+                altSubjectData['AICLMerit'] = N * np.log(altSubjectData['SSLMerit'] / N) + 2 * k
+                altSubjectData['AICTMerit'] = N * np.log(altSubjectData['SSTMerit'] / N) + 2 * k
+                altSubjectData['AICPLMerit'] = N * np.log(altSubjectData['SSPLMerit'] / N) + 2 * k
+                altSubjectData['AICPTMerit'] = N * np.log(altSubjectData['SSPTMerit'] / N) + 2 * k
+                altSubjectData['AICLTMerit'] = N * np.log(altSubjectData['SSLTMerit'] / N) + 2 * k
+
+                altSubjectData['AICPEntitlement'] = N * np.log(altSubjectData['SSPEntitlement'] / N) + 2 * k
+                altSubjectData['AICLEntitlement'] = N * np.log(altSubjectData['SSLEntitlement'] / N) + 2 * k
+                altSubjectData['AICTEntitlement'] = N * np.log(altSubjectData['SSTEntitlement'] / N) + 2 * k
+                altSubjectData['AICPLEntitlement'] = N * np.log(altSubjectData['SSPLEntitlement'] / N) + 2 * k
+                altSubjectData['AICPTEntitlement'] = N * np.log(altSubjectData['SSPTEntitlement'] / N) + 2 * k
+                altSubjectData['AICLTEntitlement'] = N * np.log(altSubjectData['SSLTEntitlement'] / N) + 2 * k
+
+                altSubjectData['AICPCorruption'] = N * np.log(altSubjectData['SSPCorruption'] / N) + 2 * k
+                altSubjectData['AICLCorruption'] = N * np.log(altSubjectData['SSLCorruption'] / N) + 2 * k
+                altSubjectData['AICTCorruption'] = N * np.log(altSubjectData['SSTCorruption'] / N) + 2 * k
+                altSubjectData['AICPLCorruption'] = N * np.log(altSubjectData['SSPLCorruption'] / N) + 2 * k
+                altSubjectData['AICPTCorruption'] = N * np.log(altSubjectData['SSPTCorruption'] / N) + 2 * k
+                altSubjectData['AICLTCorruption'] = N * np.log(altSubjectData['SSLTCorruption'] / N) + 2 * k
+
+                altSubjectData['AICPLuck'] = N * np.log(altSubjectData['SSPLuck'] / N) + 2 * k
+                altSubjectData['AICLLuck'] = N * np.log(altSubjectData['SSLLuck'] / N) + 2 * k
+                altSubjectData['AICTLuck'] = N * np.log(altSubjectData['SSTLuck'] / N) + 2 * k
+                altSubjectData['AICPLLuck'] = N * np.log(altSubjectData['SSPLLuck'] / N) + 2 * k
+                altSubjectData['AICPTLuck'] = N * np.log(altSubjectData['SSPTLuck'] / N) + 2 * k
+                altSubjectData['AICLTLuck'] = N * np.log(altSubjectData['SSLTLuck'] / N) + 2 * k
+
 .. dropdown:: Compare Model Performance
 
     .. tab-set::
@@ -1113,9 +1405,109 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                excludedM = find(isinf(subjectData.AICMerit)); % any perfectly predicted subjects by alternative models should also be perfectly predicted by the most complex model as well
+                excludedE = find(isinf(subjectData.AICEntitlement));
+                excludedC = find(isinf(subjectData.AICCorruption));
+                excludedL = find(isinf(subjectData.AICLuck));
+
+                models = {'Favored Model', 'Equality Only', 'Equity Only', 'Payout Only', 'Payout-Equality', 'Payout-Equity', 'Equality-Equity'};
+
+                meanAICMerit = mean(subjectData.AICMerit(~excludedM));
+                meanAICPEMerit = mean(altSubjectData.AICPMerit(~excludedM));
+                meanAICLEMerit = mean(altSubjectData.AICLMerit(~excludedM));
+                meanAICTEMerit = mean(altSubjectData.AICTMerit(~excludedM));
+                meanAICPLEMerit = mean(altSubjectData.AICPLMerit(~excludedM));
+                meanAICPTEMerit = mean(altSubjectData.AICPTMerit(~excludedM));
+                meanAICLTEMerit = mean(altSubjectData.AICLTMerit(~excludedM));
+
+                meanAICs = [meanAICMerit, meanAICPEMerit, meanAICLEMerit, meanAICTEMerit, meanAICPLEMerit, meanAICPTEMerit, meanAICLTEMerit];
+
+                [~, bestModelIndex] = max(meanAICs);
+                bestModelMerit = models{bestModelIndex};meanAICEntitlement = mean(subjectData.AICEntitlement(~excludedE));
+                meanAICPEEntitlement = mean(altSubjectData.AICPEntitlement(~excludedE));
+                meanAICLEEntitlement = mean(altSubjectData.AICLEntitlement(~excludedE));
+                meanAICTEEntitlement = mean(altSubjectData.AICTEntitlement(~excludedE));
+                meanAICPLEEntitlement = mean(altSubjectData.AICPLEntitlement(~excludedE));
+                meanAICPTEEntitlement = mean(altSubjectData.AICPTEntitlement(~excludedE));
+                meanAICLTEEntitlement = mean(altSubjectData.AICLTEntitlement(~excludedE));
+
+                meanAICsEntitlement = [meanAICEntitlement, meanAICPEEntitlement, meanAICLEEntitlement, meanAICTEEntitlement, meanAICPLEEntitlement, meanAICPTEEntitlement, meanAICLTEEntitlement];
+
+                [~, bestModelIndexEntitlement] = max(meanAICsEntitlement);
+                bestModelEntitlement = models{bestModelIndexEntitlement};
+
+                meanAICCorruption = mean(subjectData.AICCorruption(~excludedC));
+                meanAICPCorruption = mean(altSubjectData.AICPCorruption(~excludedC));
+                meanAICLCorruption = mean(altSubjectData.AICLCorruption(~excludedC));
+                meanAICTCorruption = mean(altSubjectData.AICTCorruption(~excludedC));
+                meanAICPLCorruption = mean(altSubjectData.AICPLCorruption(~excludedC));
+                meanAICPTCorruption = mean(altSubjectData.AICPTCorruption(~excludedC));
+                meanAICLTCorruption = mean(altSubjectData.AICLTCorruption(~excludedC));
+
+                meanAICsCorruption = [meanAICCorruption, meanAICPCorruption, meanAICLCorruption, meanAICTCorruption, meanAICPLCorruption, meanAICPTCorruption, meanAICLTCorruption];
+
+                [~, bestModelIndexCorruption] = max(meanAICsCorruption);
+                bestModelCorruption = models{bestModelIndexCorruption};
+
+                meanAICLuck = mean(subjectData.AICLuck(~excludedL));
+                meanAICPLuck = mean(altSubjectData.AICPLuck(~excludedL));
+                meanAICLLuck = mean(altSubjectData.AICLLuck(~excludedL));
+                meanAICTLuck = mean(altSubjectData.AICTLuck(~excludedL));
+                meanAICPLLuck = mean(altSubjectData.AICPLLuck(~excludedL));
+                meanAICPTLuck = mean(altSubjectData.AICPTLuck(~excludedL));
+                meanAICLTLuck = mean(altSubjectData.AICLTLuck(~excludedL));
+
+                meanAICsLuck = [meanAICLuck, meanAICPLuck, meanAICLLuck, meanAICTLuck, meanAICPLLuck, meanAICPTLuck, meanAICLTLuck];
+
+                [~, bestModelIndexLuck] = max(meanAICsLuck);
+                bestModelLuck = models{bestModelIndexLuck};
+
         .. tab-item:: Python
 
             ::
+
+                # Find indices of subjects with infinite AIC values
+                excludedM = np.where(np.isinf(subjectData['AICMerit']))[0]
+                excludedE = np.where(np.isinf(subjectData['AICEntitlement']))[0]
+                excludedC = np.where(np.isinf(subjectData['AICCorruption']))[0]
+                excludedL = np.where(np.isinf(subjectData['AICLuck']))[0]
+
+                models = ['Favored Model', 'Equality Only', 'Equity Only', 'Payout Only', 'Payout-Equality', 'Payout-Equity', 'Equality-Equity']
+
+                # Calculate means for each model and find the best model for each category
+                bestModelMerit = models[np.argmax([np.mean(subjectData['AICMerit'][-excludedM]),
+                                                   np.mean(altSubjectData['AICPMerit'][-excludedM]),
+                                                   np.mean(altSubjectData['AICLMerit'][-excludedM]),
+                                                   np.mean(altSubjectData['AICTMerit'][-excludedM]),
+                                                   np.mean(altSubjectData['AICPLMerit'][-excludedM]),
+                                                   np.mean(altSubjectData['AICPTMerit'][-excludedM]),
+                                                   np.mean(altSubjectData['AICLTMerit'][-excludedM])])]
+
+                bestModelEntitlement = models[np.argmax([np.mean(subjectData['AICEntitlement'][-excludedE]),
+                                                         np.mean(altSubjectData['AICPEntitlement'][-excludedE]),
+                                                         np.mean(altSubjectData['AICLEntitlement'][-excludedE]),
+                                                         np.mean(altSubjectData['AICTEntitlement'][-excludedE]),
+                                                         np.mean(altSubjectData['AICPLEntitlement'][-excludedE]),
+                                                         np.mean(altSubjectData['AICPTEntitlement'][-excludedE]),
+                                                         np.mean(altSubjectData['AICLTEntitlement'][-excludedE])])]
+
+                bestModelCorruption = models[np.argmax([np.mean(subjectData['AICCorruption'][-excludedC]),
+                                                        np.mean(altSubjectData['AICPCorruption'][-excludedC]),
+                                                        np.mean(altSubjectData['AICLCorruption'][-excludedC]),
+                                                        np.mean(altSubjectData['AICTCorruption'][-excludedC]),
+                                                        np.mean(altSubjectData['AICPLCorruption'][-excludedC]),
+                                                        np.mean(altSubjectData['AICPTCorruption'][-excludedC]),
+                                                        np.mean(altSubjectData['AICLTCorruption'][-excludedC])])]
+
+                bestModelLuck = models[np.argmax([np.mean(subjectData['AICLuck'][-excludedL]),
+                                                  np.mean(altSubjectData['AICPLuck'][-excludedL]),
+                                                  np.mean(altSubjectData['AICLLuck'][-excludedL]),
+                                                  np.mean(altSubjectData['AICTLuck'][-excludedL]),
+                                                  np.mean(altSubjectData['AICPLLuck'][-excludedL]),
+                                                  np.mean(altSubjectData['AICPTLuck'][-excludedL]),
+                                                  np.mean(altSubjectData['AICLTLuck'][-excludedL])])]
+
+
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

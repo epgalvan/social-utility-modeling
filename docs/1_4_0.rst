@@ -372,9 +372,25 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
                 ::
 
+                    function new_value = calculate_new_value(initial_allocation, tax_rate_decimal, number_tokens_game, number_players_game)
+                        if nargin < 3
+                            number_tokens_game = 100;
+                        end
+                        if nargin < 4
+                            number_players_game = 10;
+                        end
+
+                        new_value = round(initial_allocation - (tax_rate_decimal * initial_allocation) + ((number_tokens_game * tax_rate_decimal) / number_players_game));
+                    end
+
+
             .. tab-item:: Python
 
                 ::
+
+                    def calculate_new_value(initial_allocation, tax_rate_decimal, number_tokens_game=100, number_players_game=10):
+                        return round(initial_allocation - (tax_rate_decimal * initial_allocation) + ((number_tokens_game * tax_rate_decimal) / number_players_game))
+
 
     .. dropdown:: Payout-Maximization
 

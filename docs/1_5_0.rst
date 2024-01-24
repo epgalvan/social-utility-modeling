@@ -912,9 +912,121 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                % First, create a noisy resource distribution
+                shares = (0.05:0.1:0.95).^1.25;
+                df = zeros(20, 10);
+
+                for k = 1:10
+                    df(:, k) = normrnd(shares(k), 0.01 * sum(shares), [20, 1]);
+                    df(df(:, k) < 0, k) = 0;
+                end
+
+                % Second, convert to a rounded percent
+                for k = 1:length(df(:, 1))
+                    df(k, 1:10) = round((df(k, 1:10) / sum(df(k, 1:10))) * 100);
+                end
+
+                % Third, ensure that there are exactly 100 tokens on each trial
+                for k = 1:length(df(:, 1))
+                    if sum(df(k, 1:10)) < 100
+                        for j = 1:(100 - sum(df(k, 1:10)))
+                            i = randi(10);
+                            df(k, i) = df(k, i) + 1;
+                        end
+                    elseif sum(df(k, 1:10)) > 100
+                        for j = 1:(sum(df(k, 1:10)) - 100)
+                            i = find(df(k, 1:10) > 0);
+                            i = i(randi(length(i)));
+                            df(k, i) = df(k, i) - 1;
+                        end
+                    end
+                end
+
+                % Fourth, ensure that our subject is in each decile the same number of times
+                trialList = zeros(length(df(:, 1)), 10);
+
+                for k = 1:length(df(:, 1))
+                    i = round((k / 2) + 0.05);
+                    trialList(k, 1) = df(k, i);
+                    intermediate = df(k, [1:i-1, i+1:end]);
+                    trialList(k, 2:10) = intermediate(1, randi(9));
+                end
+
+                % choices above
+                choices = 0:0.1:1; % tax rate
+
+                % Define utility function
+                utility = @(theta, phi, Equity, Equality, Payout) (theta * Payout) + ((1 - theta) * ((phi * Equality) + ((1 - phi) * Equity)));
+
+                % Define free parameters as a structure
+                freeParameters = struct('theta', linspace(0, 1, 101), 'phi', linspace(0, 1, 101));
+
+                % Pre-allocate predictions as a structure
+                predictions = struct('result', cell(101, 101));
+
+                % Loop over freeParameters
+                for i = 1:length(freeParameters.theta)
+                    for j = 1:length(freeParameters.phi)
+                        % Access current parameter values
+                        theta_val = freeParameters.theta(i);
+                        phi_val = freeParameters.phi(j);
+                        
+                        % Your utility function call here using theta_val and phi_val
+                        
+                        % Store the result in predictions structure
+                        predictions(i, j).result = result;
+                    end
+                end
+
         .. tab-item:: Python
 
             ::
+
+                import numpy as np
+
+                # First, create a noisy resource distribution
+                shares = (np.arange(0.05, 1, 0.1)**1.25)
+                df = np.zeros((20, 10))
+
+                for k in range(10):
+                    df[:, k] = np.random.normal(shares[k], 0.01 * np.sum(shares), 20)
+                    df[df[:, k] < 0, k] = 0
+
+                # Second, convert to a rounded percent
+                for k in range(len(df[:, 0])):
+                    df[k, 0:10] = np.round((df[k, 0:10] / np.sum(df[k, 0:10])) * 100)
+
+                # Third, ensure that there are exactly 100 tokens on each trial
+                for k in range(len(df[:, 0])):
+                    if np.sum(df[k, 0:10]) < 100:
+                        for j in range(100 - int(np.sum(df[k, 0:10]))):
+                            i = np.random.randint(10)
+                            df[k, i] = df[k, i] + 1
+                    elif np.sum(df[k, 0:10]) > 100:
+                        for j in range(int(np.sum(df[k, 0:10])) - 100):
+                            i = np.random.choice(np.where(df[k, 0:10] > 0)[0])
+                            df[k, i] = df[k, i] - 1
+
+                # Fourth, ensure that our subject is in each decile the same number of times
+                trialList = np.zeros((len(df[:, 0]), 10))
+
+                for k in range(len(df[:, 0])):
+                    i = round((k / 2) + 0.05)
+                    trialList[k, 0] = df[k, i]
+                    intermediate = np.delete(df[k, :], i)
+                    trialList[k, 1:10] = np.random.choice(intermediate, 9)
+
+                # choices above
+                choices = np.arange(0, 1.1, 0.1)  # tax rate
+
+                # Define utility function
+                def utility(theta, phi, Equity, Equality, Payout):
+                    return (theta * Payout) + ((1 - theta) * ((phi * Equality) + ((1 - phi) * Equity)))
+
+                # Define free parameters
+                theta_values = np.arange(0, 1.01, 0.01)
+                phi_values = np.arange(0, 1.01, 0.01)
+                freeParameters = np.array(np.meshgrid(theta_values, phi_values)).T.reshape(-1, 2)
 
 .. dropdown:: Define the :bdg-success:`Free Parameter` Loop
 
@@ -937,9 +1049,26 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                non_specific = zeros(1, numel(freeParameters.theta));
+
+                for i = 1:numel(freeParameters.theta)
+                    Theta = freeParameters.theta(i);
+                    Phi = freeParameters.phi(i);
+
+                    % Define Trials
+                end
+
         .. tab-item:: Python
 
             ::
+
+                non_specific = np.zeros(len(freeParameters['theta']))
+
+                for i in range(len(freeParameters['theta'])):
+                    Theta = freeParameters['theta'][i]
+                    Phi = freeParameters['phi'][i]
+
+                    non_specific[i] = some_result  # Replace some_result with your actual result
 
 .. dropdown:: Define the :bdg-primary:`Trial` Loop
 
@@ -966,9 +1095,29 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                non_specific = zeros(1, numel(freeParameters.theta));
+
+                for i = 1:numel(freeParameters.theta)
+                    Theta = freeParameters.theta(i);
+                    Phi = freeParameters.phi(i);
+
+                    for k = 1:numel(trialList(:, 1))
+                        % Determine Predicted Decisions
+                    end
+                end
+
         .. tab-item:: Python
 
             ::
+
+                non_specific = np.zeros(len(freeParameters['theta']))
+
+                for i in range(len(freeParameters['theta'])):
+                    Theta = freeParameters['theta'][i]
+                    Phi = freeParameters['phi'][i]
+
+                    for k in range(len(trialList[:, 0])):
+                        # Determine Predicted Decisions
 
 .. dropdown:: Define the :bdg-danger:`Decision` Loop
 
@@ -1007,9 +1156,61 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                non_specific = zeros(1, numel(freeParameters.theta));
+
+                for i = 1:numel(freeParameters.theta)
+                    Theta = freeParameters.theta(i);
+                    Phi = freeParameters.phi(i);
+
+                    for k = 1:numel(trialList(:, 1))
+                        % Just Added
+                        Utility = zeros(size(choices));
+
+                        for n = 1:length(choices)
+                            Equity = equity(new_value(trialList(k, 1:10), choices(n)), trialList(k, 1:10), choices(n));
+                            Equality = equality(new_value(trialList(k, 1:10), choices(n)), trialList(k, 1:10), choices(n));
+                            Payout = payout(new_value(trialList(k, 1), choices(n)), trialList(k, 1), choices(n));
+
+                            Utility(n) = utility(Theta, Phi, Equity, Equality, Payout);
+                        end
+
+                        [~, correct_choice] = max(Utility);
+                        if numel(correct_choice) > 1
+                            correct_choice = correct_choice(randi(numel(correct_choice), 1));
+                            non_specific(i) = non_specific(i) + 1;
+                        end
+
+                        predictions(i, k) = choices(correct_choice);
+                    end
+                end
+
         .. tab-item:: Python
 
             ::
+
+                non_specific = np.zeros(len(freeParameters['theta']))
+
+                for i in range(len(freeParameters['theta'])):
+                    Theta = freeParameters['theta'][i]
+                    Phi = freeParameters['phi'][i]
+
+                    for k in range(len(trialList[:, 0])):
+                        # Just Added
+                        Utility = np.zeros(len(choices))
+
+                        for n in range(len(choices)):
+                            Equity = equity(new_value(trialList[k, 0:10], choices[n]), trialList[k, 0:10], choices[n])
+                            Equality = equality(new_value(trialList[k, 0:10], choices[n]), trialList[k, 0:10], choices[n])
+                            Payout = payout(new_value(trialList[k, 0], choices[n]), trialList[k, 0], choices[n])
+
+                            Utility[n] = utility(Theta, Phi, Equity, Equality, Payout)
+
+                        correct_choice = np.argmax(Utility)
+                        if np.sum(Utility == Utility[correct_choice]) > 1:
+                            correct_choice = np.random.choice(np.where(Utility == np.max(Utility))[0])
+                            non_specific[i] += 1
+
+                        predictions[i, k] = choices[correct_choice]
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

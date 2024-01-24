@@ -457,9 +457,30 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                distance_mat = pdist(predictions);
+                hierarchical = linkage(distance_mat, 'average');
+                dendrogram(hierarchical);
+                title('Hierarchical Clustering Dendrogram');
+                xlabel('Data Points');
+                ylabel('Distance');
+                fit = cluster(hierarchical, 'MaxClust', 4);
+
         .. tab-item:: Python
 
             ::
+
+                from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+                from scipy.spatial.distance import pdist
+                
+                distance_mat = pdist(predictions)
+                hierarchical = linkage(distance_mat, method='average')
+                dendrogram(hierarchical)
+                plt.title('Hierarchical Clustering Dendrogram')
+                plt.xlabel('Data Points')
+                plt.ylabel('Distance')
+                plt.show()
+
+                fit = fcluster(hierarchical, t=4, criterion='maxclust')
 
 .. dropdown:: Idenitfy Where Your Clusters are
 
@@ -468,6 +489,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
         .. tab-item:: R
 
             ::
+
                 freeParameters$Strategy = as.character(fit)
                 freeParameters$Strategy[which(freeParameters$Strategy == freeParameters$Strategy[1])] = 'Equity-Seeking'
                 freeParameters$Strategy[which(freeParameters$Strategy == freeParameters$Strategy[10101])] = 'Equality-Seeking'
@@ -515,9 +537,59 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                figure;
+
+                gscatter(toPlot.Initial_Allocation, toPlot.Payout_Change, toPlot.Strategy, ...
+                    [rgb('0,130,229'); rgb('255,25,0'); rgb('174,0,255')], 'o', 8, 'on');
+                xlabel('Initial Allocation');
+                ylabel('Payout Change');
+                title('Scatter Plot with Smoothed Lines');
+                legend('Location', 'Best');
+                xlim([0, 10]);
+                ylim([0, 30]);
+                grid on;
+
+                figure;
+
+                gscatter(toPlot.Initial_Allocation, toPlot.Tax_Rate, toPlot.Strategy, ...
+                    [rgb('0,130,229'); rgb('255,25,0'); rgb('174,0,255')], 'o', 8, 'on');
+                xlabel('Initial Allocation');
+                ylabel('Tax Rate');
+                title('Scatter Plot with Smoothed Lines');
+                legend('Location', 'Best');
+                xlim([0, 10]);
+                ylim([0, 30]);
+                grid on;
+
         .. tab-item:: Python
 
             ::
+                
+                import seaborn as sns
+
+                plt.figure()
+
+                sns.lmplot(x='Initial_Allocation', y='Payout_Change', hue='Strategy', data=toPlot, ci='sd', palette=['#0082E5', '#FF1900', '#AE00FF'])
+                plt.xlabel('Initial Allocation')
+                plt.ylabel('Payout Change')
+                plt.title('Scatter Plot with Smoothed Lines')
+                plt.legend(loc='best')
+                plt.xlim(0, 10)
+                plt.ylim(0, 30)
+                plt.grid(True)
+
+                plt.figure()
+
+                sns.lmplot(x='Initial_Allocation', y='Tax_Rate', hue='Strategy', data=toPlot, ci='sd', palette=['#0082E5', '#FF1900', '#AE00FF'])
+                plt.xlabel('Initial Allocation')
+                plt.ylabel('Tax Rate')
+                plt.title('Scatter Plot with Smoothed Lines')
+                plt.legend(loc='best')
+                plt.xlim(0, 10)
+                plt.ylim(0, 30)
+                plt.grid(True)
+
+                plt.show()
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

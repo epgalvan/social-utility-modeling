@@ -345,9 +345,103 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                trialData.PredictedNID = zeros(1, length(trialData.SubjectID));
+
+                for j = 1:length(conditions)
+                    z = find(trialData.condition == conditions(j));
+                    df = trialData(z, [6, 12:20, 2]);
+
+                    result = fmincon(@(params) obj_function_nid(params, df), initial_params, [], [], [], [], lower_bounds, upper_bounds);
+
+                    for i = 1:length(df)
+                        Utility = zeros(1, length(Choices));
+                        for n = 1:length(Choices)
+                            Utility(n) = utility(result(1), result(2), ...
+                                equity(new_value(df(i, 1:10), Choices(n)), df(i, 1:10), Choices(n)), ...
+                                equality(new_value(df(i, 1:10), Choices(n)), df(i, 1:10), Choices(n)), ...
+                                payout(new_value(df(i, 1), Choices(n)), df(i, 1), Choices(n)));
+                        end
+                        trialData.PredictedNID(z(i)) = Choices(Utility == max(Utility));
+                    end
+                end
+
+                subjectData.SSNIDMerit = zeros(1, length(subjectData.SubjectID));
+                subjectData.SSNIDEntitlement = zeros(1, length(subjectData.SubjectID));
+                subjectData.SSNIDCorruption = zeros(1, length(subjectData.SubjectID));
+                subjectData.SSNIDLuck = zeros(1, length(subjectData.SubjectID));
+
+                for i = 1:length(subjectData.SubjectID)
+                    trialsMerit = find(subjectData.SubjectID(i) == trialData.SubjectID & strcmp('merit', trialData.Condition));
+                    trialsEntitlement = find(subjectData.SubjectID(i) == trialData.SubjectID & strcmp('entitlement', trialData.Condition));
+                    trialsCorruption = find(subjectData.SubjectID(i) == trialData.SubjectID & strcmp('corruption', trialData.Condition));
+                    trialsLuck = find(subjectData.SubjectID(i) == trialData.SubjectID & strcmp('luck', trialData.Condition));
+
+                    subjectData.SSNIDMerit(i) = sum((trialData.observedTaxRate(trialsMerit) - trialData.PredictedNID(trialsMerit)).^2);
+                    subjectData.SSNIDEntitlement(i) = sum((trialData.observedTaxRate(trialsEntitlement) - trialData.PredictedNID(trialsEntitlement)).^2);
+                    subjectData.SSNIDCorruption(i) = sum((trialData.observedTaxRate(trialsCorruption) - trialData.PredictedNID(trialsCorruption)).^2);
+                    subjectData.SSNIDLuck(i) = sum((trialData.observedTaxRate(trialsLuck) - trialData.PredictedNID(trialsLuck)).^2);
+                end
+
+                subjectData.AICNIDMerit = length(trialsMerit) * log(subjectData.SSNIDMerit/length(trialsMerit)) + 2 * (2/length(subjectData.SubjectID));
+                subjectData.AICNIDEntitlement = length(trialsEntitlement) * log(subjectData.SSNIDEntitlement/length(trialsEntitlement)) + 2 * (2/length(subjectData.SubjectID));
+                subjectData.AICNIDCorruption = length(trialsCorruption) * log(subjectData.SSNIDCorruption/length(trialsCorruption)) + 2 * (2/length(subjectData.SubjectID));
+                subjectData.AICNIDLuck = length(trialsLuck) * log(subjectData.SSNIDLuck/length(trialsLuck)) + 2 * (2/length(subjectData.SubjectID));
+
+                alpha = 0.05;
+
+                ttest(subjectData.AICMerit, subjectData.AICNIDMerit, 'Tail', 'left', 'Alpha', alpha);
+                ttest(subjectData.AICEntitlement, subjectData.AICNIDEntitlement, 'Tail', 'left', 'Alpha', alpha);
+                ttest(subjectData.AICCorruption, subjectData.AICNIDCorruption, 'Tail', 'left', 'Alpha', alpha);
+                ttest(subjectData.AICLuck, subjectData.AICNIDLuck, 'Tail', 'left', 'Alpha', alpha);
+
         .. tab-item:: Python
 
             ::
+
+                trialData['PredictedNID'] = np.zeros(len(trialData['SubjectID']))
+
+                for j in range(len(conditions)):
+                    z = np.where(trialData['condition'] == conditions[j])[0]
+                    df = trialData.iloc[z, [5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1]]
+
+                    result = minimize(lambda params: obj_function_nid(params, df), initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
+
+                    for i in range(len(df)):
+                        Utility = np.zeros(len(Choices))
+                        for n in range(len(Choices)):
+                            Utility[n] = utility(result.x[0], result.x[1],
+                                                equity(new_value(df.iloc[i, 0:10], Choices[n]), df.iloc[i, 0:10], Choices[n]),
+                                                equality(new_value(df.iloc[i, 0:10], Choices[n]), df.iloc[i, 0:10], Choices[n]),
+                                                payout(new_value(df.iloc[i, 0], Choices[n]), df.iloc[i, 0], Choices[n]))
+                        trialData.at[z[i], 'PredictedNID'] = Choices[np.argmax(Utility)]
+
+                subjectData['SSNIDMerit'] = np.zeros(len(subjectData['SubjectID']))
+                subjectData['SSNIDEntitlement'] = np.zeros(len(subjectData['SubjectID']))
+                subjectData['SSNIDCorruption'] = np.zeros(len(subjectData['SubjectID']))
+                subjectData['SSNIDLuck'] = np.zeros(len(subjectData['SubjectID']))
+
+                for i in range(len(subjectData['SubjectID'])):
+                    trialsMerit = np.where((subjectData['SubjectID'][i] == trialData['SubjectID']) & (trialData['Condition'] == 'merit'))[0]
+                    trialsEntitlement = np.where((subjectData['SubjectID'][i] == trialData['SubjectID']) & (trialData['Condition'] == 'entitlement'))[0]
+                    trialsCorruption = np.where((subjectData['SubjectID'][i] == trialData['SubjectID']) & (trialData['Condition'] == 'corruption'))[0]
+                    trialsLuck = np.where((subjectData['SubjectID'][i] == trialData['SubjectID']) & (trialData['Condition'] == 'luck'))[0]
+
+                    subjectData.at[i, 'SSNIDMerit'] = np.sum((trialData['observedTaxRate'][trialsMerit] - trialData['PredictedNID'][trialsMerit])**2)
+                    subjectData.at[i, 'SSNIDEntitlement'] = np.sum((trialData['observedTaxRate'][trialsEntitlement] - trialData['PredictedNID'][trialsEntitlement])**2)
+                    subjectData.at[i, 'SSNIDCorruption'] = np.sum((trialData['observedTaxRate'][trialsCorruption] - trialData['PredictedNID'][trialsCorruption])**2)
+                    subjectData.at[i, 'SSNIDLuck'] = np.sum((trialData['observedTaxRate'][trialsLuck] - trialData['PredictedNID'][trialsLuck])**2)
+
+                subjectData['AICNIDMerit'] = len(trialsMerit) * np.log(subjectData['SSNIDMerit'] / len(trialsMerit)) + 2 * (2 / len(subjectData['SubjectID']))
+                subjectData['AICNIDEntitlement'] = len(trialsEntitlement) * np.log(subjectData['SSNIDEntitlement'] / len(trialsEntitlement)) + 2 * (2 / len(subjectData['SubjectID']))
+                subjectData['AICNIDCorruption'] = len(trialsCorruption) * np.log(subjectData['SSNIDCorruption'] / len(trialsCorruption)) + 2 * (2 / len(subjectData['SubjectID']))
+                subjectData['AICNIDLuck'] = len(trialsLuck) * np.log(subjectData['SSNIDLuck'] / len(trialsLuck)) + 2 * (2 / len(subjectData['SubjectID']))
+
+                alpha = 0.05
+
+                ttest_rel(subjectData['AICMerit'], subjectData['AICNIDMerit'], alternative='less', nan_policy='omit')
+                ttest_rel(subjectData['AICEntitlement'], subjectData['AICNIDEntitlement'], alternative='less', nan_policy='omit')
+                ttest_rel(subjectData['AICCorruption'], subjectData['AICNIDCorruption'], alternative='less', nan_policy='omit')
+                ttest_rel(subjectData['AICLuck'], subjectData['AICNIDLuck'], alternative='less', nan_policy='omit')
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

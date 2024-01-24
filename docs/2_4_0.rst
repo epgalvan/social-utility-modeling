@@ -803,9 +803,91 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                % Model Performance
+                taxRatePredictions = fitlm(trialData, 'observedTaxRate ~ predictedTaxRate');
+                disp(taxRatePredictions); % Display summary
+
+                payoutPredictions = fitlm(trialData, 'observedOutcome ~ predictedOutcome');
+                disp(payoutPredictions); % Display summary
+
+                % Visually Checking Assumptions
+                figure;
+
+                % Linearity
+                subplot(2, 2, 1);
+                scatter(trialData.predictedOutcome, trialData.observedOutcome, 'filled');
+                hold on;
+                plot([0 30], [0 30], '--k');
+                xlabel('Prediction');
+                ylabel('Observed');
+                xlim([0 30]);
+                ylim([0 30]);
+                title('Linearity');
+
+                % Normality
+                subplot(2, 2, 2);
+                histogram(trialData.predictedOutcome - trialData.observedOutcome, 'Normalization', 'probability');
+                hold on;
+                normvals = normrnd(0, std(trialData.predictedOutcome - trialData.observedOutcome), 1, 1000);
+                histogram(normvals, 'Normalization', 'probability');
+                xlabel('Prediction - Observed');
+                ylabel('Density');
+                title('Normality');
+
+                % Independence of Error and Homoscedasticity
+                subplot(2, 2, 3);
+                gscatter(trialData.initialAllocation, trialData.predictedOutcome - trialData.observedOutcome, trialData.Multiplier, 'br', '.', 10);
+                xlabel('Initial Allocation');
+                ylabel('Prediction - Observed');
+                title('Independence of Error and Homoscedasticity');
+                legend('off'); % Turn off automatic legend
+
         .. tab-item:: Python
 
             ::
+
+                import seaborn as sns
+                import matplotlib.pyplot as plt
+                from statsmodels.regression.linear_model import OLS
+                import statsmodels.api as sm
+
+                # Model Performance
+                tax_rate_predictions = OLS.from_formula('observedTaxRate ~ predictedTaxRate', trialData).fit()
+                print(tax_rate_predictions.summary())
+
+                payout_predictions = OLS.from_formula('observedOutcome ~ predictedOutcome', trialData).fit()
+                print(payout_predictions.summary())
+
+                # Visually Checking Assumptions
+
+                # Linearity
+                plt.subplot(2, 2, 1)
+                sns.scatterplot(x='predictedOutcome', y='observedOutcome', data=trialData)
+                plt.plot([0, 30], [0, 30], '--k')
+                plt.xlabel('Prediction')
+                plt.ylabel('Observed')
+                plt.title('Linearity')
+
+                # Normality
+                plt.subplot(2, 2, 2)
+                sns.histplot(trialData['predictedOutcome'] - trialData['observedOutcome'], kde=True, color='blue', label='Actual')
+                norm_vals = np.random.normal(0, np.std(trialData['predictedOutcome'] - trialData['observedOutcome']), 1000)
+                sns.histplot(norm_vals, kde=True, color='orange', label='Predicted')
+                plt.xlabel('Prediction - Observed')
+                plt.ylabel('Density')
+                plt.title('Normality')
+                plt.legend()
+
+                # Independence of Error and Homoscedasticity
+                plt.subplot(2, 2, 3)
+                sns.lineplot(x='initialAllocation', y='predictedOutcome - observedOutcome', hue='Multiplier', style='Multiplier', markers=True, data=trialData)
+                plt.xlabel('Initial Allocation')
+                plt.ylabel('Prediction - Observed')
+                plt.title('Independence of Error and Homoscedasticity')
+
+                plt.tight_layout()
+                plt.show()
+
 .. dropdown:: Validating Parameter Recovery Process
 
     .. tab-set::
@@ -915,9 +997,207 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                fivefold = table();
+
+                for i = 1:length(included_subjects)
+                    datafile = strcat(parentfolder, included_subjects{i}, restoffilepath);
+                    fullData = readtable(datafile);
+
+                    thetaPerCondition = zeros(length(conditions) * 5, 1);
+                    phiPerCondition = zeros(length(conditions) * 5, 1);
+                    SSPerCondition = zeros(length(conditions), 1);
+
+                    for j = 1:length(conditions)
+                        df = fullData(fullData.condition == conditions{j}, [49, 40:48, 33]);
+                        df.redistributionRate = df.redistributionRate / 100;
+
+                        order = randperm(20);
+
+                        for z = 1:5
+                            start_index = (z - 1) * 4 + 1;
+                            end_index = z * 4;
+                            withheld = order(start_index:end_index);
+                            m = ((start_index - 1) * 5) + z;
+
+                            result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, df(~ismember(1:20, withheld), :));
+
+                            thetaPerCondition(m) = result(1);
+                            phiPerCondition(m) = result(2);
+
+                            for k = 1:length(withheld)
+                                y = withheld(k);
+                                Utility = zeros(length(Choices), 1);
+
+                                for n = 1:length(Choices)
+                                    Utility(n) = utility(result(1), result(2), ...
+                                        equity(new_value(df{y, 1:10}, choices{n}), df{y, 1:10}, choices{n}), ...
+                                        equality(new_value(df{y, 1:10}, choices{n}), df{y, 1:10}, choices{n}), ...
+                                        payout(new_value(df{y, 1}, choices{n}), df{y, 1}, choices{n}));
+                                end
+
+                                [~, correct_choice] = max(Utility);
+                                predictedOutcome = new_value(df.myself(y), Choices(correct_choice(randi(length(correct_choice)))));
+                                observedOutcome = new_value(df.myself(y), df.redistributionRate(y));
+                                SSPerCondition(j) = SSPerCondition(j) + (observedOutcome - predictedOutcome)^2;
+                            end
+                        end
+                    end
+
+                    fivefold{i, 1:45} = [included_subjects{i}, thetaPerCondition', phiPerCondition', SSPerCondition'];
+                end
+
+                fivefold.Properties.VariableNames = {'SubjectID', ...
+                    'thetaMeritF1', 'thetaMeritF2', 'thetaMeritF3', 'thetaMeritF4', 'thetaMeritF5', ...
+                    'thetaEntitlementF1', 'thetaEntitlementF2', 'thetaEntitlementF3', 'thetaEntitlementF4', 'thetaEntitlementF5', ...
+                    'thetaCorruptionF1', 'thetaCorruptionF2', 'thetaCorruptionF3', 'thetaCorruptionF4', 'thetaCorruptionF5', ...
+                    'thetaLuckF1', 'thetaLuckF2', 'thetaLuckF3', 'thetaLuckF4', 'thetaLuckF5', ...
+                    'phiMeritF1', 'phiMeritF2', 'phiMeritF3', 'phiMeritF4', 'phiMeritF5', ...
+                    'phiEntitlementF1', 'phiEntitlementF2', 'phiEntitlementF3', 'phiEntitlementF4', 'phiEntitlementF5', ...
+                    'phiCorruptionF1', 'phiCorruptionF2', 'phiCorruptionF3', 'phiCorruptionF4', 'phiCorruptionF5', ...
+                    'phiLuckF1', 'phiLuckF2', 'phiLuckF3', 'phiLuckF4', 'phiLuckF5', ...
+                    'SSMerit', 'SSEntitlement', 'SSCorruption', 'SSLuck'};
+
+                % Change in root mean squared error per trial in each condition
+                disp(sqrt(mean(fivefold.SSMerit) / height(df) - sqrt(mean(subjectData.SSMerit) / height(df))));
+                disp(sqrt(mean(fivefold.SSEntitlement) / height(df) - sqrt(mean(subjectData.SSEntitlement) / height(df))));
+                disp(sqrt(mean(fivefold.SSCorruption) / height(df) - sqrt(mean(subjectData.SSCorruption) / height(df))));
+                disp(sqrt(mean(fivefold.SSLuck) / height(df) - sqrt(mean(subjectData.SSLuck) / height(df))));
+
+                fivefold.AICMerit = height(df) * log(fivefold.SSMerit / height(df)) + 2 * 2;
+                fivefold.AICEntitlement = height(df) * log(fivefold.SSEntitlement / height(df)) + 2 * 2;
+                fivefold.AICCorruption = height(df) * log(fivefold.SSCorruption / height(df)) + 2 * 2;
+                fivefold.AICLuck = height(df) * log(fivefold.SSLuck / height(df)) + 2 * 2;
+
+                % Test fivefold MFI against normal MFI for this model
+                disp(ttest(fivefold.AICMerit, subjectData.AIC, 'paired', true));
+                disp(ttest(fivefold.AICEntitlement, subjectData.AICEntitlement, 'paired', true));
+                disp(ttest(fivefold.AICCorruption, subjectData.AICCorruption, 'paired', true));
+                disp(ttest(fivefold.AICLuck, subjectData.AICLuck, 'paired', true));
+
+                cosines = zeros(length(conditions) * 2 * 5, 1);
+
+                for i = 1:5
+                    for j = 1:length(conditions)
+                        k = ((i - 1) * 5) + j;
+                        cosines(k) = cosine(subjectData.Parameter1, fivefold{:, k + 1});
+                        cosines(k + 20) = cosine(subjectData.Parameter1, fivefold{:, k + 21});
+                    end
+                end
+
+                % Cosine similarity of theta and phi across conditions and folds
+                disp(mean(cosines(1:5)));
+                disp(mean(cosines(6:10)));
+                disp(mean(cosines(11:15)));
+                disp(mean(cosines(16:20)));
+                disp(mean(cosines(21:25)));
+                disp(mean(cosines(26:30)));
+                disp(mean(cosines(31:35)));
+                disp(mean(cosines(36:40)));
+
+                % Cosine similarity of theta across all conditions and folds
+                disp(mean(cosines(1:20)));
+
+                % Cosine similarity of phi across all conditions and folds
+                disp(mean(cosines(21:40)));
+
         .. tab-item:: Python
 
             ::
+
+                fivefold = pd.DataFrame()
+
+                for i in range(len(included_subjects)):
+                    datafile = parentfolder + included_subjects[i] + restoffilepath
+                    fullData = pd.read_csv(datafile)
+
+                    thetaPerCondition = np.zeros(len(conditions) * 5)
+                    phiPerCondition = np.zeros(len(conditions) * 5)
+                    SSPerCondition = np.zeros(len(conditions))
+
+                    for j in range(len(conditions)):
+                        df = fullData[fullData['condition'] == conditions[j]][[49, *range(40, 49), 33]]
+                        df['redistributionRate'] = df['redistributionRate'] / 100
+
+                        order = np.random.permutation(20)
+
+                        for z in range(1, 6):
+                            start_index = (z - 1) * 4
+                            end_index = z * 4
+                            withheld = order[start_index:end_index]
+                            m = (start_index * 5) + z - 1  # Corrected indexing
+
+                            result = minimize(obj_function, initial_params, args=(df[~df.index.isin(withheld)],), bounds=list(zip(lower_bounds, upper_bounds)))
+
+                            thetaPerCondition[m] = result.x[0]
+                            phiPerCondition[m] = result.x[1]
+
+                            for k in withheld:
+                                Utility = np.zeros(len(Choices))
+
+                                for n in range(len(Choices)):
+                                    Utility[n] = utility(result.x[0], result.x[1],
+                                                        equity(new_value(df.iloc[k, 0:9], choices[n]), df.iloc[k, 0:9], choices[n]),
+                                                        equality(new_value(df.iloc[k, 0:9], choices[n]), df.iloc[k, 0:9], choices[n]),
+                                                        payout(new_value(df.iloc[k, 0], choices[n]), df.iloc[k, 1], choices[n]))
+
+                                correct_choice = np.argmax(Utility)
+                                predictedOutcome = new_value(df['myself'].iloc[k], Choices[np.random.choice(np.where(Utility == max(Utility))[0])])
+                                observedOutcome = new_value(df['myself'].iloc[k], df['redistributionRate'].iloc[k])
+                                SSPerCondition[j] += (observedOutcome - predictedOutcome) ** 2
+
+                    fivefold.loc[i, 0:44] = [included_subjects[i], *thetaPerCondition, *phiPerCondition, *SSPerCondition]
+
+                fivefold.columns = ['SubjectID', 
+                                    'thetaMeritF1', 'thetaMeritF2', 'thetaMeritF3', 'thetaMeritF4', 'thetaMeritF5',
+                                    'thetaEntitlementF1', 'thetaEntitlementF2', 'thetaEntitlementF3', 'thetaEntitlementF4', 'thetaEntitlementF5', 
+                                    'thetaCorruptionF1', 'thetaCorruptionF2', 'thetaCorruptionF3', 'thetaCorruptionF4', 'thetaCorruptionF5', 
+                                    'thetaLuckF1', 'thetaLuckF2', 'thetaLuckF3', 'thetaLuckF4', 'thetaLuckF5', 
+                                    'phiMeritF1', 'phiMeritF2', 'phiMeritF3', 'phiMeritF4', 'phiMeritF5', 
+                                    'phiEntitlementF1', 'phiEntitlementF2', 'phiEntitlementF3', 'phiEntitlementF4', 'phiEntitlementF5', 
+                                    'phiCorruptionF1', 'phiCorruptionF2', 'phiCorruptionF3', 'phiCorruptionF4', 'phiCorruptionF5', 
+                                    'phiLuckF1', 'phiLuckF2', 'phiLuckF3', 'phiLuckF4', 'phiLuckF5', 
+                                    'SSMerit', 'SSEntitlement', 'SSCorruption', 'SSLuck']
+
+                # Change in root mean squared error per trial in each condition
+                print(np.sqrt(np.mean(fivefold['SSMerit']) / len(df) - np.sqrt(np.mean(subjectData['SSMerit']) / len(df))))
+                print(np.sqrt(np.mean(fivefold['SSEntitlement']) / len(df) - np.sqrt(np.mean(subjectData['SSEntitlement']) / len(df))))
+                print(np.sqrt(np.mean(fivefold['SSCorruption']) / len(df) - np.sqrt(np.mean(subjectData['SSCorruption']) / len(df))))
+                print(np.sqrt(np.mean(fivefold['SSLuck']) / len(df) - np.sqrt(np.mean(subjectData['SSLuck']) / len(df))))
+
+                fivefold['AICMerit'] = len(df) * np.log(fivefold['SSMerit'] / len(df)) + 2 * 2
+                fivefold['AICEntitlement'] = len(df) * np.log(fivefold['SSEntitlement'] / len(df)) + 2 * 2
+                fivefold['AICCorruption'] = len(df) * np.log(fivefold['SSCorruption'] / len(df)) + 2 * 2
+                fivefold['AICLuck'] = len(df) * np.log(fivefold['SSLuck'] / len(df)) + 2 * 2
+
+                # Test fivefold MFI against normal MFI for this model
+                print(ttest_rel(fivefold['AICMerit'], subjectData['AIC']))
+                print(ttest_rel(fivefold['AICEntitlement'], subjectData['AICEntitlement']))
+                print(ttest_rel(fivefold['AICCorruption'], subjectData['AICCorruption']))
+                print(ttest_rel(fivefold['AICLuck'], subjectData['AICLuck']))
+
+                cosines = np.zeros(len(conditions) * 2 * 5)
+
+                for i in range(5):
+                    for j in range(len(conditions)):
+                        k = (i * 5) + j
+                        cosines[k] = cosine(subjectData['Parameter1'], fivefold.iloc[:, k + 1])
+                        cosines[k + 20] = cosine(subjectData['Parameter1'], fivefold.iloc[:, k + 21])
+
+                # Cosine similarity of theta and phi across conditions and folds
+                print(np.mean(cosines[0:4]))
+                print(np.mean(cosines[5:9]))
+                print(np.mean(cosines[10:15]))
+                print(np.mean(cosines[15:19]))
+                print(np.mean(cosines[20:24]))
+                print(np.mean(cosines[25:29]))
+                print(np.mean(cosines[30:34]))
+                print(np.mean(cosines[35:39]))
+
+                # Cosine similarity of theta across all conditions and folds
+                print(np.mean(cosines[0:19]))
+
+                # Cosine similarity of phi across all conditions and folds
+                print(np.mean(cosines[20:39]))
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

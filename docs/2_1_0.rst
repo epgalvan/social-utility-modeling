@@ -619,9 +619,64 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                all_subjects = readtable('C:/Users/DELL/Downloads/prolific_export_648c19e5420c9b10a79589a4.csv', 'Delimiter', ',');
+                potentially_excluded_subjects = readtable('C:/Users/DELL/Downloads/prolific_export_6437e471bec005411b1503ea.csv', 'Delimiter', ',');
+
+                k = 0;
+                for i = 1:length(potentially_excluded_subjects.Participant_id)
+                    k = k + sum(potentially_excluded_subjects.Participant_id(i) == all_subjects.Participant_id);
+                end
+
+                actual_excluded_subjects = cell(1, k);
+                j = 0;
+                for i = 1:length(potentially_excluded_subjects.Participant_id)
+                    if sum(potentially_excluded_subjects.Participant_id(i) == all_subjects.Participant_id) == 1
+                        j = j + 1;
+                        actual_excluded_subjects{j} = find(potentially_excluded_subjects.Participant_id(i) == all_subjects.Participant_id);
+                    end
+                end
+
+                included_subjects = all_subjects(~ismember(1:length(all_subjects.Participant_id), cell2mat(actual_excluded_subjects)), :);
+
+                parentfolder = 'C:/Users/DELL/rdb_all_modded/';
+                restoffilepath = '.csv';
+
+                trialData = table();
+                subjectData = table();
+
+                conditions = {'merit', 'entitlement', 'corruption', 'luck'};
+
         .. tab-item:: Python
 
             ::
+
+                import pandas as pd
+
+                all_subjects = pd.read_csv('C:/Users/DELL/Downloads/prolific_export_648c19e5420c9b10a79589a4.csv', delimiter=',')
+                potentially_excluded_subjects = pd.read_csv('C:/Users/DELL/Downloads/prolific_export_6437e471bec005411b1503ea.csv', delimiter=',')
+
+                k = 0
+                for i in range(len(potentially_excluded_subjects['Participant.id'])):
+                    k += sum(potentially_excluded_subjects['Participant.id'][i] == all_subjects['Participant.id'])
+
+                actual_excluded_subjects = [None] * k
+                j = 0
+                for i in range(len(potentially_excluded_subjects['Participant.id'])):
+                    if sum(potentially_excluded_subjects['Participant.id'][i] == all_subjects['Participant.id']) == 1:
+                        j += 1
+                        actual_excluded_subjects[j-1] = potentially_excluded_subjects['Participant.id'][i]
+
+                included_subjects = all_subjects[~all_subjects['Participant.id'].isin(actual_excluded_subjects)]
+
+                parentfolder = 'C:/Users/DELL/rdb_all_modded/'
+                restoffilepath = '.csv'
+
+                trialData = pd.DataFrame()
+                subjectData = pd.DataFrame()
+
+                conditions = ['merit', 'entitlement', 'corruption', 'luck']
+
+
 .. dropdown:: Define the :bdg-success:`Subject` and :bdg-primary:`Condition` Loops
 
     .. tab-set::
@@ -653,9 +708,46 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                for i = 1:length(included_subjects)
+                    datafile = fullfile(parentfolder, [included_subjects{i}, restoffilepath]);
+                    fullData = readtable(datafile);
+
+                    thetaPerCondition = zeros(1, length(conditions));
+                    phiPerCondition = zeros(1, length(conditions));
+                    strategyPerCondition = zeros(1, length(conditions));
+                    SSPerCondition = zeros(1, length(conditions));
+
+                    for j = 1:length(conditions)
+                        df = fullData(fullData.condition == conditions(j), [49, 40:48, 33]);
+                        df.redistributionRate = df.redistributionRate / 100;
+
+                        % Determine Free Parameters for Each Condition
+                        
+                    end
+                end
+
         .. tab-item:: Python
 
             ::
+
+                for i in range(len(included_subjects)):
+                    datafile = os.path.join(parentfolder, f"{included_subjects[i]}{restoffilepath}")
+                    fullData = pd.read_csv(datafile)
+
+                    thetaPerCondition = np.zeros(len(conditions))
+                    phiPerCondition = np.zeros(len(conditions))
+                    strategyPerCondition = np.zeros(len(conditions))
+                    SSPerCondition = np.zeros(len(conditions))
+
+                    for j in range(len(conditions)):
+                        df = fullData[fullData['condition'] == conditions[j]][['49', '40', '41', '42', '43', '44', '45', '46', '47', '48', '33']]
+                        df['redistributionRate'] = df['redistributionRate'] / 100
+
+                        # Determine Free Parameters for Each Condition
+                        
+                end
+
+
 .. dropdown:: Recover :bdg-success:`Free Parameters` for each :bdg-primary:`Condition`
 
     .. tab-set::
@@ -696,9 +788,60 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                for i = 1:length(included_subjects)
+                    datafile = fullfile(parentfolder, [included_subjects{i}, restoffilepath]);
+                    fullData = readtable(datafile);
+
+                    thetaPerCondition = zeros(1, length(conditions));
+                    phiPerCondition = zeros(1, length(conditions));
+                    strategyPerCondition = zeros(1, length(conditions));
+                    SSPerCondition = zeros(1, length(conditions));
+
+                    for j = 1:length(conditions)
+                        df = fullData(fullData.condition == conditions(j), [49, 40:48, 33]);
+                        df.redistributionRate = df.redistributionRate / 100;
+
+                        % Just Added
+
+                        result = fmincon(@(params)obj_function(params, df), initial_params, [], [], [], [], lower_bounds, upper_bounds);
+                        thetaPerCondition(j) = result(1);
+                        phiPerCondition(j) = result(2);
+                        closestPoint = find(freeParameters.theta == round(result(1), 2) & freeParameters.phi == round(result(2), 2));
+                        strategyPerCondition(j) = freeParameters.Strategy(closestPoint);
+
+                        % Determine Predictions
+                    end
+                end
+
         .. tab-item:: Python
 
             ::
+
+                for i in range(len(included_subjects)):
+                    datafile = os.path.join(parentfolder, f"{included_subjects[i]}{restoffilepath}")
+                    fullData = pd.read_csv(datafile)
+
+                    thetaPerCondition = np.zeros(len(conditions))
+                    phiPerCondition = np.zeros(len(conditions))
+                    strategyPerCondition = np.zeros(len(conditions))
+                    SSPerCondition = np.zeros(len(conditions))
+
+                    for j in range(len(conditions)):
+                        df = fullData[fullData['condition'] == conditions[j]][['49', '40', '41', '42', '43', '44', '45', '46', '47', '48', '33']]
+                        df['redistributionRate'] = df['redistributionRate'] / 100
+
+                        # Just Added
+
+                        result = fmincon(obj_function, initial_params, df);
+                        thetaPerCondition[j] = result[0]
+                        phiPerCondition[j] = result[1]
+                        closestPoint = np.where((freeParameters['theta'] == round(result[0], 2)) & (freeParameters['phi'] == round(result[1], 2)))[0]
+                        strategyPerCondition[j] = freeParameters['Strategy'][closestPoint].values[0]
+
+                        # Determine Predictions
+
+
+
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success:`Free Parameters`
 
     .. tab-set::
@@ -780,9 +923,132 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                for i = 1:length(included_subjects)
+                    datafile = fullfile(parentfolder, [included_subjects{i}, restoffilepath]);
+                    fullData = readtable(datafile);
+
+                    thetaPerCondition = zeros(1, length(conditions));
+                    phiPerCondition = zeros(1, length(conditions));
+                    strategyPerCondition = zeros(1, length(conditions));
+                    SSPerCondition = zeros(1, length(conditions));
+
+                    for j = 1:length(conditions)
+                        df = fullData(fullData.condition == conditions(j), [49, 40:48, 33]);
+                        df.redistributionRate = df.redistributionRate / 100;
+
+                        result = fmincon(@(params)obj_function(params, df), initial_params, [], [], [], [], lower_bounds, upper_bounds);
+                        thetaPerCondition(j) = result(1);
+                        phiPerCondition(j) = result(2);
+                        closestPoint = find(freeParameters.theta == round(result(1), 2) & freeParameters.phi == round(result(2), 2));
+                        strategyPerCondition(j) = freeParameters.Strategy(closestPoint);
+
+                        df.predictedRR = zeros(length(df.redistributionRate), 1);
+                        df.predictedOutcome = zeros(length(df.redistributionRate), 1);
+                        df.actualOutcome = zeros(length(df.redistributionRate), 1);
+
+                        for k = 1:length(df.redistributionRate)
+                            Utility = zeros(length(Choices), 1);
+                            for n = 1:length(Choices)
+                                Utility(n) = utility(thetaPerCondition(j), phiPerCondition(j), ...
+                                    equity(new_value(df(k, 1:10), Choices(n)), df(k, 1:10), Choices(n)), ...
+                                    equality(new_value(df(k, 1:10), Choices(n)), df(k, 1:10), Choices(n)), ...
+                                    payout(new_value(df(k, 1), Choices(n)), df(k, 1), Choices(n)));
+                            end
+                            [~, correct_choice] = max(Utility);
+                            df.predictedRR(k) = Choices(correct_choice);
+                            df.predictedOutcome(k) = new_value(df.myself(k), df.predictedRR(k));
+                            df.actualOutcome(k) = new_value(df.myself(k), df.redistributionRate(k));
+                        end
+                        SSPerCondition(j) = sum((df.predictedOutcome - df.actualOutcome).^2);
+                        fullData(fullData.condition == conditions(j), 76) = df.predictedOutcome;
+                        fullData(fullData.condition == conditions(j), 77) = df.predictedRR;
+                        fullData(fullData.condition == conditions(j), 78) = df.actualOutcome;
+                        fullData(fullData.condition == conditions(j), 79) = freeParameters.Strategy(closestPoint);
+                    end
+
+                    subjectData(i, 1:17) = [included_subjects{i}, thetaPerCondition, phiPerCondition, strategyPerCondition, SSPerCondition];
+
+                    start = size(subjectData, 1) + 1;
+                    stop = start + length(fullData.redistributionRate) - 1;
+                    trialData(start:stop, 1) = included_subjects{i};
+                    trialData(start:stop, 2) = fullData.redistributionRate / 100;
+                    trialData(start:stop, 3) = fullData(:, 78);
+                    trialData(start:stop, 4) = fullData(:, 77);
+                    trialData(start:stop, 5) = fullData(:, 76);
+                    trialData(start:stop, 6) = fullData.myself;
+                    trialData(start:stop, 7) = fullData(:, 79);
+                    trialData(start:stop, 9) = repelem(1:4, length(df.redistributionRate));
+                    trialData(start:stop, 10) = 1:length(fullData.redistributionRate);
+                    trialData(start:stop, 11) = fullData.condition;
+                    trialData(start:stop, 12:20) = fullData(:, 40:48);
+                end
+
+                subjectData.Properties.VariableNames = {'SubjectID', 'thetaMerit', 'thetaEntitlement', 'thetaCorruption', 'thetaLuck', ...
+                    'phiMerit', 'phiEntitlement', 'phiCorruption', 'phiLuck', 'strategyMerit', 'strategyEntitlement', ...
+                    'strategyCorruption', 'strategyLuck', 'SSMerit', 'SSEntitlement', 'SSCorruption', 'SSLuck'};
+                trialData.Properties.VariableNames = {'SubjectID', 'observedTaxRate', 'observedOutcome', 'predictedTaxRate', ...
+                    'predictedOutcome', 'initialAllocation', 'strategy', 'blockNumber', 'trialNumber', 'condition', ...
+                    'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9'};
+
         .. tab-item:: Python
 
             ::
+
+                for i in range(len(included_subjects)):
+                    datafile = os.path.join(parentfolder, f"{included_subjects[i]}{restoffilepath}")
+                    fullData = pd.read_csv(datafile)
+
+                    thetaPerCondition = np.zeros(len(conditions))
+                    phiPerCondition = np.zeros(len(conditions))
+                    strategyPerCondition = np.zeros(len(conditions))
+                    SSPerCondition = np.zeros(len(conditions))
+
+                    for j in range(len(conditions)):
+                        df = fullData[fullData['condition'] == conditions[j]][['49', '40', '41', '42', '43', '44', '45', '46', '47', '48', '33']]
+                        df['redistributionRate'] = df['redistributionRate'] / 100
+
+                        result = fmincon(obj_function, initial_params, df);
+                        thetaPerCondition[j] = result[0]
+                        phiPerCondition[j] = result[1]
+                        closestPoint = np.where((freeParameters['theta'] == round(result[0], 2)) & (freeParameters['phi'] == round(result[1], 2)))[0]
+                        strategyPerCondition[j] = freeParameters['Strategy'][closestPoint].values[0]
+
+                        df['predictedRR'] = np.zeros(len(df['redistributionRate']))
+                        df['predictedOutcome'] = np.zeros(len(df['redistributionRate']))
+                        df['actualOutcome'] = np.zeros(len(df['redistributionRate']))
+
+                        for k in range(len(df['redistributionRate'])):
+                            Utility = np.zeros(len(Choices))
+                            for n in range(len(Choices)):
+                                Utility[n] = utility(thetaPerCondition[j], phiPerCondition[j], 
+                                    equity(new_value(df.iloc[k, 1:10], Choices[n]), df.iloc[k, 1:10], Choices[n]), 
+                                    equality(new_value(df.iloc[k, 1:10], Choices[n]), df.iloc[k, 1:10], Choices[n]), 
+                                    payout(new_value(df.iloc[k, 1], Choices[n]), df.iloc[k, 1], Choices[n]))
+                            correct_choice = np.argmax(Utility)
+                            df['predictedRR'].iloc[k] = Choices[correct_choice]
+                            df['predictedOutcome'].iloc[k] = new_value(df['myself'].iloc[k], df['predictedRR'].iloc[k])
+                            df['actualOutcome'].iloc[k] = new_value(df['myself'].iloc[k], df['redistributionRate'].iloc[k])
+                        SSPerCondition[j] = np.sum((df['predictedOutcome'] - df['actualOutcome'])**2)
+                        fullData.loc[fullData['condition'] == conditions[j], 76] = df['predictedOutcome']
+                        fullData.loc[fullData['condition'] == conditions[j], 77] = df['predictedRR']
+                        fullData.loc[fullData['condition'] == conditions[j], 78] = df['actualOutcome']
+                        fullData.loc[fullData['condition'] == conditions[j], 79] = freeParameters['Strategy'][closestPoint].values[0]
+
+                    subjectData.iloc[i, 0:17] = [included_subjects[i], *thetaPerCondition, *phiPerCondition, *strategyPerCondition, *SSPerCondition]
+
+                    start = len(subjectData) + 1
+                    stop = start + len(fullData['redistributionRate'])
+                    trialData.loc[start:stop, 'SubjectID'] = included_subjects[i]
+                    trialData.loc[start:stop, 'observedTaxRate'] = fullData['redistributionRate'] / 100
+                    trialData.loc[start:stop, 'observedOutcome'] = fullData.iloc[:, 78]
+                    trialData.loc[start:stop, 'predictedTaxRate'] = fullData.iloc[:, 77]
+                    trialData.loc[start:stop, 'predictedOutcome'] = fullData.iloc[:, 76]
+                    trialData.loc[start:stop, 'initialAllocation'] = fullData['myself']
+                    trialData.loc[start:stop, 'strategy'] = fullData.iloc[:, 79]
+                    trialData.loc[start:stop, 'blockNumber'] = np.tile(np.arange(1, 5), len(df['redistributionRate']))
+                    trialData.loc[start:stop, 'trialNumber'] = np.arange(1, len(fullData['redistributionRate']) + 1)
+                    trialData.loc[start:stop, 'condition'] = fullData['condition']
+                    trialData.loc[start:stop, 'P1':'P9'] = fullData.iloc[:, 40:48].values
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

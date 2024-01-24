@@ -177,9 +177,85 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                alpha = 0.05 / length(conditions);
+
+                % Merit Condition
+                for i = 1:length(conditions)
+                    ttest(subjectData.AICMerit(~excludedM), altSubjectData.AICPMerit(~excludedM), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICMerit(~excludedM), altSubjectData.AICLMerit(~excludedM), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICMerit(~excludedM), altSubjectData.AICTMerit(~excludedM), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICMerit(~excludedM), altSubjectData.AICPLMerit(~excludedM), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICMerit(~excludedM), altSubjectData.AICPTMerit(~excludedM), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICMerit(~excludedM), altSubjectData.AICLTMerit(~excludedM), 'Tail', 'left', 'Alpha', alpha);
+                end
+
+                % Entitlement Condition
+                for i = 1:length(conditions)
+                    ttest(subjectData.AICEntitlement(~excludedE), altSubjectData.AICPEntitlement(~excludedE), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICEntitlement(~excludedE), altSubjectData.AICLEntitlement(~excludedE), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICEntitlement(~excludedE), altSubjectData.AICTEntitlement(~excludedE), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICEntitlement(~excludedE), altSubjectData.AICPLEntitlement(~excludedE), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICEntitlement(~excludedE), altSubjectData.AICPTEntitlement(~excludedE), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICEntitlement(~excludedE), altSubjectData.AICLTEntitlement(~excludedE), 'Tail', 'left', 'Alpha', alpha);
+                end
+
+                % Corruption Condition
+                for i = 1:length(conditions)
+                    ttest(subjectData.AICCorruption(~excludedC), altSubjectData.AICPCorruption(~excludedC), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICCorruption(~excludedC), altSubjectData.AICLCorruption(~excludedC), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICCorruption(~excludedC), altSubjectData.AICTCorruption(~excludedC), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICCorruption(~excludedC), altSubjectData.AICPLCorruption(~excludedC), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICCorruption(~excludedC), altSubjectData.AICPTCorruption(~excludedC), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICCorruption(~excludedC), altSubjectData.AICLTCorruption(~excludedC), 'Tail', 'left', 'Alpha', alpha);
+                end
+
+                % Luck Condition
+                for i = 1:length(conditions)
+                    ttest(subjectData.AICLuck(~excludedL), altSubjectData.AICPLuck(~excludedL), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICLuck(~excludedL), altSubjectData.AICLLuck(~excludedL), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICLuck(~excludedL), altSubjectData.AICTLuck(~excludedL), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICLuck(~excludedL), altSubjectData.AICPLLuck(~excludedL), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICLuck(~excludedL), altSubjectData.AICPTLuck(~excludedL), 'Tail', 'left', 'Alpha', alpha);
+                    ttest(subjectData.AICLuck(~excludedL), altSubjectData.AICLTLuck(~excludedL), 'Tail', 'left', 'Alpha', alpha);
+                end
+
         .. tab-item:: Python
 
             ::
+
+                alpha <- 0.05 / length(conditions)
+
+                # Merit Condition
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICPMerit[-excludedM], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICLMerit[-excludedM], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICTMerit[-excludedM], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICPLMerit[-excludedM], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICPTMerit[-excludedM], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICMerit[-excludedM], altSubjectData$AICLTMerit[-excludedM], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+
+                # Entitlement Condition
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICPEntitlement[-excludedE], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICLEntitlement[-excludedE], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICTEntitlement[-excludedE], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICPLEntitlement[-excludedE], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICPTEntitlement[-excludedE], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICEntitlement[-excludedE], altSubjectData$AICLTEntitlement[-excludedE], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+
+                # Corruption Condition
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICPCorruption[-excludedC], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICLCorruption[-excludedC], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICTCorruption[-excludedC], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICPLCorruption[-excludedC], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICPTCorruption[-excludedC], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICCorruption[-excludedC], altSubjectData$AICLTCorruption[-excludedC], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+
+                # Luck Condition
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICPLuck[-excludedL], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICLLuck[-excludedL], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICTLuck[-excludedL], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICPLLuck[-excludedL], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICPTLuck[-excludedL], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
+                t.test(subjectData$AICLuck[-excludedL], altSubjectData$AICLTLuck[-excludedL], paired = TRUE, conf.level = 1 - alpha, alternative = 'less')
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

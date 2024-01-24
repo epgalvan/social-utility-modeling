@@ -641,9 +641,73 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                function obj_value = obj_function(params, df, method)
+                Theta = params(1);
+                Phi = params(2);
+
+                predicted_utility = zeros(size(df, 1), 1);
+                observed_utility = zeros(size(df, 1), 1);
+                choices = 0:0.1:1;
+
+                for k = 1:size(df, 1)
+                    Utility = zeros(size(choices));
+
+                    for n = 1:length(choices)
+                        Equity = equity(new_value(df(k, 1:10), choices(n)), df(k, 1:10), choices(n));
+                        Equality = equality(new_value(df(k, 1:10), choices(n)), df(k, 1:10), choices(n));
+                        Payout = payout(new_value(df(k, 1), choices(n)), df(k, 1), choices(n));
+
+                        Utility(n) = utility(Theta, Phi, Equity, Equality, Payout);
+                    end
+
+                    predicted_utility(k) = max(Utility);
+                    observed_utility(k) = Utility(df(k, 11) == choices);
+                end
+
+                if strcmp(method, 'OLS')
+                    obj_value = sum((predicted_utility - observed_utility).^2);
+                elseif strcmp(method, 'MLE')
+                    obj_value = -sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                else
+                    error('Invalid method');
+                end
+            end
+
         .. tab-item:: Python
 
             ::
+
+                from scipy.stats import norm
+
+                def obj_function(params, df, method="OLS"):
+                    Theta = params[0]
+                    Phi = params[1]
+
+                    predicted_utility = np.zeros(len(df))
+                    observed_utility = np.zeros(len(df))
+                    choices = np.arange(0, 1.1, 0.1)
+
+                    for k in range(len(df)):
+                        Utility = np.zeros(len(choices))
+
+                        for n in range(len(choices)):
+                            Equity = equity(new_value(df[k, 0:10], choices[n]), df[k, 0:10], choices[n])
+                            Equality = equality(new_value(df[k, 0:10], choices[n]), df[k, 0:10], choices[n])
+                            Payout = payout(new_value(df[k, 0], choices[n]), df[k, 0], choices[n])
+
+                            Utility[n] = utility(Theta, Phi, Equity, Equality, Payout)
+
+                        predicted_utility[k] = max(Utility)
+                        observed_utility[k] = Utility[int(np.where(df[k, 10] == choices)[0])]
+
+                    if method == "OLS":
+                        obj_value = np.sum((predicted_utility - observed_utility)**2)
+                    elif method == "MLE":
+                        obj_value = -np.sum(np.log(norm.pdf(observed_utility, predicted_utility, sd)))
+                    else:
+                        raise ValueError("Invalid method")
+
+                    return obj_value
 
 .. dropdown:: Optimizers
 
@@ -679,9 +743,51 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                addpath('path/to/pracma'); % Replace 'path/to/pracma' with the actual path to the pracma library
+
+                initial_params = [0.5, 0.5];
+                lower_bounds = [0, 0];
+                upper_bounds = [1, 1];
+                theta_recovered = zeros(11^2, 1);
+                phi_recovered = zeros(11^2, 1);
+                theta_true = repmat((0:0.1:1)', 1, 11);
+                phi_true = repelem(0:0.1:1, 11);
+
+                for i = 1:length(theta_true)
+                    this_idx = find(round(theta_true(i), 2) == round(freeParameters.theta, 2) & round(phi_true(i), 2) == round(freeParameters.phi, 2));
+                    trialList_this = trialList;
+                    trialList_this.Decision = predictions(this_idx, 1:length(trialList(1, :)));
+                    
+                    options = optimoptions('fmincon', 'Display', 'off');
+                    result = fmincon(@(params) obj_function(params, trialList_this), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+
+                    theta_recovered(i) = result(1);
+                    phi_recovered(i) = result(2);
+                end
+
         .. tab-item:: Python
 
             ::
+
+                from scipy.optimize import minimize
+
+                initial_params = [0.5, 0.5]
+                lower_bounds = [0, 0]
+                upper_bounds = [1, 1]
+                theta_recovered = np.zeros(11**2)
+                phi_recovered = np.zeros(11**2)
+                theta_true = np.repeat(np.arange(0, 1.1, 0.1), 11)
+                phi_true = np.tile(np.arange(0, 1.1, 0.1), 11)
+
+                for i in range(len(theta_true)):
+                    this_idx = np.where((np.round(theta_true[i], 2) == np.round(freeParameters['theta'], 2)) & (np.round(phi_true[i], 2) == np.round(freeParameters['phi'], 2)))[0]
+                    trialList_this = trialList.copy()
+                    trialList_this['Decision'] = predictions[this_idx, :].flatten()
+
+                    result = minimize(obj_function, initial_params, args=(trialList_this,), bounds=[(0, 1), (0, 1)], method='L-BFGS-B')
+
+                    theta_recovered[i] = result.x[0]
+                    phi_recovered[i] = result.x[1]
 
 .. dropdown:: Verifying :bdg-success:`Free Parameter` Recovery Process 
 
@@ -703,9 +809,51 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                distance = (theta_recovered - theta_true).^2 + (phi_recovered - phi_true).^2;
+                distance_new = (theta_recovered - theta_true).^2 + (((phi_recovered - 0.5) .* theta_recovered) - ((phi_true - 0.5) .* theta_true)).^2;
+
+                scatter(theta_true, phi_true, 20, distance, 'filled');
+                colormap jet;
+                caxis([0, sqrt(2)]);
+                colorbar;
+                xlabel('Theta True');
+                ylabel('Phi True');
+                title('Scatter Plot with Distance');
+
+                figure;
+
+                scatter(theta_true, phi_true, 20, distance_new, 'filled');
+                colormap jet;
+                caxis([0, sqrt(2)]);
+                colorbar;
+                xlabel('Theta True');
+                ylabel('Phi True');
+                title('Scatter Plot with Distance New');
+
         .. tab-item:: Python
 
             ::
+
+                import matplotlib.pyplot as plt
+
+                distance = (theta_recovered - theta_true)**2 + (phi_recovered - phi_true)**2
+                distance_new = (theta_recovered - theta_true)**2 + (((phi_recovered - 0.5) * theta_recovered) - ((phi_true - 0.5) * theta_true))**2
+
+                plt.scatter(theta_true, phi_true, c=distance, s=20, cmap='jet', edgecolors='none')
+                plt.colorbar()
+                plt.xlabel('Theta True')
+                plt.ylabel('Phi True')
+                plt.title('Scatter Plot with Distance')
+
+                plt.figure()
+
+                plt.scatter(theta_true, phi_true, c=distance_new, s=20, cmap='jet', edgecolors='none')
+                plt.colorbar()
+                plt.xlabel('Theta True')
+                plt.ylabel('Phi True')
+                plt.title('Scatter Plot with Distance New')
+
+                plt.show()
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

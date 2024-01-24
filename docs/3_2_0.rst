@@ -647,9 +647,110 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                % Robust and Reliable Free Parameters
+
+                subjectData.phiMeritAdjusted = (subjectData.phiMerit - 0.5); % subtracting 0.5 puts 0 where phi weights on equality-seeking and equity-seeking in the same way (i.e. indifference point)
+                subjectData.phiMeritAdjusted = subjectData.phiMeritAdjusted * (1 - subjectData.thetaMerit); % the greater theta is, the closer to 0 this adjusted value is
+                subjectData.phiMeritAdjusted = subjectData.phiMeritAdjusted + 0.5; % returning to initial scale value (i.e. 0 to 1 with 0.5 being the indifference point)
+
+                subjectData.phiEntitlementAdjusted = ((subjectData.phiEntitlement - 0.5) * (1 - subjectData.thetaEntitlement)) + 0.5;
+                subjectData.phiCorruptionAdjusted = ((subjectData.phiCorruption - 0.5) * (1 - subjectData.thetaCorruption)) + 0.5;
+                subjectData.phiLuckAdjusted = ((subjectData.phiLuck - 0.5) * (1 - subjectData.thetaLuck)) + 0.5;
+
+                % Meaningful Condition Differences
+
+                subjectData.SSAAO = zeros(1, length(included_subjects));
+
+                for i = 1:length(included_subjects)
+                    datafile = strcat(parentfolder, included_subjects{i}, restoffilepath); % produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    df = readtable(datafile);
+                    df = df(:, [49, 40:48, 33]);
+                    df.redistributionRate = df.redistributionRate / 100; % converting to a decimal from a percent
+
+                    result = fmincon(@(params) obj_function(params, df), initial_params, [], [], [], [], lower_bounds, upper_bounds);
+
+                    df.PredictionAAO = zeros(height(df), 1);
+                    df.ObservedOutcome = new_value(df.myself, df.redistributionRate);
+
+                    for k = 1:height(df.redistributionRate)
+                        Utility = zeros(1, length(Choices));
+
+                        for n = 1:length(Choices)
+                            Utility(n) = utility(result, phiPerCondition(j), ...
+                                equity(new_value(table2array(df(k, 1:10)), Choices(n)), table2array(df(k, 1:10)), Choices(n)), ...
+                                equality(new_value(table2array(df(k, 1:10)), Choices(n)), table2array(df(k, 1:10)), Choices(n)), ...
+                                payout(new_value(table2array(df(k, 1)), Choices(n)), table2array(df(k, 1)), Choices(n)));
+                        }
+
+                        correct_choice = find(Utility == max(Utility));
+                        df.PredictionAAO(k) = new_value(df.myself(k), Choices(correct_choice(randi(length(correct_choice)))));
+                    }
+
+                    subjectData.SSAAO(i) = sum((df.PredictionAAO - df.ObservedOutcome).^2);
+                end
+
+                N = height(df);
+                k = 2;
+
+                subjectData.AICAAO = N * log(subjectData.SSAAO / N) + 2 * 2;
+                subjectData.SSCond = subjectData.SSMerit + subjectData.SSEntitlement + subjectData.SSCorruption + subjectData.SSLuck;
+                subjectData.AICCond = N * log(subjectData.SSCond / N) + 2 * 2 * length(conditions);
+
+                excluded = find(subjectData.SSCond == 0);
+                ttest(subjectData.AICCond(~excluded), subjectData.AICAAO, 'Tail', 'left', 'Alpha', alpha);
+
         .. tab-item:: Python
 
             ::
+
+                # Robust and Reliable Free Parameters
+
+                subjectData['phiMeritAdjusted'] = (subjectData['phiMerit'] - 0.5)  # subtracting 0.5 puts 0 where phi weights on equality-seeking and equity-seeking in the same way (i.e. indifference point)
+                subjectData['phiMeritAdjusted'] = subjectData['phiMeritAdjusted'] * (1 - subjectData['thetaMerit'])  # the greater theta is, the closer to 0 this adjusted value is
+                subjectData['phiMeritAdjusted'] = subjectData['phiMeritAdjusted'] + 0.5  # returning to initial scale value (i.e. 0 to 1 with 0.5 being the indifference point)
+
+                subjectData['phiEntitlementAdjusted'] = ((subjectData['phiEntitlement'] - 0.5) * (1 - subjectData['thetaEntitlement'])) + 0.5
+                subjectData['phiCorruptionAdjusted'] = ((subjectData['phiCorruption'] - 0.5) * (1 - subjectData['thetaCorruption'])) + 0.5
+                subjectData['phiLuckAdjusted'] = ((subjectData['phiLuck'] - 0.5) * (1 - subjectData['thetaLuck'])) + 0.5
+
+                # Meaningful Condition Differences
+
+                subjectData['SSAAO'] = np.zeros(len(included_subjects))
+
+                for i in range(len(included_subjects)):
+                    datafile = parentfolder + included_subjects[i] + restoffilepath  # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
+                    df = pd.read_csv(datafile)
+                    df = df.iloc[:, [48, 39, 40, 41, 42, 43, 44, 45, 46, 47, 32]]
+                    df['redistributionRate'] = df['redistributionRate'] / 100  # converting to a decimal from a percent
+
+                    result = minimize(lambda params: obj_function(params, df), initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
+
+                    df['PredictionAAO'] = np.zeros(len(df))
+                    df['ObservedOutcome'] = new_value(df['myself'], df['redistributionRate'])
+
+                    for k in range(len(df['redistributionRate'])):
+                        Utility = np.zeros(len(Choices))
+
+                        for n in range(len(Choices)):
+                            Utility[n] = utility(result.x, phiPerCondition[j],
+                                                equity(new_value(df.iloc[k, 0:10], Choices[n]), df.iloc[k, 0:10], Choices[n]),
+                                                equality(new_value(df.iloc[k, 0:10], Choices[n]), df.iloc[k, 0:10], Choices[n]),
+                                                payout(new_value(df.iloc[k, 0], Choices[n]), df.iloc[k, 0], Choices[n]))
+
+                        correct_choice = np.argmax(Utility)
+                        df.at[k, 'PredictionAAO'] = new_value(df['myself'][k], Choices[correct_choice[np.random.randint(len(correct_choice))]])
+
+                    subjectData['SSAAO'][i] = np.sum((df['PredictionAAO'] - df['ObservedOutcome'])**2)
+
+                N = len(df)
+                k = 2
+
+                subjectData['AICAAO'] = N * np.log(subjectData['SSAAO'] / N) + 2 * 2
+                subjectData['SSCond'] = subjectData['SSMerit'] + subjectData['SSEntitlement'] + subjectData['SSCorruption'] + subjectData['SSLuck']
+                subjectData['AICCond'] = N * np.log(subjectData['SSCond'] / N) + 2 * 2 * len(conditions)
+
+                excluded = np.where(subjectData['SSCond'] == 0)[0]
+                ttest_rel(subjectData['AICCond'][~excluded], subjectData['AICAAO'], alternative='less', nan_policy='omit')
 
 .. dropdown:: Testing a Modulatory Hypothesis
 
@@ -664,6 +765,8 @@ Tutorial 2 - Galvan & Sanfey, 2024
                                          Condition = rep(conditions, each = length(subjectData$SubjectID)),
                                          SubjectID = rep(subjectData$SubjectID, times = length(conditions)))
 
+                library(lme4)
+
                 omnibusModulatoryEffectTheta = lmer(data = omnibusData, Theta ~ Condition + (1 | SubjectID))
                 omnibusModulatoryEffectPhi = lmer(data = omnibusData, Phi ~ Condition + (1 | SubjectID))
 
@@ -671,9 +774,40 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                % Assuming subjectData is a structure with fields thetaMerit, thetaEntitlement, thetaCorruption, thetaLuck,
+                % phiMeritAdjusted, phiEntitlementAdjusted, phiCorruptionAdjusted, phiLuckAdjusted, and SubjectID
+
+                Theta = [subjectData.thetaMerit; subjectData.thetaEntitlement; subjectData.thetaCorruption; subjectData.thetaLuck];
+                Phi = [subjectData.phiMeritAdjusted; subjectData.phiEntitlementAdjusted; subjectData.phiCorruptionAdjusted; subjectData.phiLuckAdjusted];
+                Conditions = repmat(conditions', length(subjectData.SubjectID), 1);
+                SubjectID = repmat(subjectData.SubjectID, length(conditions), 1);
+
+                omnibusData = table(Theta, Phi, Conditions, SubjectID);
+
+                omnibusModulatoryEffectTheta = fitlme(omnibusData, 'Theta ~ Condition + (1|SubjectID)');
+                omnibusModulatoryEffectPhi = fitlme(omnibusData, 'Phi ~ Condition + (1|SubjectID)');
+
+
         .. tab-item:: Python
 
             ::
+
+                # Assuming subjectData is a data frame with columns thetaMerit, thetaEntitlement, thetaCorruption, thetaLuck,
+                # phiMeritAdjusted, phiEntitlementAdjusted, phiCorruptionAdjusted, phiLuckAdjusted, and SubjectID
+
+                omnibusData <- data.frame(
+                Theta = c(subjectData$thetaMerit, subjectData$thetaEntitlement, subjectData$thetaCorruption, subjectData$thetaLuck),
+                Phi = c(subjectData$phiMeritAdjusted, subjectData$phiEntitlementAdjusted, subjectData$phiCorruptionAdjusted, subjectData$phiLuckAdjusted),
+                Condition = rep(conditions, each = length(subjectData$SubjectID)),
+                SubjectID = rep(subjectData$SubjectID, times = length(conditions))
+                )
+
+                library(lme4)
+
+                omnibusModulatoryEffectTheta <- lmer(Theta ~ Condition + (1 | SubjectID), data = omnibusData)
+                omnibusModulatoryEffectPhi <- lmer(Phi ~ Condition + (1 | SubjectID), data = omnibusData)
+
+
 .. dropdown:: Using Categorical Clusters to Test Modulatory Hypotheses
 
     .. tab-set::
@@ -704,9 +838,58 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                % Assuming subjectData is a table with columns strategyMerit, strategyEntitlement, strategyCorruption, strategyLuck,
+                % and conditions is a cell array containing condition names
+
+                subjectData.strategyMerit = categorical(subjectData.strategyMerit);
+                subjectData.strategyEntitlement = categorical(subjectData.strategyEntitlement);
+                subjectData.strategyCorruption = categorical(subjectData.strategyCorruption);
+                subjectData.strategyLuck = categorical(subjectData.strategyLuck);
+
+                strategies = categories(subjectData.strategyMerit);  % Assuming all strategy columns have the same set of levels
+
+                columns = 10:13;  % columns of subject data correspond, in order, to the conditions in the conditions vector
+
+                group_by_condition = zeros(length(conditions), length(strategies));
+
+                for i = 1:length(conditions)
+                    for j = 1:length(strategies)
+                        group_by_condition(i, j) = sum(subjectData{:, columns(i)} == strategies{j});
+                    end
+                end
+
+                group_by_condition_table = array2table(group_by_condition, 'VariableNames', strategies, 'RowNames', conditions);
+
+                [p, chi2stat, ~, ~] = chi2test(group_by_condition); 
+
         .. tab-item:: Python
 
             ::
+
+                # Assuming subjectData is a data frame with columns strategyMerit, strategyEntitlement, strategyCorruption, strategyLuck,
+                # and conditions is a character vector containing condition names
+
+                subjectData$strategyMerit <- as.factor(subjectData$strategyMerit)
+                subjectData$strategyEntitlement <- as.factor(subjectData$strategyEntitlement)
+                subjectData$strategyCorruption <- as.factor(subjectData$strategyCorruption)
+                subjectData$strategyLuck <- as.factor(subjectData$strategyLuck)
+                strategies <- levels(subjectData$strategyMerit)  # Assuming all strategy columns have the same set of levels
+
+                columns <- 10:13  # columns of subject data correspond, in order, to the conditions in the conditions vector
+
+                group_by_condition <- matrix(0, nrow = length(conditions), ncol = length(strategies))
+
+                for (i in 1:length(conditions)) {
+                    for (j in 1:length(strategies)) {
+                        group_by_condition[i, j] <- sum(subjectData[, columns[i]] == strategies[j])
+                    }
+                }
+
+                group_by_condition <- as.table(group_by_condition)
+                colnames(group_by_condition) <- strategies
+                rownames(group_by_condition) <- conditions
+
+                chisq.test(group_by_condition)
 
 Tutorial 3 - Crockett et al., 2014
 -------------------
