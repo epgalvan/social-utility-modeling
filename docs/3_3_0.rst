@@ -410,8 +410,8 @@ Tutorial 2 - Galvan & Sanfey, 2024
                         Utility = np.zeros(len(Choices))
                         for n in range(len(Choices)):
                             Utility[n] = utility(result.x[0], result.x[1],
-                                                equity(new_value(df.iloc[i, 0:10], Choices[n]), df.iloc[i, 0:10], Choices[n]),
-                                                equality(new_value(df.iloc[i, 0:10], Choices[n]), df.iloc[i, 0:10], Choices[n]),
+                                                equity(new_value(df.iloc[i, 0:9], Choices[n]), df.iloc[i, 0:9], Choices[n]),
+                                                equality(new_value(df.iloc[i, 0:9], Choices[n]), df.iloc[i, 0:9], Choices[n]),
                                                 payout(new_value(df.iloc[i, 0], Choices[n]), df.iloc[i, 0], Choices[n]))
                         trialData.at[z[i], 'PredictedNID'] = Choices[np.argmax(Utility)]
 

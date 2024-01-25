@@ -691,8 +691,8 @@ Tutorial 2 - Galvan & Sanfey, 2024
                         Utility = np.zeros(len(choices))
 
                         for n in range(len(choices)):
-                            Equity = equity(new_value(df[k, 0:10], choices[n]), df[k, 0:10], choices[n])
-                            Equality = equality(new_value(df[k, 0:10], choices[n]), df[k, 0:10], choices[n])
+                            Equity = equity(new_value(df[k, 0:9], choices[n]), df[k, 0:9], choices[n])
+                            Equality = equality(new_value(df[k, 0:9], choices[n]), df[k, 0:9], choices[n])
                             Payout = payout(new_value(df[k, 0], choices[n]), df[k, 0], choices[n])
 
                             Utility[n] = utility(Theta, Phi, Equity, Equality, Payout)

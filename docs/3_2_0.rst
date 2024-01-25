@@ -733,8 +733,8 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
                         for n in range(len(Choices)):
                             Utility[n] = utility(result.x, phiPerCondition[j],
-                                                equity(new_value(df.iloc[k, 0:10], Choices[n]), df.iloc[k, 0:10], Choices[n]),
-                                                equality(new_value(df.iloc[k, 0:10], Choices[n]), df.iloc[k, 0:10], Choices[n]),
+                                                equity(new_value(df.iloc[k, 0:9], Choices[n]), df.iloc[k, 0:9], Choices[n]),
+                                                equality(new_value(df.iloc[k, 0:10], Choices[n]), df.iloc[k, 0:9], Choices[n]),
                                                 payout(new_value(df.iloc[k, 0], Choices[n]), df.iloc[k, 0], Choices[n]))
 
                         correct_choice = np.argmax(Utility)
@@ -774,9 +774,6 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
-                % Assuming subjectData is a structure with fields thetaMerit, thetaEntitlement, thetaCorruption, thetaLuck,
-                % phiMeritAdjusted, phiEntitlementAdjusted, phiCorruptionAdjusted, phiLuckAdjusted, and SubjectID
-
                 Theta = [subjectData.thetaMerit; subjectData.thetaEntitlement; subjectData.thetaCorruption; subjectData.thetaLuck];
                 Phi = [subjectData.phiMeritAdjusted; subjectData.phiEntitlementAdjusted; subjectData.phiCorruptionAdjusted; subjectData.phiLuckAdjusted];
                 Conditions = repmat(conditions', length(subjectData.SubjectID), 1);
@@ -792,20 +789,27 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
-                # Assuming subjectData is a data frame with columns thetaMerit, thetaEntitlement, thetaCorruption, thetaLuck,
-                # phiMeritAdjusted, phiEntitlementAdjusted, phiCorruptionAdjusted, phiLuckAdjusted, and SubjectID
+                # Requires 'statsmodels' - you can ``pip install statsmodels u``
 
-                omnibusData <- data.frame(
-                Theta = c(subjectData$thetaMerit, subjectData$thetaEntitlement, subjectData$thetaCorruption, subjectData$thetaLuck),
-                Phi = c(subjectData$phiMeritAdjusted, subjectData$phiEntitlementAdjusted, subjectData$phiCorruptionAdjusted, subjectData$phiLuckAdjusted),
-                Condition = rep(conditions, each = length(subjectData$SubjectID)),
-                SubjectID = rep(subjectData$SubjectID, times = length(conditions))
-                )
+                import pandas as pd
+                import statsmodels.api as sm
+                import statsmodels.formula.api as smf
 
-                library(lme4)
+                # Assuming omnibusData is a pandas DataFrame
+                omnibusData = pd.DataFrame({
+                    'Theta': np.concatenate([subjectData['thetaMerit'], subjectData['thetaEntitlement'], subjectData['thetaCorruption'], subjectData['thetaLuck']]),
+                    'Phi': np.concatenate([subjectData['phiMeritAdjusted'], subjectData['phiEntitlementAdjusted'], subjectData['phiCorruptionAdjusted'], subjectData['phiLuckAdjusted']]),
+                    'Condition': np.tile(conditions, len(subjectData['SubjectID'])),
+                    'SubjectID': np.repeat(subjectData['SubjectID'], len(conditions))
+                })
 
-                omnibusModulatoryEffectTheta <- lmer(Theta ~ Condition + (1 | SubjectID), data = omnibusData)
-                omnibusModulatoryEffectPhi <- lmer(Phi ~ Condition + (1 | SubjectID), data = omnibusData)
+                # Fit mixed-effects models
+                omnibusModulatoryEffectTheta = smf.mixedlm("Theta ~ Condition", omnibusData, groups=omnibusData["SubjectID"]).fit()
+                omnibusModulatoryEffectPhi = smf.mixedlm("Phi ~ Condition", omnibusData, groups=omnibusData["SubjectID"]).fit()
+
+                # Print model summaries
+                print(omnibusModulatoryEffectTheta.summary())
+                print(omnibusModulatoryEffectPhi.summary())
 
 
 .. dropdown:: Using Categorical Clusters to Test Modulatory Hypotheses
@@ -866,30 +870,30 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
-                # Assuming subjectData is a data frame with columns strategyMerit, strategyEntitlement, strategyCorruption, strategyLuck,
-                # and conditions is a character vector containing condition names
+                from scipy.stats import chi2_contingency
 
-                subjectData$strategyMerit <- as.factor(subjectData$strategyMerit)
-                subjectData$strategyEntitlement <- as.factor(subjectData$strategyEntitlement)
-                subjectData$strategyCorruption <- as.factor(subjectData$strategyCorruption)
-                subjectData$strategyLuck <- as.factor(subjectData$strategyLuck)
-                strategies <- levels(subjectData$strategyMerit)  # Assuming all strategy columns have the same set of levels
+                # Assuming subjectData is a pandas DataFrame
+                subjectData['strategyMerit'] = subjectData['strategyMerit'].astype('category')
+                subjectData['strategyEntitlement'] = subjectData['strategyEntitlement'].astype('category')
+                subjectData['strategyCorruption'] = subjectData['strategyCorruption'].astype('category')
+                subjectData['strategyLuck'] = subjectData['strategyLuck'].astype('category')
 
-                columns <- 10:13  # columns of subject data correspond, in order, to the conditions in the conditions vector
+                strategies = subjectData['strategyMerit'].cat.categories  # Assuming all strategy columns have the same set of levels
 
-                group_by_condition <- matrix(0, nrow = length(conditions), ncol = length(strategies))
+                columns = list(range(9, 13))  # columns of subject data correspond, in order, to the conditions in the conditions vector
 
-                for (i in 1:length(conditions)) {
-                    for (j in 1:length(strategies)) {
-                        group_by_condition[i, j] <- sum(subjectData[, columns[i]] == strategies[j])
-                    }
-                }
+                group_by_condition = np.zeros((len(conditions), len(strategies)))
 
-                group_by_condition <- as.table(group_by_condition)
-                colnames(group_by_condition) <- strategies
-                rownames(group_by_condition) <- conditions
+                for i, condition in enumerate(conditions):
+                    for j, strategy in enumerate(strategies):
+                        group_by_condition[i, j] = np.sum(subjectData.iloc[:, columns[i]] == strategy)
 
-                chisq.test(group_by_condition)
+                group_by_condition = pd.DataFrame(group_by_condition, index=conditions, columns=strategies)
+
+                chi2, p, _, _ = chi2_contingency(group_by_condition)
+
+                print("Chi-squared statistic:", chi2)
+                print("P-value:", p)
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

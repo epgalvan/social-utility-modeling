@@ -993,10 +993,10 @@ Tutorial 2 - Galvan & Sanfey, 2024
                         Utility = np.zeros(len(choices), dtype=float)
                         for n in range(len(choices)):
                             Utility[n] = utilityPL(Theta,
-                                                equality(new_value(df.iloc[k, 1:11], choices[n]), df.iloc[k, 1:11], choices[n]),
-                                                payout(new_value(df.iloc[k, 1], choices[n]), df.iloc[k, 1], choices[n]))
+                                                equality(new_value(df.iloc[k, 0:9], choices[n]), df.iloc[k, 0:9], choices[n]),
+                                                payout(new_value(df.iloc[k, 0], choices[n]), df.iloc[k, 0], choices[n]))
                         predicted_utility[k] = max(Utility)
-                        observed_utility[k] = Utility[df.iloc[k, 11] == choices]
+                        observed_utility[k] = Utility[df.iloc[k, 10] == choices]
 
                     if method == "OLS":
                         obj_value = np.sum((predicted_utility - observed_utility)**2)
@@ -1017,10 +1017,10 @@ Tutorial 2 - Galvan & Sanfey, 2024
                         Utility = np.zeros(len(choices), dtype=float)
                         for n in range(len(choices)):
                             Utility[n] = utilityPT(Theta,
-                                                equity(new_value(df.iloc[k, 1:11], choices[n]), df.iloc[k, 1:11], choices[n]),
-                                                payout(new_value(df.iloc[k, 1], choices[n]), df.iloc[k, 1], choices[n]))
+                                                equity(new_value(df.iloc[k, 0:9], choices[n]), df.iloc[k, 0:9], choices[n]),
+                                                payout(new_value(df.iloc[k, 0], choices[n]), df.iloc[k, 0], choices[n]))
                         predicted_utility[k] = max(Utility)
-                        observed_utility[k] = Utility[df.iloc[k, 11] == choices]
+                        observed_utility[k] = Utility[df.iloc[k, 10] == choices]
 
                     if method == "OLS":
                         obj_value = np.sum((predicted_utility - observed_utility)**2)
@@ -1041,10 +1041,10 @@ Tutorial 2 - Galvan & Sanfey, 2024
                         Utility = np.zeros(len(choices), dtype=float)
                         for n in range(len(choices)):
                             Utility[n] = utilityLT(Phi,
-                                                equity(new_value(df.iloc[k, 1:11], choices[n]), df.iloc[k, 1:11], choices[n]),
-                                                equality(new_value(df.iloc[k, 1:11], choices[n]), df.iloc[k, 1:11], choices[n]))
+                                                equity(new_value(df.iloc[k, 0:9], choices[n]), df.iloc[k, 0:9], choices[n]),
+                                                equality(new_value(df.iloc[k, 0:9], choices[n]), df.iloc[k, 0:9], choices[n]))
                         predicted_utility[k] = max(Utility)
-                        observed_utility[k] = Utility[df.iloc[k, 11] == choices]
+                        observed_utility[k] = Utility[df.iloc[k, 10] == choices]
 
                     if method == "OLS":
                         obj_value = np.sum((predicted_utility - observed_utility)**2)
@@ -1115,7 +1115,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
                 SSPerCondition = np.zeros(len(conditions) * 6)
 
                 for j in range(len(conditions)):
-                    df = fullData[fullData['condition'] == conditions[j]][[49, * range(40, 49), 33]]  # 49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
+                    df = fullData[fullData['condition'] == conditions[j]][[47, * range(39, 48), 32]]  # 49 is subject's initial allocation, 40:48 are players 1:9 initial allocation, 33 is redistribution rate
                     df['redistributionRate'] = df['redistributionRate'] / 100  # converting to a decimal from a percent
 
                     resultPL = minimize(lambda params: obj_functionPL(params, df, 'OLS'), 0.5, bounds=[(0, 1)])
@@ -1218,9 +1218,166 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                for i = 1:length(included_subjects)
+                    datafile = strcat(parentfolder, included_subjects{i}, restoffilepath);
+                    fullData = readtable(datafile);
+
+                    parametersPerCondition = zeros(length(conditions) * 3, 1);
+                    SSPerCondition = zeros(length(conditions) * 6, 1);
+
+                    for j = 1:length(conditions)
+                        df = fullData(fullData.condition == conditions(j), [49, 40:48, 33]);
+                        df.redistributionRate = df.redistributionRate / 100;
+
+                        resultPL = fmincon(@(params) obj_functionPL(params, df), 0.5, [], [], [], [], 0, 1);
+                        resultPT = fmincon(@(params) obj_functionPT(params, df), 0.5, [], [], [], [], 0, 1);
+                        resultLT = fmincon(@(params) obj_functionLT(params, df), 0.5, [], [], [], [], 0, 1);
+
+                        parametersPerCondition(((j - 1) * 3) + 1:(j * 3)) = [resultPL(1), resultPT(1), resultLT(1)];
+
+                        df.PredictionP = zeros(height(df), 1);
+                        df.PredictionL = zeros(height(df), 1);
+                        df.PredictionT = zeros(height(df), 1);
+                        df.PredictionPT = zeros(height(df), 1);
+                        df.PredictionPL = zeros(height(df), 1);
+                        df.PredictionLT = zeros(height(df), 1);
+
+                        for k = 1:length(df.Decisions)
+                            UtilityP = zeros(length(Choices), 1);
+                            UtilityL = zeros(length(Choices), 1);
+                            UtilityT = zeros(length(Choices), 1);
+                            UtilityPT = zeros(length(Choices), 1);
+                            UtilityPL = zeros(length(Choices), 1);
+                            UtilityLT = zeros(length(Choices), 1);
+
+                            for n = 1:length(Choices)
+                                UtilityP(n) = utilityP(payout(new_value(df{k, 1}, Choices{n}), df{k, 1}, Choices{n}));
+                                UtilityL(n) = utilityL(equality(new_value(df{k, 1:10}, Choices{n}), df{k, 1:10}, Choices{n}));
+                                UtilityT(n) = utilityT(equity(new_value(df{k, 1:10}, Choices{n}), df{k, 1:10}, Choices{n}));
+                                UtilityPT(n) = utilityPT(resultPT(1), equity(new_value(df{k, 1:10}, Choices{n}), df{k, 1:10}, Choices{n}), ...
+                                                        payout(new_value(df{k, 1}, Choices{n}), df{k, 1}, Choices{n}));
+                                UtilityPL(n) = utilityPL(resultPL(1), equality(new_value(df{k, 1:10}, Choices{n}), df{k, 1:10}, Choices{n}), ...
+                                                        payout(new_value(df{k, 1}, Choices{n}), df{k, 1}, Choices{n}));
+                                UtilityLT(n) = utilityLT(resultLT(1), equity(new_value(df{k, 1:10}, Choices{n}), df{k, 1:10}, Choices{n}), ...
+                                                        equality(new_value(df{k, 1:10}, Choices{n}), df{k, 1:10}, Choices{n}));
+                            end
+
+                            [~, correct_choiceP] = max(UtilityP);
+                            [~, correct_choiceL] = max(UtilityL);
+                            [~, correct_choiceT] = max(UtilityT);
+                            [~, correct_choicePT] = max(UtilityPT);
+                            [~, correct_choicePL] = max(UtilityPL);
+                            [~, correct_choiceLT] = max(UtilityLT);
+
+                            df.PredictionP(k) = new_value(df.myself{k}, Choices{correct_choiceP(randi(length(correct_choiceP)))});
+                            df.PredictionL(k) = new_value(df.myself{k}, Choices{correct_choiceL(randi(length(correct_choiceL)))});
+                            df.PredictionT(k) = new_value(df.myself{k}, Choices{correct_choiceT(randi(length(correct_choiceT)))});
+                            df.PredictionPL(k) = new_value(df.myself{k}, Choices{correct_choicePT(randi(length(correct_choicePT)))});
+                            df.PredictionPT(k) = new_value(df.myself{k}, Choices{correct_choicePL(randi(length(correct_choicePL)))});
+                            df.PredictionLT(k) = new_value(df.myself{k}, Choices{correct_choiceLT(randi(length(correct_choiceLT)))});
+                        end
+
+                        df.Outcome = new_value(df.myself, df.redistributionRate);
+                        SSPerCondition(((j - 1) * 6) + 1:(j * 6)) = [sum((df.Outcome - df.PredictionP).^2), ...
+                                                                    sum((df.Outcome - df.PredictionL).^2), ...
+                                                                    sum((df.Outcome - df.PredictionT).^2), ...
+                                                                    sum((df.Outcome - df.PredictionPL).^2), ...
+                                                                    sum((df.Outcome - df.PredictionPT).^2), ...
+                                                                    sum((df.Outcome - df.PredictionLT).^2)];
+                    end
+
+                    altSubjectData(i, 1:37) = [included_subjects{i}, parametersPerCondition', SSPerCondition'];
+                end
+
+                colnames_altSubjectData = {'SubjectID', 'thetaPLMerit', 'thetaPTMerit', 'phiLTMerit', 'thetaPLEntitlement', 'thetaPTEntitlement', 'phiLTEntitlement', ...
+                                            'thetaPLCorruption', 'thetaPTCorruption', 'phiLTCorruption', 'thetaPLLuck', 'thetaPTLuck', 'phiLTLuck', ...
+                                            'SSPMerit', 'SSLMerit', 'SSTMerit', 'SSPLMerit', 'SSPTMerit', 'SSLTMerit', ...
+                                            'SSPEntitlement', 'SSLEntitlement', 'SSTEntitlement', 'SSPLEntitlement', 'SSPTEntitlement', 'SSLTEntitlement', ...
+                                            'SSPCorruption', 'SSLCorruption', 'SSTCorruption', 'SSPLCorruption', 'SSPTCorruption', 'SSLTCorruption', ...
+                                            'SSPLuck', 'SSLLuck', 'SSTLuck', 'SSPLLuck', 'SSPLuck', 'SSLTLuck'};
+
+                colnames(altSubjectData) = colnames_altSubjectData;
+
         .. tab-item:: Python
 
             ::
+
+                for i in range(len(included_subjects)):
+                    datafile = parentfolder + included_subjects[i] + restoffilepath
+                    fullData = pd.read_csv(datafile)
+
+                    parametersPerCondition = np.zeros(len(conditions) * 3)
+                    SSPerCondition = np.zeros(len(conditions) * 6)
+
+                    for j in range(len(conditions)):
+                        df = fullData[fullData['condition'] == conditions[j]].iloc[:, [48] + list(range(39, 48)) + [32]]
+                        df['redistributionRate'] = df['redistributionRate'] / 100
+
+                        resultPL = minimize(lambda params: obj_functionPL(params, df), 0.5, bounds=[(0, 1)])
+                        resultPT = minimize(lambda params: obj_functionPT(params, df), 0.5, bounds=[(0, 1)])
+                        resultLT = minimize(lambda params: obj_functionLT(params, df), 0.5, bounds=[(0, 1)])
+
+                        parametersPerCondition[((j - 1) * 3):(j * 3)] = [resultPL.x[0], resultPT.x[0], resultLT.x[0]]
+
+                        df['PredictionP'] = np.nan
+                        df['PredictionL'] = np.nan
+                        df['PredictionT'] = np.nan
+                        df['PredictionPT'] = np.nan
+                        df['PredictionPL'] = np.nan
+                        df['PredictionLT'] = np.nan
+
+                        for k in range(len(df['Decisions'])):
+                            UtilityP = np.zeros(len(Choices))
+                            UtilityL = np.zeros(len(Choices))
+                            UtilityT = np.zeros(len(Choices))
+                            UtilityPT = np.zeros(len(Choices))
+                            UtilityPL = np.zeros(len(Choices))
+                            UtilityLT = np.zeros(len(Choices))
+
+                            for n in range(len(Choices)):
+                                UtilityP[n] = utilityP(Payout=payout(new_value(df.iloc[k, 0], Choices[n]), df.iloc[k, 0], Choices[n]))
+                                UtilityL[n] = utilityL(Equality=equality(new_value(df.iloc[k, 0:9], Choices[n]), df.iloc[k, 0:9], Choices[n]))
+                                UtilityT[n] = utilityT(Equity=equity(new_value(df.iloc[k, 0:9], Choices[n]), df.iloc[k, 0:9], Choices[n]))
+                                UtilityPT[n] = utilityPT(theta=resultPT.x[0], Equity=equity(new_value(df.iloc[k, 0:9], Choices[n]), df.iloc[k, 0:9], Choices[n]),
+                                                        Payout=payout(new_value(df.iloc[k, 0], Choices[n]), df.iloc[k, 0], Choices[n]))
+                                UtilityPL[n] = utilityPL(theta=resultPL.x[0], Equality=equality(new_value(df.iloc[k, 0:9], Choices[n]), df.iloc[k, 0:9], Choices[n]),
+                                                        Payout=payout(new_value(df.iloc[k, 0], Choices[n]), df.iloc[k, 0], Choices[n]))
+                                UtilityLT[n] = utilityLT(phi=resultLT.x[0], Equality=equality(new_value(df.iloc[k, 0:9], Choices[n]), df.iloc[k, 0:9], Choices[n]),
+                                                        Equity=equity(new_value(df.iloc[k, 0:9], Choices[n]), df.iloc[k, 0:9], Choices[n]))
+
+                            correct_choiceP = np.argmax(UtilityP)
+                            correct_choiceL = np.argmax(UtilityL)
+                            correct_choiceT = np.argmax(UtilityT)
+                            correct_choicePT = np.argmax(UtilityPT)
+                            correct_choicePL = np.argmax(UtilityPL)
+                            correct_choiceLT = np.argmax(UtilityLT)
+
+                            df.at[k, 'PredictionP'] = new_value(df.iloc[k, 'myself'], Choices[correct_choiceP])
+                            df.at[k, 'PredictionL'] = new_value(df.iloc[k, 'myself'], Choices[correct_choiceL])
+                            df.at[k, 'PredictionT'] = new_value(df.iloc[k, 'myself'], Choices[correct_choiceT])
+                            df.at[k, 'PredictionPL'] = new_value(df.iloc[k, 'myself'], Choices[correct_choicePT])
+                            df.at[k, 'PredictionPT'] = new_value(df.iloc[k, 'myself'], Choices[correct_choicePL])
+                            df.at[k, 'PredictionLT'] = new_value(df.iloc[k, 'myself'], Choices[correct_choiceLT])
+
+                        df['Outcome'] = new_value(df['myself'], df['redistributionRate'])
+                        SSPerCondition[((j - 1) * 6):(j * 6)] = [np.sum((df['Outcome'] - df['PredictionP'])**2),
+                                                                np.sum((df['Outcome'] - df['PredictionL'])**2),
+                                                                np.sum((df['Outcome'] - df['PredictionT'])**2),
+                                                                np.sum((df['Outcome'] - df['PredictionPL'])**2),
+                                                                np.sum((df['Outcome'] - df['PredictionPT'])**2),
+                                                                np.sum((df['Outcome'] - df['PredictionLT'])**2)]
+
+                    altSubjectData[i, 0:36] = np.concatenate(([included_subjects[i]], parametersPerCondition, SSPerCondition))
+
+                colnames = ['SubjectID', 'thetaPLMerit', 'thetaPTMerit', 'phiLTMerit', 'thetaPLEntitlement', 'thetaPTEntitlement', 'phiLTEntitlement',
+                            'thetaPLCorruption', 'thetaPTCorruption', 'phiLTCorruption', 'thetaPLLuck', 'thetaPTLuck', 'phiLTLuck',
+                            'SSPMerit', 'SSLMerit', 'SSTMerit', 'SSPLMerit', 'SSPTMerit', 'SSLTMerit',
+                            'SSPEntitlement', 'SSLEntitlement', 'SSTEntitlement', 'SSPLEntitlement', 'SSPTEntitlement', 'SSLTEntitlement',
+                            'SSPCorruption', 'SSLCorruption', 'SSTCorruption', 'SSPLCorruption', 'SSPTCorruption', 'SSLTCorruption',
+                            'SSPLuck', 'SSLLuck', 'SSTLuck', 'SSPLLuck', 'SSPLuck', 'SSLTLuck']
+
+                altSubjectData = pd.DataFrame(altSubjectData, columns=colnames)
+
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`, for Each Alternative Model Per :bdg-primary:`Condition`
 
     .. tab-set::

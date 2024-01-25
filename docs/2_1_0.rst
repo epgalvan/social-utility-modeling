@@ -650,8 +650,6 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
-                import pandas as pd
-
                 all_subjects = pd.read_csv('C:/Users/DELL/Downloads/prolific_export_648c19e5420c9b10a79589a4.csv', delimiter=',')
                 potentially_excluded_subjects = pd.read_csv('C:/Users/DELL/Downloads/prolific_export_6437e471bec005411b1503ea.csv', delimiter=',')
 
@@ -827,7 +825,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
                     SSPerCondition = np.zeros(len(conditions))
 
                     for j in range(len(conditions)):
-                        df = fullData[fullData['condition'] == conditions[j]][['49', '40', '41', '42', '43', '44', '45', '46', '47', '48', '33']]
+                        df = fullData[fullData['condition'] == conditions[j]][[48] + list(range(39, 4)) + [32]]
                         df['redistributionRate'] = df['redistributionRate'] / 100
 
                         # Just Added
@@ -1004,7 +1002,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
                     SSPerCondition = np.zeros(len(conditions))
 
                     for j in range(len(conditions)):
-                        df = fullData[fullData['condition'] == conditions[j]][['49', '40', '41', '42', '43', '44', '45', '46', '47', '48', '33']]
+                        df = fullData[fullData['condition'] == conditions[j]][[48] + list(range(39, 4)) + [32]]
                         df['redistributionRate'] = df['redistributionRate'] / 100
 
                         result = fmincon(obj_function, initial_params, df);
@@ -1021,18 +1019,18 @@ Tutorial 2 - Galvan & Sanfey, 2024
                             Utility = np.zeros(len(Choices))
                             for n in range(len(Choices)):
                                 Utility[n] = utility(thetaPerCondition[j], phiPerCondition[j], 
-                                    equity(new_value(df.iloc[k, 1:10], Choices[n]), df.iloc[k, 1:10], Choices[n]), 
-                                    equality(new_value(df.iloc[k, 1:10], Choices[n]), df.iloc[k, 1:10], Choices[n]), 
-                                    payout(new_value(df.iloc[k, 1], Choices[n]), df.iloc[k, 1], Choices[n]))
+                                    equity(new_value(df.iloc[k, 0:9], Choices[n]), df.iloc[k, 0:9], Choices[n]), 
+                                    equality(new_value(df.iloc[k, 0:9], Choices[n]), df.iloc[k, 0:9], Choices[n]), 
+                                    payout(new_value(df.iloc[k, 0], Choices[n]), df.iloc[k, 0], Choices[n]))
                             correct_choice = np.argmax(Utility)
                             df['predictedRR'].iloc[k] = Choices[correct_choice]
                             df['predictedOutcome'].iloc[k] = new_value(df['myself'].iloc[k], df['predictedRR'].iloc[k])
                             df['actualOutcome'].iloc[k] = new_value(df['myself'].iloc[k], df['redistributionRate'].iloc[k])
                         SSPerCondition[j] = np.sum((df['predictedOutcome'] - df['actualOutcome'])**2)
-                        fullData.loc[fullData['condition'] == conditions[j], 76] = df['predictedOutcome']
-                        fullData.loc[fullData['condition'] == conditions[j], 77] = df['predictedRR']
-                        fullData.loc[fullData['condition'] == conditions[j], 78] = df['actualOutcome']
-                        fullData.loc[fullData['condition'] == conditions[j], 79] = freeParameters['Strategy'][closestPoint].values[0]
+                        fullData.loc[fullData['condition'] == conditions[j], 75] = df['predictedOutcome']
+                        fullData.loc[fullData['condition'] == conditions[j], 76] = df['predictedRR']
+                        fullData.loc[fullData['condition'] == conditions[j], 77] = df['actualOutcome']
+                        fullData.loc[fullData['condition'] == conditions[j], 78] = freeParameters['Strategy'][closestPoint].values[0]
 
                     subjectData.iloc[i, 0:17] = [included_subjects[i], *thetaPerCondition, *phiPerCondition, *strategyPerCondition, *SSPerCondition]
 
@@ -1040,15 +1038,15 @@ Tutorial 2 - Galvan & Sanfey, 2024
                     stop = start + len(fullData['redistributionRate'])
                     trialData.loc[start:stop, 'SubjectID'] = included_subjects[i]
                     trialData.loc[start:stop, 'observedTaxRate'] = fullData['redistributionRate'] / 100
-                    trialData.loc[start:stop, 'observedOutcome'] = fullData.iloc[:, 78]
-                    trialData.loc[start:stop, 'predictedTaxRate'] = fullData.iloc[:, 77]
+                    trialData.loc[start:stop, 'observedOutcome'] = fullData.iloc[:, 77]
+                    trialData.loc[start:stop, 'predictedTaxRate'] = fullData.iloc[:, 75]
                     trialData.loc[start:stop, 'predictedOutcome'] = fullData.iloc[:, 76]
                     trialData.loc[start:stop, 'initialAllocation'] = fullData['myself']
-                    trialData.loc[start:stop, 'strategy'] = fullData.iloc[:, 79]
+                    trialData.loc[start:stop, 'strategy'] = fullData.iloc[:, 78]
                     trialData.loc[start:stop, 'blockNumber'] = np.tile(np.arange(1, 5), len(df['redistributionRate']))
                     trialData.loc[start:stop, 'trialNumber'] = np.arange(1, len(fullData['redistributionRate']) + 1)
                     trialData.loc[start:stop, 'condition'] = fullData['condition']
-                    trialData.loc[start:stop, 'P1':'P9'] = fullData.iloc[:, 40:48].values
+                    trialData.loc[start:stop, 'P1':'P9'] = fullData.iloc[:, 39:47].values
 
 Tutorial 3 - Crockett et al., 2014
 -------------------

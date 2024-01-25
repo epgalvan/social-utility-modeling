@@ -503,9 +503,52 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
             ::
 
+                % Assuming fit is a variable already defined in your code
+                freeParameters.Strategy = cellstr(fit);
+
+                % Change values based on conditions
+                freeParameters.Strategy(strcmp(freeParameters.Strategy, freeParameters.Strategy{1})) = 'Equity-Seeking';
+                freeParameters.Strategy(strcmp(freeParameters.Strategy, freeParameters.Strategy(10101))) = 'Equality-Seeking';
+                freeParameters.Strategy(~ismember(freeParameters.Strategy, {'Equity-Seeking', 'Equality-Seeking', 'Guilt-Averse'})) = 'Payout-Maximizers';
+
+                % Convert to categorical
+                freeParameters.Strategy = categorical(freeParameters.Strategy);
+
+                % Create the scatter plot
+                figure;
+                scatter(freeParameters.theta, freeParameters.phi, 25, freeParameters.Strategy, 'filled');
+                xlabel('Theta');
+                ylabel('Phi');
+                title('Model Space');
+                colormap([0 130 229; 255 25 0; 174 0 255] / 255);
+                colorbar('Ticks', 1:3, 'TickLabels', {'Equity-Seeking', 'Equality-Seeking', 'Payout-Maximizers'});
+
         .. tab-item:: Python
 
             ::
+
+                import pandas as pd
+                import numpy as np
+                import matplotlib.pyplot as plt
+
+                # Assuming fit is a variable already defined in your code
+                freeParameters['Strategy'] = fit.astype(str)
+
+                # Change values based on conditions
+                freeParameters.loc[freeParameters['Strategy'] == freeParameters['Strategy'][0], 'Strategy'] = 'Equity-Seeking'
+                freeParameters.loc[freeParameters['Strategy'] == freeParameters['Strategy'][10101], 'Strategy'] = 'Equality-Seeking'
+                freeParameters.loc[~freeParameters['Strategy'].isin(['Equity-Seeking', 'Equality-Seeking', 'Guilt-Averse']), 'Strategy'] = 'Payout-Maximizers'
+
+                # Convert to categorical
+                freeParameters['Strategy'] = pd.Categorical(freeParameters['Strategy'])
+
+                # Create the scatter plot
+                plt.scatter(freeParameters['theta'], freeParameters['phi'], s=25, c=freeParameters['Strategy'].cat.codes, cmap='viridis')
+                plt.xlabel('Theta')
+                plt.ylabel('Phi')
+                plt.title('Model Space')
+                plt.colorbar(ticks=[0, 1, 2], label='Strategy', ticklabels=['Equity-Seeking', 'Equality-Seeking', 'Payout-Maximizers'])
+                plt.show()
 
 .. dropdown:: Examine Model Predictions Efficiently
 

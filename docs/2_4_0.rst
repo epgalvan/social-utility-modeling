@@ -1115,7 +1115,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
                     SSPerCondition = np.zeros(len(conditions))
 
                     for j in range(len(conditions)):
-                        df = fullData[fullData['condition'] == conditions[j]][[49, *range(40, 49), 33]]
+                        df = fullData[fullData['condition'] == conditions[j]][[48, *range(39, 48), 32]]
                         df['redistributionRate'] = df['redistributionRate'] / 100
 
                         order = np.random.permutation(20)
