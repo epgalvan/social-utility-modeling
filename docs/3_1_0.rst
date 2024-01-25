@@ -123,9 +123,40 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                ttest(subjectData.modelAIC, altSubjectData.modelAICGreed, 'Paired', true);
+                ttest(subjectData.modelAIC, altSubjectData.modelAICGuilt, 'Paired', true);
+                ttest(subjectData.modelAIC, altSubjectData.modelAICInequity, 'Paired', true);
+
+                aic = [mean(subjectData.modelAIC), mean(altSubjectData.modelAICGreed), mean(altSubjectData.modelAICGuilt), mean(altSubjectData.modelAICInequity)];
+                figure;
+                bar(categorical({'Moral Strategies Model', 'Greed Model', 'Guilt Model', 'Inequity Model'}), aic, 'FaceColor', [0.85 0.85 0.85], 'EdgeColor', 'none');
+                ylabel('AIC');
+                xlabel('Model');
+                ylim([300 360]);
+                hold on;
+                text(2.5, 358, '***', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', 'FontSize', 14);
+                text(3, 345, '***', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', 'FontSize', 14);
+                text(3.5, 332, '***', 'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', 'FontSize', 14);
+                hold off;
+
         .. tab-item:: Python
 
             ::
+
+                ttest_rel(subjectData['modelAIC'], altSubjectData['modelAICGreed'])
+                ttest_rel(subjectData['modelAIC'], altSubjectData['modelAICGuilt'])
+                ttest_rel(subjectData['modelAIC'], altSubjectData['modelAICInequity'])
+
+                aic = [np.mean(subjectData['modelAIC']), np.mean(altSubjectData['modelAICGreed']), np.mean(altSubjectData['modelAICGuilt']), np.mean(altSubjectData['modelAICInequity'])]
+                plt.figure();
+                plt.bar(['Moral Strategies Model', 'Greed Model', 'Guilt Model', 'Inequity Model'], aic, color=[0.85, 0.85, 0.85], edgecolor='none');
+                plt.ylabel('AIC');
+                plt.xlabel('Model');
+                plt.ylim([300, 360]);
+                plt.text(2.5, 358, '***', ha='center', va='bottom', fontsize=14);
+                plt.text(3, 345, '***', ha='center', va='bottom', fontsize=14);
+                plt.text(3.5, 332, '***', ha='center', va='bottom', fontsize=14);
+                plt.show();
 
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------

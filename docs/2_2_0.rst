@@ -125,9 +125,17 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                N = length(trialList(:, 1));
+                k = 2;
+                subjectData.modelAIC = N * log(subjectData.modelSS / N) + 2 * k;
+
         .. tab-item:: Python
 
             ::
+
+                N = len(trialList.iloc[:, 0])
+                k = 2
+                subjectData['modelAIC'] = N * np.log(subjectData['modelSS'] / N) + 2 * k
 
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------

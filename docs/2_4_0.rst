@@ -406,37 +406,12 @@ How to Achieve this Goal
             .. tab-item:: R
 
                 ::
-                    
-                    # define objective function
-                    obj_function_ff = function(params, decisions, wh){
-                        Parameter1 = params[1]
-                        Parameter2 = params[2]
-                        
-                        df = # a dataframe with your independent variables and constants
-                        Choices = #
-                        decisions = decisions[-wh]                    
-                        predicted_u = vector('numeric', length(decisions))
-                        observed_u = predicted_u
-                        
-                        for (j in 1:length(df$IV)){
-                            u = vector('numeric', length(redistribution_rate))
-                            for (k in 1:length(Choices)){
-                                u[k] = Utility(Parameter1, Parameter2,
-                                            construct1(df$IV[j], df$Constant[j], Choices[n]),
-                                            construct2(df$IV[j], df$Constant[j], Choices[n]),
-                                            construct3(df$IV[j], df$Constant[j], Choices[n]))
-                            }
-                            predicted_u[j] = max(u); observed_u[j] = u[(rr[j] * 10)+1]
-                        }
-                        return(sum(((predicted_u-observed_u))**2))
-                    }
 
                     fivefold = data.frame() #preallocate for parameters and errors from the fivefold validation to go into
 
                     for (i in 1:length(included_subjects)){
                         datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
                         df = read.csv2(datafile)
-                        reorder = df$trialsTask.thisIndex + 1
 
                         order = sample(20)
                         Parameter1_ff = vector('numeric', length = 5)
@@ -449,9 +424,9 @@ How to Achieve this Goal
                             withheld = order[j:n]
                             m = ((i - 1) * 5) + z
                             
-                            result_ff = fmincon(obj_function_ff,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                            result_ff = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                                 lb = lower_bounds, ub = upper_bounds,
-                                                decisions = df$Decision[reorder], wh = withheld)
+                                                df = df[-withheld,])
                             
                             Parameter1_ff[m] = result_ff$par[1]
                             Parameter2_ff[m] = result_ff$par[2]
@@ -490,36 +465,11 @@ How to Achieve this Goal
 
                 ::
 
-                    function obj_function_ff = define_obj_function(params, decisions, wh)
-                        Parameter1 = params(1);
-                        Parameter2 = params(2);
-
-                        % df should be defined as a table or array with your independent variables and constants
-                        % Choices should be defined as an array
-                        decisions = decisions(setdiff(1:end, wh));
-                        predicted_u = zeros(1, length(decisions));
-                        observed_u = predicted_u;
-
-                        for j = 1:length(df.IV)
-                            u = zeros(1, length(redistribution_rate));
-                            for k = 1:length(Choices)
-                                u(k) = utility(Parameter1, Parameter2, ...
-                                               construct1(df.IV(j), df.Constant(j), Choices(n)), ...
-                                               construct2(df.IV(j), df.Constant(j), Choices(n)), ...
-                                               construct3(df.IV(j), df.Constant(j), Choices(n)));
-                            end
-                            predicted_u(j) = max(u);
-                            observed_u(j) = u(rr(j) * 10 + 1);
-                        end
-                        obj_function_ff = sum((predicted_u - observed_u).^2);
-                    end
-
                     fivefold = [];
 
                     for i = 1:length(included_subjects)
                         datafile = strcat(parentfolder, included_subjects{i}, restoffilepath);
                         df = readtable(datafile);
-                        reorder = df.trialsTask_thisIndex + 1;
 
                         order = randperm(20);
                         Parameter1_ff = zeros(1, 5);
@@ -535,7 +485,7 @@ How to Achieve this Goal
 
                             options = optimset('fmincon');
                             options.Display = 'off';
-                            result_ff = fmincon(@(params) obj_function_ff(params, df.Decision(reorder), withheld), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+                            result_ff = fmincon(@(params) obj_function(params, df(~ismember(1:size(df, 1), withheld), :)), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
                             
                             Parameter1_ff(m) = result_ff(1);
                             Parameter2_ff(m) = result_ff(2);
@@ -581,34 +531,11 @@ How to Achieve this Goal
                     from scipy.stats import ttest_rel
                     from lsa.cosine import cosine
 
-                    def obj_function_ff(params, decisions, wh):
-                        Parameter1 = params[0]
-                        Parameter2 = params[1]
-
-                        # df should be defined as a DataFrame with your independent variables and constants
-                        # Choices should be defined as an array
-                        decisions = [decisions[i] for i in range(len(decisions)) if i not in wh]
-                        predicted_u = [0] * len(decisions)
-                        observed_u = predicted_u
-
-                        for j in range(len(df['IV'])):
-                            u = [0] * len(redistribution_rate)
-                            for k in range(len(Choices)):
-                                u[k] = Utility(Parameter1, Parameter2,
-                                                construct1(df['IV'][j], df['Constant'][j], Choices[n]),
-                                                construct2(df['IV'][j], df['Constant'][j], Choices[n]),
-                                                construct3(df['IV'][j], df['Constant'][j], Choices[n]))
-                            predicted_u[j] = max(u)
-                            observed_u[j] = u[rr[j] * 10 + 1]
-
-                        return sum([(predicted_u[i] - observed_u[i])**2 for i in range(len(predicted_u))])
-
                     fivefold = pd.DataFrame()
 
                     for i in range(len(included_subjects)):
                         datafile = parentfolder + included_subjects[i] + restoffilepath
                         df = pd.read_csv(datafile, sep=';')
-                        reorder = df['trialsTask.thisIndex'] + 1
 
                         order = np.random.permutation(20)
                         Parameter1_ff = np.zeros(5)
@@ -622,7 +549,7 @@ How to Achieve this Goal
                             withheld = order[j:n]
                             m = ((i - 1) * 5) + z
 
-                            result_ff = fmincon(obj_function_ff, x0=initial_params, args=(df['Decision'][reorder], withheld),
+                            result_ff = fmincon(obj_function_ff, x0=initial_params, args=( df[~df.index.isin(withheld)]),
                                                 bounds=(lower_bounds, upper_bounds))
 
                             Parameter1_ff[m - 1] = result_ff[0]
@@ -691,9 +618,83 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                % Model Performance
+                modelPredictions = fitlm(trialData, 'Returned ~ Prediction');
+                disp('R-squared:');
+                disp(modelPredictions.Rsquared.Ordinary);
+
+                % Visually Checking Assumptions
+                figure;
+
+                % Linearity
+                subplot(2, 2, 1);
+                scatter(trialData.Prediction, trialData.Returned, 'filled');
+                hold on;
+                refline(1, 0);
+                xlabel('Prediction');
+                ylabel('Observed');
+                xlim([0, 30]);
+                ylim([0, 30]);
+                title('Linearity');
+
+                % Normality
+                subplot(2, 2, 2);
+                diffResiduals = modelPredictions.Residuals.Raw - trialData.Returned;
+                histogram(diffResiduals, 'Normalization', 'pdf', 'EdgeColor', 'none');
+                hold on;
+                normvals = normrnd(0, std(diffResiduals), 1000, 1);
+                histogram(normvals, 'Normalization', 'pdf', 'EdgeColor', 'none');
+                xlabel('Prediction - Observed');
+                ylabel('Density');
+                title('Normality');
+
+                % Independence of Error and Homoscedasticity
+                subplot(2, 2, 3);
+                gscatter(trialData.Investment, diffResiduals, trialData.Multiplier, [], [], 15);
+                xlabel('Investment');
+                ylabel('Prediction - Observed');
+                title('Independence of Error and Homoscedasticity');
+
         .. tab-item:: Python
 
             ::
+
+                import seaborn as sns
+                import matplotlib.pyplot as plt
+                import statsmodels.api as sm
+
+                # Model Performance
+                modelPredictions = sm.OLS(trialData['Returned'], sm.add_constant(trialData['Prediction'])).fit()
+                print(modelPredictions.summary())
+
+                # Visually Checking Assumptions
+                fig, axs = plt.subplots(2, 2, figsize=(12, 10))
+
+                # Linearity
+                axs[0, 0].scatter(trialData['Prediction'], trialData['Returned'], color='blue', alpha=0.5)
+                axs[0, 0].plot([0, 30], [0, 30], color='red', linestyle='--')
+                axs[0, 0].set_xlabel('Prediction')
+                axs[0, 0].set_ylabel('Observed')
+                axs[0, 0].set_xlim([0, 30])
+                axs[0, 0].set_ylim([0, 30])
+                axs[0, 0].set_title('Linearity')
+
+                # Normality
+                axs[0, 1].hist(modelPredictions.resid, bins='auto', color='blue', alpha=0.5, density=True)
+                sns.histplot(normvals, bins='auto', color='red', alpha=0.5, kde=True, ax=axs[0, 1])
+                axs[0, 1].set_xlabel('Prediction - Observed')
+                axs[0, 1].set_ylabel('Density')
+                axs[0, 1].set_title('Normality')
+
+                # Independence of Error and Homoscedasticity
+                axs[1, 0].scatter(trialData['Investment'], modelPredictions.resid, c=trialData['Multiplier'], cmap='viridis', s=15)
+                axs[1, 0].set_xlabel('Investment')
+                axs[1, 0].set_ylabel('Prediction - Observed')
+                axs[1, 0].set_title('Independence of Error and Homoscedasticity')
+
+                plt.tight_layout()
+                plt.show()
+
 .. dropdown:: Validating Parameter Recovery Process
 
     .. tab-set::
@@ -764,9 +765,125 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                fivefold = table(); % preallocate for parameters and errors from the fivefold validation to go into
+
+                for i = 1:length(included_subjects)
+                    df = trialData(included_subjects(i) == trialData.Subject, :);
+                    order = randperm(length(df.Returned));
+                    Theta_ff = NaN(1, 5);
+                    Phi_ff = NaN(1, 5);
+                    SS_ff = 0;
+                    Prediction_ff = NaN(1, length(df.Returned));
+                    
+                    for z = 1:5
+                        j = round((z - 1) * (length(df.Returned)/5) + 1);
+                        n = round(z * (length(df.Returned)/5));
+                        withheld = order(j:n);
+                        
+                        result_ff = fmincon(@(params) obj_function(params, df(~ismember(1:length(df.Returned), withheld), :)), ...
+                            initial_params, [], [], [], [], lower_bounds, upper_bounds);
+                        
+                        Theta_ff(z) = result_ff(1);
+                        Phi_ff(z) = result_ff(2);
+                        
+                        for n = 1:length(withheld)
+                            if df.Investment(withheld(n)) > 10
+                                Choices = 0:round((df.Investment(withheld(n)) * df.Multiplier(withheld(n)))/10):(df.Investment(withheld(n)) * df.Multiplier(withheld(n)));
+                            else
+                                Choices = 0:1:(df.Investment(withheld(n)) * df.Multiplier(withheld(n)));
+                            end
+                            
+                            utility_choices = NaN(1, length(Choices));
+                            for q = 1:length(Choices)
+                                utility_choices(q) = utility(result_ff(1), result_ff(2), ...
+                                    guilt(df.Investment(withheld(n)), 4, Choices(q), df.Multiplier(withheld(n))), ...
+                                    payout_maximization(df.Investment(withheld(n)), df.Multiplier(withheld(n)), Choices(q)), ...
+                                    inequity(df.Investment(withheld(n)), df.Multiplier(withheld(n)), Choices(q), 10));
+                            end
+                            
+                            [~, maxIndex] = max(utility_choices);
+                            Prediction_ff(withheld(n)) = Choices(maxIndex);
+                        end
+                    end
+                    
+                    SS_ff = sum((df.Returned - Prediction_ff).^2);
+                    fivefold(i, 1:12) = [SS_ff, Theta_ff, Phi_ff, included_subjects(i)];
+                end
+
+                fivefold.Properties.VariableNames = {'SS', 'Par1_fold1', 'Par1_fold2', 'Par1_fold3', 'Par1_fold4', 'Par1_fold5', ...
+                    'Par2_fold1', 'Par2_fold2', 'Par2_fold3', 'Par2_fold4', 'Par2_fold5', 'SubjectID'};
+
+                sqrt(mean(fivefold.SS)/length(df.Investment)) - sqrt(mean(subjectData.modelSS)/length(df.Investment)); % the change in root mean squared error, per trial
+
+                fivefold.AIC = length(df.Investment) * log(fivefold.SS/length(df.Investment)) + 2 * 2;
+                ttest(fivefold.AIC, subjectData.modelAIC); % test fivefold MFI against normal MFI for this model
+
+                cosines = NaN(1, 10);
+                for i = 1:5
+                    cosines(i) = cosine(subjectData.Theta, fivefold{:, (i + 1)}); % to get the correct columns in the fivefold dataframe (2-6)
+                    cosines(i + 5) = cosine(subjectData.Phi, fivefold{:, (i + 6)}); % to get the correct columns in the fivefold dataframe (7-11)
+                end
+
+                mean(cosines(1:5)) % cosine similarity of parameter 1
+                mean(cosines(6:10)) % cosine similarity of parameter 2
+
         .. tab-item:: Python
 
             ::
+
+                fivefold = pd.DataFrame()  # preallocate for parameters and errors from the fivefold validation to go into
+
+                for i in range(1, len(included_subjects) + 1):
+                    df = trialData[included_subjects[i - 1] == trialData['Subject']]
+                    order = np.random.permutation(len(df['Returned']))
+                    Theta_ff = np.zeros(5)
+                    Phi_ff = np.zeros(5)
+                    SS_ff = 0
+                    Prediction_ff = np.zeros(len(df['Returned']))
+                    
+                    for z in range(1, 6):
+                        j = round((z - 1) * (len(df['Returned']) / 5) + 1)
+                        n = round(z * (len(df['Returned']) / 5))
+                        withheld = order[j-1:n]
+                        
+                        result_ff = minimize(lambda params: obj_function(params, df.loc[~df.index.isin(withheld), :]), 
+                                            initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
+                        
+                        Theta_ff[z-1] = result_ff.x[0]
+                        Phi_ff[z-1] = result_ff.x[1]
+                        
+                        for n in withheld:
+                            if df['Investment'].iloc[n] > 10:
+                                Choices = np.arange(0, (df['Investment'].iloc[n] * df['Multiplier'].iloc[n]), 
+                                                round((df['Investment'].iloc[n] * df['Multiplier'].iloc[n])/10))
+                            else:
+                                Choices = np.arange(0, (df['Investment'].iloc[n] * df['Multiplier'].iloc[n]), 1)
+                            
+                            utility_choices = np.zeros(len(Choices))
+                            for q in range(len(Choices)):
+                                utility_choices[q] = utility(result_ff.x[0], result_ff.x[1], 
+                                                            guilt(df['Investment'].iloc[n], 4, Choices[q], df['Multiplier'].iloc[n]), 
+                                                            payout_maximization(df['Investment'].iloc[n], df['Multiplier'].iloc[n], Choices[q]), 
+                                                            inequity(df['Investment'].iloc[n], df['Multiplier'].iloc[n], Choices[q], 10))
+                            
+                            correct_choice = Choices[np.argmax(utility_choices)]
+                            Prediction_ff[n] = correct_choice
+                    
+                    SS_ff = np.sum((df['Returned'].to_numpy() - Prediction_ff)**2)
+                    fivefold[i - 1:i] = [SS_ff] + list(Theta_ff) + list(Phi_ff) + [included_subjects[i - 1]]
+
+                sqrt(np.mean(fivefold['SS'])/len(df['Investment'])) - np.sqrt(np.mean(subjectData['modelSS'])/len(df['Investment'])) # the change in root mean squared error, per trial
+
+                fivefold['AIC'] = len(df['Investment']) * np.log(fivefold['SS']/len(df['Investment'])) + 2 * 2
+                ttest_rel(fivefold['AIC'], subjectData['modelAIC']) # test fivefold MFI against normal MFI for this model
+
+                cosines = np.zeros(10)
+                for i in range(1, 6):
+                    cosines[i - 1] = cosine_similarity(subjectData['Theta'].to_numpy().reshape(1, -1), fivefold.iloc[:, i:i+1].to_numpy().T)[0, 0]
+                    cosines[i + 4] = cosine_similarity(subjectData['Phi'].to_numpy().reshape(1, -1), fivefold.iloc[:, i+5:i+6].to_numpy().T)[0, 0]
+
+                np.mean(cosines[0:5]) # cosine similarity of parameter 1
+                np.mean(cosines[5:10]) # cosine similarity of parameter 2
 
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------

@@ -34,37 +34,7 @@ How to Achieve this Goal
 
             :: 
 
-                obj_function_nid = function(params, df, method = "OLS") {
-                    Parameter1 = params[1]
-                    Parameter2 = params[2]
-
-                    decisions = df$Decision
-
-                    predicted_utility = vector('numeric', length(df[,1]))
-                    observed_utility = vector('numeric', length(df[,1]))
-                    for (k in 1:length(df[,1])){
-                        IV = df[k, 1]
-                        Constant = df[k, 2]
-                        Choices = #
-
-                        Utility = vector('numeric', length(Choices))
-                        for (n in 1:length(Choices)){
-                            Utility[n] = utility(Parameter1, Parameter2,
-                                                construct1(IV, Constant, Choices[n]),
-                                                construct2(IV, Constant, Choices[n]),
-                                                construct3(IV, Constant, Choices[n]))
-                        }
-                        predicted_utility[k] = max(Utility)
-                        observed_utility[k] = Utility[k]
-                    }
-                    if (method == "OLS"){
-                        return(sum((predicted_utility - observed_utility)**2))
-                    } else if (method == "MLE"){
-                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
-                    }
-                }
-
-                result = fmincon(obj_function_nid,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                  lb = lower_bounds, ub = upper_bounds,
                                  df = trialData)
 
@@ -96,40 +66,8 @@ How to Achieve this Goal
 
             ::
 
-                function result = obj_function_nid(params, df, method)
-                    Parameter1 = params(1);
-                    Parameter2 = params(2);
-
-                    decisions = df.Decision;
-
-                    predicted_utility = zeros(length(df), 1);
-                    observed_utility = zeros(length(df), 1);
-                    
-                    for k = 1:length(df)
-                        IV = df(k, 1);
-                        Constant = df(k, 2);
-                        Choices = [];  % You need to define Choices here
-                        
-                        Utility = zeros(length(Choices), 1);
-                        for n = 1:length(Choices)
-                            Utility(n) = utility(Parameter1, Parameter2, ...
-                                construct1(IV, Constant, Choices(n)), ...
-                                construct2(IV, Constant, Choices(n)), ...
-                                construct3(IV, Constant, Choices(n)));
-                        end
-                        predicted_utility(k) = max(Utility);
-                        observed_utility(k) = Utility(k);
-                    end
-                    
-                    if strcmp(method, 'OLS')
-                        result = sum((predicted_utility - observed_utility).^2);
-                    elseif strcmp(method, 'MLE')
-                        result = -1 * sum(log(normpdf(observed_utility, predicted_utility, sd)));
-                    end
-                end
-
                 options = optimoptions('fmincon', 'Algorithm', 'interior-point');
-                result = fmincon(@(params) obj_function_nid(params, trialData, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+                result = fmincon(@(params) obj_function(params, trialData, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
 
                 trialData.PredictedNID = zeros(length(trialData.SubjectID), 1);
                 for i = 1:length(trialData.IV)
@@ -158,35 +96,7 @@ How to Achieve this Goal
             
             ::
 
-                def obj_function_nid(params, df, method):
-                    Parameter1 = params[0]
-                    Parameter2 = params[1]
-
-                    decisions = df['Decision'].values
-
-                    predicted_utility = np.zeros(len(df))
-                    observed_utility = np.zeros(len(df))
-
-                    for k in range(len(df)):
-                        IV = df.iloc[k, 0]
-                        Constant = df.iloc[k, 1]
-                        Choices = []  # Define Choices here
-
-                        Utility = np.zeros(len(Choices))
-                        for n in range(len(Choices)):
-                            Utility[n] = utility(Parameter1, Parameter2,
-                                                construct1(IV, Constant, Choices[n]),
-                                                construct2(IV, Constant, Choices[n]),
-                                                construct3(IV, Constant, Choices[n]))
-                        predicted_utility[k] = np.max(Utility)
-                        observed_utility[k] = Utility[k]
-
-                    if method == 'OLS':
-                        return np.sum((predicted_utility - observed_utility) ** 2)
-                    elif method == 'MLE':
-                        return -1 * np.sum(np.log(norm.pdf(observed_utility, loc=predicted_utility, scale=sd)))
-
-                result = minimize(lambda params: obj_function_nid(params, trialData, 'OLS'), initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
+                result = minimize(lambda params: obj_function(params, trialData, 'OLS'), initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
 
                 trialData['PredictedNID'] = np.zeros(len(trialData['SubjectID']))
                 for i in range(len(trialData['IV'])):
@@ -275,9 +185,98 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                result = fmincon(@(params) obj_function(params, trialData), initial_params, [], [], [], [], lower_bounds, upper_bounds);
+
+                trialData.PredictedNID = NaN(1, length(trialData.Subject));
+                for i = 1:length(trialData.Subject)
+                    if trialData.Investment(i) > 10
+                        Choices = 0:round((trialData.Investment(i) * trialData.Multiplier(i))/10):(trialData.Investment(i) * trialData.Multiplier(i));
+                    else
+                        Choices = 0:1:(trialData.Investment(i) * trialData.Multiplier(i));
+                    end
+                    
+                    Utility = NaN(1, length(Choices));
+                    for n = 1:length(Choices)
+                        Utility(n) = utility(result(1), result(2), ...
+                            payout_maximization(trialData.Investment(i), trialData.Multiplier(i), Choices(n)), ...
+                            guilt(trialData.Investment(i), 4, Choices(n), trialData.Multiplier(i)), ...
+                            inequity(trialData.Investment(i), trialData.Multiplier(i), Choices(n), 10));
+                    end
+                    
+                    [~, maxIndex] = max(Utility);
+                    trialData.PredictedNID(i) = Choices(maxIndex);
+                end
+
+                subjectData.SS_NID = NaN(1, length(subjectData.SubjectID));
+
+                for i = 1:length(subjectData.SubjectID)
+                    trials = find(subjectData.SubjectID(i) == trialData.Subject);
+                    subjectData.SS_NID(i) = sum((trialData.Returned(trials) - trialData.PredictedNID(trials)).^2);
+                end
+
+                subjectData.AIC_NID = length(df.Investment) * log(subjectData.SS_NID/length(df.Investment)) + 2 * (2/length(subjectData.SubjectID));
+
+                ttest(subjectData.modelAIC, subjectData.AIC_NID);
+
+                lm_result = fitlm(trialData, 'Returned ~ PredictedNID');
+                disp(lm_result);
+
+                aic_id = [mean(subjectData.modelAIC), mean(subjectData.AIC_NID)];
+
+                figure;
+                bar(categorical({'Individual Differences', 'No Individual Differences'}), aic_id, 'FaceColor', [0.85 0.85 0.85]);
+                ylabel('AIC');
+                ylim([-5 155]);
+                hold on;
+                sigstar({'Individual Differences', 'No Individual Differences'}, [0.15, 135, 1.5, 135], [0, 0, 0]);
+                text(1.5, 135, 'p = 0.18', 'VerticalAlignment', 'top', 'HorizontalAlignment', 'center', 'FontSize', 10);
+                hold off;
+
         .. tab-item:: Python
 
             ::
+
+                result = minimize(lambda params: obj_function(params, trialData), initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
+
+                trialData['PredictedNID'] = np.nan
+                for i in range(1, len(trialData['Subject']) + 1):
+                    if trialData['Investment'].iloc[i - 1] > 10:
+                        Choices = np.arange(0, (trialData['Investment'].iloc[i - 1] * trialData['Multiplier'].iloc[i - 1]), 
+                                            round((trialData['Investment'].iloc[i - 1] * trialData['Multiplier'].iloc[i - 1])/10))
+                    else:
+                        Choices = np.arange(0, (trialData['Investment'].iloc[i - 1] * trialData['Multiplier'].iloc[i - 1]), 1)
+                    
+                    Utility = np.zeros(len(Choices))
+                    for n in range(len(Choices)):
+                        Utility[n] = utility(result.x[0], result.x[1], 
+                                            payout_maximization(trialData['Investment'].iloc[i - 1], trialData['Multiplier'].iloc[i - 1], Choices[n]), 
+                                            guilt(trialData['Investment'].iloc[i - 1], 4, Choices[n], trialData['Multiplier'].iloc[i - 1]), 
+                                            inequity(trialData['Investment'].iloc[i - 1], trialData['Multiplier'].iloc[i - 1], Choices[n], 10))
+                    
+                    correct_choice = Choices[np.argmax(Utility)]
+                    trialData.at[i - 1, 'PredictedNID'] = correct_choice
+
+                subjectData['SS_NID'] = np.nan
+
+                for i in range(1, len(subjectData['SubjectID']) + 1):
+                    trials = trialData[trialData['Subject'] == subjectData['SubjectID'].iloc[i - 1]]
+                    subjectData.at[i - 1, 'SS_NID'] = np.sum((trials['Returned'].to_numpy() - trials['PredictedNID'].to_numpy())**2)
+
+                subjectData['AIC_NID'] = len(df['Investment']) * np.log(subjectData['SS_NID']/len(df['Investment'])) + 2 * (2/len(subjectData['SubjectID']))
+
+                ttest_rel(subjectData['modelAIC'], subjectData['AIC_NID'])
+
+                lm_result = sm.OLS(trialData['Returned'], sm.add_constant(trialData['PredictedNID'])).fit()
+                print(lm_result.summary())
+
+                aic_id = [np.mean(subjectData['modelAIC']), np.mean(subjectData['AIC_NID'])]
+
+                plt.bar(['Individual Differences', 'No Individual Differences'], aic_id, color=[0.85, 0.85, 0.85])
+                plt.ylabel('AIC')
+                plt.ylim([-5, 155])
+                plt.xticks(rotation=45, ha='right')
+                plt.text(1.5, 135, 'p = 0.18', va='bottom', ha='center', fontsize=10)
+                plt.show()
 
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------
@@ -297,7 +296,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
                     z = which(trialData$condition == conditions[j])
                     df = trialData[z, c(6, 12:20, 2)]
 
-                    result = fmincon(obj_function_nid,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                    result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                     lb = lower_bounds, ub = upper_bounds,
                                     df = df)
 
@@ -351,7 +350,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
                     z = find(trialData.condition == conditions(j));
                     df = trialData(z, [6, 12:20, 2]);
 
-                    result = fmincon(@(params) obj_function_nid(params, df), initial_params, [], [], [], [], lower_bounds, upper_bounds);
+                    result = fmincon(@(params) obj_function(params, df), initial_params, [], [], [], [], lower_bounds, upper_bounds);
 
                     for i = 1:length(df)
                         Utility = zeros(1, length(Choices));
@@ -404,7 +403,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
                     z = np.where(trialData['condition'] == conditions[j])[0]
                     df = trialData.iloc[z, [5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1]]
 
-                    result = minimize(lambda params: obj_function_nid(params, df), initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
+                    result = minimize(lambda params: obj_function(params, df), initial_params, bounds=list(zip(lower_bounds, upper_bounds)))
 
                     for i in range(len(df)):
                         Utility = np.zeros(len(Choices))

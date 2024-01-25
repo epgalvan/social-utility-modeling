@@ -90,7 +90,6 @@ How to Achieve this Goal
                     for (i in 1:length(included_subjects)){
                         datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
                         df = read.csv2(datafile) #this will have variables called IV, Decisions, Condition, and information about the original order of trials (i.e. trialsTask.thisIndex) - it will also have information about the number of blocks
-                        reorder = df$trialsTask.thisIndex + 1
 
                         df$Prediction = vector('numeric', length(df$IV))
                         Par1_PerCondition = vector('numeric', length(levels(df$Condition)))
@@ -100,11 +99,9 @@ How to Achieve this Goal
 
                         for (c in 1:length(levels(df$Condition))){  
 
-                            reorder_these_trials = reorder[which(df$Condition == levels(df$Condition)[c])]
-
                             result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                             lb = lower_bounds, ub = upper_bounds,
-                                            decisions = df$Decisions[reorder_these_trials])
+                                            df = df)
 
                             #Just Added
 
@@ -128,7 +125,7 @@ How to Achieve this Goal
 
                             Deviance_PerCondition[c] = dnorm(df$Decision, mean = Prediction)
                             SS_PerCondition[c] = sum((df$Decision - Prediction)**2)
-                            df$Prediction[which(df$Condition == levels(df$Condition)[c])[reorder_these_trials]] = Prediction
+                            df$Prediction[which(df$Condition == levels(df$Condition)[c])] = Prediction
                         }
                         NLL_PerCondition = -2 * log(sum(Deviance_PerCondition))
 
@@ -216,7 +213,6 @@ How to Achieve this Goal
                     for i = 1:length(included_subjects)
                         datafile = strcat(parentfolder, included_subjects(i), restoffilepath);
                         df = readtable(datafile);
-                        reorder = df.trialsTask.thisIndex + 1;
 
                         df.Prediction = zeros(1, length(df.IV));
                         Par1_PerCondition = zeros(1, length(unique(df.Condition)));
@@ -225,9 +221,8 @@ How to Achieve this Goal
                         Deviance_PerCondition = zeros(1, length(unique(df.Condition)));
 
                         for c = 1:length(unique(df.Condition))
-                            reorder_these_trials = reorder(df.Condition == unique(df.Condition)(c));
 
-                            result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, df.Decisions(reorder_these_trials));
+                            result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, df);
 
                             closestPoint = find(freeParameters(:, 1) == round(result(1)) & freeParameters(:, 2) == round(result(2)));
                             Prediction = zeros(1, length(df.Decisions));
@@ -245,7 +240,7 @@ How to Achieve this Goal
 
                             Deviance_PerCondition(c) = normpdf(df.Decision, Prediction);
                             SS_PerCondition(c) = sum((df.Decision - Prediction).^2);
-                            df.Prediction(df.Condition == unique(df.Condition)(c) & reorder_these_trials) = Prediction;
+                            df.Prediction(df.Condition == unique(df.Condition)(c)) = Prediction;
                         end
                         NLL_PerCondition = -2 * sum(log(Deviance_PerCondition));
 
@@ -320,7 +315,6 @@ How to Achieve this Goal
                     for i in range(len(included_subjects)):
                         datafile = parentfolder + included_subjects[i] + restoffilepath
                         df = pd.read_csv(datafile)
-                        reorder = df['trialsTask.thisIndex'] + 1
 
                         df['Prediction'] = np.zeros(len(df['IV']))
                         Par1_PerCondition = np.zeros(len(df['Condition'].unique()))
@@ -329,9 +323,8 @@ How to Achieve this Goal
                         Deviance_PerCondition = np.zeros(len(df['Condition'].unique()))
 
                         for c in range(len(df['Condition'].unique())):
-                            reorder_these_trials = reorder[df['Condition'] == df['Condition'].unique()[c]]
 
-                            result = minimize(obj_function, initial_params, args=(df['Decisions'][reorder_these_trials],), bounds=list(zip(lower_bounds, upper_bounds)))
+                            result = minimize(obj_function, initial_params, args=(df), bounds=list(zip(lower_bounds, upper_bounds)))
 
                             closestPoint = np.where((freeParameters[:, 0] == round(result.x[0])) & (freeParameters[:, 1] == round(result.x[1])))
                             Prediction = np.zeros(len(df['Decisions']))
@@ -346,7 +339,7 @@ How to Achieve this Goal
 
                             Deviance_PerCondition[c] = norm.pdf(df['Decision'], Prediction)
                             SS_PerCondition[c] = np.sum((df['Decision'] - Prediction)**2)
-                            df['Prediction'][df['Condition'] == df['Condition'].unique()[c] & reorder_these_trials] = Prediction
+                            df['Prediction'][df['Condition'] == df['Condition'].unique()[c]] = Prediction
                         NLL_PerCondition = -2 * np.sum(np.log(Deviance_PerCondition))
 
                         result = minimize(obj_function_aao, initial_params, args=(df['Decisions'],), bounds=list(zip(lower_bounds, upper_bounds)))

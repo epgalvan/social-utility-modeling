@@ -82,7 +82,7 @@ How to Achieve this Goal
 
         .. tab-item:: Plain English
 
-            1. Take in observed :bdg-danger:`Decisions` as some proposed :bdg-success:`Free Parameters` as inputs
+            1. Take in the :bdg-primary:`Trial Set`, observed :bdg-danger:`Decisions`, and some proposed :bdg-success:`Free Parameters` as inputs
             2. Compute :bdg-warning:`Utility` for each possible :bdg-danger:`Decision` for each :bdg-primary:`Trial`
             3. Select the highest possible :bdg-warning:`Utility` value for each :bdg-primary:`Trial` as the Expected :bdg-warning:`Utility`
             4. Compute the Observed :bdg-warning:`Utility` for each observed :bdg-danger:`Decision`
@@ -92,11 +92,13 @@ How to Achieve this Goal
 
             ::
 
-                obj_function = function(params, decisions, method = "OLS") {
+                obj_function = function(params, df, method = "OLS") {
                     Parameter1 = params[1]
                     Parameter2 = params[2]
 
-                    trialList = data.frame() #must redefine within function
+                    k = length(as.vector(df[1,]) )#must define depending on where the decisions will be in your df, this assumes last column
+                    decisions = df[,k] 
+                    trialList = df[,1:(k-1)]
                     
                     predicted_utility = vector('numeric', length(trialList[,1]))
                     observed_utility = vector('numeric', length(trialList[,1]))
@@ -126,14 +128,18 @@ How to Achieve this Goal
 
             ::
 
-                function obj_value = obj_function(params, decisions, method)
+                function obj_value = obj_function(params, df, method)
                     if nargin < 3
                         method = 'OLS';
                     end
                     Parameter1 = params(1);
                     Parameter2 = params(2);
 
-                    trialList = cell() #must redefine within function
+                    k = length(table2array(df(1,:))); % must define depending on where the decisions will be in your df, this assumes last column
+                    decisions = table2array(df(:, k));
+
+                    trialList = table2array(df(:, 1:(k-1)));
+
                     
                     predicted_utility = zeros(length(trialList), 1);
                     observed_utility = zeros(length(trialList), 1);
@@ -167,11 +173,14 @@ How to Achieve this Goal
                 
                 from scipy.stats import norm
 
-                def obj_function(params, decisions, method="OLS"):
+                def obj_function(params, df, method="OLS"):
                     Parameter1 = params[0]
                     Parameter2 = params[1]
 
-                    trialList = np.array() #must redefine within funciton
+                    k = len(df.columns)  # must define depending on where the decisions will be in your df, this assumes last column
+                    decisions = df.iloc[:, -1].to_numpy()
+
+                    trialList = df.iloc[:, :-1].to_numpy()
 
                     predicted_utility = np.zeros(len(trialList))
                     observed_utility = np.zeros(len(trialList))
@@ -238,10 +247,12 @@ How to Achieve this Goal
                 parameter2_true = #something
 
                 for (i in 1:length(parameter1_true)) {
+                    df = trialList
+                    df$Decisions = as.numeric(predictions[this_idx,])
                     this_idx = which(parameter1_true[i] == freeParameters$Parameter1 & parameter2_true[i] == freeParameters$Parameter2)                
                     result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                         lb = lower_bounds, ub = upper_bounds,
-                                        decisions = as.numeric(predictions[this_idx,]))
+                                        df = df)
                     
                     parameter1_recovered[i] = result$par[1]
                     parameter2_recovered[i] = result$par[2]
@@ -264,8 +275,10 @@ How to Achieve this Goal
                     this_i = ((i - 1) * 10) + 1
                     for j = 1:11
                         this_j = ((j - 1) * 10) + 1
+                        df = trialList
+                        df.Decisions = freeParameters(this_i,this_j).predictions
                         options = optimoptions('fmincon', 'Display', 'off');
-                        result = fmincon(@(params) obj_function(params, freeParameters(this_i,this_j).predictions, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+                        result = fmincon(@(params) obj_function(params, df, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
                         
                         parameter1_recovered(k) = result(1);
                         parameter2_recovered(k) = result(2);
@@ -289,14 +302,100 @@ How to Achieve this Goal
 
                 for i in range(0, len(parameter1_true)):
                     this_idx = np.where((freeParameters['Parameter1'] == parameter1_true[i]) & (freeParameters['Parameter2'] == parameter2_true[i]))[0]
-                    result = minimize(obj_function, x0=initial_params, bounds=list(zip(lower_bounds, upper_bounds)), args=(np.array(predictions[this_idx,])))
+
+                    df = trialList
+                    df['Decisions'] = predictions[this_idx,]
+                    result = minimize(obj_function, x0=initial_params, bounds=list(zip(lower_bounds, upper_bounds)), args= df)
                     
                     parameter1_recovered[i] = result.x[0]
                     parameter2_recovered[i] = result.x[1]
                 
 .. dropdown:: Verifying :bdg-success:`Free Parameter` Recovery Process
 
-    See Tuturial 1 below. 
+    You'll want to visualize the error in predicting the true :bdg-success:`Free Parameter` values. 
+    Depending on the kind of data you have you might want to do that in different ways.
+
+    .. dropdown:: One Parameter at a Time
+
+        .. tab-set::
+            
+            .. tab-item:: Plain English
+
+                We want to visualize what generated the data (X axis) with what we think generated the data (Y axis). 
+                If things look highly stochastic at the extremes, we'll think about changing the limits. 
+                If things look highly stochastc at all values, we'll need to revamp our model or :bdg-primary:`Trial Set`.
+            
+            .. tab-item:: R
+
+                library(ggplot2)
+
+                big_mistake = ((parameter1_true - parameter1_recovered)/(max(parameter1_true) - min(parameter1_true))) > 0.25 #more than 25% of the largest possible error, can adjust to visualize better
+                qplot(x = parameter1_true, y = parameter1_recovered, color = big_mistake, geom = 'point')
+
+            .. tab-item:: MatLab
+
+                big_mistake = ((parameter1_true - parameter1_recovered) / (max(parameter1_true) - min(parameter1_true))) > 0.25; % more than 25% of the largest possible error, can adjust to visualize better
+                scatter(parameter1_true, parameter1_recovered, 30, big_mistake, 'filled'); % scatter plot with big_mistake as color
+                colormap([0.8 0.8 0.8; 1 0 0]); % set color map to gray and red
+                colorbar('Ticks', [0 1], 'TickLabels', {'No', 'Yes'}); % show colorbar
+                xlabel('parameter1\_true');
+                ylabel('parameter1\_recovered');
+
+            .. tab-item:: Python
+
+                import matplotlib.pyplot as plt
+
+                big_mistake = ((parameter1_true - parameter1_recovered) / (np.max(parameter1_true) - np.min(parameter1_true))) > 0.25  # more than 25% of the largest possible error, can adjust to visualize better
+
+                plt.scatter(parameter1_true, parameter1_recovered, c=big_mistake, cmap=plt.cm.RdYlGn, s=30, edgecolors='k')  # scatter plot with big_mistake as color
+                plt.colorbar(ticks=[0, 1], label='Big Mistake', orientation='vertical', pad=0.2)  # show colorbar
+                plt.xlabel('parameter1_true')
+                plt.ylabel('parameter1_recovered')
+                plt.show()
+
+    .. dropdown:: Two Parameters at a Time
+
+        .. tab-set::
+            
+            .. tab-item:: Plain English
+
+                We want to plot the magnitude of the error as a function of space. 
+                So we can use attributes like color and/or size to represent the distance between the True and Recover :bdg-success:`Free Parameter` values. 
+            
+            .. tab-item:: R
+
+                ::
+
+                    library(ggplot2)
+
+                    distance = sqrt((parameter1_true - parameter1_recovered)**2 + (parameter2_true - parameter2_recovered)**2) #calculate spatial distance in parameter recovery
+                    max_distance = sqrt((max(parameter1_true) - min(parameter1_true))**2 + (max(parameter2_true) - min(parameter2_true))**2) #calculate maximum spatial distance
+                    qplot(x = parameter1_true, y = parameter2_true, color = distance, size = distance, geom = 'point') + scale_radius(limits=c(0, max_distance), range=c(0, 20)) #0 is minimum distance
+
+            .. tab-item:: MatLab
+
+                ::
+
+                    distance = sqrt((parameter1_true - parameter1_recovered).^2 + (parameter2_true - parameter2_recovered).^2); % calculate spatial distance in parameter recovery
+                    max_distance = sqrt((max(parameter1_true) - min(parameter1_true)).^2 + (max(parameter2_true) - min(parameter2_true)).^2); % calculate maximum spatial distance
+                    scatter(parameter1_true, parameter2_true, distance, distance, 'filled'); % scatter plot with distance as color and size
+                    caxis([0, max_distance]); % set color axis limits
+                    colorbar; % show colorbar
+
+
+            .. tab-item:: Python
+
+                ::
+
+                    import matplotlib.pyplot as plt
+
+                    distance = np.sqrt((parameter1_true - parameter1_recovered)**2 + (parameter2_true - parameter2_recovered)**2)  # calculate spatial distance in parameter recovery
+                    max_distance = np.sqrt((np.max(parameter1_true) - np.min(parameter1_true))**2 + (np.max(parameter2_true) - np.min(parameter2_true))**2)  # calculate maximum spatial distance
+                    plt.scatter(parameter1_true, parameter2_true, c=distance, s=distance, cmap='viridis', alpha=0.7)  # scatter plot with distance as color and size
+                    plt.colorbar(label='Distance')  # show colorbar
+                    plt.xlim(np.min(parameter1_true), np.max(parameter1_true))
+                    plt.ylim(np.min(parameter2_true), np.max(parameter2_true))
+                    plt.show()
 
 .. dropdown:: Fixing Nonspecific Models
 
@@ -324,10 +423,13 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
-                obj_function = function(params, decisions, method = "OLS") {
+                obj_function = function(params, df, method = "OLS") {
                     Theta = params[1]
                     Phi = params[2]
-                    
+
+                    df$Decision = df[, 5]
+                    trialList = df[, 1:4]
+
                     predicted_utility = vector('numeric', length(trialList[,1]))
                     chosen = decisions + 1
                     for (k in 1:length(trialList[,1])){
@@ -339,7 +441,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                         
                         Utility = vector('numeric', length(Choices))
                         for (n in 1:length(Choices)){
-                        Utility[n] = utility(Theta, Phi, guilt(I, B, Choices[n], M), inequity(I, M, Choices[n], E), payout_maximization(I, M, Choices[n]))
+                            Utility[n] = utility(Theta, Phi, guilt(I, B, Choices[n], M), inequity(I, M, Choices[n], E), payout_maximization(I, M, Choices[n]))
                         }
                         predicted_utility[k] = max(Utility)
                         observed_utility[k] = Utility[chosen[k]]
@@ -363,8 +465,9 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                     Phi = params(2);
                     
                     predicted_utility = zeros(length(trialList), 1);
+                    decisions = df(:, 5)
                     chosen = decisions + 1;
-                    for k = 1:length(trialList)
+                    for k = 1:length(predicted_utility)
                         I = trialList(k, 1);
                         M = trialList(k, 2);
                         B = trialList(k, 3);
@@ -397,10 +500,13 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                     Theta = params[0]
                     Phi = params[1]
 
+                    decisions = df[, 4]
+                    trialList = df[, 0:3]
+
                     predicted_utility = np.zeros(len(trialList))
                     chosen = decisions + 1
 
-                    for k in range(len(trialList)):
+                    for k in range(len(predicted_utility)):
                         I = trialList[k, 0]
                         M = trialList[k, 1]
                         B = trialList[k, 2]
@@ -440,10 +546,12 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 phi_true = rep(seq(-0.1, 0.1, 0.02), times = 11)
 
                 for (i in 1:length(theta_true)) {
-                    this_idx = which(round(theta_true[i] * 2, 2)/2 == round(freeParameters$theta * 2, 2)/2 & round(phi_true[i] * 5, 2)/5 == round(freeParameters$phi * 5, 2)) #R is sometimes finnicky about dealing with numbers to different decimal places           
+                    this_idx = which(round(theta_true[i] * 2, 2)/2 == round(freeParameters$theta * 2, 2)/2 & round(phi_true[i] * 5, 2)/5 == round(freeParameters$phi * 5, 2)) #R is sometimes finnicky about dealing with numbers to different decimal places 
+                    df = trialList
+                    df$Decisions = as.numeric(predictions[this_idx,])          
                     result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                         lb = lower_bounds, ub = upper_bounds,
-                                        decisions = as.numeric(predictions[this_idx,]))
+                                        df = df)
                     
                     theta_recovered[i] = result$par[1]
                     phi_recovered[i] = result$par[2]
@@ -466,8 +574,10 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                     this_i = ((i - 1) * 11) + 1
                     for j = 1:11
                         this_j = ((j - 1) * 11) + 1
+                        df = trialList
+                        df.Decisions = freeParameters(this_i,this_j).predictions
                         options = optimoptions('fmincon', 'Display', 'off');
-                        result = fmincon(@(params) obj_function(params, freeParameters(this_i,this_j).predictions, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+                        result = fmincon(@(params) obj_function(params, df, 'OLS'), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
                         
                         theta_recovered(k) = result(1);
                         phi_recovered(k) = result(2);
@@ -491,7 +601,10 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
                 for i in range(0, 121):
                     this_idx = np.where((freeParameters['theta'] == theta_true[i]) & (freeParameters['phi'] == phi_true[i]))[0]
-                    result = minimize(obj_function, x0=initial_params, bounds=list(zip(lower_bounds, upper_bounds)), args=(np.array(predictions[this_idx,])))
+
+                    df = trialList
+                    df['Decisions'] = predictions[this_idx,]
+                    result = minimize(obj_function, x0=initial_params, bounds=list(zip(lower_bounds, upper_bounds)), args=df)
                     
                     theta_recovered[i] = result.x[0]
                     phi_recovered[i] = result.x[1]

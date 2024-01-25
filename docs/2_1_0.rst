@@ -128,7 +128,6 @@ How to Achieve this Goal
                     for (i in 1:length(included_subjects)){
                         datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
                         df = read.csv2(datafile)
-                        reorder = df$trialsTask.thisIndex + 1
 
                         #Determine Free Parameters
 
@@ -143,7 +142,6 @@ How to Achieve this Goal
                     for i = 1:length(included_subjects)
                         datafile = strcat(parentfolder, included_subjects{i}, restoffilepath); % produces a character vector 'parentfolder/included_subjects{i}**.filetype'
                         df = readtable(datafile);
-                        reorder = df.trialsTask_thisIndex + 1;
 
                         % Determine Free Parameters
 
@@ -159,7 +157,6 @@ How to Achieve this Goal
                     for i in range(len(included_subjects)):
                         datafile = parentfolder + included_subjects[i] + restoffilepath # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
                         df = pd.read_csv(datafile)
-                        reorder = df['trialsTask_thisIndex'] + 1
 
                         # Determine Free Parameters
 
@@ -200,13 +197,12 @@ How to Achieve this Goal
                     for (i in 1:length(included_subjects)){
                         datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
                         df = read.csv2(datafile)
-                        reorder = df$trialsTask.thisIndex + 1
 
                         #Just Added
 
                         result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                          lb = lower_bounds, ub = upper_bounds,
-                                         decisions = df$Decisions)
+                                         df = df)
 
                         # Determine Predictions
                     }
@@ -219,12 +215,11 @@ How to Achieve this Goal
                     for i = 1:length(included_subjects)
                         datafile = strcat(parentfolder, included_subjects{i}, restoffilepath); % produces a character vector 'parentfolder/included_subjects{i}**.filetype'
                         df = readtable(datafile);
-                        reorder = df.trialsTask_thisIndex + 1;
 
                         % Just Added
 
                         options = optimoptions('fmincon', 'Display', 'off');
-                        result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
+                        result = fmincon(@(params) obj_function(params, df), initial_params, [], [], [], [], lower_bounds, upper_bounds, [], options);
                         
                         % Determine Predictions
                     end
@@ -237,11 +232,10 @@ How to Achieve this Goal
                     for i in range(len(included_subjects)):
                         datafile = parentfolder + included_subjects[i] + restoffilepath  # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
                         df = np.genfromtxt(datafile, delimiter=',', skip_header=1)
-                        reorder = df[:, df_header.index('trialsTask_thisIndex')] + 1
 
                         # Just Added
 
-                        result = fmin_con(obj_function, x0=initial_params, bounds=(lower_bounds, upper_bounds))
+                        result = fmin_con(obj_function, x0=initial_params, bounds=(lower_bounds, upper_bounds), args = df)
 
                         # Determine Predictions
 
@@ -282,10 +276,9 @@ How to Achieve this Goal
                     for (i in 1:length(included_subjects)){
                         datafile = paste(parentfolder, included_subjects[i], restoffilepath, sep = '') # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
                         df = read.csv2(datafile)
-                        reorder = df$trialsTask.thisIndex + 1
                         result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
                                          lb = lower_bounds, ub = upper_bounds,
-                                         decisions = df$Decisions)
+                                         df = df)
 
                         #Just Added
 
@@ -331,8 +324,7 @@ How to Achieve this Goal
                     for i = 1:length(included_subjects)
                         datafile = strcat(parentfolder, included_subjects{i}, restoffilepath); % produces a character vector 'parentfolder/included_subjects[i]**.filetype'
                         df = readtable(datafile);
-                        reorder = df.trialsTask_thisIndex + 1;
-                        result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, df.Decisions);
+                        result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, df);
 
                         % Just Added
 
@@ -373,7 +365,6 @@ How to Achieve this Goal
                     for i in range(len(included_subjects)):
                         datafile = parentfolder + included_subjects[i] + restoffilepath  # produces a character vector 'parentfolder/included_subjects[i]**.filetype'
                         df = pd.read_csv(datafile, sep='\t')
-                        reorder = df['trialsTask_thisIndex'] + 1
                         result = fmincon(obj_function, x0=initial_params, A=None, b=None, Aeq=None, beq=None, lb=lower_bounds, ub=upper_bounds, decisions=df['Decisions'])
 
                         # Just Added
@@ -435,45 +426,45 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 trialList$Believed_Multiplier = 4
                 trialList$Endowment = 10
 
-                obj_function = function(params, df, method = "OLS") {
-                    Theta = params[1]
-                    Phi = params[2]
-                    
-                    predicted_utility = vector('numeric', length(df[,1]))
-                    observed_utility = vector('numeric', length(df[,1]))
-                    chosen = as.numeric(df[,4]) + 1
-                    for (k in 1:length(df[,1])){
-                        I = df[k, 2]
-                        M = df[k, 3]
-                        B = 4
-                        E = 10
-                        if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
-                        
-                        Utility = vector('numeric', length(Choices))
-                        for (n in 1:length(Choices)){
-                            Utility[n] = utility(theta = Theta, 
-                                                phi = Phi, 
-                                                guilt = guilt(I, B, Choices[n], M), 
-                                                inequity = inequity(I, M, Choices[n], E), 
-                                                payout = payout_maximization(I, M, Choices[n]))
-                        }
-                    predicted_utility[k] = max(Utility)
-                    observed_utility[k] = Utility[chosen[k]]
-                    }
-                    if (method == "OLS"){
-                        return(sum((predicted_utility - observed_utility)**2))
-                    } else if (method == "MLE"){
-                        return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
-                    }
-                } #must redefine since we are using a diferent trialList
-
         .. tab-item:: MatLab
 
             ::
 
+                subjects_batch1 = table2array(readtable('C:/Users/DELL/Downloads/tutorial1_Data/subjectsIncluded_batch1.csv', 'ReadVariableNames', false))';
+                subjects_batch2 = table2array(readtable('C:/Users/DELL/Downloads/tutorial1_Data/subjectsIncluded_batch2.csv', 'ReadVariableNames', false))';
+                included_subjects = [subjects_batch1, subjects_batch2];
+
+                trialData = readtable("C:/Users/DELL/Downloads/tutorial1_Data/allDataLong.csv", 'Delimiter', ',');
+                trialData.Prediction = zeros(height(trialData), 1);
+                trialData.Strategy = zeros(height(trialData), 1);
+                trialData = trialData(trialData.Investment ~= 0, :);
+                trialData = trialData(~isnan(str2double(trialData.Returned)), :);
+
+                subjectData = table();
+                trialList = readtable("C:/Users/DELL/Downloads/tutorial1_Data/trialSet.csv", 'Delimiter', ',');
+                trialList = trialList(:, 2:3);
+                trialList.Believed_Multiplier = 4;
+                trialList.Endowment = 10;
+
         .. tab-item:: Python
 
             ::
+
+                subjects_batch1 = pd.read_csv('C:/Users/DELL/Downloads/tutorial1_Data/subjectsIncluded_batch1.csv', header=None).transpose().values.flatten()
+                subjects_batch2 = pd.read_csv('C:/Users/DELL/Downloads/tutorial1_Data/subjectsIncluded_batch2.csv', header=None).transpose().values.flatten()
+                included_subjects = np.concatenate([subjects_batch1, subjects_batch2])
+
+                trialData = pd.read_csv("C:/Users/DELL/Downloads/tutorial1_Data/allDataLong.csv", sep=',')
+                trialData['Prediction'] = np.zeros(len(trialData['Subject']))
+                trialData['Strategy'] = np.zeros(len(trialData['Subject']))
+                trialData = trialData[trialData['Investment'] != 0]
+                trialData = trialData.dropna(subset=['Returned'])
+
+                subjectData = pd.DataFrame()
+                trialList = pd.read_csv("C:/Users/DELL/Downloads/tutorial1_Data/trialSet.csv", sep=',')
+                trialList = trialList.iloc[:, 1:3]
+                trialList['Believed_Multiplier'] = 4
+                trialList['Endowment'] = 10
 
 .. dropdown:: Define the :bdg-success:`Subject` Loop
 
@@ -494,9 +485,23 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                for i = 1:length(included_subjects)
+                    df = trialData(trialData.Subject == included_subjects(i), :);
+                    
+                    % Recover Free Parameters
+
+                end
+
         .. tab-item:: Python
 
             ::
+                
+                for i in range(len(included_subjects)):
+                    df = trialData[trialData['Subject'] == included_subjects[i]]
+                    result = minimize(obj_function, x0=initial_params, bounds=list(zip(lower_bounds, upper_bounds)), args=(df,))
+
+                    #Recover Free Parameters
+
 .. dropdown:: Recover :bdg-success:`Free Parameters`
 
     .. tab-set::
@@ -519,9 +524,21 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                for i = 1:length(included_subjects)
+                    df = trialData(trialData.Subject == included_subjects(i), :);
+                    result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, [], df);
+                    % Determine Predictions
+                end
+
         .. tab-item:: Python
 
             ::
+
+                for i in range(len(included_subjects)):
+                    df = trialData[trialData['Subject'] == included_subjects[i]]
+                    result = minimize(obj_function, x0=initial_params, bounds=list(zip(lower_bounds, upper_bounds)), args=(df,))
+                    # Determine Predictions
+
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success:`Free Parameters`
 
     .. tab-set::
@@ -575,9 +592,93 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                subjectData = zeros(length(included_subjects), 6);
+                for i = 1:length(included_subjects)
+                    subj_id = included_subjects(i);
+                    df = trialData(trialData.Subject == subj_id, :);
+                    result = fmincon(@obj_function, initial_params, [], [], [], [], lower_bounds, upper_bounds, [], df);
+
+                    closestPoint = find(round(freeParameters(:,1), 3) == round(result(1)/2, 2)*2 & ...
+                                        (round((freeParameters(:,2) + 0.1)*5, 2)/5 - 0.1 == round((result(2) + 0.1)*5, 2)/5 - 0.1), 1);
+                    
+                    for k = 1:length(df.Returned)
+                        I = df.Investment(k);
+                        M = df.Multiplier(k);
+                        R = df.Returned(k);
+                        B = 4;
+                        E = 10;
+                        if I > 10
+                            Choices = 0:(I*M)/10:(I*M);
+                        else
+                            Choices = 0:(I * M);
+                        end
+                        
+                        Utility = zeros(size(Choices));
+                        for n = 1:length(Choices)
+                            Utility(n) = utility(result(1), result(2), ...
+                                                guilt(I, B, Choices(n), M), ...
+                                                inequity(I, M, Choices(n), E), ...
+                                                payout_maximization(I, M, Choices(n)));
+                        end
+                        
+                        [~, correct_choice] = max(Utility);
+                        df.Prediction(k) = Choices(correct_choice);
+                    end
+                    
+                    model_NLL = -2 * log(sum(normpdf(df.Returned, df.Prediction)));
+                    model_SS = sum((df.Returned - df.Prediction).^2);
+                    
+                    subjectData(i, :) = [subj_id, result(1), result(2), freeParameters.Strategy(closestPoint), model_NLL, model_SS];
+                    
+                    trialData.Prediction(trialData.Subject == subj_id) = df.Prediction;
+                    trialData.Strategy(trialData.Subject == subj_id) = freeParameters.Strategy(closestPoint);
+                end
+
+                subjectData = array2table(subjectData, 'VariableNames', {'SubjectID', 'Theta', 'Phi', 'Strategy', 'modelNLL', 'modelSS'});
+                
         .. tab-item:: Python
 
             ::
+
+                subjectData = np.zeros((len(included_subjects), 6))
+                for i, subj_id in enumerate(included_subjects):
+                    df = trialData[trialData['Subject'] == subj_id]
+                    result = minimize(obj_function, x0=initial_params, bounds=list(zip(lower_bounds, upper_bounds)), args=(df,))
+                    
+                    closestPoint = np.where((np.round(freeParameters.iloc[:, 0], 3) == np.round(result.x[0]/2, 2)*2) & 
+                                            (np.round((freeParameters.iloc[:, 1] + 0.1)*5, 2)/5 - 0.1 == np.round((result.x[1] + 0.1)*5, 2)/5 - 0.1))[0]
+                    
+                    for k in range(len(df['Returned'])):
+                        I = df['Investment'].iloc[k]
+                        M = df['Multiplier'].iloc[k]
+                        R = df['Returned'].iloc[k]
+                        B = 4
+                        E = 10
+                        if I > 10:
+                            Choices = np.arange(0, (I*M)+1, round((I*M)/10))
+                        else:
+                            Choices = np.arange(0, (I * M)+1, 1)
+                        
+                        Utility = np.zeros(len(Choices))
+                        for n in range(len(Choices)):
+                            Utility[n] = utility(theta=result.x[0], 
+                                                phi=result.x[1], 
+                                                guilt=guilt(I, B, Choices[n], M), 
+                                                inequity=inequity(I, M, Choices[n], E), 
+                                                payout=payout_maximization(I, M, Choices[n]))
+                        
+                        correct_choice = np.argmax(Utility)
+                        df['Prediction'].iloc[k] = Choices[correct_choice]
+                    
+                    model_NLL = -2 * np.log(np.sum(norm.pdf(df['Returned'], loc=df['Prediction'])))
+                    model_SS = np.sum((df['Returned'] - df['Prediction'])**2)
+                    
+                    subjectData[i, :] = [subj_id, result.x[0], result.x[1], freeParameters['Strategy'].iloc[closestPoint].values[0], model_NLL, model_SS]
+
+                    trialData.loc[trialData['Subject'] == subj_id, 'Prediction'] = df['Prediction']
+                    trialData.loc[trialData['Subject'] == subj_id, 'Strategy'] = freeParameters['Strategy'].iloc[closestPoint].values[0]
+
+                subjectData = pd.DataFrame(subjectData, columns=['SubjectID', 'Theta', 'Phi', 'Strategy', 'modelNLL', 'modelSS'])
 
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------

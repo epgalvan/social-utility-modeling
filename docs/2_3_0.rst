@@ -514,9 +514,31 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                function value = utility_greed(greed)
+                    value = greed;
+                end
+
+                function value = utility_guilt(theta, greed, guilt)
+                    value = theta * greed - (1 - theta) * guilt;
+                end
+
+                function value = utility_inequity(theta, greed, inequity)
+                    value = theta * greed - (1 - theta) * inequity;
+                end
+
         .. tab-item:: Python
 
             ::
+
+                def utility_greed(greed):
+                    return greed
+
+                def utility_guilt(theta, greed, guilt):
+                    return theta * greed - (1 - theta) * guilt
+
+                def utility_inequity(theta, greed, inequity):
+                    return theta * greed - (1 - theta) * inequity
+
 .. dropdown:: Preallocating and Defining Functions
 
     .. tab-set::
@@ -588,9 +610,153 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                function result = obj_function_guilt(params, df, method)
+                    Theta = params(1);
+
+                    predicted_utility = zeros(length(df), 1);
+                    observed_utility = zeros(length(df), 1);
+                    chosen = df(:, 4) + 1;
+
+                    for k = 1:length(df)
+                        I = df(k, 2);
+                        M = df(k, 3);
+                        B = 4;
+                        E = 10;
+
+                        if I > 10
+                            Choices = 0:round((I * M) / 10):(I * M);
+                        else
+                            Choices = 0:1:(I * M);
+                        end
+
+                        Utility = zeros(size(Choices));
+
+                        for n = 1:length(Choices)
+                            Utility(n) = utility_guilt(Theta, payout_maximization(I, M, Choices(n)), guilt(I, B, Choices(n), M));
+                        end
+
+                        predicted_utility(k) = max(Utility);
+                        observed_utility(k) = Utility(chosen(k));
+                    end
+
+                    if strcmp(method, 'OLS')
+                        result = sum((predicted_utility - observed_utility).^2);
+                    elseif strcmp(method, 'MLE')
+                        result = -1 * sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                    end
+                end
+
+                function result = obj_function_inequity(params, df, method)
+                    Theta = params(1);
+
+                    predicted_utility = zeros(length(df), 1);
+                    observed_utility = zeros(length(df), 1);
+                    chosen = df(:, 4) + 1;
+
+                    for k = 1:length(df)
+                        I = df(k, 2);
+                        M = df(k, 3);
+                        B = 4;
+                        E = 10;
+
+                        if I > 10
+                            Choices = 0:round((I * M) / 10):(I * M);
+                        else
+                            Choices = 0:1:(I * M);
+                        end
+
+                        Utility = zeros(size(Choices));
+
+                        for n = 1:length(Choices)
+                            Utility(n) = utility_inequity(Theta, payout_maximization(I, M, Choices(n)), inequity(I, M, Choices(n), E));
+                        end
+
+                        predicted_utility(k) = max(Utility);
+                        observed_utility(k) = Utility(chosen(k));
+                    end
+
+                    if strcmp(method, 'OLS')
+                        result = sum((predicted_utility - observed_utility).^2);
+                    elseif strcmp(method, 'MLE')
+                        result = -1 * sum(log(normpdf(observed_utility, predicted_utility, sd)));
+                    end
+                end
+
+                altSubjectData = table();
+
         .. tab-item:: Python
 
             ::
+
+                def obj_function_guilt(params, df, method='OLS'):
+                    Theta = params[0]
+
+                    predicted_utility = np.zeros(len(df))
+                    observed_utility = np.zeros(len(df))
+                    chosen = df[:, 3].astype(int)
+
+                    for k in range(len(df)):
+                        I = df[k, 1]
+                        M = df[k, 2]
+                        B = 4
+                        E = 10
+
+                        if I > 10:
+                            Choices = np.arange(0, (I * M) + 1, round((I * M) / 10))
+                        else:
+                            Choices = np.arange(0, (I * M) + 1, 1)
+
+                        Utility = np.zeros(len(Choices))
+
+                        for n in range(len(Choices)):
+                            Utility[n] = utility_guilt(Theta, payout_maximization(I, M, Choices[n]), guilt(I, B, Choices[n], M))
+
+                        predicted_utility[k] = np.max(Utility)
+                        observed_utility[k] = Utility[chosen[k] - 1]
+
+                    if method == 'OLS':
+                        result = np.sum((predicted_utility - observed_utility)**2)
+                    elif method == 'MLE':
+                        result = -1 * np.sum(np.log(norm.pdf(observed_utility, loc=predicted_utility, scale=sd)))
+
+                    return result
+
+
+                def obj_function_inequity(params, df, method='OLS'):
+                    Theta = params[0]
+
+                    predicted_utility = np.zeros(len(df))
+                    observed_utility = np.zeros(len(df))
+                    chosen = df[:, 3].astype(int)
+
+                    for k in range(len(df)):
+                        I = df[k, 1]
+                        M = df[k, 2]
+                        B = 4
+                        E = 10
+
+                        if I > 10:
+                            Choices = np.arange(0, (I * M) + 1, round((I * M) / 10))
+                        else:
+                            Choices = np.arange(0, (I * M) + 1, 1)
+
+                        Utility = np.zeros(len(Choices))
+
+                        for n in range(len(Choices)):
+                            Utility[n] = utility_inequity(Theta, payout_maximization(I, M, Choices[n]), inequity(I, M, Choices[n], E))
+
+                        predicted_utility[k] = np.max(Utility)
+                        observed_utility[k] = Utility[chosen[k] - 1]
+
+                    if method == 'OLS':
+                        result = np.sum((predicted_utility - observed_utility)**2)
+                    elif method == 'MLE':
+                        result = -1 * np.sum(np.log(norm.pdf(observed_utility, loc=predicted_utility, scale=sd)))
+
+                    return result
+
+                altSubjectData = pd.DataFrame()
+
 .. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
 
     .. tab-set::
@@ -613,9 +779,36 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                for i = 1:length(included_subjects)
+                    subject = included_subjects(i);
+                    df = trialData(trialData.Subject == subject, :);
+
+                    % Optimize for guilt
+                    result_guilt = fmincon(@(theta) obj_function_guilt(theta, df), 0.5, [], [], [], [], 0, 1);
+
+                    % Optimize for inequity
+                    result_inequity = fmincon(@(theta) obj_function_inequity(theta, df), 0.5, [], [], [], [], 0, 1);
+
+                    % Determine Model Predictions using result_guilt.pars and result_inequity.pars
+                    
+                end
+
         .. tab-item:: Python
 
             ::
+
+                for i = 1:length(included_subjects)
+                    subject = included_subjects(i);
+                    df = trialData(trialData.Subject == subject, :);
+
+                    % Optimize for guilt
+                    result_guilt = fmincon(@(theta) obj_function_guilt(theta, df), 0.5, [], [], [], [], 0, 1);
+
+                    % Optimize for inequity
+                    result_inequity = fmincon(@(theta) obj_function_inequity(theta, df), 0.5, [], [], [], [], 0, 1);
+
+                end
+
 .. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
 
     .. tab-set::
@@ -687,9 +880,116 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                % Loop over included_subjects
+                for i = 1:length(included_subjects)
+                    subject = included_subjects(i);
+                    df = trialData(trialData.Subject == subject, :);
+
+                    % Optimize for guilt
+                    result_guilt = fmincon(@(theta) obj_function_guilt(theta, df), 0.5, [], [], [], [], 0, 1);
+
+                    % Optimize for inequity
+                    result_inequity = fmincon(@(theta) obj_function_inequity(theta, df), 0.5, [], [], [], [], 0, 1);
+
+                    % Determine Predictions
+                    df.PredictionGreed = df.PredictionAlt1;
+                    df.PredictionGuilt = df.PredictionAlt1;
+                    df.PredictionInequity = df.PredictionAlt1;
+
+                    for k = 1:height(df)
+                        I = df.Investment(k);
+                        M = df.Multiplier(k);
+                        R = df.Returned(k);
+                        B = 4;
+                        E = 10;
+
+                        if I > 10
+                            Choices = 0:round((I * M) / 10, 3):(I * M);
+                        else
+                            Choices = 0:1:(I * M);
+                        end
+
+                        UtilityGreed = arrayfun(@(choice) utility_greed(payout_maximization(I, M, choice)), Choices);
+                        UtilityGuilt = arrayfun(@(choice) utility_guilt(result_guilt, payout_maximization(I, M, choice), guilt(I, B, choice, M)), Choices);
+                        UtilityInequity = arrayfun(@(choice) utility_inequity(result_inequity, payout_maximization(I, M, choice), inequity(I, M, choice, E)), Choices);
+
+                        [~, correct_choice_greed] = max(UtilityGreed);
+                        [~, correct_choice_guilt] = max(UtilityGuilt);
+                        [~, correct_choice_inequity] = max(UtilityInequity);
+
+                        df.PredictionGreed(k) = Choices(correct_choice_greed);
+                        df.PredictionGuilt(k) = Choices(correct_choice_guilt);
+                        df.PredictionInequity(k) = Choices(correct_choice_inequity);
+                    end
+
+                    % Calculate model statistics
+                    model_NLL_Greed = -2 * sum(log(normpdf(df.Returned, df.PredictionGreed, 1)));
+                    model_SS_Greed = sum((df.Returned - df.PredictionGreed).^2);
+
+                    model_NLL_Guilt = -2 * sum(log(normpdf(df.Returned, df.PredictionGuilt, 1)));
+                    model_SS_Guilt = sum((df.Returned - df.PredictionGuilt).^2);
+
+                    model_NLL_Inequity = -2 * sum(log(normpdf(df.Returned, df.PredictionInequity, 1)));
+                    model_SS_Inequity = sum((df.Returned - df.PredictionInequity).^2);
+
+                    altSubjectData(i, :) = [subject, result_guilt, result_inequity, model_NLL_Greed, model_SS_Greed, model_NLL_Guilt, model_SS_Guilt, model_NLL_Inequity, model_SS_Inequity];
+                end
+
+                % Set column names
+                colnames_altSubjectData = {'SubjectID', 'guilt_theta', 'inequity_theta', 'greed_modelNLL', 'greed_modelSS', 'guilt_modelNLL', 'guilt_modelSS', 'inequity_ModelNLL', 'inequity_ModelSS'};
+                altSubjectData = array2table(altSubjectData, 'VariableNames', colnames_altSubjectData);
+
         .. tab-item:: Python
 
             ::
+
+                for i, subject in enumerate(included_subjects):
+                    df = trialData[trialData['Subject'] == subject]
+
+                    # Optimize for guilt
+                    result_guilt = minimize(obj_function_guilt, x0=[0.5], args=(df,), bounds=[(0, 1)], method='L-BFGS-B')
+
+                    # Optimize for inequity
+                    result_inequity = minimize(obj_function_inequity, x0=[0.5], args=(df,), bounds=[(0, 1)], method='L-BFGS-B')
+
+                    # Determine Predictions
+                    df['PredictionGreed'] = df['PredictionAlt1']
+                    df['PredictionGuilt'] = df['PredictionAlt1']
+                    df['PredictionInequity'] = df['PredictionAlt1']
+
+                    for k in range(len(df['Returned'])):
+                        I, M, R = df.loc[k, ['Investment', 'Multiplier', 'Returned']]
+                        B, E = 4, 10
+                        Choices = np.arange(0, I * M + 0.001, round((I * M) / 10, 3)) if I > 10 else np.arange(0, I * M + 0.001, 1)
+                        
+                        UtilityGreed = np.array([utility_greed(payout_maximization(I, M, choice)) for choice in Choices])
+                        UtilityGuilt = np.array([utility_guilt(result_guilt.x[0], payout_maximization(I, M, choice), guilt(I, B, choice, M)) for choice in Choices])
+                        UtilityInequity = np.array([utility_inequity(result_inequity.x[0], payout_maximization(I, M, choice), inequity(I, M, choice, E)) for choice in Choices])
+
+                        correct_choice_greed = np.argmax(UtilityGreed)
+                        correct_choice_guilt = np.argmax(UtilityGuilt)
+                        correct_choice_inequity = np.argmax(UtilityInequity)
+
+                        df.at[k, 'PredictionGreed'] = Choices[correct_choice_greed]
+                        df.at[k, 'PredictionGuilt'] = Choices[correct_choice_guilt]
+                        df.at[k, 'PredictionInequity'] = Choices[correct_choice_inequity]
+
+                    # Calculate model statistics
+                    model_NLL_Greed = -2 * np.log(np.sum(norm.pdf(df['Returned'], loc=df['PredictionGreed'], scale=1)))
+                    model_SS_Greed = np.sum((df['Returned'] - df['PredictionGreed'])**2)
+                    
+                    model_NLL_Guilt = -2 * np.log(np.sum(norm.pdf(df['Returned'], loc=df['PredictionGuilt'], scale=1)))
+                    model_SS_Guilt = np.sum((df['Returned'] - df['PredictionGuilt'])**2)
+
+                    model_NLL_Inequity = -2 * np.log(np.sum(norm.pdf(df['Returned'], loc=df['PredictionInequity'], scale=1)))
+                    model_SS_Inequity = np.sum((df['Returned'] - df['PredictionInequity'])**2)
+
+                    altSubjectData[i, :] = [subject, result_guilt.x[0], result_inequity.x[0], model_NLL_Greed, model_SS_Greed, model_NLL_Guilt, model_SS_Guilt, model_NLL_Inequity, model_SS_Inequity]
+
+                # Set column names
+                colnames_altSubjectData = ['SubjectID', 'guilt_theta', 'inequity_theta', 'greed_modelNLL', 'greed_modelSS', 'guilt_modelNLL', 'guilt_modelSS', 'inequity_ModelNLL', 'inequity_ModelSS']
+                altSubjectData = pd.DataFrame(altSubjectData, columns=colnames_altSubjectData)
+
 .. dropdown:: Compute Model Fit Index for Each :bdg-success`Subject`, for Each Alternative Model
 
     .. tab-set::
@@ -697,6 +997,8 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
         .. tab-item:: R
 
             ::
+
+                N = length(altSubjectData)
 
                 altSubjectData$modelAICGreed = N * log(altSubjectData$greed_modelSS/N) + 2*0
                 altSubjectData$modelAICGuilt = N * log(altSubjectData$guilt_modelSS/N) + 2*1
@@ -706,9 +1008,22 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                N = length(altSubjectData);
+
+                altSubjectData.modelAICGreed = N * log(altSubjectData.greed_modelSS / N) + 2 * 0;
+                altSubjectData.modelAICGuilt = N * log(altSubjectData.guilt_modelSS / N) + 2 * 1;
+                altSubjectData.modelAICInequity = N * log(altSubjectData.inequity_ModelSS / N) + 2 * 1;
+
         .. tab-item:: Python
 
             ::
+
+                N = len(altSubjectData)
+
+                altSubjectData['modelAICGreed'] = N * np.log(altSubjectData['greed_modelSS'] / N) + 2 * 0
+                altSubjectData['modelAICGuilt'] = N * np.log(altSubjectData['guilt_modelSS'] / N) + 2 * 1
+                altSubjectData['modelAICInequity'] = N * np.log(altSubjectData['inequity_ModelSS'] / N) + 2 * 1
+
 .. dropdown:: Compare Model Performance
 
     .. tab-set::
@@ -731,9 +1046,33 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
             ::
 
+                averageAIC = [mean(subjectData.modelAIC), mean(altSubjectData.modelAICGreed), mean(altSubjectData.modelAICGuilt), mean(altSubjectData.modelAICInequity)];
+                fullAIC = length(trialData.Subject) * log(sum(subjectData.modelSS)/length(trialData.Subject)) + (2 * k * length(subjectData.Subject));
+                fullAICGreed = length(trialData.Subject) * log(sum(altSubjectData.greed_modelSS)/length(trialData.Subject)) + (2 * 0 * length(subjectData.Subject));
+                fullAICGuilt = length(trialData.Subject) * log(sum(altSubjectData.guilt_modelSS)/length(trialData.Subject)) + (2 * 1 * length(subjectData.Subject));
+                fullAICInequity = length(trialData.Subject) * log(sum(altSubjectData.inequity_ModelSS)/length(trialData.Subject)) + (2 * 1 * length(subjectData.Subject));
+
+                [~, bestModelIndex] = min(averageAIC);
+                bestModel = {'Moral Strategies Model', 'Greed Model', 'Guilt Model', 'Inequity Model'}{bestModelIndex}; % best model based on average performance per subject
+
+                [~, bestModelFullDatasetIndex] = min([fullAIC, fullAICGreed, fullAICGuilt, fullAICInequity]);
+                bestModelFullDataset = {'Moral Strategies Model', 'Greed Model', 'Guilt Model', 'Inequity Model'}{bestModelFullDatasetIndex}; % best model based on all data observations
+
         .. tab-item:: Python
 
             ::
+
+                averageAIC = [np.mean(subjectData['modelAIC']), np.mean(altSubjectData['modelAICGreed']), np.mean(altSubjectData['modelAICGuilt']), np.mean(altSubjectData['modelAICInequity'])]
+                fullAIC = len(trialData['Subject']) * np.log(np.sum(subjectData['modelSS']) / len(trialData['Subject'])) + (2 * k * len(subjectData['Subject']))
+                fullAICGreed = len(trialData['Subject']) * np.log(np.sum(altSubjectData['greed_modelSS']) / len(trialData['Subject'])) + (2 * 0 * len(subjectData['Subject']))
+                fullAICGuilt = len(trialData['Subject']) * np.log(np.sum(altSubjectData['guilt_modelSS']) / len(trialData['Subject'])) + (2 * 1 * len(subjectData['Subject']))
+                fullAICInequity = len(trialData['Subject']) * np.log(np.sum(altSubjectData['inequity_ModelSS']) / len(trialData['Subject'])) + (2 * 1 * len(subjectData['Subject']))
+
+                bestModelIndex = np.argmin(averageAIC)
+                bestModel = ['Moral Strategies Model', 'Greed Model', 'Guilt Model', 'Inequity Model'][bestModelIndex]  # best model based on average performance per subject
+
+                bestModelFullDatasetIndex = np.argmin([fullAIC, fullAICGreed, fullAICGuilt, fullAICInequity])
+                bestModelFullDataset = ['Moral Strategies Model', 'Greed Model', 'Guilt Model', 'Inequity Model'][bestModelFullDatasetIndex]  # best model based on all data observations
 
 Tutorial 2 - Galvan & Sanfey, 2024
 -------------------
