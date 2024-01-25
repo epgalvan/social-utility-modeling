@@ -7,8 +7,8 @@ Choosing a Tutorial to Follow
 .. _Li et al., 2022: https://www.pnas.org/doi/full/10.1073/pnas.2209078119?doi=10.1073/pnas.2209078119
 .. _Yu et al., 2022: https://journals.sagepub.com/doi/full/10.1177/09567976221122765?casa_token=8TiPlm-lODgAAAAA%3Anh1QA8iXA7MSH9H7ebeHpnCOhpPT6T06s6GClDGMYFCaAB3vwvNjlu9A-ChfjceLfkex-z28syYHfA
 
-.. _Tutorial 1: https://www.example.com
-.. _Tutorial 2: https://www.example.com
+.. _Tutorial 1: https://osf.io/avbju/
+.. _Tutorial 2: https://osf.io/avbju/
 .. _Tutorial 3: https://osf.io/ardcu/
 .. _Tutorial 4: https://osf.io/zd2tg/
 
