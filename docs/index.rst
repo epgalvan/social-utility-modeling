@@ -1,4 +1,4 @@
-Utility Models for Study Social Decision-Making Handbook
+Handbook for Utility Modeling in Social Decision-Making
 **********************
 
 In this handbook, we will walk, step-by-step, through the process of computationally modeling behavior in value-based social decision-making tasks - complete with conceptual examples and four fully fledged walk-throughs that you can complete yourself. 
