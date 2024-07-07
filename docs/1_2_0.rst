@@ -200,16 +200,22 @@ Tutorial 3 - Crockett et al., 2014
     Thus, we'll vary the recipient of the shocks across conditions - sometimes the subject receives the shocks and sometimes someone else does.
     Across trials, we'll vary how much more shocks and money option B has. 
     Importantly, the subject will always receive the money and they will always make the choice to subject either themselves or someone else to the shocks. 
-    Further, we will assign a default choice which they will have to opt out of by choosing the alternative.
+    
+    In the original paper, a default was given (i.e. participants had to opt out of the choice). 
+    However, in the dataset that we are using, no default is given.
 
 .. dropdown:: Identify Unintended Behavioral Patterns
 
     Our hypotheses capture all of the possibile behavioral patterns across conditions. 
     Either harm-aversion for oneself is greater-than, less-than, or equal to harm-aversion for others. 
-    However, since we're assigning a default value (i.e. the decision which will be made unless the subject chooses the alternative) we introduce some important psychological factors that must be accounted for. 
+
+    .. Note::
+
+    In the original study, a default value (i.e. the decision which will be made unless the subject chooses the alternative) was assigned.
+    Herein, the authors introduce some important psychological factors that must be accounted for. 
     Namely, the endowment effect: if we're giving someone a package of shocks and money that will receive unless they choose to select the alternative, they may feel some ownership over this package of shocks and money. 
     Thus, choosing the alternative may induce the feeling of losing out on whatever is better about the default: losing out on fewer shocks or more money. 
-    Therefore, we need to account for potential loss-aversion effects in our model.
+    Therefore, we would need to account for potential loss-aversion effects in the model if we had this dataset - however, no default is given in the current study. 
 
 .. dropdown:: Design the Experiment
 

@@ -2,7 +2,7 @@
 # -- Project information
 
 project = 'Utility Modeling Handbook'
-copyright = '2023, Elijah Galvan'
+copyright = '2024, Elijah Galvan'
 author = 'Elijah Galvan'
 
 release = '0.1'

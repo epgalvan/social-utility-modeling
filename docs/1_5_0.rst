@@ -41,69 +41,109 @@ Now we want to plug in all of the inputs that we know (experimental variables an
 
 .. Note:: **Modeling Binary vs. Continuous Choice Tasks**
 
-    We always assume (and with good reason, in the case of these tasks) that the distribution of :bdg-danger:`Decisions` is normal. 
-    Now, even if we don't give them the option to return a fraction of a token - meaning we have an interval, rather than a continuous scale - common statistical practice is to treat it as continuous, rather than categorical. 
-    In other words, if our model predicts 10 tokens and the :bdg-success:`Subject` actually chooses 12, our error in prediction is better specified as 2 tokens rather than just **WRONG**. 
-    Continuous (or interval) choice tasks aim to elicit :bdg-danger:`Decisions` which indicate the average, modal response in a given situation (i.e. the central tendency). 
-    Consequently, since 1) our model predicts the central tendency, 2) the distribution around this tendency is normal (an assumption that we'll check later), and 3) our :bdg-success:`Free Parameter` recovery process 
-    is based on the normaility of this distribution (depending on the estimator we use) we don't need to explicitly model this probability distribution. 
+    .. dropdown:: Sliders and Other Continuous Responses
 
-    .. figure:: 1_6_continuous.png
-        :figwidth: 100%
-        :align: center
+        We always assume (and with good reason, in the case of these tasks) that the distribution of :bdg-danger:`Decisions` is normal.
+        Thus, we can imagine that if our model predicts that 
 
-    In contrast, consider a binary choice. 
-    If we assume that the distribution of these choices is normal, this means something slightly different: using the above picture, let's imagine a scenario where our :bdg-success:`Subject` has a choice between 10 tokens and 12 tokens. 
-    We need to draw a line between these different :bdg-danger:`Decisions` - let's draw this right between 10 and 12 at 11. 
-    Here, we can say that 84% of the time (the proportion of the area under this curve which is left of 11 tokens) this :bdg-success:`Subject` will choose the 10 token option and that 16% of the time they'll choose the 12 token option. 
-    In other words, if we give this :bdg-success:`Subject` the exact same choice between 10 tokens and 12 tokens 100 times, we would expect that - on average - they would choose 10 tokens 86 times and 12 tokens 14 times. 
+        .. figure:: 1_5_continuous.png
+            :figwidth: 100%
+            :align: center
 
-    .. figure:: 1_6_discrete.png
-        :figwidth: 100%
-        :align: center
-    
-    Obviously, this is entirely out of the question - :bdg-success:`Subjects` will disengage after seeing the exact same :bdg-primary:`Trial` and having to make the same :bdg-danger:`Decision` after 10 or 20 times, much less 100 times. 
-    Thus, the only realistic solution is to actually model this probabilistic, noisy :bdg-danger:`Decision` process - characterizing how random or noisy this process is. 
-    Here, the model will aim to characterize how probable the :bdg-success:`Subject` is to make either possible :bdg-danger:`Decision`. 
-    In this way, you are essentially **hedging your model's bets**  which thereby enables your model to overcome sampling error, identifying the central tendency by preventing overcorrection for stochasticity. 
+        Now, even if we don't give them the option to return a fraction of a token - meaning we have an interval, rather than a continuous scale - common statistical practice is to treat it as continuous, rather than categorical. 
+        In other words, if our model predicts 10 tokens and the :bdg-success:`Subject` actually chooses 12, our error in prediction is better specified as 2 tokens rather than just **WRONG**. 
+        Continuous (or interval) choice tasks aim to elicit :bdg-danger:`Decisions` which indicate the the central tendency in a given situation (i.e. the behavior which is mean, median, **and** mode). 
+        Consequently, since 1) our model predicts the central tendency, 2) the distribution around this tendency is normal (an assumption that we'll check later), and 3) our :bdg-success:`Free Parameter` recovery process 
+        is based on the normaility of this distribution (depending on the estimator we use), we don't need to explicitly capture the probability distribution in our model since it is implicitly captured in how we recover our :bdg-success:`Free Parameters`. 
 
-    Revisiting the above example, if the :bdg-success:`Subject` chooses the 12 tokens, what is our model error?
+    .. dropdown:: Buttons and Other Categorical Responses
 
-    A. 12- 10 = 2 tokens
-    B. Wrong Answer = 1 (Binary)
-    C. 1 - Area Left of midpoint between 12 and 10 tokens = 0.84
+        In contrast, consider a binary choice. 
+        If we assume that the distribution of these choices is normal, this means something slightly different: using the above picture, let's imagine a scenario where our :bdg-success:`Subject` has a choice between 10 tokens and 12 tokens. 
+        We need to convert this from an outcome distribution to a probability distribution. 
 
-    .. dropdown:: Answer
+        .. figure:: 1_5_discrete.png
+            :figwidth: 100%
+            :align: center
+        
+        Obviously, this is entirely out of the question - :bdg-success:`Subjects` will disengage after seeing the exact same :bdg-primary:`Trial` and having to make the same :bdg-danger:`Decision` after 10 or 20 times, much less 100 times. 
+        Thus, the only realistic solution is to actually model this probabilistic, noisy :bdg-danger:`Decision` process - characterizing how random or noisy this process is. 
+        Here, the model will aim to characterize how probable the :bdg-success:`Subject` is to make either possible :bdg-danger:`Decision`. 
+        In this way, you are essentially **hedging your model's bets**  which thereby enables your model to overcome sampling error, identifying the central tendency by preventing overcorrection for stochasticity. 
 
-        If our model is capturing the noisy, probabilistic nature of decision-making in a binary choice task (which it should, particularly when you don't have an exorbitant amount of :bdg-primary:`Trials` ), our :bdg-success:`Free Parameters`
-        should minimize the probability that our model makes incorrect predictions. 
-        Thus, while technically all three *could* be considered correct, the best answer is 'C'. 
+        Revisiting the above example, if the :bdg-success:`Subject` chooses the 12 tokens, what is our model error?
 
-    Now, as we'll see, we're going to recover :bdg-success:`Free Parameters` from :bdg-danger:`Decisions` by recursively trying different :bdg-success:`Free Parameters` , settling on whichever one minimizes the difference betweeen expected 
-    :bdg-warning:`Utility` (based on predicted :bdg-danger:`Decisions` for a set of :bdg-success:`Free Parameters` ) and observed :bdg-warning:`Utility` (based on this same set of :bdg-success:`Free Parameters` and observed :bdg-danger:`Decisions` ). 
-    For binary choice tasks, there is an additonal step - using the difference in :bdg-warning:`Utility` between options to characterize how probable each choice is to be selected
-    (given :bdg-success:`Free Parameters` which characterize how stochastic or random the :bdg-danger:`Decisions` a given :bdg-success:`Subject` makes are). 
-    
-    .. figure:: 1_6_discrete_utility.png
-        :figwidth: 100%
-        :align: center
+        A. Predicted Outcome - Observed Outcome = 2 tokens
+        B. Wrong Answer = 1 (Binary)
+        C. Choice - Probability of Choice = 0.88
 
-    The way we do this is the following, often referred to as a softmax function. 
-    Here :bdg-warning:`Utility Difference` is referred to as ``DU``
+        .. dropdown:: Answer
 
-    ::
+            If our model is capturing the noisy, probabilistic nature of decision-making in a binary choice task (which it should, particularly when you don't have an exorbitant amount of :bdg-primary:`Trials` ), our :bdg-success:`Free Parameters`
+            should minimize the probability that our model makes incorrect predictions. 
+            Thus, while technically all three *could* be considered correct, the best answer is 'C'. 
 
-        Probability | DU =  (1)/(1 + e ** (-1 * gamma * DU))
+    .. dropdown:: Modeling Sensitivity, Noise, and Bias in Binary Choice Tasks
 
-    .. figure:: 1_6_softmax.png
-        :figwidth: 100%
-        :align: center
+        Now, as we'll see, we're going to recover :bdg-success:`Free Parameters` from :bdg-danger:`Decisions` by recursively trying different :bdg-success:`Free Parameters` , settling on whichever one minimizes the difference betweeen expected 
+        :bdg-warning:`Utility` (based on predicted :bdg-danger:`Decisions` for a set of :bdg-success:`Free Parameters` ) and observed :bdg-warning:`Utility` (based on this same set of :bdg-success:`Free Parameters` and observed :bdg-danger:`Decisions` ). 
+        Thus far, we've talked about :bdg-success:`Free Parameters` which are psychologically interesting, but we must also consider the less interesting parts of decisions when studying binary choices. 
+        We will model sensitivity, noise, and bias to ensure that the :bdg-success:`Free Parameters` of interest can be validly and reliably estimated.
+        
+        .. figure:: 1_5_discrete_utility.png
+            :figwidth: 100%
+            :align: center
 
-    Sometimes, a further noise parameter is added to capture attention deficits (i.e. not changing to the alternative solely because one's attention waxes and wanes.)
+        .. dropdown:: Sensitivity
 
-    ::
+            Sensitivity refers to sensitivity to differences in :bdg-warning:`Utility` between the two available :bdg-success:`Choices`. 
+            :bdg-danger:`Choices` which are more different in :bdg-warning:`Utility` should be easier to correctly distinguish between. 
+            We capture individual differences in sensitivity with the logistic function, where differences in :bdg-warning:`Utility` are represented as :bdg-warning:`DU` and differences in sensitivity are represented as :bdg-success:`Beta`
 
-        Probability | DU =  ((1)/(1 + e ** (-1 * gamma * DU))) * (1 - (2 * epsilon)) + epsilon
+            ::
+
+                Probability | DU =  (1)/(1 + e ** (-Beta * DU))
+
+            As you can see, higher values of :bdg-success:`Beta` indicate more sensitivity to differences in :bdg-warning:`Utility`
+            
+            .. figure:: 1_5_sense.png
+                :figwidth: 100%
+                :align: center
+
+        .. dropdown:: Noise
+
+            Sometimes, Sensitivity isn't enough to explain randomness in the :bdg-danger:`Choices` people make. 
+            Particularly, in the case of these binary choice tasks, it is often the case that doing several hundred trials makes people lose attention - affecting the extent to which their :bdg-danger:`Choices` are based on :bdg-warning:`Utility`. 
+            Thus, this noise can be captured by lessening the extent to which probability is based on :bdg-warning:`DU` or :bdg-success:`Beta` and making it closer to 50-50. 
+            In other words, :bdg-success:`Epsilon` makes the probability of :bdg-danger:`Choices` insensitive to :bdg-warning:`DU`.
+
+            ::
+
+                Probability | DU =  ((1)/(1 + e ** (-Beta * DU))) * (1 - (2 * Epsilon)) + Epsilon
+
+            As you can see, higher values of :bdg-success:`Epsilon` make the probability less based on :bdg-warning:`DU`.
+
+            .. figure:: 1_5_noise.png
+                :figwidth: 100%
+                :align: center
+
+        .. dropdown:: Bias
+
+            Sometimes, people literally just choose the left or right, or top or bottom more frequently. 
+            For now, let's capture this bias by giving in a new parameter :bdg-success:`Gamma` that modulates the probabilty to reflect this bias.
+            Assume isDirection is a logical (0 is Direction A and 1 is Direction B for instance), we can adjust it to random from -1 to 1.
+            We then multiply :bdg-success:`Epsilon` and :bdg-success:`Gamma` because :bdg-success:`Gamma` should only matter based on the extent to which :bdg-danger:`Choices` are insensitive to :bdg-warning:`DU`.
+            So, we then combine the factors of :bdg-success:`Epsilon` and :bdg-success:`Gamma` and (2 * isDirection - 1) and add them to the previous probability function.
+
+            ::
+
+                Probability | DU =  ((1)/(1 + e ** (-Beta * DU))) * (1 - (2 * Epsilon)) + Epsilon + (Epsilon * Gamma * (2 * isDirection - 1))
+
+            As you can see, higher values of :bdg-success:`Epsilon` make :bdg-success:`Gamma` the main determinant of the probability.
+
+            .. figure:: 1_5_noise.png
+                :figwidth: 100%
+                :align: center
 
 How to Achieve this Goal
 ------------    
