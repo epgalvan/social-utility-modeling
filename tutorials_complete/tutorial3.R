@@ -136,11 +136,3 @@ qplot(data = freeParameters, x = beta, y = betaRecovered, color = Epsilon) + geo
 qplot(data = freeParameters, x = epsilon, y = epsilonRecovered) + geom_smooth(method = 'lm') + geom_abline()
 qplot(data = freeParameters, x = gamma, y = gammaRecovered, color = Epsilon) + geom_smooth(se = F) + geom_abline() 
 
-qplot(x = seq(5, 15, 0.01), y = (1)/(1 + exp(-1 * seq(-5, 5, 0.01))), geom = 'line') + labs(x = 'Choice B, if Choice A is 10 tokens', y = 'Probability of Choosing Choice B') + geom_segment(aes(x = 12, xend = 12, y = 0, yend = 0.88, color = '')) + geom_segment(aes(x = 5, xend = 12, y = 0.88, yend = 0.88, color = '')) + theme(legend.position = "none") + geom_text(aes(label = "P = 0.88", x = 5.7, y = 0.9))
-qplot(x = seq(5, 15, 0.01), y = (1 / (sqrt(2 * pi) * pi/sqrt(3))) * exp(-((seq(5, 15, 0.01) - 10)^2) / (2 * pi/sqrt(3)^2)), geom = 'line') + labs(x = 'Choice B, if Choice A is 10 tokens', y = 'Probability of Choosing Choice B') + geom_segment(aes(x = 10, xend = 12, y = 0.005, yend = 0.005, color = '')) + geom_segment(aes(x = 12, xend = 12, y = 0, yend = 0.01, color = '')) + geom_segment(aes(x = 10, xend = 10, y = 0, yend = 0.01, color = '')) + theme(legend.position = "none") + geom_text(aes(label = "Model Error", x = 11.05, y = 0.02))
-
-df = data.frame(DU = rep(seq(-0.5, 0.5, 0.001), times = 36),
-                Beta = rep(c(0, 1, 4, 9, 25, 100), times = 6, each = 1001),
-                Epsilon = rep(seq(0, 0.5, 0.1), each = 6006))
-qplot(data = df, x = DU, y = ((1)/(1 + exp(-Beta * DU))), color = as.factor(Beta), geom = 'line') + labs(color = "Beta", y = "Probability")
-qplot(data = df, x = Epsilon, y = (((1)/(1 + exp(-Beta * DU)))* (1 - (2 * Epsilon)) + Epsilon), color = as.factor(Epsilon), geom = 'point') + labs(color = "Epsilon", y = "Probability")

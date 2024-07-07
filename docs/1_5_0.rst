@@ -41,10 +41,10 @@ Now we want to plug in all of the inputs that we know (experimental variables an
 
 .. Note:: **Modeling Binary vs. Continuous Choice Tasks**
 
-    .. dropdown:: Sliders and Other Continuous Responses
+    .. dropdown:: Sliders and Other Numeric Responses
 
         We always assume (and with good reason, in the case of these tasks) that the distribution of :bdg-danger:`Decisions` is normal.
-        Thus, we can imagine that if our model predicts that 
+        Thus, we can imagine that if our model predicts 10 tokens with a certain standard deviation, the distribution of errors could look like this.
 
         .. figure:: 1_5_continuous.png
             :figwidth: 100%
@@ -96,7 +96,7 @@ Now we want to plug in all of the inputs that we know (experimental variables an
 
         .. dropdown:: Sensitivity
 
-            Sensitivity refers to sensitivity to differences in :bdg-warning:`Utility` between the two available :bdg-success:`Choices`. 
+            Sensitivity refers to sensitivity to differences in :bdg-warning:`Utility` between the two available :bdg-danger:`Choices`. 
             :bdg-danger:`Choices` which are more different in :bdg-warning:`Utility` should be easier to correctly distinguish between. 
             We capture individual differences in sensitivity with the logistic function, where differences in :bdg-warning:`Utility` are represented as :bdg-warning:`DU` and differences in sensitivity are represented as :bdg-success:`Beta`
 
