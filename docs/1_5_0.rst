@@ -121,7 +121,7 @@ Now we want to plug in all of the inputs that we know (experimental variables an
 
                 Probability | DU =  ((1)/(1 + e ** (-Beta * DU))) * (1 - (2 * Epsilon)) + Epsilon
 
-            As you can see, higher values of :bdg-success:`Epsilon` make the probability less based on :bdg-warning:`DU`.
+            As you can see, higher values of :bdg-success:`Epsilon` make the probability less based on :bdg-warning:`DU`. 
 
             .. figure:: 1_5_noise.png
                 :figwidth: 100%
