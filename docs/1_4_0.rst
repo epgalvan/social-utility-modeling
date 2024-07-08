@@ -155,7 +155,7 @@ Tutorials
 
 .. Note::
 
-    If you want to have practice finding the correct model, leave the dropdowns alone and skip to the next section once you have finished both steps in this section. 
+    If you want to have practice finding the correct model, leave the first two dropdowns alone and skip to the third dropdown to compare your :bdg-warning:`Utility` equation to those used in the existing papers. 
 
     Otherwise, check the answers in the dropdowns below. 
     Please be aware that no examples are given in the documentation for alternative models.

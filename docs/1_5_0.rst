@@ -141,7 +141,7 @@ Now we want to plug in all of the inputs that we know (experimental variables an
 
             As you can see, higher values of :bdg-success:`Epsilon` make :bdg-success:`Gamma` the main determinant of the probability.
 
-            .. figure:: 1_5_noise.png
+            .. figure:: 1_5_bias.png
                 :figwidth: 100%
                 :align: center
 
