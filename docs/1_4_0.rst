@@ -551,3 +551,109 @@ Tutorial 3 - Crockett et al., 2014
 
     :bdg-warning-line:`Utility Difference` = 
     ( :bdg-success-line:`κ` × :bdg-secondary-line:`Payout`) + ((1 - :bdg-success-line:`κ` ) × :bdg-secondary-line:`Harm`)
+
+
+Tutorial 4 - Li et al., 2022
+-------------------
+
+.. dropdown:: Create :bdg-secondary:`Construct Value` Functions
+
+    .. dropdown:: Inequality Aversion
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                Here, :bdg-secondary-line:`Inequality` is the absolute value of the difference between :bdg-primary-line:`Player A`'s and :bdg-primary-line:`Player B`'s payouts for each :bdg-danger:`Choice`. 
+
+            .. tab-item:: R
+
+                ::
+
+                    inequality = function(a1, b1, a2, b2){
+                        d_Inequality = abs(a2 - b2) - abs(a1 - b1)
+                        return(d_Inequality)
+                    }
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+
+                ::
+
+    .. dropdown:: Harm Aversion
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                :bdg-secondary-line:`Harm` is defined as the amount taken away from the more advantaged :bdg-primary-line:`Player` for each :bdg-danger:`Choice`.
+
+            .. tab-item:: R
+
+                ::
+
+                    harm = function(a0, b0, a1, b1, a2, b2){
+                        initial = c(a0, b0)
+                        choice1 = c(a1, b1)
+                        choice2 = c(a2, b2)
+                        if (a0 == b0){advantaged = 1} else {advantaged = which(initial == max(initial))}
+                        d_lossAdvantaged = (initial[advantaged] - choice1[advantaged]) - (initial[advantaged] - choice2[advantaged])
+                        return(d_lossAdvantaged)
+                    }
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+
+                ::
+
+    .. dropdown:: Rank Reversal Aversion
+
+        .. tab-set::
+
+            .. tab-item:: Plain English
+
+                Finally, :bdg-secondary-line:`Rank Reversal` is defined as whether or not the more initially advantaged :bdg-primary-line:`Player` is less advantaged in the current :bdg-danger:`Choice`.
+
+            .. tab-item:: R
+
+                ::
+
+                    rankReverse = function(a0, b0, a1, b1, a2, b2){
+                        if (a0 == b0){return(0)}
+                        d_initial = a0 - b0
+                        d_choice1 = a1 - b1
+                        d_choice2 = a2 - b2
+                        if (d_initial > 0){
+                            if (d_choice1 < 0){choice1Reversed = 1} else {choice1Reversed = 0}
+                            if (d_choice2 < 0){choice2Reversed = 1} else {choice2Reversed = 0}
+                        } else if (d_initial < 0){
+                            if (d_choice1 > 0){choice1Reversed = 1} else {choice1Reversed = 0}
+                            if (d_choice2 > 0){choice2Reversed = 1} else {choice2Reversed = 0}
+                        }
+                        return(choice1Reversed - choice2Reversed)
+                    }
+
+            .. tab-item:: MatLab
+
+                ::
+
+            .. tab-item:: Python
+
+                ::
+
+.. dropdown:: Identify Relevant :bdg-success:`Free Parameters` for each :bdg-secondary:`Construct Value`
+
+    1. :bdg-secondary:`Inequality Aversion` - :bdg-success-line:`D1`
+    2. :bdg-secondary:`Harm Aversion` - :bdg-success-line:`D2` 
+    3. :bdg-secondary:`Rank Reversal Aversion` - :bdg-success-line:`D3`
+
+.. dropdown:: Propose a :bdg-warning:`Utility` Equation
+
+    :bdg-warning-line:`Utility Difference` = 
+    ( :bdg-success-line:`α` × :bdg-secondary-line:`Inequality`) - ( :bdg-success-line:`δ` × :bdg-secondary-line:`Harm`) - ( :bdg-success-line:`ρ` × :bdg-secondary-line:`Rank Reversal`)

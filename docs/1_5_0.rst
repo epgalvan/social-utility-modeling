@@ -1362,11 +1362,11 @@ Tutorial 3 - Crockett et al., 2014
                         moneyThis = c(trialList$MoneyA[k], trialList$MoneyB[k])[trialList$Default[k]]
                         moneyAlternative = c(trialList$MoneyB[k], trialList$MoneyA[k])[trialList$Default[k]]
 
-                        # Just Added
                         Utility = utility(Payout = harm(shocksThis, shocksAlternative),
                                           Harm = payout(moneyThis, moneyAlternative),
                                           kappa = Kappa,
                                           lambda = Lambda)
+                        # Just Added
                         if (Utility > 0) { 
                             predictions[i,k] = 1 #choose alternative
                         } else if (Utility < 0) {
@@ -1384,3 +1384,99 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: Python
 
             ::
+
+Tutorial 4 - Li et al., 2014
+-------------------
+
+.. Note:: 
+
+    In this final tutorial, we will shift our programming away from writing repetitive code to instead use functions. 
+    One of the most repetitive things we do when modeling is generating predictions. 
+    In the function generatePredictions, we will generate predictions based on the :bdg-success:`Free Parameters` and :bdg-primary:`Trial Set`. 
+
+.. dropdown:: Preallocating, Defining Functions, Defining Trial List, and Defining Parameters
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+                trialList = data.frame(a0 = sample(10:20, 100, replace = T))
+                trialList$b0 = 20 - trialList$a0
+                for (i in 1:nrow(trialList)){
+                    trialList$a1 = sample(5:trialList$a0[i], 100, replace = T)
+                }
+                trialList$b1 = 20 - trialList$a1
+
+                for (i in 1:nrow(trialList)){
+                    trialList$a2 = sample(5:trialList$a0[i], 100, replace = T)
+                    trialList$a2[which(trialList$a2 == trialList$a1)] = 10
+                }
+                trialList$b2 = 20 - trialList$a2
+                trialList = rbind(trialList, trialList[,c(2,1,4,3,6,5)])
+
+                utility = function(pars, IVs){
+                    IVS = as.numeric(IVs)
+                    a0 = IVs[1]; b0 = IVs[2]; a1 = IVs[3]; b1 = IVs[4]; a2 = IVs[5]; b2 = IVs[6]
+                    alpha = pars[1]; delta = pars[2]; rho = pars[3]
+                    inequality = inequality(a1, b1, a2, b2)
+                    harm = harm(a0, b0, a1, b1, a2, b2)
+                    rank = rankReverse(a0, b0, a1, b1, a2, b2)
+                    return((alpha * inequality) - (delta * harm) - (rho * rank))
+                }
+
+                probability = function(pars, utilitydiff){
+                    beta = pars[length(pars)-2]; epsilon = pars[length(pars)-1]; gamma = pars[length(pars)]
+                    prob = 1 / (1 + exp(-(beta * utilitydiff)))
+                    prob = prob * (1 - 2 * epsilon) + epsilon + gamma * (2 * epsilon)
+                    return(prob)
+                }
+
+                freeParameters = data.frame(alpha = rep(seq(0, 1.9, 0.1), times = 60) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T), #ranging from 0 to 2
+                                            delta = rep(seq(0, 1.9, 0.1), times = 60) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T), #ranging from 0 to 2
+                                            rho = rep(seq(0, 1.9, 0.1), times = 60) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T), #ranging from 0 to 2
+                                            beta = sample(seq(0,10), 20*6*10, replace = T), # stochasticity
+                                            epsilon = rep(rep(seq(0, 0.5, 0.1), times = 10), each = 20), # noise
+                                            gamma = rep(seq(-0.5, 0.4, 0.1), each = 20*6) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T)) # bias
+                predictions = data.frame()
+
+                generatePredictions = function(parameters, df){
+                    pred = vector('numeric', nrow(df))
+                    for (i in 1:nrow(df)){
+                        thisTrialIVs = as.numeric(df[i, ])
+                        utilityDiff = utility(parameters, thisTrialIVs)
+                        pred[i] = max(min(probability(parameters, utilityDiff), 0.9999999999), 0.00000000001)
+                    }
+                    return(pred)
+                }
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Define the :bdg-success:`Free Parameter` Loop
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+                for (i in 1:nrow(freeParameters)){
+                    pars = freeParameters[i, ]
+                    predictions[i, 1:nrow(trialList)] = generatePredictions(utility, pars, trialList)
+                }
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+

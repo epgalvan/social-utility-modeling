@@ -453,6 +453,23 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
+                resultNID = fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = trialData, optimMethod = "OLS")
+                dfNID = generate_predictions(trialData, resultNID)
+                sum(dfNID$choseHarm == round(dfNID$ProbHarm))/nrow(dfNID)
+
+                altSubjectData$Deviance_NID = 0
+
+                for (i in 1:length(included_subjects)){
+                df = grab_data(included_subjects[i]); if (is.character(df)){next} else {trials = which(included_subjects[i] == dfNID$SubjectID)}
+                df = dfNID[trials, ]
+                altSubjectData$Deviance_NID[i] = -2*sum(df$choseHarm * log(df$ProbHarm) + (1 - df$choseHarm) * log(1 - df$ProbHarm))
+                }
+
+                altSubjectData$BIC_NID = as.numeric(altSubjectData$Deviance_NID) + log(152) * 6/(nrow(dfNID))
+
+                t.test(subjectData$BIC[-20], altSubjectData$BIC_NID[-20], paired = T)
+                which(modelBIC > sum(altSubjectData$BIC_NID))
+
         .. tab-item:: MatLab
 
             ::
@@ -471,6 +488,23 @@ Tutorial 4 - Li et al., 2022
         .. tab-item:: R
 
             ::
+
+                resultNID = fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = trialData[2:8], optimMethod = "MLE")
+                trialData$Prob1_NID = generatePredictions(resultNID$par, trialData)
+                sum(trialData$Chose1 == round(trialData$Prob1_NID))/nrow(trialData)
+
+                altSubjectData$Deviance_NID = 0
+
+                for (i in 1:length(included_subjects)){ 
+                trials = which(included_subjects[i] == trialData$SubjectID)
+                df = trialData[trials, ]
+                altSubjectData$Deviance_NID[i] = -2*sum(df$Chose1 * log(df$Prob1_NID) + (1 - df$Chose1) * log(1 - df$Prob1_NID))
+                }
+
+                altSubjectData$BIC_NID = as.numeric(altSubjectData$Deviance_NID) + log(65) * 6/(length(included_subjects))
+
+                t.test(subjectData$BIC, altSubjectData$BIC_NID, paired = T)
+                which(modelBIC > sum(altSubjectData$BIC_NID))
 
         .. tab-item:: MatLab
 

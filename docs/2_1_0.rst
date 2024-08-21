@@ -1160,6 +1160,104 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
+                library(R.matlab) #data are stored in .mat files so we'll need this to work while in R
+
+                parentfolder = 'C:/Users/DELL/Downloads/fMRI_choice_data/run' #the parentfolder where the subject folder/file is
+                included_subjects = list.files(paste(parentfolder, '1', sep = ''), full.names = F) #get subject files in run 1
+                included_subjects = gsub('.mat', '', gsub('BC_1', '', included_subjects)) #remove run 1 identifier and .mat suffix
+
+                subjectData = data.frame()
+
+                grab_data = function(subject){
+                    if (sum(grepl(pattern = subject, x = list.files(paste(parentfolder, '2/', sep = ''), full.names = F))) == 0){
+                        return("skipping")
+                    }
+                    for (r in 1:2){
+                        datafile = paste(parentfolder, r, '/BC_', r, subject, '.mat', sep = '')
+                        temp = readMat(datafile)
+                        if (r == 1){
+                            choices = temp["choice"]
+                            df = data.frame(temp["trialinfo"])
+                            df = cbind(df[1:76, ], as.data.frame(choices)[1:76, ])
+                        } else {
+                            choices = temp["choice"]
+                            temp = data.frame(temp["trialinfo"])
+                            temp = cbind(temp[1:76, ], as.data.frame(choices)[1:76, ])
+                            df = rbind(df, temp) #some have duplicate values
+                        }
+                    }
+                    df[which(is.na(df[,11])), 11] = sample(c(1,2), size = sum(is.na(df[,11])), replace = T)
+                    df[, 10] = (df[, 10] * -1) + 2 # 1 is harm 0 is help now
+                    df[, 11] = (df[, 11] * -1) + 2 # 1 is self 0 is other now
+                    colnames(df) = c("trialNumber", "moneyLess", "moneyDifference", "moneyMore", "shocksLess", "shocksDifference", "shocksMore", "isLeft", "runNumber", "isSelf", "choseHarm")
+                    
+                    return(df)
+                }
+
+                generate_predictions = function(df, result){
+                    df$ProbHarm = 0
+                    Epsilon = result$par[5]
+                    Gamma = result$par[6]
+                    for (k in 1:length(df[,1])){
+                        shocksMore = df$shocksMore[k]
+                        shocksLess = df$shocksLess[k]
+                        moneyMore = df$moneyMore[k]
+                        moneyLess = df$moneyLess[k]
+                        isLeft = as.logical(df$isLeft[k])
+                        isSelf = as.logical(df$isSelf[k])
+                        if (isSelf) {Kappa = result$par[1]; Beta = result$par[3]} else {Kappa = result$par[2]; Beta = result$par[4]}
+                        
+                        Utility = utility(Harm = harm(shocksMore, shocksLess),
+                                        Payout = payout(moneyMore, moneyLess),
+                                        kappa = Kappa)
+                        df$ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 0.9999999999), 0.00000000001)
+                    }
+                    return(df)
+                }
+
+                obj_function = function(params, df, optimMethod = "MLE") { 
+                    #we want kappa and beta per condition, so we'll assign those based on the condition
+                    #we need to read the codebook to change the columns to reflect how the data is stored in the .mat files
+                    Epsilon = params[5]
+                    Gamma = params[6]
+                    
+                    ProbHarm = vector('numeric', length(df[,1]))
+                    choices = as.numeric(df[, 11])
+                    for (k in 1:length(df[,1])){
+                        isLeft = as.logical(df[k, 8])
+                        isSelf = as.logical(df[k, 10])
+                        if (isSelf){Kappa = params[1]; Beta = params[3]} else {Kappa = params[2]; Beta = params[4]}
+                        moneyMore = as.numeric(df[k, 4])
+                        moneyLess = as.numeric(df[k, 2])
+                        shocksMore = as.numeric(df[k, 7])
+                        shocksLess = as.numeric(df[k, 5])
+                        
+                        Utility = utility(Harm = harm(shocksMore, shocksLess),
+                                        Payout = payout(moneyMore, moneyLess),
+                                        kappa = Kappa)
+                        ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 0.9999999999), 0.00000000001)
+                    }
+                    if (optimMethod == "OLS"){
+                        return(sum((choices - ProbHarm)**2))
+                    } else if (optimMethod == "MLE"){
+                        return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
+                    }
+                }
+
+                #also need to include the correct number of parameter constraints
+                initial_params = c(0.5, 0.5, 4, 4, 0.25, 0)
+                lower_bounds = c(0, 0, 0, 0, 0, -0.5)
+                upper_bounds = c(1, 1, 100, 100, 0.5, 0.5)
+
+                #and overcome some errors that seem to be limited to using Log-Odds with fmincon
+                optimize = function(df){
+                tryCatch({
+                    fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "MLE")
+                }, error = function(e){
+                    fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "OLS")
+                })
+                }
+
         .. tab-item:: MatLab
 
             ::
@@ -1167,7 +1265,7 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: Python
 
             ::
-.. dropdown:: Define the :bdg-success:`Subject` Loop
+.. dropdown:: Recover :bdg-success:`Free Parameters` and Determine Predicted :bdg-danger:`Decisions`
 
     .. tab-set::
 
@@ -1175,35 +1273,28 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
-        .. tab-item:: MatLab
+                for (i in 1:length(included_subjects)){
+                    df = grab_data(included_subjects[i])
+                    if (is.character(df)){next}
+                    
+                    result = optimize(df)
+                    
+                    # Just Added
+                    
+                    df = generate_predictions(df, result)
+                    
+                    model_SS = sum((df$choseHarm - df$ProbHarm)**2)
+                    model_NLL = -2*sum(df$choseHarm * log(df$ProbHarm) + (1 - df$choseHarm) * log(1 - df$ProbHarm))
+                    
+                    subjectData[i, 1:9] = c(included_subjects[i], result$par[1], result$par[2], result$par[3], result$par[4], result$par[5], result$par[6],
+                                        model_SS, model_NLL)
+                    
+                    df = cbind(data.frame(SubjectID = rep(included_subjects[i], length(df$trialNumber))), df)
+                    if (i == 1) {trialData = df} else {trialData = rbind(trialData, df)}
+                }
 
-            ::
+                colnames(subjectData) = c("subjectID", "Kappa_Self", "Kappa_Other", "Beta_Self", "Beta_Other", "Epsilon", "Gamma", "SS", "Deviance")
 
-        .. tab-item:: Python
-
-            ::
-.. dropdown:: Recover :bdg-success:`Free Parameters`
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
-.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success:`Free Parameters`
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
 
         .. tab-item:: MatLab
 
@@ -1224,35 +1315,23 @@ Tutorial 4 - Li et al., 2022
 
             ::
 
-        .. tab-item:: MatLab
+                trialData = read.csv2("C:/Users/DELL/Downloads/Data/Data/HPP_fMRI_beh_data_for_lmm.csv", sep = ',')
+                trialData = trialData[which(trialData$trail_type==3), c(1,6,7,13,14,21,22,36)]
+                colnames(trialData) = c('SubjectID', 'a0', 'b0', 'a1', 'b1', 'a2', 'b2', 'Chose1')
+                trialData$Chose1 = trialData$Chose1 - 1
+                trialData$Prob1 = 0
+                included_subjects = levels(factor(trialData$SubjectID))
 
-            ::
+                subjectData = data.frame()
 
-        .. tab-item:: Python
+                grab_data = function(subject){
+                    eturn(trialData[which(trialData$SubjectID == subject), -1])
+                }
 
-            ::
-.. dropdown:: Define the :bdg-success:`Subject` Loop
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
-.. dropdown:: Recover :bdg-success:`Free Parameters`
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
+                addPredictions = function(trialData, subject, predictions){
+                    trialData$Prob1[which(trialData$SubjectID == subject)] = predictions
+                    return(trialData)
+                }
 
         .. tab-item:: MatLab
 
@@ -1261,13 +1340,32 @@ Tutorial 4 - Li et al., 2022
         .. tab-item:: Python
 
             ::
-.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for these :bdg-success:`Free Parameters`
+
+.. dropdown:: Recover :bdg-success:`Free Parameters` and Determine Predicted :bdg-danger:`Decisions`
 
     .. tab-set::
 
         .. tab-item:: R
 
             ::
+
+                for (i in 1:length(included_subjects)){
+                    df = grab_data(included_subjects[i])
+                    result = optimize(obj_function, initial_params, lower_bounds, upper_bounds, df)
+                    
+                    # Just Added
+                    df$Prob1 = generatePredictions(result$par, df)
+                    
+                    model_SS = sum((df$Chose1 - df$Prob1)**2)
+                    model_NLL = -2*sum(df$Chose1 * log(df$Prob1) + (1 - df$Chose1) * log(1 - df$Prob1))
+                    
+                    subjectData[i, 1:9] = c(included_subjects[i], result$par[1], result$par[2], result$par[3], result$par[4], result$par[5], result$par[6],
+                                        model_SS, model_NLL)
+                    
+                    trialData = addPredictions(trialData, included_subjects[i], df$Prob1)
+                }
+
+                colnames(subjectData) = c("subjectID", "Alpha", "Delta", "Rho", "Beta", "Epsilon", "Gamma", "SS", "Deviance")
 
         .. tab-item:: MatLab
 

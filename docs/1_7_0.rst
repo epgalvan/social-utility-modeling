@@ -482,7 +482,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
                 fit = fcluster(hierarchical, t=4, criterion='maxclust')
 
-.. dropdown:: Idenitfy Where Your Clusters are
+.. dropdown:: Identify Where Your Clusters are
 
     .. tab-set::
 
@@ -652,3 +652,12 @@ Tutorial 4 - Li et al., 2022
 -------------------
 
 .. dropdown:: Choosing an Approach to Grouping
+
+    Here, we have non-interesting parameters ( :bdg-success-line:`Beta`, :bdg-success-line:`Epsilon`, and :bdg-success-line:`Gamma` ) which immediately rules out the possibility of a priori clustering. 
+    We don't have :bdg-primary:`Condition`s in the current design so we can't apply the same rules-based binning approach as in the Crockett et al. study. 
+    We could look at differences between :bdg-success:`Free Parameters` to determine groups (i.e. if :bdg-success-line:`α` is bigger than :bdg-success-line:`δ`) but we don't have a guarantee that these 
+    are scaled in the same way necessarily. So none of these options seems particularly good. 
+
+    An important thing to note is that, while grouping is often informative, we don't need to superimpose groupings when our research question doesn't drive them: just because we can doesn't mean we should. 
+    We could do Post-Hoc clustering on either the :bdg-success:`Free Parameters` or the :bdg-danger:`Choices` people make but we don't really need to. 
+    The authors in this paper did not group and we won't either.

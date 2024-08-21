@@ -189,19 +189,9 @@ Tutorial 3 - Crockett et al., 2014
 
 .. dropdown:: Select a Model Fit Index
 
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
+    They used the standard formulation of the BIC which is appropriate because they are attempting model both the decision-making process and the decision process itself 
+    (i.e. the underlying probabilities).
+    
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`
 
     .. tab-set::
@@ -209,6 +199,8 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: R
 
             ::
+
+                subjectData$BIC = as.numeric(subjectData$Deviance) + log(152) * 6
 
         .. tab-item:: MatLab
 
@@ -223,19 +215,9 @@ Tutorial 4 - Li et al., 2022
 
 .. dropdown:: Select a Model Fit Index
 
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
+    They used the standard formulation of the BIC which is appropriate because they are attempting model both the decision-making process and the decision process itself 
+    (i.e. the underlying probabilities).
+    
 .. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`
 
     .. tab-set::
@@ -243,6 +225,8 @@ Tutorial 4 - Li et al., 2022
         .. tab-item:: R
 
             ::
+
+                subjectData$BIC = as.numeric(subjectData$Deviance) + log(65) * 6
 
         .. tab-item:: MatLab
 

@@ -226,8 +226,26 @@ Tutorial 4 - Li et al., 2022
 
 .. dropdown:: Generate Hypotheses
 
+    1. People prefer more equal allocations
+    2. People prefer to avoid making people lose money 
+    3. People prefer to maintain existing hierarchies
+
 .. dropdown:: Create a Task
+
+    Our research question asks about three norms in distributing resources: for instance, money.
+    None of these norms necessarily considers self-interest, so we can best focus on answering this research question by having participants make distribution decisions for others. 
+    So, we are looking for variant of a distribution task which doesn't involve the participant, which means we should use a third-person Dictator Game as a starting point. 
+
+    Now we need to decide if we're going to be using a slider (multiple choices) or a binary choice paradigm. 
+    If there is a fixed amount of money in the game, then we can get a more accurate account of preferences using a slider. 
+    We can reasonably assume that we can find the tradeoff between equality and harm aversion. 
+    However, we likely will not see many people spontaneously inverting the existing hierarchy. 
+    Thus, we need to force people to chose between maintaining hierarchy and lessening inequality: putting these norms into conflict will require a limited choice set, so using a binary choice task is best.
 
 .. dropdown:: Identify Unintended Behavioral Patterns
 
+    Couldn't identify any unintended behavior.
+
 .. dropdown:: Design the Experiment
+
+    We'll want a within-subjects design.

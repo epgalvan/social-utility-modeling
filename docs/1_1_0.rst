@@ -74,4 +74,13 @@ Tutorial 4 - Li et al., 2022
 
 .. dropdown:: Create a Research Question
 
+    Our notions about what a fair distribution of resources is often differs from others', particularly when considering existing states of wealth. 
+    In these situations, is equality fair? Or avoiding harming people? Or preserving existing hierarchies? 
+    We want to know which (or all) factors are considered. 
+
+    Thus, our goal is to answer the following question:
+
+    **Which norms - Equality, Hierarchy Preservation, or Harm-Aversion - do people consider in judging a distribution of resources?**
+
+
     

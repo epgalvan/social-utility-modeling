@@ -299,6 +299,11 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
+                t.test(subjectData$BIC[-20], altSubjectData$BICM2[-20], paired = T)
+                t.test(subjectData$BIC[-20], altSubjectData$BICM3[-20], paired = T)
+                t.test(subjectData$BIC[-20], altSubjectData$BICM4[-20], paired = T)
+                t.test(subjectData$BIC[-20], altSubjectData$BICM5[-20], paired = T)
+
         .. tab-item:: MatLab
 
             ::
@@ -317,6 +322,13 @@ Tutorial 4 - Li et al., 2022
         .. tab-item:: R
 
             ::
+
+                t.test(subjectData$BIC, altSubjectData$BIC_M1, paired = T)
+                t.test(subjectData$BIC, altSubjectData$BIC_M2, paired = T)
+                t.test(subjectData$BIC, altSubjectData$BIC_M3, paired = T)
+                t.test(subjectData$BIC, altSubjectData$BIC_M4, paired = T)
+                t.test(subjectData$BIC, altSubjectData$BIC_M5, paired = T)
+                t.test(subjectData$BIC, altSubjectData$BIC_M6, paired = T)
 
         .. tab-item:: MatLab
 

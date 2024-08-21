@@ -1327,6 +1327,42 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
+                ### Assessing Model Performance
+
+                sum(trialData$choseHarm == round(trialData$ProbHarm))/nrow(trialData)
+
+                qplot(subjectData$BIC[-20], geom = 'density')
+                worstExplained = which(subjectData$BIC[-20] > as.numeric(summary(subjectData$BIC[-20])[4]))
+
+                qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = moneyDifference, y = choseHarm - ProbHarm, group = SubjectID) + geom_smooth()
+                qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = shocksDifference, y = choseHarm - ProbHarm, group = SubjectID) + geom_smooth()
+
+                ### Checking Assumptions
+
+                ggplot(data = trialData) + geom_smooth(aes(x = ProbHarm, y = choseHarm, group = isSelf, color = factor(isSelf))) 
+                ggplot(data = trialData) + geom_density(aes(x = choseHarm, fill = factor(choseHarm)))
+                normvals = rnorm(1000, mean = 0, sd = sd(trialData$ProbHarm - trialData$choseHarm))
+                qplot(x = trialData$ProbHarm - trialData$choseHarm, geom = 'density', bw = sd(trialData$ProbHarm - trialData$choseHarm), color = 'Actual') +
+                geom_density(aes(x = normvals, color = 'Predicted'), bw = sd(trialData$ProbHarm - trialData$choseHarm))
+                qplot(x = trialData$shocksDifference, y = trialData$ProbHarm - trialData$choseHarm, geom = 'jitter') + geom_smooth()
+                qplot(x = trialData$moneyDifference, y = trialData$ProbHarm - trialData$choseHarm, geom = 'jitter') + geom_smooth()
+                qplot(x = trialData$shocksDifference, y = trialData$ProbHarm - trialData$choseHarm, color = factor(trialData$isSelf), geom = 'smooth') + lims(y = c(-1,1))
+                qplot(x = trialData$moneyDifference, y = trialData$ProbHarm - trialData$choseHarm, color = factor(trialData$isSelf), geom = 'smooth') + lims(y = c(-1,1))
+
+                ### Assessing Independence
+
+                library(lme4)
+                library(MuMIn)
+
+                ris_model = glmer(data = trialData, choseHarm ~ ProbHarm + (1 + ProbHarm | SubjectID), family = "binomial")
+                r.squaredGLMM(ris_model)
+
+                ri_model = glmer(data = trialData, choseHarm ~ ProbHarm + (1 | SubjectID), family = "binomial")
+                r.squaredGLMM(ri_model)
+
+                ric_model = glmer(data = trialData, choseHarm ~ ProbHarm + isSelf + (1 | SubjectID), family = "binomial")
+                r.squaredGLMM(ric_model)
+
         .. tab-item:: MatLab
 
             ::
@@ -1341,6 +1377,77 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: R
 
             ::
+
+                fivefold = data.frame() #preallocate for parameters and errors from the fivefold validation to go into
+                trialData$ProbHarm_ff = 0
+                optimize = function(df){
+                tryCatch({
+                    fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "MLE")
+                }, error = function(e){
+                    fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "OLS")
+                })
+                }
+                adj = 1
+                for (i in 1:length(included_subjects)){
+                df = grab_data(included_subjects[i])
+                if (is.character(df)){adj = adj + 1; next}
+                df$ProbHarm = 0
+                
+                order = sample(152)
+                KSelf_ff = vector('numeric', length = 5)
+                KOther_ff = vector('numeric', length = 5)
+                BSelf_ff = vector('numeric', length = 5)
+                BOther_ff = vector('numeric', length = 5)
+                E_ff = vector('numeric', length = 5)
+                G_ff = vector('numeric', length = 5)
+                Deviance_ff = 0
+                df$Pred = 0
+                for (z in 1:5){
+                    j = round((z - 1) * (152/5) + 1)
+                    n = round(z * (152/5))
+                    withheld = order[j:n]
+                    
+                    result_ff = optimize(df[-withheld,])
+                    
+                    KSelf_ff[z] = result_ff$par[1]
+                    KOther_ff[z] = result_ff$par[2]
+                    BSelf_ff[z] = result_ff$par[3]
+                    BOther_ff[z] = result_ff$par[4]
+                    E_ff[z] = result_ff$par[5]
+                    G_ff[z] = result_ff$par[6]
+                    df[withheld, ] = generate_predictions(df[withheld, ], result_ff)
+                }
+                Deviance_ff = -2*sum(df$choseHarm * log(df$ProbHarm) + (1 - df$choseHarm) * log(1 - df$ProbHarm))
+                fivefold[i, 1:32] = c(included_subjects[i], Deviance_ff, KSelf_ff, KOther_ff, BSelf_ff, BOther_ff, E_ff, G_ff)
+                j = (i-adj)*152 + 1; n = (i-adj + 1)*152
+                trialData$ProbHarm_ff[j:n] = df$ProbHarm
+                }
+                colnames(fivefold) = c('SubjectID', 'Deviance', 'KS_F1', 'KS_F2', 'KS_F3', 'KS_F4', 'KS_F5',
+                                    'KO_F1','KO_F2','KO_F3','KO_F4','KO_F5', 'BS_F1', 'BS_F2', 'BS_F3', 'BS_F4', 'BS_F5',
+                                    'BO_F1','BO_F2','BO_F3','BO_F4','BO_F5', 'E_F1', 'E_F2', 'E_F3', 'E_F4', 'E_F5', 
+                                    'G_F1', 'G_F2', 'G_F3', 'G_F4', 'G_F5')
+
+                sum(round(trialData$ProbHarm_ff) == trialData$choseHarm)/nrow(trialData)
+                fivefold$BIC = as.numeric(fivefold$Deviance) + log(152) * 6
+                t.test(fivefold$BIC, subjectData$BIC, paired = T) #test fivefold MFI against normal MFI for this model
+
+                library(lsa)
+                cosines = vector('numeric', length = 60)
+                for (i in 1:5){
+                cosines[i] = cosine(as.numeric(subjectData$Kappa_Self[-20]), as.numeric(fivefold[-20, (i + 2)]))
+                cosines[(i+5)] = cosine(as.numeric(subjectData$Kappa_Other[-20]), as.numeric(fivefold[-20, (i + 7)]))
+                cosines[(i+10)] = cosine(as.numeric(subjectData$Beta_Self[-20]), as.numeric(fivefold[-20, (i + 12)]))
+                cosines[(i+15)] = cosine(as.numeric(subjectData$Beta_Other[-20]), as.numeric(fivefold[-20, (i + 17)]))
+                cosines[(i+20)] = cosine(as.numeric(subjectData$Epsilon[-20]), as.numeric(fivefold[-20, (i + 22)]))
+                cosines[(i+25)] = cosine(as.numeric(subjectData$Gamma[-20]), as.numeric(fivefold[-20, (i + 27)]))
+                }
+
+                mean(cosines[1:5]) 
+                mean(cosines[6:10])
+                mean(cosines[11:15]) 
+                mean(cosines[16:20]) 
+                mean(cosines[21:25]) 
+                mean(cosines[26:30])  
 
         .. tab-item:: MatLab
 
@@ -1361,6 +1468,43 @@ Tutorial 4 - Li et al., 2022
 
             ::
 
+                ### Assessing Model Performance
+
+                sum(trialData$Chose1 == round(trialData$Prob1))/nrow(trialData)
+
+                qplot(subjectData$BIC, geom = 'density')
+                worstExplained = which(subjectData$BIC > as.numeric(summary(subjectData$BIC)[4]))
+
+                qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = a0-a1, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
+                qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = a0-a2, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
+                qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = b0-b1, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
+                qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = b0-b2, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
+
+
+                ### Checking Assumptions
+
+                ggplot(data = trialData) + geom_smooth(aes(x = Prob1, y = Chose1, group = a0 < b0, color = factor(a0 < b0))) 
+                ggplot(data = trialData) + geom_density(aes(x = Chose1, group = a0 < b0, fill = factor(a0 < b0), alpha = 0.5))
+                normvals = rnorm(1000, mean = 0, sd = sd(trialData$Prob1 - trialData$Chose1))
+                qplot(x = trialData$Prob1 - trialData$Chose1, geom = 'density', bw = sd(trialData$Prob1 - trialData$Chose1), color = 'Actual') +
+                geom_density(aes(x = normvals, color = 'Predicted'), bw = sd(trialData$Prob1 - trialData$Chose1))
+                qplot(x = abs(trialData$a1 - trialData$a2), y = trialData$Prob1 - trialData$Chose1, geom = 'jitter') + geom_smooth(method = 'loess')
+                qplot(x = abs(trialData$a1 - trialData$a2), y = trialData$Prob1 - trialData$Chose1, color = factor(trialData$a0 > trialData$b0), geom = 'jitter') + geom_smooth(method = 'loess')
+
+                ### Assessing Independence
+
+                library(lme4)
+                library(MuMIn)
+
+                ris_model = glmer(data = trialData, Chose1 ~ Prob1 + (1 + Prob1 | SubjectID), family = "binomial")
+                r.squaredGLMM(ris_model)
+
+                ri_model = glmer(data = trialData, Chose1 ~ Prob1 + (1 | SubjectID), family = "binomial")
+                r.squaredGLMM(ri_model)
+
+                ric_model = glmer(data = trialData, Chose1 ~ Prob1 + factor(a0<b0) + (1 | SubjectID), family = "binomial")
+                r.squaredGLMM(ric_model)
+
         .. tab-item:: MatLab
 
             ::
@@ -1375,6 +1519,68 @@ Tutorial 4 - Li et al., 2022
         .. tab-item:: R
 
             ::
+
+                fivefold = data.frame() #preallocate for parameters and errors from the fivefold validation to go into
+                trialData$Prob1_ff = 0
+
+                for (i in 1:length(included_subjects)){
+                df = grab_data(included_subjects[i])
+                df$Prob1 = 0
+                
+                order = sample(nrow(df))
+                A_ff = vector('numeric', length = 5)
+                D_ff = vector('numeric', length = 5)
+                R_ff = vector('numeric', length = 5)
+                B_ff = vector('numeric', length = 5)
+                E_ff = vector('numeric', length = 5)
+                G_ff = vector('numeric', length = 5)
+                Deviance_ff = 0
+                df$Pred = 0
+                for (z in 1:5){
+                    j = round((z - 1) * (nrow(df)/5) + 1)
+                    n = round(z * (nrow(df)/5))
+                    withheld = order[j:n]
+                    
+                    result_ff = optimize(obj_function, initial_params, lower_bounds, upper_bounds, df[-withheld,])
+                    
+                    A_ff[z] = result_ff$par[1]
+                    D_ff[z] = result_ff$par[2]
+                    R_ff[z] = result_ff$par[3]
+                    B_ff[z] = result_ff$par[4]
+                    E_ff[z] = result_ff$par[5]
+                    G_ff[z] = result_ff$par[6]
+                    df$Prob1[withheld] = generatePredictions(result_ff$par, df[withheld, ])
+                }
+                Deviance_ff = -2*sum(df$Chose1 * log(df$Prob1) + (1 - df$Chose1) * log(1 - df$Prob1))
+                fivefold[i, 1:32] = c(included_subjects[i], Deviance_ff, A_ff, D_ff, R_ff, B_ff, E_ff, G_ff)
+                trialData$Prob1_ff[which(trialData$SubjectID == included_subjects[i])] = df$Prob1
+                }
+                colnames(fivefold) = c('SubjectID', 'Deviance', 'A_F1', 'A_F2', 'A_F3', 'A_F4', 'A_F5',
+                                    'D_F1','D_F2','D_F3','D_F4','D_F5', 'R_F1', 'R_F2', 'R_F3', 'R_F4', 'R_F5',
+                                    'B_F1','B_F2','B_F3','B_F4','B_F5', 'E_F1', 'E_F2', 'E_F3', 'E_F4', 'E_F5', 
+                                    'G_F1', 'G_F2', 'G_F3', 'G_F4', 'G_F5')
+
+                sum(round(trialData$Prob1_ff) == trialData$Chose1)/nrow(trialData)
+                fivefold$BIC = as.numeric(fivefold$Deviance) + log(65) * 6
+                t.test(fivefold$BIC, subjectData$BIC, paired = T) #test fivefold MFI against normal MFI for this model
+
+                library(lsa)
+                cosines = vector('numeric', length = 60)
+                for (i in 1:5){
+                cosines[i] = cosine(as.numeric(subjectData$Alpha), as.numeric(fivefold[, (i + 2)]))
+                cosines[(i+5)] = cosine(as.numeric(subjectData$Delta), as.numeric(fivefold[, (i + 7)]))
+                cosines[(i+10)] = cosine(as.numeric(subjectData$Rho), as.numeric(fivefold[, (i + 12)]))
+                cosines[(i+15)] = cosine(as.numeric(subjectData$Beta), as.numeric(fivefold[, (i + 17)]))
+                cosines[(i+20)] = cosine(as.numeric(subjectData$Epsilon), as.numeric(fivefold[, (i + 22)]))
+                cosines[(i+25)] = cosine(as.numeric(subjectData$Gamma), as.numeric(fivefold[, (i + 27)]))
+                }
+
+                mean(cosines[1:5]) 
+                mean(cosines[6:10])
+                mean(cosines[11:15]) 
+                mean(cosines[16:20]) 
+                mean(cosines[21:25]) 
+                mean(cosines[26:30])  
 
         .. tab-item:: MatLab
 

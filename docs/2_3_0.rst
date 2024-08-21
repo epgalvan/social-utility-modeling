@@ -2008,21 +2008,6 @@ Tutorial 2 - Galvan & Sanfey, 2024
 Tutorial 3 - Crockett et al., 2014
 -------------------
 
-.. dropdown:: Create :bdg-warning:`Utility` Equations for our Alternative Models
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
 .. dropdown:: Preallocating and Defining Functions
 
     .. tab-set::
@@ -2031,6 +2016,136 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
+                #adjusting
+                optimize = function(of, using, df){
+                    tryCatch({
+                        fmincon(of, x0 = initial_params[using], lb = lower_bounds[using], ub = upper_bounds[using], df = df, optimMethod = "MLE")
+                    }, error = function(e){
+                        fmincon(of, x0 = initial_params[using], lb = lower_bounds[using], ub = upper_bounds[using], df = df, optimMethod = "OLS")
+                    })
+                }
+
+                obj_functionNoGamma = function(params, df, optimMethod = "MLE") { 
+                    #we want kappa and beta per condition, so we'll assign those based on the condition
+                    #we need to read the codebook to change the columns to reflect how the data is stored in the .mat files
+                    Epsilon = params[5]
+                    Gamma = 0 #0 means no bias, everything else is the same
+                    
+                    ProbHarm = vector('numeric', length(df[,1]))
+                    choices = as.numeric(df[, 11])
+                    for (k in 1:length(df[,1])){
+                        isLeft = as.logical(df[k, 8])
+                        isSelf = as.logical(df[k, 10])
+                        if (isSelf){Kappa = params[1]; Beta = params[3]} else {Kappa = params[2]; Beta = params[4]}
+                        moneyMore = as.numeric(df[k, 4])
+                        moneyLess = as.numeric(df[k, 2])
+                        shocksMore = as.numeric(df[k, 7])
+                        shocksLess = as.numeric(df[k, 5])
+                        
+                        Utility = utility(Harm = harm(shocksMore, shocksLess),
+                                        Payout = payout(moneyMore, moneyLess),
+                                        kappa = Kappa)
+                        ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 0.9999999999), 0.00000000001)
+                    }
+                    if (optimMethod == "OLS"){
+                        return(sum((choices - ProbHarm)**2))
+                    } else if (optimMethod == "MLE"){
+                        return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
+                    }
+                }
+                obj_functionNoEpsilon = function(params, df, optimMethod = "MLE") { 
+                    #we want kappa and beta per condition, so we'll assign those based on the condition
+                    #we need to read the codebook to change the columns to reflect how the data is stored in the .mat files
+                    Epsilon = 0 #0 means no noise
+                    Gamma = 0 #and 0 means no bias, everything else is the same
+                    
+                    ProbHarm = vector('numeric', length(df[,1]))
+                    choices = as.numeric(df[, 11])
+                    for (k in 1:length(df[,1])){
+                        isLeft = as.logical(df[k, 8])
+                        isSelf = as.logical(df[k, 10])
+                        if (isSelf){Kappa = params[1]; Beta = params[3]} else {Kappa = params[2]; Beta = params[4]}
+                        moneyMore = as.numeric(df[k, 4])
+                        moneyLess = as.numeric(df[k, 2])
+                        shocksMore = as.numeric(df[k, 7])
+                        shocksLess = as.numeric(df[k, 5])
+                        
+                        Utility = utility(Harm = harm(shocksMore, shocksLess),
+                                        Payout = payout(moneyMore, moneyLess),
+                                        kappa = Kappa)
+                        ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 0.9999999999), 0.00000000001)
+                    }
+                    if (optimMethod == "OLS"){
+                        return(sum((choices - ProbHarm)**2))
+                    } else if (optimMethod == "MLE"){
+                        return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
+                    }
+                }
+                obj_functionNoConditions = function(params, df, optimMethod = "MLE") { 
+                    #we want kappa and beta per condition, so we'll assign those based on the condition
+                    #we need to read the codebook to change the columns to reflect how the data is stored in the .mat files
+                    Kappa = params[1] #moved up here because not changing depending on trial
+                    Beta = params[2] #same as above
+                    Epsilon = params[3] #change from 5 since 2 fewer parameters
+                    Gamma = params[4] #change from 6 for same reason
+                    
+                    ProbHarm = vector('numeric', length(df[,1]))
+                    choices = as.numeric(df[, 11])
+                    for (k in 1:length(df[,1])){
+                        isLeft = as.logical(df[k, 8])
+                        isSelf = as.logical(df[k, 10])
+                        moneyMore = as.numeric(df[k, 4])
+                        moneyLess = as.numeric(df[k, 2])
+                        shocksMore = as.numeric(df[k, 7])
+                        shocksLess = as.numeric(df[k, 5])
+                        
+                        Utility = utility(Harm = harm(shocksMore, shocksLess),
+                                        Payout = payout(moneyMore, moneyLess),
+                                        kappa = Kappa)
+                        ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 0.9999999999), 0.00000000001)
+                    }
+                    if (optimMethod == "OLS"){
+                        return(sum((choices - ProbHarm)**2))
+                    } else if (optimMethod == "MLE"){
+                        return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
+                    }
+                }
+                obj_functionNoKappa = function(params, df, optimMethod = "MLE") { 
+                    #we want kappa and beta per condition, so we'll assign those based on the condition
+                    #we need to read the codebook to change the columns to reflect how the data is stored in the .mat files
+                    Kappa = 0 #nonfactor
+                    Beta = 0 #nonfactor
+                    Epsilon = 0.5 #the only factor is noise and bias
+                    Gamma = params[1] #bias can vary
+                    
+                    ProbHarm = vector('numeric', length(df[,1]))
+                    choices = as.numeric(df[, 11])
+                    for (k in 1:length(df[,1])){
+                        isLeft = as.logical(df[k, 8])
+                        isSelf = as.logical(df[k, 10])
+                        moneyMore = as.numeric(df[k, 4])
+                        moneyLess = as.numeric(df[k, 2])
+                        shocksMore = as.numeric(df[k, 7])
+                        shocksLess = as.numeric(df[k, 5])
+                        
+                        Utility = utility(Harm = harm(shocksMore, shocksLess),
+                                        Payout = payout(moneyMore, moneyLess),
+                                        kappa = Kappa)
+                        ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 0.9999999999), 0.00000000001)
+                    }
+                    if (optimMethod == "OLS"){
+                        return(sum((choices - ProbHarm)**2))
+                    } else if (optimMethod == "MLE"){
+                        return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
+                    }
+                }
+                NoGamma = seq(1, 5)
+                NoEpsilon = seq(1, 4)
+                NoConditions = c(1, 3, 5, 6)
+                NoKappa = 6
+
+                altSubjectData = data.frame()
+
         .. tab-item:: MatLab
 
             ::
@@ -2038,7 +2153,7 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: Python
 
             ::
-.. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
+.. dropdown:: Recover :bdg-success:`Free Parameters` and Determine Predicted :bdg-danger:`Decisions` 
 
     .. tab-set::
 
@@ -2046,20 +2161,52 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
-        .. tab-item:: MatLab
+                for (i in 1:length(included_subjects)){
+                    df = grab_data(included_subjects[i])
+                    if (is.character(df)){next}
+                    
+                    resultNoGamma = optimize(obj_functionNoGamma, NoGamma, df)
+                    resultNoEpsilon = optimize(obj_functionNoEpsilon, NoEpsilon, df)
+                    resultNoConditions = optimize(obj_functionNoConditions, NoConditions, df)
+                    resultNoKappa = optim(obj_functionNoKappa,par = initial_params[NoKappa], lower = lower_bounds[NoKappa], upper = upper_bounds[NoKappa], df = df, method = 'L-BFGS-B')
+                    
+                    dfNoGamma = generate_predictions(df, data.frame(par = c(resultNoGamma$par[1:5], 0)))
+                    dfNoEpsilon = generate_predictions(df, data.frame(par = c(resultNoEpsilon$par[1:4], 0, 0)))
+                    dfNoConditions = generate_predictions(df, data.frame(par = c(resultNoConditions$par[c(1, 1, 2, 2, 3, 4)])))
+                    dfNoKappa = generate_predictions(df, data.frame(par = c(0, 0, 0, 0, 0.5, resultNoKappa$par[1])))
+                    
+                    modelNG_SS = sum((dfNoGamma$choseHarm - dfNoGamma$ProbHarm)**2)
+                    modelNG_NLL = -2*sum(dfNoGamma$choseHarm * log(dfNoGamma$ProbHarm) + (1 - dfNoGamma$choseHarm) * log(1 - dfNoGamma$ProbHarm))
+                    modelNE_SS = sum((dfNoEpsilon$choseHarm - dfNoEpsilon$ProbHarm)**2)
+                    modelNE_NLL = -2*sum(dfNoEpsilon$choseHarm * log(dfNoEpsilon$ProbHarm) + (1 - dfNoEpsilon$choseHarm) * log(1 - dfNoEpsilon$ProbHarm))
+                    modelNC_SS = sum((dfNoConditions$choseHarm - dfNoConditions$ProbHarm)**2)
+                    modelNC_NLL = -2*sum(dfNoConditions$choseHarm * log(dfNoConditions$ProbHarm) + (1 - dfNoConditions$choseHarm) * log(1 - dfNoConditions$ProbHarm))
+                    modelNK_SS = sum((dfNoKappa$choseHarm - dfNoKappa$ProbHarm)**2)
+                    modelNK_NLL = -2*sum(dfNoKappa$choseHarm * log(dfNoKappa$ProbHarm) + (1 - dfNoKappa$choseHarm) * log(1 - dfNoKappa$ProbHarm))
+                    
+                    altSubjectData[i, 1:23] = c(included_subjects[i], 
+                                                resultNoGamma$par[1], resultNoGamma$par[2], resultNoGamma$par[3], resultNoGamma$par[4], resultNoGamma$par[5], 
+                                                resultNoEpsilon$par[1], resultNoEpsilon$par[2], resultNoEpsilon$par[3], resultNoEpsilon$par[4], 
+                                                resultNoConditions$par[1], resultNoConditions$par[2], resultNoConditions$par[3], resultNoConditions$par[4], 
+                                                resultNoKappa$par[1],
+                                                modelNG_SS, modelNG_NLL, modelNE_SS, modelNE_NLL, modelNC_SS, modelNC_NLL, modelNK_SS, modelNK_NLL)
+                    
+                    
+                    df = cbind(data.frame(SubjectID = rep(included_subjects[i], length(df$trialNumber))), df)
+                    df$ProbHarmNG = dfNoGamma$ProbHarm
+                    df$ProbHarmNE = dfNoEpsilon$ProbHarm
+                    df$ProbHarmNC = dfNoConditions$ProbHarm
+                    df$ProbHarmNK = dfNoKappa$ProbHarm
+                    if (i == 1) {altTrialData = df} else {altTrialData = rbind(altTrialData, df)}
+                }
 
-            ::
+                colnames(altSubjectData) = c('SubjectID', 'KappaSelfM2', 'KappaOtherM2', 'BetaSelfM2', 'BetaOtherM2', 'EpsilonM2',
+                                            'KappaSelfM3', 'KappaOtherM3', 'BetaSelfM3', 'BetaOtherM3', 
+                                            'KappaM4', 'BetaM4', 'EpsilonM4', 'GammaM4', 
+                                            'GammaM5', 
+                                            'SSM2', 'DevianceM2', 'SSM3', 'DevianceM3', 'SSM4', 'DevianceM4', 'SSM5', 'DevianceM5')
 
-        .. tab-item:: Python
-
-            ::
-.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
+                for (i in 2:ncol(altSubjectData)){altSubjectData[,i] = as.numeric(altSubjectData[,i])}
 
         .. tab-item:: MatLab
 
@@ -2076,6 +2223,11 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
+                altSubjectData$BICM2 = as.numeric(altSubjectData$DevianceM2) + log(152) * 5
+                altSubjectData$BICM3 = as.numeric(altSubjectData$DevianceM3) + log(152) * 4
+                altSubjectData$BICM4 = as.numeric(altSubjectData$DevianceM4) + log(152) * 4
+                altSubjectData$BICM5 = as.numeric(altSubjectData$DevianceM5) + log(152) * 1
+
         .. tab-item:: MatLab
 
             ::
@@ -2090,6 +2242,9 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: R
 
             ::
+
+                modelBIC = c(sum(subjectData$BIC[-20]), sum(altSubjectData$BICM2[-20]), sum(altSubjectData$BICM3[-20]), sum(altSubjectData$BICM4[-20]), sum(altSubjectData$BICM5[-20]))
+                which(modelBIC == min(modelBIC))
 
         .. tab-item:: MatLab
 
@@ -2102,21 +2257,6 @@ Tutorial 3 - Crockett et al., 2014
 Tutorial 4 - Li et al., 2022
 -------------------
 
-.. dropdown:: Create :bdg-warning:`Utility` Equations for our Alternative Models
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
 .. dropdown:: Preallocating and Defining Functions
 
     .. tab-set::
@@ -2125,6 +2265,78 @@ Tutorial 4 - Li et al., 2022
 
             ::
 
+                #adjusting
+
+                of_alphaOnly = function(params, df, optimMethod = "MLE"){
+                    params_new = rep(0, 6); params_new[c(1, 4:6)] = params
+                    Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
+                    if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
+                    } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+                }
+                of_deltaOnly = function(params, df, optimMethod = "MLE"){
+                    params_new = rep(0, 6); params_new[c(2, 4:6)] = params
+                    Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
+                    if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
+                    } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+                }
+                of_rhoOnly = function(params, df, optimMethod = "MLE"){
+                    params_new = rep(0, 6); params_new[c(3:6)] = params
+                    Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
+                    if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
+                    } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+                }
+                of_ad = function(params, df, optimMethod = "MLE"){
+                    params_new = rep(0, 6); params_new[c(1:2, 4:6)] = params
+                    Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
+                    if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
+                    } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+                }
+                of_ar = function(params, df, optimMethod = "MLE"){
+                    params_new = rep(0, 6); params_new[c(1, 3:6)] = params
+                    Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
+                    if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
+                    } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+                }
+                of_dr = function(params, df, optimMethod = "MLE"){
+                    params_new = rep(0, 6); params_new[c(2:6)] = params
+                    Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
+                    if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
+                    } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+                }
+                of_noEpsilon = function(params, df, optimMethod = "MLE"){
+                    params_new = rep(0, 6); params_new[c(1:4)] = params
+                    Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
+                    if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
+                    } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+                }
+                of_noGamma = function(params, df, optimMethod = "MLE"){
+                    params_new = rep(0, 6); params_new[c(1:5)] = params
+                    Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
+                    if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
+                    } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+                }
+                of_GammaOnly = function(params, df, optimMethod = "MLE"){
+                    params_new = rep(0, 6); params_new[5] = 0.5; params_new[6] = params
+                    Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
+                    if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
+                    } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+                }
+
+                ofs = list(of_alphaOnly, of_deltaOnly, of_rhoOnly, of_ad, of_ar, of_dr, of_noEpsilon, of_noGamma, of_GammaOnly)
+                idxs = list(c(1,4:6), c(2,4:6), c(3:6), c(1:2, 4:6), c(1, 3:6), c(2:6), c(1:4), c(1:5), c(6))
+
+                altSubjectData = data.frame()
+                altTrialData = trialData[,-9]
+                altTrialData$alphaOnly_Prob1 = 0
+                altTrialData$deltaOnly_Prob1 = 0
+                altTrialData$rhoOnly_Prob1 = 0
+                altTrialData$ad_Prob1 = 0
+                altTrialData$ar_Prob1 = 0
+                altTrialData$dr_Prob1 = 0
+                altTrialData$noEpsilon_Prob1 = 0
+                altTrialData$noGamma_Prob1 = 0
+                altTrialData$gammaOnly_Prob1 = 0
+
         .. tab-item:: MatLab
 
             ::
@@ -2132,7 +2344,7 @@ Tutorial 4 - Li et al., 2022
         .. tab-item:: Python
 
             ::
-.. dropdown:: Recover :bdg-success:`Free Parameters` for Each Alternative Model, Per :bdg-success:`Subject`
+.. dropdown:: Recover :bdg-success:`Free Parameters` and Determine Predicted :bdg-danger:`Decisions`
 
     .. tab-set::
 
@@ -2140,20 +2352,41 @@ Tutorial 4 - Li et al., 2022
 
             ::
 
-        .. tab-item:: MatLab
+                for (i in 1:length(included_subjects)){
+                df = grab_data(included_subjects[i])
+                outputs = vector('numeric', length = sum(length(c(c(1,4:6), c(2,4:6), c(3:6), c(1:2, 4:6), c(1, 3:6), c(2:6), c(1:4), c(1:5), c(6)))) + 2*9)
+                j = 0
+                for (k in 1:length(idxs)){
+                        idx = idxs[k][[1]]; initials = initial_params[idx]; uppers = upper_bounds[idx]; lowers = lower_bounds[idx]; of = ofs[k][[1]]
+                        if (length(idx) > 1){
+                            result = optimize(of, initials, lowers, uppers, df)
+                        } else {
+                            result = optim(par = initials, fn = of, method = "L-BFGS-B", lower = lowers, upper = uppers, df = df)
+                        }
+                        df$Prob1 = 0; df$Prob1 = generatePredictions(result$par, df)
+                        
+                        model_SS = sum((df$Chose1 - df$Prob1)**2)
+                        model_NLL = -2*sum(df$Chose1 * log(df$Prob1) + (1 - df$Chose1) * log(1 - df$Prob1))
+                        outputs[(j+1):(j+2+length(result$par))] = c(result$par, model_SS, model_NLL)
+                        j = j+2+length(result$par)
+                        altTrialData[which(altTrialData$SubjectID == included_subjects[i]), (8+k)] = df$Prob1
+                    }
+                
+                altSubjectData[i, 1:56] = c(included_subjects[i], outputs)
+                }
 
-            ::
+                colnames(altSubjectData) = c('SubjectID', 
+                                            'Alpha_M1', 'Beta_M1', 'Epsilon_M1', 'Gamma_M1', 'SS_M1', 'Deviance_M1',
+                                            'Delta_M2', 'Beta_M2', 'Epsilon_M2', 'Gamma_M2', 'SS_M2', 'Deviance_M2', 
+                                            'Rho_M3', 'Beta_M3', 'Epsilon_M3', 'Gamma_M3', 'SS_M3', 'Deviance_M3', 
+                                            'Alpha_M4', 'Delta_M4', 'Beta_M4', 'Epsilon_M4', 'Gamma_M4', 'SS_M4', 'Deviance_M4',
+                                            'Alpha_M5', 'Rho_M5', 'Beta_M5', 'Epsilon_M5', 'Gamma_M5', 'SS_M5', 'Deviance_M5',
+                                            'Delta_M6', 'Rho_M6', 'Beta_M6', 'Epsilon_M6', 'Gamma_M6', 'SS_M6', 'Deviance_M6',
+                                            'Alpha_M7', 'Delta_M7', 'Rho_M7', 'Beta_M7', 'SS_M7', 'Deviance_M7',
+                                            'Alpha_M8', 'Delta_M8', 'Rho_M8', 'Beta_M8', 'Epsilon_M8', 'SS_M8', 'Deviance_M8',
+                                            'Gamma_M9', 'SS_M9', 'Deviance_M9')
 
-        .. tab-item:: Python
-
-            ::
-.. dropdown:: Determine Predicted :bdg-danger:`Decisions` for Each Alternative Model, Per :bdg-success:`Subject`
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
+                for (i in 2:ncol(altSubjectData)){altSubjectData[,i] = as.numeric(altSubjectData[,i])}
 
         .. tab-item:: MatLab
 
@@ -2170,6 +2403,16 @@ Tutorial 4 - Li et al., 2022
 
             ::
 
+                altSubjectData$BIC_M1 = (altSubjectData$Deviance_M1) + log(65) * 4
+                altSubjectData$BIC_M2 = (altSubjectData$Deviance_M2) + log(65) * 4
+                altSubjectData$BIC_M3 = (altSubjectData$Deviance_M3) + log(65) * 4
+                altSubjectData$BIC_M4 = (altSubjectData$Deviance_M4) + log(65) * 5
+                altSubjectData$BIC_M5 = (altSubjectData$Deviance_M5) + log(65) * 5
+                altSubjectData$BIC_M6 = (altSubjectData$Deviance_M6) + log(65) * 5
+                altSubjectData$BIC_M7 = (altSubjectData$Deviance_M7) + log(65) * 4
+                altSubjectData$BIC_M8 = (altSubjectData$Deviance_M8) + log(65) * 5
+                altSubjectData$BIC_M9 = (altSubjectData$Deviance_M9) + log(65) * 1
+
         .. tab-item:: MatLab
 
             ::
@@ -2184,6 +2427,9 @@ Tutorial 4 - Li et al., 2022
         .. tab-item:: R
 
             ::
+
+                modelBIC = c(sum(subjectData$BIC), sum(altSubjectData$BIC_M1), sum(altSubjectData$BIC_M2), sum(altSubjectData$BIC_M3), sum(altSubjectData$BIC_M4), sum(altSubjectData$BIC_M5), sum(altSubjectData$BIC_M6), sum(altSubjectData$BIC_M7), sum(altSubjectData$BIC_M8), sum(altSubjectData$BIC_M9))
+                which(modelBIC == min(modelBIC))
 
         .. tab-item:: MatLab
 

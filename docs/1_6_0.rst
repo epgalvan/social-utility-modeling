@@ -1077,3 +1077,103 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: Python
 
             ::
+
+Tutorial 4 - Li et al., 2022
+--------------
+
+.. dropdown:: Objective Functions
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+                obj_function = function(params, df, optimMethod = "MLE") { 
+                    Prob1 = generatePredictions(params, df); Chose1 = df[,7]
+                    if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
+                    } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+                }
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Optimizers
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+                library(pracma)
+
+                initial_params = c(1,1,1, 4, 0.25, 0)
+                lower_bounds = c(0, 0, 0, 0, 0, -0.5)
+                upper_bounds = c(2,2,2, 10, 0.5, 0.5)
+                freeParameters$alphaRecovered = 0
+                freeParameters$deltaRecovered = 0
+                freeParameters$rhoRecovered = 0
+                freeParameters$betaRecovered = 0
+                freeParameters$epsilonRecovered = 0
+                freeParameters$gammaRecovered = 0
+
+                optimize = function(obj, initial_params, lower_bounds, upper_bounds, df){
+                    tryCatch({
+                        fmincon(obj, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "MLE", tol = 1e-08)
+                    }, error = function(e){
+                        fmincon(obj, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "OLS", tol = 1e-08)
+                    })
+                }
+
+                for (i in 1:nrow(freeParameters)) {
+                    trialList$Predictions = as.numeric(predictions[i,])
+                    result = optimize(obj_function, initial_params, lower_bounds, upper_bounds, trialList)
+                    freeParameters$alphaRecovered[i] = result$par[1]
+                    freeParameters$deltaRecovered[i] = result$par[2]
+                    freeParameters$rhoRecovered[i] = result$par[3]
+                    freeParameters$betaRecovered[i] = result$par[4]
+                    freeParameters$epsilonRecovered[i] = result$par[5]
+                    freeParameters$gammaRecovered[i] = result$par[6]
+                    if (mod(i, nrow(freeParameters)/100) == 0){message(round(100* (i/(nrow(freeParameters)))), '% there', sep = '')}
+                }
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::
+
+.. dropdown:: Verifying :bdg-success:`Free Parameter` Recovery Process 
+
+    .. tab-set::
+
+        .. tab-item:: R
+
+            ::
+
+                library(ggplot2)
+
+                freeParameters$Epsilon = factor(freeParameters$epsilon)
+
+                qplot(data = freeParameters, x = alpha, y = alphaRecovered, color = Epsilon) + geom_smooth(se = F) + geom_abline()
+                qplot(data = freeParameters, x = delta, y = deltaRecovered, color = Epsilon) + geom_smooth(se = F) + geom_abline()
+                qplot(data = freeParameters, x = rho, y = rhoRecovered, color = Epsilon) + geom_smooth(se = F) + geom_abline()
+                qplot(data = freeParameters, x = beta, y = betaRecovered, color = Epsilon) + geom_smooth(se = F)+ geom_abline()
+                qplot(data = freeParameters, x = epsilon, y = epsilonRecovered) + geom_smooth(method = 'lm') + geom_abline()
+                qplot(data = freeParameters, x = gamma, y = gammaRecovered, color = Epsilon) + geom_smooth(se = F) + geom_abline() 
+
+        .. tab-item:: MatLab
+
+            ::
+
+        .. tab-item:: Python
+
+            ::

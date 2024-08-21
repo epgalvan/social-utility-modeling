@@ -438,7 +438,22 @@ qplot(x = trialData$Investment, y = (trialData$Prediction-as.numeric(trialData$R
 qplot(x = trialData$Investment, y = (trialData$Prediction-as.numeric(trialData$Returned)), geom = 'smooth') + 
   labs(x = 'Investment', y = 'Prediction - Observed')#homoscedasticity
 
-## Fivefold Validation
+### Assessing Independence of Observations
+
+
+library(lme4)
+library(MuMIn)
+
+ris_model = lmer(data = trialData, Returned ~ Prediction + (1 + Prediction | SubjectID))
+r.squaredGLMM(ris_model)
+
+ri_model = lmer(data = trialData, Returned ~ Prediction + (1 | SubjectID))
+r.squaredGLMM(ri_model)
+
+ric_model = lmer(data = trialData, Returned ~ Prediction + (1 | SubjectID))
+r.squaredGLMM(ric_model)
+
+### Fivefold Validation
 
 fivefold = data.frame() #preallocate for parameters and errors from the fivefold validation to go into
 

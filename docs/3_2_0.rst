@@ -891,21 +891,6 @@ Tutorial 2 - Galvan & Sanfey, 2024
 Tutorial 3 - Crockett et al., 2014
 -------------------
 
-.. dropdown:: Preliminary Validation
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
 .. dropdown:: Testing a Modulatory Hypothesis
 
     .. tab-set::
@@ -914,20 +899,9 @@ Tutorial 3 - Crockett et al., 2014
 
             ::
 
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
-.. dropdown:: Using Categorical Clusters to Test Modulatory Hypotheses
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
+                t.test(as.numeric(subjectData$Kappa_Self[-20]), as.numeric(subjectData$Kappa_Other[-20]), paired = T)
+                mean(as.numeric(subjectData$Kappa_Self[-20]))
+                mean(as.numeric(subjectData$Kappa_Other[-20]))
 
         .. tab-item:: MatLab
 
@@ -936,52 +910,9 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: Python
 
             ::
+
 
 Tutorial 4 - Li et al., 2022
 -------------------
 
-.. dropdown:: Preliminary Validation
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
-.. dropdown:: Testing a Modulatory Hypothesis
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
-.. dropdown:: Using Categorical Clusters to Test Modulatory Hypotheses
-
-    .. tab-set::
-
-        .. tab-item:: R
-
-            ::
-
-        .. tab-item:: MatLab
-
-            ::
-
-        .. tab-item:: Python
-
-            ::
+Not Applicable to this Data.

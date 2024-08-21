@@ -149,16 +149,24 @@ Tutorial 4 - Li et al., 2022
 
 .. dropdown:: Identify Motives Per Hypothesis
 
-    
+    1. Inequality Aversion - an aversion to creating inequality (or a desire to achieve equality)  
+    2. Harm Aversion - a desire to avoid causing taking money from others (harming them) 
+    3. Rank Reversal Aversion - a desire to avoid usurping an existing hierarchy
 
 .. dropdown:: Identify Behavioral Patterns Predicted by Each Hypothesis
 
-    
+    1. Inequality Aversion - people chose a division of resources where both players have equal amounts (or as close to equal as possible)
+    2. Harm Aversion - people chose a division of resources where neither player loses money (or both players lose as little as possible)
+    3. Rank Reversal Aversion - people chose a division of resources that maintains the existing hierarchy (i.e. the richer player initially still has more and the poorer player initially still has less)
 
 .. dropdown:: Explain How Other Behaviors Prevent Preferences From Being Met
 
-    
+    1. Inequality Aversion - chosing a less harmful option produces more inequality
+    2. Harm Aversion - chosing a more equal option produces less inequality
+    3. Rank Reversal Aversion - chosing a more equal option reverses hierarchy (when this is possible)
 
 .. dropdown:: Identify Dimensions of Differences Between People
 
-    
+    * :bdg-success-line:`D1` - level of aversion to inequality (higher is more averse)
+    * :bdg-success-line:`D2` - level of aversion to harm (higher is more averse)
+    * :bdg-success-line:`D3` - level of aversion to reversing rank (higher is more averse)
