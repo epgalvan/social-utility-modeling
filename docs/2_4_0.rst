@@ -614,6 +614,20 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 qplot(x = trialData$Investment, y = (trialData$Prediction-as.numeric(trialData$Returned)), group = as.factor(trialData$Multiplier), color = as.factor(trialData$Multiplier), geom = 'smooth')  + 
                 labs(x = 'Investment', y = 'Prediction - Observed', color = 'Multiplier') #independence of error and homoscedasticity
 
+                ### Assessing Independence of Observations
+
+                library(lme4)
+                library(MuMIn)
+
+                ris_model = lmer(data = trialData, Returned ~ Prediction + (1 + Prediction | SubjectID))
+                r.squaredGLMM(ris_model)
+
+                ri_model = lmer(data = trialData, Returned ~ Prediction + (1 | SubjectID))
+                r.squaredGLMM(ri_model)
+
+                ric_model = lmer(data = trialData, Returned ~ Prediction + (1 | SubjectID))
+                r.squaredGLMM(ric_model)
+
         .. tab-item:: MatLab
 
             ::
@@ -655,6 +669,21 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 ylabel('Prediction - Observed');
                 title('Independence of Error and Homoscedasticity');
 
+                % Assessing Independence of Observations
+
+                ris_model = fitlme(trialData, 'Returned ~ Prediction + (1 + Prediction | SubjectID)');
+                disp(ris_model); 
+                disp(r2(ris_model));
+
+                ri_model = fitlme(trialData, 'Returned ~ Prediction + (1 | SubjectID)');
+                disp(ri_model)
+                disp(r2(ri_model));
+
+                ric_model = fitlme(trialData, 'Returned ~ Prediction + (1 | SubjectID)');
+                disp(ric_model); 
+                disp(r2(ric_model));
+
+
         .. tab-item:: Python
 
             ::
@@ -694,6 +723,10 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
                 plt.tight_layout()
                 plt.show()
+                
+                ### Assessing Independence
+
+                # can do directly in R
 
 .. dropdown:: Validating Parameter Recovery Process
 
@@ -916,6 +949,26 @@ Tutorial 2 - Galvan & Sanfey, 2024
                 qplot(x = trialData$initialAllocation, y = (trialData$predictedOutcome - trialData$observedOutcome), group = as.factor(trialData$Multiplier), color = as.factor(trialData$Multiplier), geom = 'smooth')  +
                 labs(x = 'Initial Allocation', y = 'Prediction - Observed', color = 'Multiplier') #independence of error and homoscedasticity
 
+                ### Assessing Independence
+
+                library(lme4)
+                library(MuMin)
+                ris_model = lmer(data = trialData, observedOutcome ~ predictedOutcome + (1 + predictedOutcome | SubjectID))
+                summary(ris_model) #model should have issues
+                r.squaredGLMM(ris_model)
+
+                cri_model = lmer(data = trialData, observedOutcome ~ predictedOutcome + condition + (1 | SubjectID))
+                summary(cri_model) #model should have issues
+                r.squaredGLMM(cri_model)
+
+                cric_model = lmer(data = trialData, observedOutcome ~ predictedOutcome + condition + (1 + condition | SubjectID))
+                summary(cric_model) #model should have issues
+                r.squaredGLMM(cric_model)
+
+                ri_model = lmer(data = trialData, observedOutcome ~ predictedOutcome + (1 | SubjectID))
+                summary(ri_model)
+                r.squaredGLMM(ri_model) #if conditional Rsq is between 0 and 0.05 lower than the multiple Rsq, that's good enough
+
         .. tab-item:: MatLab
 
             ::
@@ -958,6 +1011,24 @@ Tutorial 2 - Galvan & Sanfey, 2024
                 ylabel('Prediction - Observed');
                 title('Independence of Error and Homoscedasticity');
                 legend('off'); % Turn off automatic legend
+
+                % Assessing Independence
+
+                ris_model = fitlme(trialData, 'observedOutcome ~ predictedOutcome + (1 + predictedOutcome | SubjectID)');
+                disp(ris_model);
+                disp(r2(ris_model)); 
+
+                cri_model = fitlme(trialData, 'observedOutcome ~ predictedOutcome + condition + (1 | SubjectID)');
+                disp(cri_model); 
+                disp(r2(cri_model));
+
+                cric_model = fitlme(trialData, 'observedOutcome ~ predictedOutcome + condition + (1 + condition | SubjectID)');
+                disp(cric_model); 
+                disp(r2(cric_model)); 
+
+                ri_model = fitlme(trialData, 'observedOutcome ~ predictedOutcome + (1 | SubjectID)');
+                disp(ri_model); 
+                disp(r2(ri_model));
 
         .. tab-item:: Python
 
@@ -1004,6 +1075,10 @@ Tutorial 2 - Galvan & Sanfey, 2024
 
                 plt.tight_layout()
                 plt.show()
+                
+                ### Assessing Independence
+
+                # can do directly in R
 
 .. dropdown:: Validating Parameter Recovery Process
 

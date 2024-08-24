@@ -284,7 +284,9 @@ for (i in 1:length(included_subjects)){
       } else {
       result = optim(par = initials, fn = of, method = "L-BFGS-B", lower = lowers, upper = uppers, df = df)
     }
-    df$Prob1 = 0; df$Prob1 = generatePredictions(result$par, df)
+    pars = rep(0, times = 6)
+    pars[idx] = result$par
+    df$Prob1 = 0; df$Prob1 = generatePredictions(pars, df)
     
     model_SS = sum((df$Chose1 - df$Prob1)**2)
     model_NLL = -2*sum(df$Chose1 * log(df$Prob1) + (1 - df$Chose1) * log(1 - df$Prob1))

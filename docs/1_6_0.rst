@@ -327,31 +327,37 @@ How to Achieve this Goal
             
             .. tab-item:: R
 
-                library(ggplot2)
+                ::
 
-                big_mistake = ((parameter1_true - parameter1_recovered)/(max(parameter1_true) - min(parameter1_true))) > 0.25 #more than 25% of the largest possible error, can adjust to visualize better
-                qplot(x = parameter1_true, y = parameter1_recovered, color = big_mistake, geom = 'point')
+                    library(ggplot2)
+
+                    big_mistake = ((parameter1_true - parameter1_recovered)/(max(parameter1_true) - min(parameter1_true))) > 0.25 #more than 25% of the largest possible error, can adjust to visualize better
+                    qplot(x = parameter1_true, y = parameter1_recovered, color = big_mistake, geom = 'point')
 
             .. tab-item:: MatLab
 
-                big_mistake = ((parameter1_true - parameter1_recovered) / (max(parameter1_true) - min(parameter1_true))) > 0.25; % more than 25% of the largest possible error, can adjust to visualize better
-                scatter(parameter1_true, parameter1_recovered, 30, big_mistake, 'filled'); % scatter plot with big_mistake as color
-                colormap([0.8 0.8 0.8; 1 0 0]); % set color map to gray and red
-                colorbar('Ticks', [0 1], 'TickLabels', {'No', 'Yes'}); % show colorbar
-                xlabel('parameter1\_true');
-                ylabel('parameter1\_recovered');
+                ::
+
+                    big_mistake = ((parameter1_true - parameter1_recovered) / (max(parameter1_true) - min(parameter1_true))) > 0.25; % more than 25% of the largest possible error, can adjust to visualize better
+                    scatter(parameter1_true, parameter1_recovered, 30, big_mistake, 'filled'); % scatter plot with big_mistake as color
+                    colormap([0.8 0.8 0.8; 1 0 0]); % set color map to gray and red
+                    colorbar('Ticks', [0 1], 'TickLabels', {'No', 'Yes'}); % show colorbar
+                    xlabel('parameter1_true');
+                    ylabel('parameter1_recovered');
 
             .. tab-item:: Python
 
-                import matplotlib.pyplot as plt
+                ::
 
-                big_mistake = ((parameter1_true - parameter1_recovered) / (np.max(parameter1_true) - np.min(parameter1_true))) > 0.25  # more than 25% of the largest possible error, can adjust to visualize better
+                    import matplotlib.pyplot as plt
 
-                plt.scatter(parameter1_true, parameter1_recovered, c=big_mistake, cmap=plt.cm.RdYlGn, s=30, edgecolors='k')  # scatter plot with big_mistake as color
-                plt.colorbar(ticks=[0, 1], label='Big Mistake', orientation='vertical', pad=0.2)  # show colorbar
-                plt.xlabel('parameter1_true')
-                plt.ylabel('parameter1_recovered')
-                plt.show()
+                    big_mistake = ((parameter1_true - parameter1_recovered) / (np.max(parameter1_true) - np.min(parameter1_true))) > 0.25  # more than 25% of the largest possible error, can adjust to visualize better
+
+                    plt.scatter(parameter1_true, parameter1_recovered, c=big_mistake, cmap=plt.cm.RdYlGn, s=30, edgecolors='k')  # scatter plot with big_mistake as color
+                    plt.colorbar(ticks=[0, 1], label='Big Mistake', orientation='vertical', pad=0.2)  # show colorbar
+                    plt.xlabel('parameter1_true')
+                    plt.ylabel('parameter1_recovered')
+                    plt.show()
 
     .. dropdown:: Two Parameters at a Time
 
