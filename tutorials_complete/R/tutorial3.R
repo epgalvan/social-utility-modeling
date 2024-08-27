@@ -58,7 +58,7 @@ for (i in 1:length(freeParameters[,1])){
     Utility = utility(Harm = harm(shocksMore, shocksLess),
                       Payout = payout(moneyMore, moneyLess),
                       kappa = Kappa)
-    predictions[i,k] = round(probability(Beta, Epsilon, Gamma, Utility, trialList$Left[k]))
+    predictions[i,k] = as.numeric(round(probability(Beta, Epsilon, Gamma, Utility, trialList$Left[k]) * 1000)> sample(1000,1))
   }
 }
 

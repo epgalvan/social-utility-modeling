@@ -89,7 +89,7 @@ generatePredictions = function(parameters, df){
 
 for (i in 1:nrow(freeParameters)){
   pars = freeParameters[i, ]
-  predictions[i, 1:nrow(trialList)] = generatePredictions(pars, trialList)
+  predictions[i, 1:nrow(trialList)] = as.numeric(round(generatePredictions(pars, trialList) * 1000)> sample(1000,1))
 }
 
 ################ 1_6_0

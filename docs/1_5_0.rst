@@ -1355,25 +1355,20 @@ Tutorial 3 - Crockett et al., 2014
 
                 for (i in 1:length(freeParameters[,1])){
                     Kappa = freeParameters[i,1]
-                    Lambda = freeParameters[i,2]
+                    Beta = freeParameters[i,2]
+                    Epsilon = freeParameters[i,3]
+                    Gamma = freeParameters[i,4]
                     for (k in 1:length(trialList[,1])){
-                        shocksThis = c(trialList$ShocksA[k], trialList$ShocksB[k])[trialList$Default[k]]
-                        shocksAlternative = c(trialList$ShocksB[k], trialList$ShocksA[k])[trialList$Default[k]]
-                        moneyThis = c(trialList$MoneyA[k], trialList$MoneyB[k])[trialList$Default[k]]
-                        moneyAlternative = c(trialList$MoneyB[k], trialList$MoneyA[k])[trialList$Default[k]]
-
-                        Utility = utility(Payout = harm(shocksThis, shocksAlternative),
-                                          Harm = payout(moneyThis, moneyAlternative),
-                                          kappa = Kappa,
-                                          lambda = Lambda)
+                        shocksMore = trialList$ShocksA[k]
+                        shocksLess = trialList$ShocksB[k]
+                        moneyMore = trialList$MoneyA[k]
+                        moneyLess = trialList$MoneyB[k]
+                        
                         # Just Added
-                        if (Utility > 0) { 
-                            predictions[i,k] = 1 #choose alternative
-                        } else if (Utility < 0) {
-                            predictions[i,k] = 0 #don't choose alternative
-                        } else {
-                            predictions[i,k] = sample(c(0, 1), 1) #random
-                        }
+                        Utility = utility(Harm = harm(shocksMore, shocksLess),
+                                        Payout = payout(moneyMore, moneyLess),
+                                        kappa = Kappa)
+                        predictions[i,k] = as.numeric(round(probability(Beta, Epsilon, Gamma, Utility, trialList$Left[k]) * 1000)> sample(1000,1))
                     }
                 }
 
@@ -1469,7 +1464,7 @@ Tutorial 4 - Li et al., 2014
 
                 for (i in 1:nrow(freeParameters)){
                     pars = freeParameters[i, ]
-                    predictions[i, 1:nrow(trialList)] = generatePredictions(utility, pars, trialList)
+                    predictions[i, 1:nrow(trialList)] = as.numeric(round(generatePredictions(pars, trialList) * 1000)> sample(1000,1))
                 }
 
         .. tab-item:: MatLab
