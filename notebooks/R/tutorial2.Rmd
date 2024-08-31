@@ -1,0 +1,360 @@
+# Tutorial 2 - Galvan & Sanfey, 2024
+
+## 1.4 Model the Data Generation Process
+
+First, let's define the functions
+
+```{r}
+
+```
+
+Now let's check and see if they do what we want. Let's make an example trial
+
+```{r}
+example = data.frame(a0 = 20, b0 = 0, a1 = 8, b1 = 12, a2 = 15, b2 = 5)
+example
+```
+
+Now we can view the outputs of this example to make sure they look correct:
+
+```{r}
+
+rankReverse(example$a0[1], example$b0[1], 
+     example$a1[1], example$b1[1], 
+     example$a2[1], example$b2[1])
+```
+
+So choice 1 is 6 more equal, causes more 7 harm, and reverses the existing rank. This is correct!
+
+## 1.5 Simulating Data
+
+Now let's preallocate and define functions, trial list, and parameters
+
+```{r}
+
+head(trialList)
+```
+
+```{r}
+
+```
+
+Now that all of that's done, let's generate predictions
+
+```{r}
+
+```
+
+## 1.6 Compare Recovered Parameters
+
+Let's write the objective function
+
+```{r}
+
+```
+
+Now we can set up the optimizer
+
+```{r}
+
+```
+
+And this lets us recover the free parameters
+
+```{r}
+
+```
+
+So we can now assess the reliability of our parameter recovery process
+
+```{r}
+
+```
+
+.
+
+## 2.1 Recovering Free Parameters
+
+First let's get the trial data from participants
+
+```{r}
+
+head(trialData)
+```
+
+So we need participants' ID numbers, a0-b2, and their choices in the format 1 or 2. In the above data frame, those are columns 1, 6, 7, 13, 14, 21, 22, and 26 so let's extract those. Also, they only analyzed the rank-reverse condition (perhaps this is why we couldn't reliably recover parameters) so that is "trail_type" 3.
+
+```{r}
+
+head(trialData)
+```
+
+Now we can define some necessary variables and functions
+
+```{r}
+
+```
+
+Which allows us to Recover Free Parameters and Define Predicted Decisions
+
+```{r}
+
+head(subjectData)
+```
+
+## 2.2 Compute Model Fit Index
+
+We will calculate BIC as the model fit index because we are attempting to model the probabilistic nature of the data generation process.
+
+```{r}
+
+```
+
+## 2.3 Identity the Best Model
+
+We need to define new objective functions for each model. Since each model uses the same utility function, but holds some variables constant (at 0), we only really need to modify the number of parameter inputs and set the constant values to 0. We can also use a list of indices so that the we can use the same function to generate predictions down the line.
+
+```{r}
+
+```
+
+And now we can preallocate the predictions for each model and the new data frame
+
+```{r}
+
+```
+
+Now let's Recover Free Parameters and Generate Predictions for this Model
+
+```{r}
+
+head(altSubjectData)
+```
+
+Let's glance at the trial level data for these alternative models.
+
+```{r}
+head(altTrialData)
+```
+
+Now we can compute BIC for these models
+
+```{r}
+
+```
+
+And now we can compare the BIC of all models
+
+```{r}
+
+```
+
+This analysis indicates that the best model has Alpha, Rho, Beta, Epsilon, and Gamma - not Delta (i.e. harm aversion).
+
+## 2.4 Validate the Best Model
+
+First, let's assess model performance at a basic level: we can look at prediction accuracy to begin
+
+```{r}
+
+```
+
+Next, we can proceed to look at the distribution of model accuracy across participants:
+
+```{r}
+
+```
+
+Let's look at the bottom 25% of model performance:
+
+```{r}
+
+```
+
+Nothing systematic here
+
+```{r}
+
+```
+
+Nor here
+
+```{r}
+
+```
+
+Still fine
+
+```{r}
+
+```
+
+And nothing here either. Now we can check assumptions: first linearity (we'll do this across both choices)
+
+```{r}
+
+
+```
+
+Looks okay, not exactly perfect but still decent. Second, normality of error:
+
+```{r}
+
+```
+
+Looks very good. Third we can examine homoscedasticity:
+
+```{r}
+
+```
+
+Nice constant variance cloud across all X values. And finally independence of error:
+
+```{r}
+
+```
+
+The model seems to have a slight bias, over-predicting the likelihood of choosing option 1. But this isn't so bad and the error seems to be evenly distributed across the X axis.
+
+Let's assess the independence: i.e. the extent to which our model captures all differences in choice behavior between different people:
+
+```{r}
+
+```
+
+Singularity warning means that (most probably) the random slope is completely redundant: trying without.
+
+```{r}
+
+```
+
+Same issue, this is good. Let's see about if there's some unexplainied variance across conditions.
+
+```{r}
+
+```
+
+Good, finally, let's compare the R-squared from these models to the one from a standard lm model.
+
+```{r}
+
+```
+
+Pretty damn similar, very good! Let's jump to fivefold validation
+
+```{r}
+
+head(fivefold)
+```
+
+Now we can check the model accuracy:
+
+```{r}
+
+```
+
+Only lost about 1.5% in accuracy which is quite reassuring. And test it against the normally recovered model:
+
+```{r}
+
+```
+
+It's worse, but that's okay considering this only constitutes 1.5% accuracy. And to assess the reliability, we can compute cosine similiarity:
+
+```{r}
+
+```
+
+And compute the averages per parameter: first alpha.
+
+```{r}
+
+```
+
+Very close to 1, nice! Then Rho.
+
+```{r}
+
+```
+
+Also pretty reasonable. Then Beta
+
+```{r}
+
+```
+
+Yep, then Epsilon
+
+```{r}
+
+```
+
+Nice, and finally Gamma
+
+```{r}
+
+```
+
+Not so great, but makes sense given that bias could be more or less representative depending on the excluded trials to our training set
+
+## 3.1 Compare Models
+
+Let's first see if the best model (inequality aversion and rank-reverse aversion, but not harm aversion) outperforms the model with all three.
+
+```{r}
+
+```
+
+This is better. Now let's see if it is significantly better than the model with only inequality aversion.
+
+```{r}
+
+```
+
+Not significantly better. Okay, what about with only harm aversion?
+
+```{r}
+
+```
+
+Yes, and rank reversal aversion?
+
+```{r}
+
+```
+
+Yes. And now the model with inequality aversion and harm aversion?
+
+```{r}
+
+```
+
+Again no. Finally the model with harm aversion and rank reversal aversion.
+
+```{r}
+
+```
+
+Yes. Okay all done here.
+
+## 3.3 Test for Individual Differences
+
+Let's first recover parameters over the whole dataset and we can assess how accurate it is
+
+```{r}
+
+```
+
+Not very good. This isn't surprising given that people often have very different preferences. Now let's test for individual differences.
+
+```{r}
+
+```
+
+Significant individual differences. Let's see which models are worse
+
+```{r}
+
+```
+
+So the only Harm Aversion, only Rank Reversal Aversion, Harm and Rank Reversal Aversion, and only left/right bias models are worse than this.

@@ -1146,7 +1146,7 @@ Tutorial 4 - Li et al., 2022
                     freeParameters$betaRecovered[i] = result$par[4]
                     freeParameters$epsilonRecovered[i] = result$par[5]
                     freeParameters$gammaRecovered[i] = result$par[6]
-                    if (mod(i, nrow(freeParameters)/100) == 0){message(round(100* (i/(nrow(freeParameters)))), '% there', sep = '')}
+                    if (mod(i, round(nrow(freeParameters)/100)) == 0){message(round(100* (i/(nrow(freeParameters)))), '% there', sep = '')}
                 }
 
         .. tab-item:: MatLab

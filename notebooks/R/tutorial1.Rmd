@@ -1,0 +1,931 @@
+# Tutorial 1 - van Baar, Chang, & Sanfey, 2019
+
+## 1.4 Model the Data Generation Process
+
+First, let's define the functions
+
+```{r}
+payout_maximization = function(investment, multiplier, returned){
+  return(((investment * multiplier) - returned)/(investment * multiplier))
+}
+inequity = function(investment, multiplier, returned, endowment){
+  return(((((investment * multiplier) - returned)/(endowment - investment + (investment * multiplier))) - 0.5)**2)
+}
+guilt = function(investment, believed_multiplier, returned, multiplier){
+  return((((investment * believed_multiplier * 0.5) - returned)/(investment * multiplier))**2)
+}
+```
+
+Now let's check and see if they do what we want. Let's make an example trial
+
+```{r}
+choices = seq(0, 10 * 2)
+example2 = data.frame(Returned = rep(choices, 3))
+example2$y = c(payout_maximization(investment = 10, 
+                                   multiplier = 2,
+                                   returned = choices),
+               inequity(investment = 10, 
+                        multiplier = 2,
+                        returned = choices, 
+                        endowment = 10),
+               guilt(investment = 10,
+                     believed_multiplier = 4,
+                     multiplier = 2,
+                     returned = choices))
+example2$group = rep(c("Greed", "Inequity", "Guilt"), each = length(choices))
+choices = seq(0, 10 * 4)
+example4 = data.frame(Returned = rep(choices, 3))
+example4$y = c(payout_maximization(investment = 10, 
+                                   multiplier = 4,
+                                   returned = choices),
+               inequity(investment = 10, 
+                        multiplier = 4,
+                        returned = choices, 
+                        endowment = 10),
+               guilt(investment = 10,
+                     believed_multiplier = 4,
+                     multiplier = 4,
+                     returned = choices))
+example4$group = rep(c("Greed", "Inequity", "Guilt"), each = length(choices))
+choices = seq(0, 10 * 6)
+example6 = data.frame(Returned = rep(choices, 3))
+example6$y = c(payout_maximization(investment = 10, 
+                                   multiplier = 6,
+                                   returned = choices),
+               inequity(investment = 10, 
+                        multiplier = 6,
+                        returned = choices, 
+                        endowment = 10),
+               guilt(investment = 10,
+                     believed_multiplier = 4,
+                     multiplier = 6,
+                     returned = choices))
+example6$group = rep(c("Greed", "Inequity", "Guilt"), each = length(choices))
+```
+
+Now we can view the outputs of this example to make sure they look correct: starting with multiplier of 2
+
+```{r}
+library(ggplot2)
+qplot(x = example2$Returned, y = example2$y, color = example2$group) + 
+  geom_smooth()
+```
+
+And for a multiplier of 4:
+
+```{r}
+qplot(x = example4$Returned, y = example4$y, color = example4$group) + 
+  geom_smooth()
+```
+
+And finally for 6:
+
+```{r}
+qplot(x = example6$Returned, y = example6$y, color = example6$group) + 
+  geom_smooth()
+```
+
+These functions seem to align with our intuitions, so we can proceed. Something to note here is that there seems to be guilt for the 6 multiplier condition above the investor's expected return of 20: if investor gets more than they expect, the trustee feels guilty. This doesn't exactly make sense but it's an edge case since people rarely give more than half of what they are expected to give back. It also helps because it aids the model in making specific predictions. Something to keep track of though.
+
+## 1.5 Simulating Data
+
+Now let's preallocate and define functions, trial list, and parameters
+
+```{r}
+trialList = data.frame(Investment = rep(seq(1, 10, 1), times = 6), 
+                       Multiplier = rep(c(2, 4, 6), each = 20), 
+                       Believed_Multiplier = rep(4, 60), 
+                       Endowment = rep(10, 60))
+head(trialList)
+```
+
+```{r}
+utility = function(theta, phi, guilt, inequity, payout){
+  return(theta*payout - (1-theta)* (min(guilt + phi, inequity - phi)))
+}
+
+freeParameters = data.frame(theta = rep(seq(0, 0.5, 0.005), each = 101),
+                            phi = rep(seq(-0.1, 0.1, 0.002), times = 101))
+
+predictions = data.frame()
+```
+
+Now that all of that's done, let's generate predictions
+
+```{r}
+for (i in 1:length(freeParameters[,1])){
+  Theta = freeParameters[i,1]
+  Phi = freeParameters[i,2]
+  
+  for (k in 1:length(trialList[,1])){
+    I = trialList[k, 1]
+    M = trialList[k, 2]
+    B = trialList[k, 3]
+    E = trialList[k, 4]
+    Choices = seq(0, (I * M), 1)
+    
+    Utility = vector('numeric', length(Choices))
+    for (n in 1:length(Choices)){
+      Utility[n] = utility(theta = Theta,
+                           phi = Phi,
+                           guilt = guilt(I, B, Choices[n], M),
+                           inequity = inequity(I, M, Choices[n], E),
+                           payout = payout_maximization(I, M, Choices[n]))
+    }
+    correct_choice = which(Utility == max(Utility))
+    if (length(correct_choice) > 1){
+      correct_choice = correct_choice[sample(seq(length(correct_choice)), 1)]
+    }
+    predictions[i,k] = Choices[correct_choice]
+  }
+}
+```
+
+## 1.6 Compare Recovered Parameters
+
+Let's write the objective function
+
+```{r}
+obj_function = function(params, decisions, method = "OLS") {
+  Theta = params[1]
+  Phi = params[2]
+  
+  predicted_utility = vector('numeric', length(trialList[,1]))
+  observed_utility = vector('numeric', length(trialList[,1]))
+  chosen = decisions + 1
+  for (k in 1:length(trialList[,1])){
+    I = trialList[k, 1]
+    M = trialList[k, 2]
+    B = trialList[k, 3]
+    E = trialList[k, 4]
+    Choices = seq(0, (I * M), 1)
+    
+    Utility = vector('numeric', length(Choices))
+    for (n in 1:length(Choices)){
+      Utility[n] = utility(Theta, Phi, 
+                           guilt(I, B, Choices[n], M), 
+                           inequity(I, M, Choices[n], E), 
+                           payout_maximization(I, M, Choices[n]))
+    }
+    predicted_utility[k] = max(Utility)
+    observed_utility[k] = Utility[chosen[k]]
+  }
+  if (method == "OLS"){
+    return(sum((predicted_utility - observed_utility)**2))
+  } else if (method == "MLE"){
+    return(-1 * sum(dnorm(observed_utility, 
+                          mean = predicted_utility, 
+                          sd = sd, 
+                          log = TRUE)))
+  }
+}
+```
+
+Now we can set up the optimizer
+
+```{r}
+library(pracma)
+
+initial_params = c(0, 0)
+lower_bounds = c(0, -0.1)
+upper_bounds = c(0.5, 0.1)
+theta_recovered = vector('numeric', 11**2)
+phi_recovered = vector('numeric', 11**2)
+theta_true = rep(seq(0, 0.5, 0.05), each = 11)
+phi_true = rep(seq(-0.1, 0.1, 0.02), times = 11)
+```
+
+And this lets us recover the free parameters
+
+```{r}
+for (i in 1:length(theta_true)) {
+  this_idx = which(round(theta_true[i] * 2, 2)/2 == 
+                     round(freeParameters$theta * 2, 2)/2 
+                   & phi_true[i] == 
+                     (round((freeParameters$phi + 0.1) * 5, 2)) -0.1)
+  result = fmincon(obj_function,
+                   x0 = initial_params, 
+                   lb = lower_bounds, ub = upper_bounds,
+                   decisions = as.numeric(predictions[this_idx,]))
+  
+  theta_recovered[i] = result$par[1]
+  phi_recovered[i] = result$par[2]
+}
+```
+
+So we can now assess the reliability of our parameter recovery process
+
+```{r}
+library(ggplot2)
+
+distance = (2*(theta_recovered - theta_true))**2 + 
+  (5*(phi_recovered - phi_true))**2
+qplot(x = theta_true, y = phi_true, color = distance, size = distance, geom = 'point') + scale_radius(limits=c(0, sqrt(2)), range=c(0, 20))
+```
+
+Not so good. The distance between true and recovered parameters is very bad in certain areas so we see larger, brighter points in the bottom right and top middle areas. But we may remember that differences in the y direction (i.e. phi) become less meaningful as we go further right - so parameter recovery for phi at high values of theta should be arbitrary. Let's verify that.
+
+```{r}
+qplot(x = theta_true, y = phi_true - phi_recovered) + geom_smooth()
+```
+
+Yeah, so there seems to be substantial underprediction of phi at values of theta greater than 0.3. Let's look at errors in theta recovery across phi values
+
+```{r}
+qplot(x = phi_true, y = theta_true - theta_recovered) + geom_smooth()
+```
+
+And it seems that we somewhat overestimate theta values. So there may be some inaccuracies in the parameter recovery process, but let's see what happens if we account for the dependency between our free parameters that.
+
+```{r}
+distance_new = (2*(theta_recovered - theta_true))**2 + 
+  (5*(0.5-theta_true)*(phi_recovered - phi_true))**2
+qplot(x = theta_true, y = phi_true, color = distance_new, size = distance_new, 
+      geom = 'point') + scale_radius(limits=c(0, sqrt(2)), range=c(0, 20))
+
+```
+
+Much, much better. We can very reliably recover our free parameters.
+
+## 1.7 A Priori Clustering
+
+In the original paper, the authors report primarily on fMRI data which used a certain trail set and allowed participants to return between 0 and the amount they received after the investment was multiplied in increments of 10% or more. Let's read in that trial set and generate predictions for it given that information.
+
+```{r}
+trialListfMRI = read.csv2("C:/Users/DELL/Downloads/tutorial1_Data/allDataLong.csv",
+                          sep =',')
+trialListfMRI = trialListfMRI[which(trialListfMRI$Subject == 122),]
+trialListfMRI = trialListfMRI[-which(trialListfMRI$Investment == 0),]
+predictionsfMRI = data.frame()
+
+for (i in 1:length(freeParameters[,1])){
+  Theta = freeParameters[i,1]
+  Phi = freeParameters[i,2]
+  
+  for (k in 1:length(trialListfMRI[,1])){
+    I = trialListfMRI[k, 2]
+    M = trialListfMRI[k, 3]
+    B = 4
+    E = 10
+    
+    if (I < 10){
+      Choices = seq(0, (I * M), 1)
+    } else {
+      Choices = seq(0, (I * M), round((I * M)/10)) #in increments of 10%
+    }
+    
+    
+    Utility = vector('numeric', length(Choices))
+    for (n in 1:length(Choices)){
+      Utility[n] = utility(theta = Theta,
+                           phi = Phi,
+                           guilt = guilt(I, B, Choices[n], M),
+                           inequity = inequity(I, M, Choices[n], E),
+                           payout = payout_maximization(I, M, Choices[n]))
+    }
+    correct_choice = which(Utility == max(Utility))
+    if (length(correct_choice) > 1){
+      correct_choice = correct_choice[sample(seq(length(correct_choice)), 1)]
+    }
+    predictionsfMRI[i,k] = Choices[correct_choice]
+  }
+}
+```
+
+And now we can compute a distance matrix and use it to cluster the predictions using HAC:
+
+```{r}
+distance_mat = dist(predictionsfMRI, method = 'euclidean')
+set.seed(240)
+hierarchical = hclust(distance_mat, method = 'average')
+plot(hierarchical)
+```
+
+So this clustering says that, with this trial list and these sets of choices there are two primary behavioral patterns - which exactly what we want to avoid. We want to see at least three behavioral patterns. The authors used the trial list which we created in a larger behavioral study which was also reported on in the paper. Let's see how that affects the clustering.
+
+```{r}
+distance_mat = dist(predictions, method = 'euclidean')
+set.seed(240)
+hierarchical = hclust(distance_mat, method = 'average')
+plot(hierarchical)
+```
+
+With this trial set we find four clusters in the predictions. Let's look at the distribution across the parameter space for this grouping:
+
+```{r}
+fit = cutree(hierarchical, k = 4)
+
+
+freeParameters$Strategy = as.character(fit)
+model_space = ggplot(data = freeParameters, aes(x = theta, y = phi, 
+                                                color = Strategy)) + 
+  labs(x = 'Theta', y = 'Phi', color = 'Strategy') + 
+  geom_point(size = 2.5)
+model_space
+```
+
+Let's rename these based on where they are: bottom left should be guilt averse, top left should be inequality averse, middle should be moral opportunism (i.e. strategy switching) and right should be greedy:
+
+```{r}
+freeParameters$Strategy[which(freeParameters$Strategy == 
+                                freeParameters$Strategy[1])] = 'Guilt-Averse'
+freeParameters$Strategy[which(freeParameters$Strategy ==
+                                freeParameters$Strategy[10101])] = 'Greedy'
+freeParameters$Strategy[which(freeParameters$Strategy ==
+                                freeParameters$Strategy[100])] = 'Inequity-Averse'
+freeParameters$Strategy[which(freeParameters$Strategy != 'Inequity-Averse' & 
+                              freeParameters$Strategy != 'Greedy' &
+                              freeParameters$Strategy != 'Guilt-Averse')] = 
+                        'Moral Opportunists'
+freeParameters$Strategy = as.factor(freeParameters$Strategy) #Strategy clusters
+model_space = ggplot(data = freeParameters, aes(x = theta, y = phi, 
+                                                color = Strategy)) + 
+  labs(x = 'Theta', y = 'Phi', color = 'Strategy') + 
+  geom_point(size = 2.5) +
+  scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), 
+                                rgb(230,157,54, maxColorValue = 255), 
+                                rgb(57,193,59, maxColorValue = 255), 
+                                rgb(200,50,50, maxColorValue = 255)))
+model_space
+```
+
+Let's examine our model predictions within each cluster. First in the multiplier of 2 condition:
+
+```{r}
+toPlot = data.frame()
+for (i in 1:length(freeParameters[,1])){
+  replacement = ((i - 1) * 60 + 1):(i * 60)
+  toPlot[replacement, 1] = freeParameters$Strategy[i]
+  toPlot[replacement, 2] = trialList$Investment
+  toPlot[replacement, 3] = trialList$Multiplier
+  toPlot[replacement, 4] = as.numeric(predictions[i,])
+}
+colnames(toPlot) = c('Strategy', 'Investment', 'Multiplier', 'Return')
+
+ggplot(data = toPlot[which(toPlot$Multiplier==2),], 
+       aes(x = Investment, y = Return, group = Strategy, color = Strategy)) +
+  geom_smooth(se = TRUE) + 
+  scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), 
+                                rgb(230,157,54, maxColorValue = 255), 
+                                rgb(57,193,59, maxColorValue = 255), 
+                                rgb(200,50,50, maxColorValue = 255))) + 
+  lims(x = c(0, 10), y = c(0, 30))
+```
+
+Now multiplier of 4:
+
+```{r}
+ggplot(data = toPlot[which(toPlot$Multiplier==4),], 
+       aes(x = Investment, y = Return, group = Strategy, color = Strategy)) + 
+  geom_smooth(se = TRUE) + 
+  scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), 
+                                rgb(230,157,54, maxColorValue = 255), 
+                                rgb(57,193,59, maxColorValue = 255), 
+                                rgb(200,50,50, maxColorValue = 255))) + 
+  lims(x = c(0, 10), y = c(0, 30))
+```
+
+Now multiplier of 6:
+
+```{r}
+ggplot(data = toPlot[which(toPlot$Multiplier==6),], 
+       aes(x = Investment, y = Return, group = Strategy, color = Strategy)) + 
+  geom_smooth(se = TRUE) + 
+  scale_color_manual(values = c(rgb(50,50,200, maxColorValue = 255), 
+                                rgb(230,157,54, maxColorValue = 255), 
+                                rgb(57,193,59, maxColorValue = 255), 
+                                rgb(200,50,50, maxColorValue = 255))) + 
+  lims(x = c(0, 10), y = c(0, 30))
+```
+
+## 2.1 Recovering Free Parameters
+
+First let's get the trial data from participants. We have some excluded participants so let's read in the included subjects file to ensure that we don't analyze excluded data
+
+```{r}
+included_subjects = c(t(
+  read.csv2('C:/Users/DELL/Downloads/tutorial1_Data/subjectsIncluded_batch1.csv',
+            sep=',', header = F)), t(
+  read.csv2('C:/Users/DELL/Downloads/tutorial1_Data/subjectsIncluded_batch2.csv', 
+            sep=',', header = F)))
+
+trialData = read.csv2("C:/Users/DELL/Downloads/tutorial1_Data/allDataLong.csv", 
+                      sep =',')
+trialData$Prediction = vector('numeric', length(trialData$Subject))
+trialData$Strategy = vector('numeric', length(trialData$Subject))
+trialData = trialData[-which(trialData$Investment == 0), ]
+trialData = trialData[-which(is.na(as.numeric(trialData$Returned))),]
+head(trialData)
+```
+
+Now we can define some necessary variables and functions. We're going to redefine the trial list so we have the right number of trials. We'll create a different objective function as well so we can input the participant's data frame instead of having to reorder their decisions to fit the old trial list
+
+```{r}
+subjectData = data.frame()
+trialList = read.csv2("C:/Users/DELL/Downloads/tutorial1_Data/trialSet.csv", sep =',', )
+trialList = trialList[,2:3]
+trialList$Believed_Multiplier = 4
+trialList$Endowment = 10
+
+obj_function = function(params, df, method = "OLS") {
+  Theta = params[1]
+  Phi = params[2]
+  
+  predicted_utility = vector('numeric', length(df[,1]))
+  observed_utility = vector('numeric', length(df[,1]))
+  chosen = as.numeric(df[,4]) + 1
+  for (k in 1:length(df[,1])){
+    I = df[k, 2]
+    M = df[k, 3]
+    B = 4
+    E = 10
+    if (I > 10) {
+      Choices = seq(0, (I*M), round((I*M)/10))
+    } else {
+      Choices = seq(0, (I * M), 1)}
+    
+    Utility = vector('numeric', length(Choices))
+    for (n in 1:length(Choices)){
+      Utility[n] = utility(theta = Theta, 
+                           phi = Phi, 
+                           guilt = guilt(I, B, Choices[n], M), 
+                           inequity = inequity(I, M, Choices[n], E), 
+                           payout = payout_maximization(I, M, Choices[n]))
+    }
+    predicted_utility[k] = max(Utility)
+    observed_utility[k] = Utility[chosen[k]]
+  }
+  if (method == "OLS"){
+    return(sum((predicted_utility - observed_utility)**2))
+  } else if (method == "MLE"){
+    return(-1 * sum(dnorm(observed_utility, 
+                          mean = predicted_utility, 
+                          sd = sd, log = TRUE)))
+  }
+}
+```
+
+Which allows us to Recover Free Parameters and Define Predicted Decisions
+
+```{r}
+for (i in 1:length(included_subjects)){
+  df = trialData[which(included_subjects[i] == trialData$Subject), ]
+  result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                   lb = lower_bounds, ub = upper_bounds,
+                   df = df)
+  
+  closestPoint = which(as.numeric(freeParameters[,1], 3) == (round(result$par[1]/2, 2))*2 & 
+                         ((round((as.numeric(freeParameters[,2]) + 0.1)*5, 2))/5) - 0.1 == ((round((result$par[2] + 0.1)*5, 2))/5) - 0.1)
+  for (k in 1:length(df$Returned)){
+    I = df$Investment[k]
+    M = df$Multiplier[k]
+    R = df$Returned[k]
+    B = 4
+    E = 10
+    if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+    Utility = vector('numeric', length(Choices))
+    for (n in 1:length(Choices)){
+      Utility[n] = utility(theta = result$par[1], 
+                           phi = result$par[2], 
+                           guilt = guilt(I, B, Choices[n], M), 
+                           inequity = inequity(I, M, Choices[n], E), 
+                           payout = payout_maximization(I, M, Choices[n]))
+    }
+    correct_choice = which(Utility == max(Utility))
+    if (length(correct_choice) > 1){
+      correct_choice = correct_choice[sample(1:length(correct_choice), 1)]
+    }
+    df$Prediction[k] = Choices[correct_choice]
+  }
+  
+  model_NLL = -2 * log(sum(dnorm(as.numeric(df$Returned), mean = df$Prediction)))
+  model_SS = sum((as.numeric(df$Returned) - df$Prediction)**2)
+  
+  subjectData[i, 1:6] = c(included_subjects[i], result$par[1], result$par[2], freeParameters$Strategy[closestPoint], model_NLL, model_SS) 
+
+  trialData$Prediction[which(included_subjects[i] == trialData$Subject)] = df$Prediction
+  trialData$Strategy[which(included_subjects[i] == trialData$Subject)] = freeParameters$Strategy[closestPoint]
+}
+colnames(subjectData) = 
+  c('SubjectID', 'Theta', 'Phi', 'Strategy', 'modelNLL', 'modelSS')
+head(subjectData)
+```
+
+## 2.2 Compute Model Fit Index
+
+We will calculate a variant of the AIC as the model fit index because we are not modeling the stochastic nature of choice behavior.
+
+```{r}
+N = length(trialList[, 1])
+k = 2
+subjectData$modelAIC = N * log(subjectData$modelSS/N) + 2*k
+```
+
+## 2.3 Identity the Best Model
+
+We need to define new utility functions and objective functions as well.
+
+```{r}
+utility_greed = function(greed){
+  return(greed)
+}
+utility_guilt = function(theta, greed, guilt){
+  return(theta * greed - (1 - theta) * guilt)
+}
+utility_inequity = function(theta, greed, inequity){
+  return(theta * greed - (1 - theta) * inequity)
+}
+
+obj_function_guilt = function(params, df, method = "OLS") {
+  Theta = params[1]
+  
+  predicted_utility = vector('numeric', length(df[,1]))
+  observed_utility = vector('numeric', length(df[,1]))
+  chosen = as.numeric(df[,4]) + 1
+  for (k in 1:length(df[,1])){
+    I = df[k, 2]
+    M = df[k, 3]
+    B = 4
+    E = 10
+    if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+    
+    Utility = vector('numeric', length(Choices))
+    for (n in 1:length(Choices)){
+      Utility[n] = utility_guilt(theta = Theta, 
+                                 greed = payout_maximization(I, M, Choices[n]), 
+                                 guilt = guilt(I, B, Choices[n], M))
+    }
+    predicted_utility[k] = max(Utility)
+    observed_utility[k] = Utility[chosen[k]]
+  }
+  if (method == "OLS"){
+    return(sum((predicted_utility - observed_utility)**2))
+  } else if (method == "MLE"){
+    return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+  }
+} 
+obj_function_inequity = function(params, df, method = "OLS") {
+  Theta = params[1]
+  
+  predicted_utility = vector('numeric', length(df[,1]))
+  observed_utility = vector('numeric', length(df[,1]))
+  chosen = as.numeric(df[,4]) + 1
+  for (k in 1:length(df[,1])){
+    I = df[k, 2]
+    M = df[k, 3]
+    B = 4
+    E = 10
+    if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+    
+    Utility = vector('numeric', length(Choices))
+    for (n in 1:length(Choices)){
+      Utility[n] = utility_inequity(theta = Theta, 
+                                    greed = payout_maximization(I, M, Choices[n]), 
+                                    inequity = inequity(I, M, Choices[n], E))
+    }
+    predicted_utility[k] = max(Utility)
+    observed_utility[k] = Utility[chosen[k]]
+  }
+  if (method == "OLS"){
+    return(sum((predicted_utility - observed_utility)**2))
+  } else if (method == "MLE"){
+    return(-1 * sum(dnorm(observed_utility, mean = predicted_utility, sd = sd, log = TRUE)))
+  }
+} 
+```
+
+And now we can preallocate the new data frame for the alternative models
+
+```{r}
+altSubjectData = data.frame()
+```
+
+Now let's Recover Free Parameters and Generate Predictions for this Model
+
+```{r}
+for (i in 1:length(included_subjects)){
+  df = trialData[which(included_subjects[i] == trialData$Subject), ]
+  
+  result_guilt = optim(fn = obj_function_guilt, 
+                       par = 0.5, 
+                       lower = 0, upper = 1, 
+                       df = df, method = 'L-BFGS-B')
+  result_inequity = optim(fn = obj_function_inequity, 
+                          par = 0.5, 
+                          lower = 0, upper = 1, 
+                          df = df, method = 'L-BFGS-B')
+  
+  df$PredictionGreed = vector('numeric', length(df$Subject))
+  df$PredictionGuilt = df$PredictionAlt1
+  df$PredictionInequity = df$PredictionAlt1
+  for (k in 1:length(df$Returned)){
+    I = df$Investment[k]
+    M = df$Multiplier[k]
+    R = df$Returned[k]
+    B = 4
+    E = 10
+    if (I > 10) {
+      Choices = seq(0, (I*M), round((I*M)/10))
+    } else {
+        Choices = seq(0, (I * M), 1)
+    }
+    UtilityGreed = vector('numeric', length(Choices))
+    UtilityGuilt = vector('numeric', length(Choices))
+    UtilityInequity = vector('numeric', length(Choices))
+    for (n in 1:length(Choices)){
+      UtilityGreed[n] = utility_greed(payout_maximization(I, M, Choices[n]))
+      UtilityGuilt[n] = utility_guilt(theta = result_guilt$par[1],
+                                     greed = payout_maximization(I, M, Choices[n]),
+                                     guilt = guilt(I, B, Choices[n], M))
+      UtilityInequity[n] = utility_inequity(theta = result_guilt$par[1],
+                                            greed = payout_maximization(
+                                              I, M,Choices[n]),
+                                        inequity = inequity(I, M, Choices[n], E))
+    }
+    correct_choice_greed = which(UtilityGreed == max(UtilityGreed))
+    correct_choice_guilt = which(UtilityGuilt == max(UtilityGuilt))
+    correct_choice_inequity = which(UtilityInequity == max(UtilityInequity))
+    if (length(correct_choice_greed) > 1){
+      correct_choice_greed = correct_choice_greed[sample(correct_choice_greed, 1)]
+    }
+    if (length(correct_choice_guilt) > 1){
+      correct_choice_guilt = correct_choice_guilt[sample(correct_choice_guilt, 1)]
+    }
+    if (length(correct_choice_inequity) > 1){
+      correct_choice_inequity = 
+        correct_choice_inequity[sample(correct_choice_inequity, 1)]
+    }
+    df$PredictionGreed[k] = Choices[correct_choice_greed]
+    df$PredictionGuilt[k] = Choices[correct_choice_guilt]
+    df$PredictionInequity[k] = Choices[correct_choice_inequity]
+  }
+  
+  model_NLL_Greed = -2 * log(sum(dnorm(as.numeric(df$Returned), 
+                                       mean = df$PredictionGreed)))
+  model_SS_Greed = sum((as.numeric(df$Returned) - df$PredictionGreed)**2)
+  model_NLL_Guilt = -2 * log(sum(dnorm(as.numeric(df$Returned), 
+                                       mean = df$PredictionGuilt)))
+  model_SS_Guilt = sum((as.numeric(df$Returned) - df$PredictionGuilt)**2)
+  model_NLL_Inequity = -2 * log(sum(dnorm(as.numeric(df$Returned), 
+                                          mean = df$PredictionInequity)))
+  model_SS_Inequity = sum((as.numeric(df$Returned) - df$PredictionInequity)**2)
+  
+  altSubjectData[i, 1:9] = c(included_subjects[i], 
+                             result_guilt$par[1], 
+                             result_inequity$par[1], 
+                             model_NLL_Greed, 
+                             model_SS_Greed, 
+                             model_NLL_Guilt, 
+                             model_SS_Guilt, 
+                             model_NLL_Inequity, 
+                             model_SS_Inequity)
+}
+colnames(altSubjectData) = c('SubjectID', 
+                             'guilt_theta', 
+                             'inequity_theta', 
+                             'greed_modelNLL', 
+                             'greed_modelSS', 
+                             'guilt_modelNLL', 
+                             'guilt_modelSS', 
+                             'inequity_ModelNLL', 
+                             'inequity_ModelSS')
+
+head(altSubjectData)
+```
+
+Now we can compute AIC for these models
+
+```{r}
+altSubjectData$modelAICGreed = N * log(altSubjectData$greed_modelSS/N) + 2*0
+altSubjectData$modelAICGuilt = N * log(altSubjectData$guilt_modelSS/N) + 2*1
+altSubjectData$modelAICInequity = N * log(altSubjectData$inequity_ModelSS/N) + 2*1
+```
+
+And now we can compare the AIC of all models
+
+```{r}
+averageAIC = c(mean(subjectData$modelAIC), 
+               mean(altSubjectData$modelAICGreed), 
+               mean(altSubjectData$modelAICGuilt), 
+               mean(altSubjectData$modelAICInequity))
+fullAIC = length(trialData$Subject) * 
+  log(sum(subjectData$modelSS)/length(trialData$Subject)) + 
+  (2 * k * length(subjectData$Subject))
+
+fullAICGreed = length(trialData$Subject) * 
+  log(sum(altSubjectData$greed_modelSS)/length(trialData$Subject)) + 
+  (2 * 0 * length(subjectData$Subject))
+
+fullAICGuilt = length(trialData$Subject) * 
+  log(sum(altSubjectData$guilt_modelSS)/length(trialData$Subject)) + 
+  (2 * 1 * length(subjectData$Subject))
+fullAICInequity = length(trialData$Subject) * 
+  log(sum(altSubjectData$inequity_ModelSS)/length(trialData$Subject)) + 
+  (2 * 1 * length(subjectData$Subject))
+
+bestModel = 
+  c("Moral Strategies Model", "Greed Model", "Guilt Model", "Inequity Model")[
+    which(averageAIC == min(averageAIC))] 
+bestModelFullDataset = 
+  c("Moral Strategies Model", "Greed Model", "Guilt Model", "Inequity Model")[
+    which(c(fullAIC, fullAICGreed, fullAICGuilt, fullAICInequity) == 
+            min(c(fullAIC, fullAICGreed, fullAICGuilt, fullAICInequity)))] 
+c(bestModel, bestModelFullDataset)
+```
+
+Obviously, using the average and the sum will always produce the same answer in this situation. The best model is the two norm model so let's go and validate it!
+
+## 2.4 Validate the Best Model
+
+First, let's assess model performance at a basic level: the best measure of this is explained variance (i.e. R-squared)
+
+```{r}
+modelPredictions = lm(data = trialData, Returned ~ Prediction)
+summary(modelPredictions)$r.squared
+summary(modelPredictions)$adj.r.squared
+```
+
+So the R-squared is 0.81 which means that the model is really good at predicting the decisions people make. Next, we check assumptions - first linearity:
+
+```{r}
+qplot(x = trialData$Prediction, y = as.numeric(trialData$Returned), 
+      geom = 'smooth') + geom_abline(slope = 1, intercept = 0) + 
+  labs(x = 'Prediction', y = 'Observed') + 
+  lims(x = c(0, 30), y = c(0, 30))
+```
+
+Looks okay, not exactly perfect but still decent. Second, normality of error:
+
+```{r}
+normvals = rnorm(1000, mean = 0, 
+                 sd = sd(trialData$Prediction - as.numeric(trialData$Returned)))
+qplot(x = trialData$Prediction - as.numeric(trialData$Returned), 
+      geom = 'density', bw = 1, color = 'Actual') + 
+  geom_density(aes(x = normvals, color = 'Predicted'), bw = 1) + 
+  labs(x = 'Prediction - Observed', y = 'Density') 
+```
+
+Looks very good - not skewed and leptokurtic, though this isn't the end of the world. Third we can examine independence of error:
+
+```{r}
+qplot(x = trialData$Investment, 
+      y = (trialData$Prediction-as.numeric(trialData$Returned)), 
+      group = as.factor(trialData$Multiplier), 
+      color = as.factor(trialData$Multiplier), geom = 'smooth')  + 
+  labs(x = 'Investment', y = 'Prediction - Observed', color = 'Multiplier')
+```
+
+It seems that the model slightly underpredicts reciprocity at middling investment values for multiplier of 2 and 4 and really overpredicts at high investment values for the 6 multiplier (3.5 tokens on average). This is likely an artifact of individual variance in reciprocation behavior: some people may have a ceiling on how much they are willing to return so it doesn't necessarily invalidate the model: it simply represents a limitation in the extent to which the model captures idiosyncrisies. So we can proceed, but with caution. And finally homoscedasticity:
+
+```{r}
+qplot(x = trialData$Investment, y = (trialData$Prediction-as.numeric(trialData$Returned)), geom = 'smooth') + 
+  labs(x = 'Investment', y = 'Prediction - Observed')
+```
+
+This is a nice, even variance cloud. We see the effects from the above plot averaged across levels of the multiplier so, given that we've discussed the moderate violation of independence error, we can proceed. Let's assess the independence: i.e. the extent to which our model captures all differences in choice behavior between different people:
+
+```{r}
+library(lme4)
+library(MuMIn)
+
+ris_model = lmer(data = trialData, 
+                 as.numeric(Returned) ~ Prediction + (1 + Prediction | Subject))
+r.squaredGLMM(ris_model)
+```
+
+Singularity warning means that (most probably) the random slope is completely redundant: trying without.
+
+```{r}
+
+```
+
+Same issue, this is good. Let's see about if there's some unexplainied variance across conditions.
+
+```{r}
+
+```
+
+Good, finally, let's compare the R-squared from these models to the one from a standard lm model.
+
+```{r}
+
+```
+
+Pretty damn similar, very good! Let's jump to fivefold validation
+
+```{r}
+
+head(fivefold)
+```
+
+Now we can check the model accuracy:
+
+```{r}
+
+```
+
+Only lost about 1.5% in accuracy which is quite reassuring. And test it against the normally recovered model:
+
+```{r}
+
+```
+
+It's worse, but that's okay considering this only constitutes 1.5% accuracy. And to assess the reliability, we can compute cosine similiarity:
+
+```{r}
+
+```
+
+And compute the averages per parameter: first alpha.
+
+```{r}
+
+```
+
+Very close to 1, nice! Then Rho.
+
+```{r}
+
+```
+
+Also pretty reasonable. Then Beta
+
+```{r}
+
+```
+
+Yep, then Epsilon
+
+```{r}
+
+```
+
+Nice, and finally Gamma
+
+```{r}
+
+```
+
+Not so great, but makes sense given that bias could be more or less representative depending on the excluded trials to our training set
+
+## 3.1 Compare Models
+
+Let's first see if the best model (inequality aversion and rank-reverse aversion, but not harm aversion) outperforms the model with all three.
+
+```{r}
+
+```
+
+This is better. Now let's see if it is significantly better than the model with only inequality aversion.
+
+```{r}
+
+```
+
+Not significantly better. Okay, what about with only harm aversion?
+
+```{r}
+
+```
+
+Yes, and rank reversal aversion?
+
+```{r}
+
+```
+
+Yes. And now the model with inequality aversion and harm aversion?
+
+```{r}
+
+```
+
+Again no. Finally the model with harm aversion and rank reversal aversion.
+
+```{r}
+
+```
+
+Yes. Okay all done here.
+
+## 3.3 Test for Individual Differences
+
+Let's first recover parameters over the whole dataset and we can assess how accurate it is
+
+```{r}
+
+```
+
+Not very good. This isn't surprising given that people often have very different preferences. Now let's test for individual differences.
+
+```{r}
+
+```
+
+Significant individual differences. Let's see which models are worse
+
+```{r}
+
+```
+
+So the only Harm Aversion, only Rank Reversal Aversion, Harm and Rank Reversal Aversion, and only left/right bias models are worse than this.

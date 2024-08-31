@@ -4,7 +4,6 @@
 
 import numpy as np
 import pandas as pd
-from scipy.optimize import minimize
 
 def inequality(a1, b1, a2, b2):
     d_Inequality = abs(a2 - b2) - abs(a1 - b1)
@@ -40,9 +39,9 @@ trialList = pd.DataFrame({
     'a0': np.random.randint(10, 21, 100)
 })
 trialList['b0'] = 20 - trialList['a0']
-trialList['a1'] = [np.random.randint(5, a0 + 1, 1) for a0 in trialList['a0']]
+trialList['a1'] = [np.random.randint(5, a0 + 1) for a0 in trialList['a0']]
 trialList['b1'] = 20 - trialList['a1']
-trialList['a2'] = [np.random.randint(5, a0 + 1, 1) for a0 in trialList['a0']]
+trialList['a2'] = [np.random.randint(5, a0 + 1) for a0 in trialList['a0']]
 trialList.loc[trialList['a2'] == trialList['a1'], ('a2')] = 10
 trialList['b2'] = 20 - trialList['a2']
 trialList = pd.concat([trialList, trialList[['b0', 'a0', 'b1', 'a1', 'b2', 'a2']]], ignore_index=True)
@@ -98,6 +97,8 @@ def obj_function(params, df, optimMethod="MLE"):
     elif optimMethod == "MLE":
         return -np.sum(Chose1 * np.log(Prob1) + (1 - Chose1) * np.log(1 - Prob1))
 
+from scipy.optimize import minimize
+
 def optimize(obj, initial_params, lower_bounds, upper_bounds, df):
     try:
         result = minimize(obj, initial_params, args=(df,), bounds=list(zip(lower_bounds, upper_bounds)), tol=1e-08)
@@ -105,7 +106,7 @@ def optimize(obj, initial_params, lower_bounds, upper_bounds, df):
         result = minimize(obj, initial_params, args=(df,), bounds=list(zip(lower_bounds, upper_bounds)), tol=1e-08, method="L-BFGS-B")
     return result
 
-freeParameters[['alphaRecovered', 'deltaRecovered', 'rhoRecovered', 'betaRecovered', 'epsilonRecovered', 'gammaRecovered']] = 0
+freeParameters[['alphaRecovered', 'deltaRecovered', 'rhoRecovered', 'betaRecovered', 'epsilonRecovered', 'gammaRecovered']] = 0.0
 
 initial_params = [1, 1, 1, 4, 0.25, 0]
 lower_bounds = [0, 0, 0, 0, 0, -0.5]
@@ -416,7 +417,6 @@ sns.lmplot(data=altTrialData, x='ad_Prob1', y='Chose1', hue='a0_less_than_b0', l
 plt.title('Smooth Plot of Prob1 vs Chose1')
 plt.xlabel('Prob1')
 plt.ylabel('Chose1')
-plt.legend(title='a0 < b0', labels=['False', 'True'])
 plt.show()
 
 plt.figure(figsize=(10, 6))
@@ -499,6 +499,8 @@ fivefold.columns = ['SubjectID', 'Deviance', 'A_F1', 'A_F2', 'A_F3', 'A_F4', 'A_
                     'E_F1', 'E_F2', 'E_F3', 'E_F4', 'E_F5', 'G_F1', 'G_F2', 'G_F3', 'G_F4', 'G_F5']
 
 fivefold['BIC'] = fivefold['Deviance'] + np.log(65) * 6
+print(sum(round(trialData['Prob1_ff']) == trialData['Chose1'])/len(trialData))
+
 from scipy.stats import ttest_rel
 print(ttest_rel(fivefold['BIC'], altSubjectData['BIC_M4']))
 

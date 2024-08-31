@@ -323,12 +323,12 @@ Tutorial 4 - Li et al., 2022
 
             ::
 
-                t.test(subjectData$BIC, altSubjectData$BIC_M1, paired = T)
-                t.test(subjectData$BIC, altSubjectData$BIC_M2, paired = T)
-                t.test(subjectData$BIC, altSubjectData$BIC_M3, paired = T)
-                t.test(subjectData$BIC, altSubjectData$BIC_M4, paired = T)
-                t.test(subjectData$BIC, altSubjectData$BIC_M5, paired = T)
-                t.test(subjectData$BIC, altSubjectData$BIC_M6, paired = T)
+                t.test(altSubjectData$BIC_M5, subjectData$BIC, paired = T)
+                t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M1, paired = T)
+                t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M2, paired = T)
+                t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M3, paired = T)
+                t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M4, paired = T)
+                t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M6, paired = T)
 
         .. tab-item:: MatLab
 

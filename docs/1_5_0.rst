@@ -590,7 +590,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
                 ::
 
-                    trialList = table(repelem(1:10, 8)', repmat([2; 4; 4; 6], 20, 1), repmat(4, 80, 1), repmat(10, 80, 1), 'VariableNames', {'Investment', 'Multiplier', 'Believed_Multiplier', 'Endowment'});
+                    trialList = table(repelem(1:10, 6)', repmat([2; 4; 6], 20, 1), repmat(4, 60, 1), repmat(10, 60, 1), 'VariableNames', {'Investment', 'Multiplier', 'Believed_Multiplier', 'Endowment'});
 
                     function value = payout_maximization(investment, multiplier, returned)
                         value = ((investment * multiplier) - returned) / (investment * multiplier);
@@ -1428,12 +1428,13 @@ Tutorial 4 - Li et al., 2014
                     return(prob)
                 }
 
-                freeParameters = data.frame(alpha = rep(seq(0, 1.9, 0.1), times = 60) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T), #ranging from 0 to 2
-                                            delta = rep(seq(0, 1.9, 0.1), times = 60) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T), #ranging from 0 to 2
-                                            rho = rep(seq(0, 1.9, 0.1), times = 60) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T), #ranging from 0 to 2
-                                            beta = sample(seq(0,10), 20*6*10, replace = T), # stochasticity
-                                            epsilon = rep(rep(seq(0, 0.5, 0.1), times = 10), each = 20), # noise
-                                            gamma = rep(seq(-0.5, 0.4, 0.1), each = 20*6) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T)) # bias
+                freeParameters = data.frame(alpha = rep(rep(seq(0, 1.5, 0.5), times = 16), each = 6) + sample(seq(0, 0.5, 0.001), 6*64, replace = T), #ranging from 0 to 2
+                                            delta = rep(rep(rep(seq(0, 1.5, 0.5), times = 4), each = 4), each = 6) + sample(seq(0, 0.5, 0.001), 6*64, replace = T), #ranging from 0 to 2
+                                            rho = rep(rep(seq(0, 1.5, 0.5), each = 16), each = 6) + sample(seq(0, 0.5, 0.001), 6*64, replace = T), #ranging from 0 to 2
+                                            beta = sample(seq(0,10), 6*64, replace = T), # stochasticity
+                                            epsilon = rep(seq(0, 0.5, 0.1), times = 64), # noise
+                                            gamma = sample(seq(-0.5, 0.4, 0.1), 64*6, replace = T) + sample(seq(0, 0.1, 0.001), 64*6, replace = T)) # bias
+
                 predictions = data.frame()
 
                 generatePredictions = function(parameters, df){

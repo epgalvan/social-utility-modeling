@@ -46,10 +46,6 @@ for (i in 1:nrow(trialList)){
 trialList$b2 = 20 - trialList$a2
 trialList = rbind(trialList, trialList[,c(2,1,4,3,6,5)])
 
-#trialList = read.csv2("C:/Users/DELL/Downloads/Data/Data/HPP_fMRI_beh_data_for_lmm.csv", sep = ',')
-#trialList = trialList[which(trialList$subject == 101 & trialList$trail_type == 3), c(6,7,13,14,21,22)]
-#colnames(trialList) = c('a0', 'b0', 'a1', 'b1', 'a2', 'b2')
-
 utility = function(pars, IVs){
   IVS = as.numeric(IVs)
   a0 = IVs[1]; b0 = IVs[2]; a1 = IVs[3]; b1 = IVs[4]; a2 = IVs[5]; b2 = IVs[6]
@@ -67,12 +63,12 @@ probability = function(pars, utilitydiff){
   return(prob)
 }
 
-freeParameters = data.frame(alpha = rep(seq(0, 1.9, 0.1), times = 60) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T), #ranging from 0 to 2
-                            delta = rep(seq(0, 1.9, 0.1), times = 60) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T), #ranging from 0 to 2
-                            rho = rep(seq(0, 1.9, 0.1), times = 60) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T), #ranging from 0 to 2
-                            beta = sample(seq(0,10), 20*6*10, replace = T), # stochasticity
-                            epsilon = rep(rep(seq(0, 0.5, 0.1), times = 10), each = 20), # noise
-                            gamma = rep(seq(-0.5, 0.4, 0.1), each = 20*6) + sample(seq(0, 0.1, 0.001), 20*6*10, replace = T)) # bias
+freeParameters = data.frame(alpha = rep(rep(seq(0, 1.5, 0.5), times = 16), each = 6) + sample(seq(0, 0.5, 0.001), 6*64, replace = T), #ranging from 0 to 2
+                            delta = rep(rep(rep(seq(0, 1.5, 0.5), times = 4), each = 4), each = 6) + sample(seq(0, 0.5, 0.001), 6*64, replace = T), #ranging from 0 to 2
+                            rho = rep(rep(seq(0, 1.5, 0.5), each = 16), each = 6) + sample(seq(0, 0.5, 0.001), 6*64, replace = T), #ranging from 0 to 2
+                            beta = sample(seq(0,10), 6*64, replace = T), # stochasticity
+                            epsilon = rep(seq(0, 0.5, 0.1), times = 64), # noise
+                            gamma = sample(seq(-0.5, 0.4, 0.1), 64*6, replace = T) + sample(seq(0, 0.1, 0.001), 64*6, replace = T)) # bias
 predictions = data.frame()
 
 generatePredictions = function(parameters, df){
@@ -133,7 +129,7 @@ for (i in 1:nrow(freeParameters)) {
   freeParameters$betaRecovered[i] = result$par[4]
   freeParameters$epsilonRecovered[i] = result$par[5]
   freeParameters$gammaRecovered[i] = result$par[6]
-  if (mod(i, nrow(freeParameters)/100) == 0){message(round(100* (i/(nrow(freeParameters)))), '% there', sep = '')}
+  if (mod(i, round(nrow(freeParameters)/100)) == 0){message(round(100* (i/(nrow(freeParameters)))), '% there', sep = '')}
 }
 
 ### Verifying Free Parameter Recovery Process
@@ -332,44 +328,44 @@ which(modelBIC == min(modelBIC))
 
 ### Assessing Model Performance
 
-sum(trialData$Chose1 == round(trialData$Prob1))/nrow(trialData)
+sum(altTrialData$Chose1 == round(altTrialData$ar_Prob1))/nrow(altTrialData)
 
 qplot(subjectData$BIC, geom = 'density')
 worstExplained = which(subjectData$BIC > as.numeric(summary(subjectData$BIC)[4]))
 
-qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = a0-a1, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
-qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = a0-a2, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
-qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = b0-b1, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
-qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = b0-b2, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
+qplot(data = altTrialData[which(altTrialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = a0-a1, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
+qplot(data = altTrialData[which(altTrialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = a0-a2, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
+qplot(data = altTrialData[which(altTrialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = b0-b1, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
+qplot(data = altTrialData[which(altTrialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = b0-b2, y = Chose1 - Prob1, group = SubjectID) + geom_smooth(se=F)
 
 
 ### Checking Assumptions
 
-ggplot(data = trialData) + geom_smooth(aes(x = Prob1, y = Chose1, group = a0 < b0, color = factor(a0 < b0))) 
-ggplot(data = trialData) + geom_density(aes(x = Chose1, group = a0 < b0, fill = factor(a0 < b0), alpha = 0.5))
-normvals = rnorm(1000, mean = 0, sd = sd(trialData$Prob1 - trialData$Chose1))
-qplot(x = trialData$Prob1 - trialData$Chose1, geom = 'density', bw = sd(trialData$Prob1 - trialData$Chose1), color = 'Actual') +
-  geom_density(aes(x = normvals, color = 'Predicted'), bw = sd(trialData$Prob1 - trialData$Chose1))
-qplot(x = abs(trialData$a1 - trialData$a2), y = trialData$Prob1 - trialData$Chose1, geom = 'jitter') + geom_smooth(method = 'loess')
-qplot(x = abs(trialData$a1 - trialData$a2), y = trialData$Prob1 - trialData$Chose1, color = factor(trialData$a0 > trialData$b0), geom = 'jitter') + geom_smooth(method = 'loess')
+ggplot(data = altTrialData) + geom_smooth(aes(x = ar_Prob1, y = Chose1, group = a0 < b0, color = factor(a0 < b0))) 
+ggplot(data = altTrialData) + geom_density(aes(x = Chose1, group = a0 < b0, fill = factor(a0 < b0), alpha = 0.5))
+normvals = rnorm(1000, mean = 0, sd = sd(altTrialData$ar_Prob1 - altTrialData$Chose1))
+qplot(x = altTrialData$ar_Prob1 - altTrialData$Chose1, geom = 'density', bw = sd(altTrialData$ar_Prob1 - altTrialData$Chose1), color = 'Actual') +
+  geom_density(aes(x = normvals, color = 'Predicted'), bw = sd(altTrialData$ar_Prob1 - altTrialData$Chose1))
+qplot(x = abs(altTrialData$a1 - altTrialData$a2), y = altTrialData$ar_Prob1 - altTrialData$Chose1, geom = 'jitter') + geom_smooth(method = 'loess')
+qplot(x = abs(altTrialData$a1 - altTrialData$a2), y = altTrialData$ar_Prob1 - altTrialData$Chose1, color = factor(altTrialData$a0 > altTrialData$b0), geom = 'jitter') + geom_smooth(method = 'loess')
 
 ### Assessing Independence
 
 library(lme4)
 library(MuMIn)
 
-ris_model = glmer(data = trialData, Chose1 ~ Prob1 + (1 + Prob1 | SubjectID), family = "binomial")
+ris_model = glmer(data = altTrialData, Chose1 ~ ar_Prob1 + (1 + ar_Prob1 | SubjectID), family = "binomial")
 r.squaredGLMM(ris_model)
 
-ri_model = glmer(data = trialData, Chose1 ~ Prob1 + (1 | SubjectID), family = "binomial")
+ri_model = glmer(data = altTrialData, Chose1 ~ ar_Prob1 + (1 | SubjectID), family = "binomial")
 r.squaredGLMM(ri_model)
 
-ric_model = glmer(data = trialData, Chose1 ~ Prob1 + factor(a0<b0) + (1 | SubjectID), family = "binomial")
+ric_model = glmer(data = altTrialData, Chose1 ~ ar_Prob1 + factor(a0<b0) + (1 | SubjectID), family = "binomial")
 r.squaredGLMM(ric_model)
 
 ### Fivefold Validation
 
-fivefold = data.frame() #preallocate for parameters and errors from the fivefold validation to go into
+fivefold = data.frame() 
 trialData$Prob1_ff = 0
 
 for (i in 1:length(included_subjects)){
@@ -378,7 +374,6 @@ for (i in 1:length(included_subjects)){
   
   order = sample(nrow(df))
   A_ff = vector('numeric', length = 5)
-  D_ff = vector('numeric', length = 5)
   R_ff = vector('numeric', length = 5)
   B_ff = vector('numeric', length = 5)
   E_ff = vector('numeric', length = 5)
@@ -390,64 +385,69 @@ for (i in 1:length(included_subjects)){
     n = round(z * (nrow(df)/5))
     withheld = order[j:n]
     
-    result_ff = optimize(obj_function, initial_params, lower_bounds, upper_bounds, df[-withheld,])
+    result_ff = optimize(of_ar, 
+                         initial_params[c(1,3:6)], 
+                         lower_bounds[c(1,3:6)], 
+                         upper_bounds[c(1,3:6)], 
+                         df[-withheld,])
     
     A_ff[z] = result_ff$par[1]
-    D_ff[z] = result_ff$par[2]
-    R_ff[z] = result_ff$par[3]
-    B_ff[z] = result_ff$par[4]
-    E_ff[z] = result_ff$par[5]
-    G_ff[z] = result_ff$par[6]
-    df$Prob1[withheld] = generatePredictions(result_ff$par, df[withheld, ])
+    R_ff[z] = result_ff$par[2]
+    B_ff[z] = result_ff$par[3]
+    E_ff[z] = result_ff$par[4]
+    G_ff[z] = result_ff$par[5]
+    pars = c(result_ff$par[1], 0, result_ff$par[2:5])
+    df$Prob1[withheld] = generatePredictions(pars, df[withheld, ])
   }
-  Deviance_ff = -2*sum(df$Chose1 * log(df$Prob1) + (1 - df$Chose1) * log(1 - df$Prob1))
-  fivefold[i, 1:32] = c(included_subjects[i], Deviance_ff, A_ff, D_ff, R_ff, B_ff, E_ff, G_ff)
+  Deviance_ff = -2*sum(df$Chose1 * log(df$Prob1) + 
+                         (1 - df$Chose1) * log(1 - df$Prob1))
+  fivefold[i, 1:27] = c(included_subjects[i], Deviance_ff, 
+                        A_ff, R_ff, B_ff, E_ff, G_ff)
   trialData$Prob1_ff[which(trialData$SubjectID == included_subjects[i])] = df$Prob1
 }
-colnames(fivefold) = c('SubjectID', 'Deviance', 'A_F1', 'A_F2', 'A_F3', 'A_F4', 'A_F5',
-                       'D_F1','D_F2','D_F3','D_F4','D_F5', 'R_F1', 'R_F2', 'R_F3', 'R_F4', 'R_F5',
-                       'B_F1','B_F2','B_F3','B_F4','B_F5', 'E_F1', 'E_F2', 'E_F3', 'E_F4', 'E_F5', 
+colnames(fivefold) = c('SubjectID', 'Deviance', 
+                       'A_F1', 'A_F2', 'A_F3', 'A_F4', 'A_F5',
+                       'R_F1', 'R_F2', 'R_F3', 'R_F4', 'R_F5', 
+                       'B_F1','B_F2','B_F3','B_F4','B_F5', 
+                       'E_F1', 'E_F2', 'E_F3', 'E_F4', 'E_F5', 
                        'G_F1', 'G_F2', 'G_F3', 'G_F4', 'G_F5')
 
 sum(round(trialData$Prob1_ff) == trialData$Chose1)/nrow(trialData)
 fivefold$BIC = as.numeric(fivefold$Deviance) + log(65) * 6
-t.test(fivefold$BIC, subjectData$BIC, paired = T) #test fivefold MFI against normal MFI for this model
+t.test(fivefold$BIC, altSubjectData$BIC_M5, paired = T) #test fivefold MFI against normal MFI for this model
 
 library(lsa)
 cosines = vector('numeric', length = 60)
 for (i in 1:5){
-  cosines[i] = cosine(as.numeric(subjectData$Alpha), as.numeric(fivefold[, (i + 2)]))
-  cosines[(i+5)] = cosine(as.numeric(subjectData$Delta), as.numeric(fivefold[, (i + 7)]))
-  cosines[(i+10)] = cosine(as.numeric(subjectData$Rho), as.numeric(fivefold[, (i + 12)]))
-  cosines[(i+15)] = cosine(as.numeric(subjectData$Beta), as.numeric(fivefold[, (i + 17)]))
-  cosines[(i+20)] = cosine(as.numeric(subjectData$Epsilon), as.numeric(fivefold[, (i + 22)]))
-  cosines[(i+25)] = cosine(as.numeric(subjectData$Gamma), as.numeric(fivefold[, (i + 27)]))
+  cosines[i] = cosine(as.numeric(altSubjectData$Alpha_M5), as.numeric(fivefold[, (i + 2)]))
+  cosines[(i+5)] = cosine(as.numeric(altSubjectData$Rho_M5), as.numeric(fivefold[, (i + 7)]))
+  cosines[(i+10)] = cosine(as.numeric(altSubjectData$Beta_M5), as.numeric(fivefold[, (i + 12)]))
+  cosines[(i+15)] = cosine(as.numeric(altSubjectData$Epsilon_M5), as.numeric(fivefold[, (i + 17)]))
+  cosines[(i+20)] = cosine(as.numeric(altSubjectData$Gamma_M5), as.numeric(fivefold[, (i + 22)]))
 }
 
 mean(cosines[1:5]) 
 mean(cosines[6:10])
 mean(cosines[11:15]) 
 mean(cosines[16:20]) 
-mean(cosines[21:25]) 
-mean(cosines[26:30])  
+mean(cosines[21:25])
 
 ################ 3_1_0
 
-t.test(subjectData$BIC, altSubjectData$BIC_M1, paired = T)
-t.test(subjectData$BIC, altSubjectData$BIC_M2, paired = T)
-t.test(subjectData$BIC, altSubjectData$BIC_M3, paired = T)
-t.test(subjectData$BIC, altSubjectData$BIC_M4, paired = T)
-t.test(subjectData$BIC, altSubjectData$BIC_M5, paired = T)
-t.test(subjectData$BIC, altSubjectData$BIC_M6, paired = T)
+t.test(altSubjectData$BIC_M5, subjectData$BIC, paired = T)
+t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M1, paired = T)
+t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M2, paired = T)
+t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M3, paired = T)
+t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M4, paired = T)
+t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M6, paired = T)
 
 ################ 3_3_0
 
-resultNID = fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = trialData[2:8], optimMethod = "MLE")
-trialData$Prob1_NID = generatePredictions(resultNID$par, trialData)
+resultNID = fmincon(of_ar, x0 = initial_params[c(1,3:6)], lb = lower_bounds[c(1,3:6)], ub = upper_bounds[c(1,3:6)], df = trialData[2:8], optimMethod = "MLE")
+pars = c(resultNID$par[1], 0, resultNID$par[2:5])
+trialData$Prob1_NID = generatePredictions(pars, trialData)
 sum(trialData$Chose1 == round(trialData$Prob1_NID))/nrow(trialData)
-
 altSubjectData$Deviance_NID = 0
-
 for (i in 1:length(included_subjects)){ 
   trials = which(included_subjects[i] == trialData$SubjectID)
   df = trialData[trials, ]
@@ -456,5 +456,5 @@ for (i in 1:length(included_subjects)){
 
 altSubjectData$BIC_NID = as.numeric(altSubjectData$Deviance_NID) + log(65) * 6/(length(included_subjects))
 
-t.test(subjectData$BIC, altSubjectData$BIC_NID, paired = T)
+t.test(altSubjectData$BIC_M5, altSubjectData$BIC_NID, paired = T)
 which(modelBIC > sum(altSubjectData$BIC_NID))

@@ -444,13 +444,13 @@ qplot(x = trialData$Investment, y = (trialData$Prediction-as.numeric(trialData$R
 library(lme4)
 library(MuMIn)
 
-ris_model = lmer(data = trialData, Returned ~ Prediction + (1 + Prediction | SubjectID))
+ris_model = lmer(data = trialData, Returned ~ Prediction + (1 + Prediction | Subject))
 r.squaredGLMM(ris_model)
 
-ri_model = lmer(data = trialData, Returned ~ Prediction + (1 | SubjectID))
+ri_model = lmer(data = trialData, Returned ~ Prediction + (1 | Subject))
 r.squaredGLMM(ri_model)
 
-ric_model = lmer(data = trialData, Returned ~ Prediction + (1 | SubjectID))
+ric_model = lmer(data = trialData, Returned ~ Prediction + (1 | Subject))
 r.squaredGLMM(ric_model)
 
 ### Fivefold Validation
