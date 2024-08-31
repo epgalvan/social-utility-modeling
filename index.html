@@ -1,42 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Table of Contents</title>
+    <meta name="description" content="A simple HTML/CSS Documentation Template">
+    <meta name="author" content="Carlos Yllobre">
+
     <!-- Link to the external CSS file -->
-    <link rel="stylesheet" href="/social-utility-modeling/style.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
 </head>
+
 <body>
 
-    <h1>Table of Contents</h1>
+    <div class="navbar clear nav-top">
+        <div class="row content">
+            <a href="#"><img class="logo" src="logo.svg"></a>
+            <a class="right" style="text-decoration: underline;" href="#"><i class="fas fa-book"></i>&nbsp; Documentation</a>
+            <a class="right" href="mailto:yourapp@email.com" target="_blank"><i class="fas fa-paper-plane"></i>&nbsp; yourapp@email.com</a>
+        </div>
+    </div>
 
-    <!-- Matlab Section -->
-    <h2>Matlab</h2>
-    <ul>
-        <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial1.html">Tutorial 1</a></li>
-        <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial2.html">Tutorial 2</a></li>
-        <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial3.html">Tutorial 3</a></li>
-        <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial4.html">Tutorial 4</a></li>
-    </ul>
+    <div class="container clear">
+        <div class="row wrapper">
+            <div class="sidepanel">
+                <a class="title" href="#">Introduction</a>
+                
+                <a class="section" href="#">Supported Versions</a>
+                <a class="section" href="#">About this App</a>
+                <a class="section" href="#technology">Technology</a>
 
-    <!-- Python Section -->
-    <h2>Python</h2>
-    <ul>
-        <li><a href="/social-utility-modeling/notebooks/Python/tutorial1.html">Tutorial 1</a></li>
-        <li><a href="/social-utility-modeling/notebooks/Python/tutorial2.html">Tutorial 2</a></li>
-        <li><a href="/social-utility-modeling/notebooks/Python/tutorial3.html">Tutorial 3</a></li>
-        <li><a href="/social-utility-modeling/notebooks/Python/tutorial4.html">Tutorial 4</a></li>
-    </ul>
+                <div class="divider left"></div>
 
-    <!-- R Section -->
-    <h2>R</h2>
-    <ul>
-        <li><a href="/social-utility-modeling/notebooks/R/tutorial1.html">Tutorial 1</a></li>
-        <li><a href="/social-utility-modeling/notebooks/R/tutorial2.html">Tutorial 2</a></li>
-        <li><a href="/social-utility-modeling/notebooks/R/tutorial3.html">Tutorial 3</a></li>
-        <li><a href="/social-utility-modeling/notebooks/R/tutorial4.html">Tutorial 4</a></li>
-    </ul>
+                <a class="title" href="#gettingstarted">Getting Started</a>
+
+                <a class="section" href="#installingapp">Installing the App</a>
+                <a class="section" href="#openingapp">Opening the App</a>
+
+                <div class="divider left"></div>
+
+                <a class="title" href="#toc">Table of Contents</a>
+
+                <a class="section" href="#matlab">Matlab</a>
+                <a class="section" href="#python">Python</a>
+                <a class="section" href="#r">R</a>
+
+                <div class="divider left"></div>
+
+                <a class="title" href="#basicfeatures">Basic Features</a>
+                <!-- Additional sections can be listed here -->
+
+                <div class="divider left"></div>
+                <a class="title" href="#accesibility">Accessibility</a>
+
+                <div class="divider left"></div>
+                <a class="title" href="#moreinfo">More Info</a>
+            
+                <div class="space double"></div>
+            </div>
+
+            <div class="right-col">
+                <h1 id="toc">Table of Contents</h1>
+
+                <!-- Matlab Section -->
+                <h2 id="matlab">Matlab</h2>
+                <ul>
+                    <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial1.html">Tutorial 1</a></li>
+                    <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial2.html">Tutorial 2</a></li>
+                    <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial3.html">Tutorial 3</a></li>
+                    <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial4.html">Tutorial 4</a></li>
+                </ul>
+
+                <!-- Python Section -->
+                <h2 id="python">Python</h2>
+                <ul>
+                    <li><a href="/social-utility-modeling/notebooks/Python/tutorial1.html">Tutorial 1</a></li>
+                    <li><a href="/social-utility-modeling/notebooks/Python/tutorial2.html">Tutorial 2</a></li>
+                    <li><a href="/social-utility-modeling/notebooks/Python/tutorial3.html">Tutorial 3</a></li>
+                    <li><a href="/social-utility-modeling/notebooks/Python/tutorial4.html">Tutorial 4</a></li>
+                </ul>
+
+                <!-- R Section -->
+                <h2 id="r">R</h2>
+                <ul>
+                    <li><a href="/social-utility-modeling/notebooks/R/tutorial1.html">Tutorial 1</a></li>
+                    <li><a href="/social-utility-modeling/notebooks/R/tutorial2.html">Tutorial 2</a></li>
+                    <li><a href="/social-utility-modeling/notebooks/R/tutorial3.html">Tutorial 3</a></li>
+                    <li><a href="/social-utility-modeling/notebooks/R/tutorial4.html">Tutorial 4</a></li>
+                </ul>
+
+                <div class="divider" style="width:24%; margin:30px 0;"></div>
+
+                <!-- Placeholder for additional content -->
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
