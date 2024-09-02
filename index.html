@@ -1,104 +1,191 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Table of Contents</title>
-    <meta name="description" content="A simple HTML/CSS Documentation Template">
-    <meta name="author" content="Carlos Yllobre">
+    <title>Social Utility Modeling Tutorials</title>
+    <meta name="description" content="A comprehensive guide to computationally modeling behavior in social decision-making tasks.">
+    <meta name="author" content="Your Name">
 
-    <!-- Link to the external CSS file -->
+    <!-- Link to external CSS with modified colors and styles -->
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+
     <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+    <style>
+        /* General body styling */
+        body {
+            color: #333; /* Graphite text */
+            font-family: 'Open Sans', sans-serif;
+            width: 100%;
+        }
+
+        /* Navigation panel styling */
+        .sidepanel {
+            background-color: #3b3b3bf9; /* Pale red */
+            color: #333; /* Graphite text */
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            box-sizing: border-box;
+        }
+
+        /* Title styling */
+        h1 {
+            color: #b30000; /* Crimson title color */
+            font-family: 'Quicksand', sans-serif;
+            margin-bottom: 50px;
+        }
+
+        /* Sub-header styling */
+        h2 {
+            color: #800000; /* Fire engine red */
+            margin-bottom: 10px;
+        }
+
+        /* Links styling */
+        a {
+            color: #b30000; /* Crimson link color */
+            text-decoration: none;
+            font-weight: bold; /* Make tutorial links bold */
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Content section styling */
+        .container {
+            background-color: #fff; /* White background for the content area */
+            padding: 30px;
+            border-radius: 0px;
+            box-shadow: 0 0 0px rgba(0, 0, 0, 0); /* Soft shadow */
+        }
+
+        /* Header styling */
+        .nav-top {
+            background-color: #470000; /* Graphite background */
+            color: #fff; /* White text */
+            padding: 10px 0px;
+        }
+
+        .nav-top a {
+            color: #fff;
+        }
+
+        .nav-top a:hover {
+            color: #f73333; /* Light red hover */
+        }
+
+        .homepanel a:hover {
+            color: #470000; /* Light red hover */
+        }
+
+        .right-col {
+            margin-left: 400px; /* Adjusted margin to fit content better */
+            padding-bottom: 0px; /* Ensure padding at the bottom */
+        }
+
+        /* Side panel titles (Matlab, Python, R) styling */
+        .sidepanel .title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #f73333; /* Fire engine red */
+            margin-bottom: 10px;
+        }
+
+        .homepanel .title {
+            font-weight: bold;
+        }
+
+        .sidepanel .title:hover {
+            text-decoration: none; /* Remove underline on hover */
+        }
+
+        /* Side panel tutorial links styling */
+        .sidepanel .section {
+            color: #f73333; /* Crimson */
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .sidepanel .section:hover {
+            text-decoration: underline;
+        }
+
+
+    </style>
 </head>
 
 <body>
 
     <div class="navbar clear nav-top">
         <div class="row content">
-            <a href="#"><img class="logo" src="logo.svg"></a>
-            <a class="right" style="text-decoration: underline;" href="#"><i class="fas fa-book"></i>&nbsp; Documentation</a>
-            <a class="right" href="mailto:yourapp@email.com" target="_blank"><i class="fas fa-paper-plane"></i>&nbsp; yourapp@email.com</a>
+            <a class="center" href="https://scholar.google.com/citations?user=L6ghov4AAAAJ&hl=en" target="_blank"><i class="fas fa-graduation-cap"></i>&nbsp; Google Scholar</a>
+            <a class="center" href="https://www.decisionneurosciencelab.com/elijahgalvan" target="_blank"><i class="fas fa-globe"></i>&nbsp; About Me</a>
+            <a class="center" href="https://social-utility-modeling.readthedocs.io/en/latest/"><i class="fas fa-book"></i>&nbsp; Handbook</a>
+            <a class="center" href="mailto:epgalvan20@g.ucla.edu" target="_blank"><i class="fas fa-paper-plane"></i>&nbsp; Contact Me</a>
+        </div>
+    </div>
+
+    <div class="homepanel">
+        <div class="row content">
+            <a class="title" href="/social-utility-modeling/index.html" target="_blank"><i class="fa-solid fa-house"></i>&nbsp; Social Utility Modeling</a>
         </div>
     </div>
 
     <div class="container clear">
         <div class="row wrapper">
+
             <div class="sidepanel">
-                <a class="title" href="#">Introduction</a>
-                
-                <a class="section" href="#">Supported Versions</a>
-                <a class="section" href="#">About this App</a>
-                <a class="section" href="#technology">Technology</a>
+                <!-- New Sections for Matlab, Python, R -->
+                <div class="sidepanel-bottom">
+                    <div class="title">MatLab</div>
+                    <a class="section" href="/social-utility-modeling/notebooks/MatLab/tutorial1.html">Tutorial 1 - van Baar, Chang, & Sanfey, 2019</a>
+                    <a class="section" href="/social-utility-modeling/notebooks/MatLab/tutorial2.html">Tutorial 2 - Galván & Sanfey, 2024</a>
+                    <a class="section" href="/social-utility-modeling/notebooks/MatLab/tutorial3.html">Tutorial 3 - Yu et al., 2022</a>
+                    <a class="section" href="/social-utility-modeling/notebooks/MatLab/tutorial4.html">Tutorial 4 - Li et al., 2022</a>
 
-                <div class="divider left"></div>
+                    <div class="title">Python</div>
+                    <a class="section" href="/social-utility-modeling/notebooks/Python/tutorial1.html">Tutorial 1 - van Baar, Chang, & Sanfey, 2019</a>
+                    <a class="section" href="/social-utility-modeling/notebooks/Python/tutorial2.html">Tutorial 2 - Galván & Sanfey, 2024</a>
+                    <a class="section" href="/social-utility-modeling/notebooks/Python/tutorial3.html">Tutorial 3 - Yu et al., 2022</a>
+                    <a class="section" href="/social-utility-modeling/notebooks/Python/tutorial4.html">Tutorial 4 - Li et al., 2022</a>
 
-                <a class="title" href="#gettingstarted">Getting Started</a>
-
-                <a class="section" href="#installingapp">Installing the App</a>
-                <a class="section" href="#openingapp">Opening the App</a>
-
-                <div class="divider left"></div>
-
-                <a class="title" href="#toc">Table of Contents</a>
-
-                <a class="section" href="#matlab">Matlab</a>
-                <a class="section" href="#python">Python</a>
-                <a class="section" href="#r">R</a>
-
-                <div class="divider left"></div>
-
-                <a class="title" href="#basicfeatures">Basic Features</a>
-                <!-- Additional sections can be listed here -->
-
-                <div class="divider left"></div>
-                <a class="title" href="#accesibility">Accessibility</a>
-
-                <div class="divider left"></div>
-                <a class="title" href="#moreinfo">More Info</a>
-            
-                <div class="space double"></div>
+                    <div class="title">R</div>
+                    <a class="section" href="/social-utility-modeling/notebooks/R/tutorial1.html">Tutorial 1 - van Baar, Chang, & Sanfey, 2019</a>
+                    <a class="section" href="/social-utility-modeling/notebooks/R/tutorial2.html">Tutorial 2 - Galván & Sanfey, 2024</a>
+                    <a class="section" href="/social-utility-modeling/notebooks/R/tutorial3.html">Tutorial 3 - Yu et al., 2022</a>
+                    <a class="section" href="/social-utility-modeling/notebooks/R/tutorial4.html">Tutorial 4 - Li et al., 2022</a>
+                </div>
             </div>
 
-            <div class="right-col">
-                <h1 id="toc">Table of Contents</h1>
+            <div class="main-col">
+                <!-- Main Content Area -->
+                <h1>Social Utility Modeling Tutorials</h1>
 
-                <!-- Matlab Section -->
-                <h2 id="matlab">Matlab</h2>
-                <ul>
-                    <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial1.html">Tutorial 1</a></li>
-                    <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial2.html">Tutorial 2</a></li>
-                    <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial3.html">Tutorial 3</a></li>
-                    <li><a href="/social-utility-modeling/notebooks/MatLab/tutorial4.html">Tutorial 4</a></li>
-                </ul>
+                <h2>About these Tutorials</h2>
 
-                <!-- Python Section -->
-                <h2 id="python">Python</h2>
-                <ul>
-                    <li><a href="/social-utility-modeling/notebooks/Python/tutorial1.html">Tutorial 1</a></li>
-                    <li><a href="/social-utility-modeling/notebooks/Python/tutorial2.html">Tutorial 2</a></li>
-                    <li><a href="/social-utility-modeling/notebooks/Python/tutorial3.html">Tutorial 3</a></li>
-                    <li><a href="/social-utility-modeling/notebooks/Python/tutorial4.html">Tutorial 4</a></li>
-                </ul>
+                <p>You can complete the tutorials piece by piece using the <a href="https://social-utility-modeling.readthedocs.io/en/latest/" target="_blank">handbook</a> - a great resource for learning. However, the full tutorials with output are also useful for passive viewing and seeing what each function does without needing to code yourself. They are also great for checking your work.</p>
 
-                <!-- R Section -->
-                <h2 id="r">R</h2>
-                <ul>
-                    <li><a href="/social-utility-modeling/notebooks/R/tutorial1.html">Tutorial 1</a></li>
-                    <li><a href="/social-utility-modeling/notebooks/R/tutorial2.html">Tutorial 2</a></li>
-                    <li><a href="/social-utility-modeling/notebooks/R/tutorial3.html">Tutorial 3</a></li>
-                    <li><a href="/social-utility-modeling/notebooks/R/tutorial4.html">Tutorial 4</a></li>
-                </ul>
+                <h2>About the Handbook</h2>
 
-                <div class="divider" style="width:24%; margin:30px 0;"></div>
+                <p>This webpage serves as a resource to guide you through computational modeling of social utility, but it is not the handbook itself. The handbook provides more detailed explanations and conceptual examples. You can access the full handbook <a href="https://social-utility-modeling.readthedocs.io/en/latest/" target="_blank">here</a>.</p>
 
-                <!-- Placeholder for additional content -->
             </div>
+
         </div>
     </div>
 
 </body>
+
 </html>
