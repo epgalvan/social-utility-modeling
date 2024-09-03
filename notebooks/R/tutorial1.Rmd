@@ -793,139 +793,207 @@ ris_model = lmer(data = trialData,
 r.squaredGLMM(ris_model)
 ```
 
-Singularity warning means that (most probably) the random slope is completely redundant: trying without.
+No singularity warning means that the random slope and the random intercept (i.e. variance in how well the model fits individuals across predicted values and variance in how well the model fits individuals in general, respectively) is not redundant. So there's some variance the model doesn't account for. Let's look without the random slope.
 
 ```{r}
-
+ri_model = lmer(data = trialData, as.numeric(Returned) ~ Prediction + (1 | Subject))
+r.squaredGLMM(ri_model)
 ```
 
-Same issue, this is good. Let's see about if there's some unexplainied variance across conditions.
+This implies that there's some variance across values, but it's mostly just a consequence of how people are different in general (in a way that the model doesn't account for). Let's see about if there's some unexplainied variance across conditions.
 
 ```{r}
-
+ric_model = lmer(data = trialData, as.numeric(Returned) ~ Prediction + Multiplier + (1 | Subject))
+r.squaredGLMM(ric_model)
+anova(ric_model)
 ```
 
-Good, finally, let's compare the R-squared from these models to the one from a standard lm model.
+No variance across conditions which is good. Finally, let's compare the R-squared from these models to the one from a standard lm model.
 
 ```{r}
-
+model = lm(data = trialData, as.numeric(Returned) ~ Prediction)
+summary(model)
 ```
 
-Pretty damn similar, very good! Let's jump to fivefold validation
+81% explained variance: this quite good (the correlation between what the model predicts and what people actually do is 0.9, which is really strong). But there's some individual variance that the model misses out on. Takeaway: the model is very strong and useful, but not perfect. With that in mind, let's go to fivefold validation.
 
 ```{r}
+fivefold = data.frame() #preallocate for parameters and errors from the fivefold validation to go into
 
+for (i in 1:length(included_subjects)){
+  df = trialData[which(included_subjects[i] == trialData$Subject), ]
+  order = sample(length(df$Returned))
+  Theta_ff = vector('numeric', length = 5)
+  Phi_ff = vector('numeric', length = 5)
+  SS_ff = 0
+  Prediction_ff = vector('numeric', length(df$Returned))
+  for (z in 1:5){
+    j = round((z - 1) * (length(df$Returned)/5) + 1)
+    n = round(z * (length(df$Returned)/5))
+    withheld = order[j:n]
+    m = ((i - 1) * 5) + z
+    
+    result_ff = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                        lb = lower_bounds, ub = upper_bounds,
+                        df = df[-withheld,])
+    
+    Theta_ff[z] = result_ff$par[1]
+    Phi_ff[z] = result_ff$par[2]
+    for (n in 1:length(withheld)){
+      if (df$Investment[withheld[n]] > 10) {
+        Choices = seq(0, (df$Investment[withheld[n]] * df$Multiplier[withheld[n]]), round((df$Investment[withheld[n]]*df$Multiplier[withheld[n]])/10))
+      } else {
+        Choices = seq(0, (df$Investment[withheld[n]] * df$Multiplier[withheld[n]]), 1)
+      }
+      utility_choices = vector('numeric', length(Choices))
+      for (q in 1:length(Choices)){
+        utility_choices[q] = utility(theta = result_ff$par[1], 
+                             phi = result_ff$par[2],
+                             guilt = guilt(df$Investment[withheld[n]], believed_multiplier = 4, Choices[q], df$Multiplier[withheld[n]]),
+                             payout = payout_maximization(df$Investment[withheld[n]], df$Multiplier[withheld[n]], Choices[q]),
+                             inequity = inequity(df$Investment[withheld[n]], df$Multiplier[withheld[n]], Choices[q], endowment = 10))
+      }
+      Prediction_ff[withheld[n]] = Choices[which(utility_choices == max(utility_choices))[1]]
+    }
+  }
+  SS_ff = sum((as.numeric(df$Returned) - Prediction_ff)**2)
+  fivefold[i, 1:12] = c(SS_ff, Theta_ff, Phi_ff, included_subjects[i])
+}
+colnames(fivefold) = c('SS', 'Par1_fold1', 'Par1_fold2', 'Par1_fold3', 'Par1_fold4', 'Par1_fold5', 
+                       'Par2_fold1', 'Par2_fold2', 'Par2_fold3', 'Par2_fold4', 'Par2_fold5', 'SubjectID')
 head(fivefold)
 ```
 
 Now we can check the model accuracy:
 
 ```{r}
-
+sqrt(mean(fivefold$SS)/length(df$Investment)) - sqrt(mean(subjectData$modelSS)/length(df$Investment))
 ```
 
-Only lost about 1.5% in accuracy which is quite reassuring. And test it against the normally recovered model:
+The root mean square per trial increase is really small - this means that our parameters are able to really precisely predict out-of-sample behavior. Let's explicitly test this though:
 
 ```{r}
-
+fivefold$AIC = length(df$Investment) * log(fivefold$SS/length(df$Investment)) + 2 * 2
+t.test(fivefold$AIC, subjectData$modelAIC, paired = T)
 ```
 
-It's worse, but that's okay considering this only constitutes 1.5% accuracy. And to assess the reliability, we can compute cosine similiarity:
+It's worse, but not significantly worse which means that our out of sample prediction is not significantly worse that in sample prediction: we don't have to worry about circular reasoning. We still need to assess the reliability of the parameters themselves though so, we can compute cosine similiarity:
 
 ```{r}
-
+library(lsa)
+cosines = vector('numeric', length = 10)
+for (i in 1:5){
+  cosines[i] = cosine(subjectData$Theta, fivefold[, (i + 1)]) 
+  cosines[(i+5)] = cosine(subjectData$Phi, fivefold[, (i + 6)]) 
+}
 ```
 
-And compute the averages per parameter: first alpha.
+And compute the averages per parameter: first theta.
 
 ```{r}
-
+mean(cosines[1:5])
 ```
 
-Very close to 1, nice! Then Rho.
+Very close to 1, nice! Then phi.
 
 ```{r}
-
+mean(cosines[6:10])
 ```
 
-Also pretty reasonable. Then Beta
-
-```{r}
-
-```
-
-Yep, then Epsilon
-
-```{r}
-
-```
-
-Nice, and finally Gamma
-
-```{r}
-
-```
-
-Not so great, but makes sense given that bias could be more or less representative depending on the excluded trials to our training set
+Also pretty reasonable. If we had poor similarity, we could adjust the parameters like we did in section 1.6 to adjust distance computation
 
 ## 3.1 Compare Models
 
-Let's first see if the best model (inequality aversion and rank-reverse aversion, but not harm aversion) outperforms the model with all three.
+Let's first see if the best model (the Moral Strategies Model) outperforms the model with only Greed.
 
 ```{r}
-
+t.test(subjectData$modelAIC, altSubjectData$modelAICGreed, paired = T)
 ```
 
-This is better. Now let's see if it is significantly better than the model with only inequality aversion.
+This is much better. Now let's see if it is significantly better than the model with greed and guilt aversion.
 
 ```{r}
-
+t.test(subjectData$modelAIC, altSubjectData$modelAICGuilt, paired = T)
 ```
 
-Not significantly better. Okay, what about with only harm aversion?
+Also significantly better. Okay, what about with inequity aversion and greed?
 
 ```{r}
-
+t.test(subjectData$modelAIC, altSubjectData$modelAICInequity, paired = T)
 ```
 
-Yes, and rank reversal aversion?
+Yes. Let's show the significant differences in a plot:
 
 ```{r}
-
+library(ggsignif)
+aic = c(mean(subjectData$modelAIC), mean(altSubjectData$modelAICGreed), mean(altSubjectData$modelAICGuilt), mean(altSubjectData$modelAICInequity))
+qplot(y = aic,
+      x = as.factor(c('Moral Strategies Model', 'Greed Model', 'Guilt Model', 'Inequity Model')), 
+      fill = as.factor(c('Moral Strategies Model', 'Greed Model', 'Guilt Model', 'Inequity Model')), 
+      color = '',
+      geom = 'col') + 
+  labs(x = 'Model', y = 'AIC', fill = NULL, color = NULL) + 
+  theme_minimal() + scale_color_manual(values = c(rgb(0, 0, 0, maxColorValue = 255))) + 
+  scale_fill_manual(values = c(rgb(132.5, 132.5, 132.5, maxColorValue = 255), 
+                               rgb(132.5, 132.5, 132.5, maxColorValue = 255), 
+                               rgb(132.5, 132.5, 132.5, maxColorValue = 255), 
+                               rgb(218, 165, 32, maxColorValue = 255))) + 
+  geom_signif(comparisons = list(c('Moral Strategies Model', 'Greed Model')), y = 341, textsize = 0)+
+  geom_signif(comparisons = list(c('Moral Strategies Model', 'Guilt Model')), y = 328, textsize = 0)+
+  geom_signif(comparisons = list(c('Moral Strategies Model', 'Inequity Model')), y = 315, textsize = 0) +
+  annotate("text", x = 2.5, label = "***", y = 358, size = 4)+ # 3 for p < 0.001, 2 for p < 0.01, 1 for p < 0.05 usually
+  annotate("text", x = 3, label = "***", y = 345, size = 4)+
+  annotate("text", x = 3.5, label = "***", y = 332, size = 4)
 ```
-
-Yes. And now the model with inequality aversion and harm aversion?
-
-```{r}
-
-```
-
-Again no. Finally the model with harm aversion and rank reversal aversion.
-
-```{r}
-
-```
-
-Yes. Okay all done here.
 
 ## 3.3 Test for Individual Differences
 
 Let's first recover parameters over the whole dataset and we can assess how accurate it is
 
 ```{r}
+result = fmincon(obj_function,x0 = initial_params, A = NULL, b = NULL, Aeq = NULL, beq = NULL,
+                 lb = lower_bounds, ub = upper_bounds,
+                 df = trialData)
+trialData$PredictedNID = vector('numeric', length(trialData$Subject))
+for (i in 1:length(trialData$Subject)){
+  if (trialData$Investment[i] > 10) {
+    Choices = seq(0, (trialData$Investment[i] * trialData$Multiplier[i]), round((trialData$Investment[i]*trialData$Multiplier[i])/10))
+  } else {
+    Choices = seq(0, (trialData$Investment[i] * trialData$Multiplier[i]), 1)
+  }
+  Utility = vector('numeric', length(Choices))
+  for (n in 1:length(Choices)){
+    Utility[n] = utility(theta = result$par[1],
+                         phi = result$par[2],
+                         payout = payout_maximization(trialData$Investment[i], trialData$Multiplier[i], Choices[n]),
+                         guilt = guilt(trialData$Investment[i], believed_multiplier = 4, Choices[n], trialData$Multiplier[i]),
+                         inequity = inequity(trialData$Investment[i], trialData$Multiplier[i], Choices[n], endowment = 10))
+  }
+  trialData$PredictedNID[i] = Choices[which(Utility == max(Utility))]
+}
 
+NID_model = lm(data = trialData, as.numeric(Returned) ~ PredictedNID)
+summary(NID_model)
 ```
 
-Not very good. This isn't surprising given that people often have very different preferences. Now let's test for individual differences.
+Surprisingly good 75% explained variance against 81%. Let's test for individual differences.
 
 ```{r}
+subjectData$SS_NID = vector('numeric', length(subjectData$SubjectID))
+for (i in 1:length(subjectData$SubjectID)){
+  trials = which(subjectData$SubjectID[i] == trialData$Subject)
+  subjectData$SS_NID[i] = sum((as.numeric(trialData$Returned[trials]) - trialData$PredictedNID[trials])**2)
+}
 
+subjectData$AIC_NID = length(df$Investment) * log(subjectData$SS_NID/length(df$Investment)) + 2 * (2/length(subjectData$SubjectID))
+
+t.test(subjectData$modelAIC, subjectData$AIC_NID, paired = T)
 ```
 
-Significant individual differences. Let's see which models are worse
+No significant individual differences. Let's see which models are worse
 
 ```{r}
-
+which(aic > mean(subjectData$AIC_NID))
 ```
 
-So the only Harm Aversion, only Rank Reversal Aversion, Harm and Rank Reversal Aversion, and only left/right bias models are worse than this.
+So the only the Moral Strategies Model which accounts for individual differences is better than the one which doesn't.

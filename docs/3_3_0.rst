@@ -164,7 +164,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
                 t.test(subjectData$modelAIC, subjectData$AIC_NID, paired = T)
 
-                summary(lm(data = trialData, Returned ~ PredictedNID))
+                summary(lm(data = trialData, as.numeric(Returned) ~ PredictedNID))
 
                 aic_id = c(mean(subjectData$modelAIC), mean(subjectData$AIC_NID))
 

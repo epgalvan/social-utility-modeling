@@ -49,18 +49,25 @@ a:hover {
     color: #fff;
     top: 0;
     width: calc(100% - 400px);
-    height: 70px;
+    height: 92px;
     font-size: 15px;
     text-align: center;
     position: fixed;
     z-index: 1;
     margin-left: 400px;
+    box-sizing: border-box;
 }
 
 .navbar a {
     margin-right: 40px;
     color: #fff;
 }
+.navbar .content a {
+    font-size: 15px;
+      margin: 0 15px; /* Adds space on the left and right of each link */
+      padding-top: 0;
+      padding-bottom: 10px; /* Adds padding above and below the text */
+  }
 
 .navbar a:active {
     text-decoration: underline;
@@ -86,6 +93,7 @@ a:hover {
 
 .nav-top {
     border-top: 8px solid #b30000;
+    border-left: 7px solid #b30000;
 }
 
 .row {
@@ -104,7 +112,7 @@ a:hover {
 }
 
 .sidepanel {
-    width: 400px;
+    width: 401px;
     margin-top: 92px;
     background-color: #ff05052d;
     overflow-x: hidden;
@@ -142,7 +150,8 @@ a:hover {
     text-decoration: none;
     color: #ffffff;
     display: block;
-    padding-bottom: 12px;
+    padding-bottom: 0px;
+    margin-top: 2px;
 }
 
 .sidepanel a.section {
@@ -235,7 +244,7 @@ a:hover {
 }
 
 .top-info {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Quicksand', sans-serif;
     font-size: 17px;
     text-align: right;
 }

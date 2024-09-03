@@ -22,7 +22,7 @@
         /* General body styling */
         body {
             color: #333; /* Graphite text */
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'Quicksand', sans-serif;
             width: 100%;
         }
 
@@ -73,7 +73,7 @@
         .nav-top {
             background-color: #470000; /* Graphite background */
             color: #fff; /* White text */
-            padding: 10px 0px;
+            padding: 10px;
         }
 
         .nav-top a {
@@ -87,6 +87,44 @@
         .homepanel a:hover {
             color: #470000; /* Light red hover */
         }
+
+        .navbar {
+                    overflow: hidden;
+                    background-color: #470000;
+                    color: #fff;
+                    top: 0;
+                    width: calc(100% - 400px);
+                    height: 92px;
+                    font-size: 15px;
+                    text-align: center;
+                    position: fixed;
+                    z-index: 1;
+                    margin-left: 390px;
+                }
+
+        .navbar a {
+    margin-right: 40px;
+    color: #fff;
+}  
+.navbar .content {
+    
+    display: flex;
+      justify-content: center; /* Centers all items */
+      gap: 14px; /* Adjusts space between links */
+      align-items: center;
+      flex-wrap: nowrap; /* Prevents wrapping */
+      width: 100%; /* Lets the content take up as much space as it needs */
+      padding: 0;
+  }
+  
+  .navbar .content a {
+    white-space: nowrap;
+    font-size: 14.8px;
+    font-weight: bold;
+    font-family: 'Quicksand', sans-serif;
+      margin: 15px;/* Adds space on the left and right of each link */
+      padding-top: 7.5px;
+  }
 
         .right-col {
             margin-left: 400px; /* Adjusted margin to fit content better */
@@ -104,6 +142,7 @@
 
         .homepanel .title {
             font-weight: bold;
+            font-family: 'Quicksand', sans-serif;
         }
 
         .sidepanel .title:hover {

@@ -599,7 +599,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
 
                 ### Model Performance
 
-                modelPredictions = lm(data = trialData, Returned ~ Prediction)
+                modelPredictions = lm(data = trialData, as.numeric(Returned) ~ Prediction)
                 summary(modelPredictions) # R-squared
 
                 ### Visually Checking Assumptions
@@ -619,13 +619,13 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 library(lme4)
                 library(MuMIn)
 
-                ris_model = lmer(data = trialData, Returned ~ Prediction + (1 + Prediction | Subject))
+                ris_model = lmer(data = trialData, as.numeric(Returned) ~ Prediction + (1 + Prediction | Subject))
                 r.squaredGLMM(ris_model)
 
-                ri_model = lmer(data = trialData, Returned ~ Prediction + (1 | Subject))
+                ri_model = lmer(data = trialData, as.numeric(Returned) ~ Prediction + (1 | Subject))
                 r.squaredGLMM(ri_model)
 
-                ric_model = lmer(data = trialData, Returned ~ Prediction + (1 | Subject))
+                ric_model = lmer(data = trialData, as.numeric(Returned) ~ Prediction + (1 | Subject))
                 r.squaredGLMM(ric_model)
 
         .. tab-item:: MatLab

@@ -420,7 +420,7 @@ bestModelFullDataset = c("Moral Strategies Model", "Greed Model", "Guilt Model",
 
 ### Model Performance
 
-modelPredictions = lm(data = trialData, Returned ~ Prediction)
+modelPredictions = lm(data = trialData, as.numeric(Returned) ~ Prediction)
 summary(modelPredictions) # R-squared
 
 ### Visually Checking Assumptions
@@ -444,13 +444,13 @@ qplot(x = trialData$Investment, y = (trialData$Prediction-as.numeric(trialData$R
 library(lme4)
 library(MuMIn)
 
-ris_model = lmer(data = trialData, Returned ~ Prediction + (1 + Prediction | Subject))
+ris_model = lmer(data = trialData, as.numeric(Returned) ~ Prediction + (1 + Prediction | Subject))
 r.squaredGLMM(ris_model)
 
-ri_model = lmer(data = trialData, Returned ~ Prediction + (1 | Subject))
+ri_model = lmer(data = trialData, as.numeric(Returned) ~ Prediction + (1 | Subject))
 r.squaredGLMM(ri_model)
 
-ric_model = lmer(data = trialData, Returned ~ Prediction + (1 | Subject))
+ric_model = lmer(data = trialData, as.numeric(Returned) ~ Prediction + (1 | Subject))
 r.squaredGLMM(ric_model)
 
 ### Fivefold Validation
@@ -578,7 +578,7 @@ subjectData$AIC_NID = length(df$Investment) * log(subjectData$SS_NID/length(df$I
 
 t.test(subjectData$modelAIC, subjectData$AIC_NID, paired = T)
 
-summary(lm(data = trialData, Returned ~ PredictedNID))
+summary(lm(data = trialData, as.numeric(Returned) ~ PredictedNID))
 
 aic_id = c(mean(subjectData$modelAIC), mean(subjectData$AIC_NID))
 
@@ -594,5 +594,3 @@ qplot(y = aic_id,
            label = "p = 0.18", vjust = -1, size = 4) + 
   scale_fill_manual(values = c(rgb(218, 165, 32, maxColorValue = 255), rgb(132.5, 132.5, 132.5, maxColorValue = 255))) + 
   scale_color_manual(values = c(rgb(0, 0, 0, maxColorValue = 255)))
-
-################ 3_4_0
