@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Social Utility Modeling Tutorials</title>
+    <title>Tutorials Home</title>
+    <link rel="icon" type="image/png" href="dnl_plastic.png">
     <meta name="description" content="A comprehensive guide to computationally modeling behavior in social decision-making tasks.">
     <meta name="author" content="Your Name">
 
@@ -69,12 +70,26 @@
             box-shadow: 0 0 0px rgba(0, 0, 0, 0); /* Soft shadow */
         }
 
+        .navbar {
+    overflow: hidden;
+    background-color: #333;
+    color: #fff;
+    top: 0;
+    width: calc(100% - 401px);
+    height: 92.75px;
+    font-size: 15px;
+    text-align: center;
+    position: fixed;
+    z-index: 1;
+    margin-left: 401px;
+    box-sizing: border-box;
+}
+
         /* Header styling */
         .nav-top {
             background-color: #470000; /* Graphite background */
             color: #fff; /* White text */
             padding: 10px;
-            border-left: 11px solid #b30000;
         }
 
         .nav-top a {
@@ -89,20 +104,6 @@
             color: #470000; /* Light red hover */
         }
 
-        .navbar {
-                    overflow: hidden;
-                    background-color: #470000;
-                    color: #fff;
-                    top: 0;
-                    width: calc(100% - 400px);
-                    height: 92px;
-                    font-size: 15px;
-                    text-align: center;
-                    position: fixed;
-                    z-index: 1;
-                    margin-left: 390px;
-                }
-
         .navbar a {
     margin-right: 40px;
     color: #fff;
@@ -111,20 +112,22 @@
     
     display: flex;
       justify-content: center; /* Centers all items */
-      gap: 14px; /* Adjusts space between links */
+      gap: 15px; /* Adjusts space between links */
       align-items: center;
       flex-wrap: nowrap; /* Prevents wrapping */
       width: 100%; /* Lets the content take up as much space as it needs */
       padding: 0;
+      font-size: 15px;
   }
   
   .navbar .content a {
     white-space: nowrap;
-    font-size: 14.8px;
+    font-size: 15px;
     font-weight: bold;
     font-family: 'Quicksand', sans-serif;
       margin: 15px;/* Adds space on the left and right of each link */
-      padding-top: 7.5px;
+      padding-top: 7.1px;
+      letter-spacing: 0;
   }
 
         .right-col {
@@ -147,6 +150,10 @@
         }
 
         .sidepanel .title:hover {
+            text-decoration: none; /* Remove underline on hover */
+        }
+
+        .navbar .center:hover {
             text-decoration: none; /* Remove underline on hover */
         }
 
