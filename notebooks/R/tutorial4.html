@@ -1384,7 +1384,7 @@ head(fivefold)</code></pre>
 <pre><code>## [1] 0.762689</code></pre>
 <p>Only lost about 1.5% in accuracy which is quite reassuring. And test
 it against the normally recovered model:</p>
-<pre class="r"><code>fivefold$BIC = as.numeric(fivefold$Deviance) + log(65) * 6
+<pre class="r"><code>fivefold$BIC = as.numeric(fivefold$Deviance) + log(65) * 5
 t.test(fivefold$BIC, altSubjectData$BIC_M5, paired = T)</code></pre>
 <pre><code>## 
 ##  Paired t-test
@@ -1546,7 +1546,7 @@ for (i in 1:length(included_subjects)){
 }
 
 altSubjectData$BIC_NID = 
-  as.numeric(altSubjectData$Deviance_NID) + log(65) * 6/(length(included_subjects))
+  as.numeric(altSubjectData$Deviance_NID) + log(65) * 5/(length(included_subjects))
 
 t.test(altSubjectData$BIC_M5, altSubjectData$BIC_NID, paired = T)</code></pre>
 <pre><code>## 

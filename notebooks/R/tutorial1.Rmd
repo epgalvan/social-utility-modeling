@@ -12,7 +12,7 @@ inequity = function(investment, multiplier, returned, endowment){
   return(((((investment * multiplier) - returned)/(endowment - investment + (investment * multiplier))) - 0.5)**2)
 }
 guilt = function(investment, believed_multiplier, returned, multiplier){
-  return((((investment * believed_multiplier * 0.5) - returned)/(investment * multiplier))**2)
+  return((((investment * believed_multiplier * 0.5) - returned)/(investment * believed_multiplier))**2)
 }
 ```
 
@@ -152,12 +152,12 @@ obj_function = function(params, decisions, method = "OLS") {
   
   predicted_utility = vector('numeric', length(trialList[,1]))
   observed_utility = vector('numeric', length(trialList[,1]))
-  chosen = decisions + 1
   for (k in 1:length(trialList[,1])){
     I = trialList[k, 1]
     M = trialList[k, 2]
     B = trialList[k, 3]
     E = trialList[k, 4]
+    R = decisions[k]
     Choices = seq(0, (I * M), 1)
     
     Utility = vector('numeric', length(Choices))
@@ -168,7 +168,8 @@ obj_function = function(params, decisions, method = "OLS") {
                            payout_maximization(I, M, Choices[n]))
     }
     predicted_utility[k] = max(Utility)
-    observed_utility[k] = Utility[chosen[k]]
+    chosen = which(abs(Choices - R) == min(abs(Choices - R)))[0]
+    observed_utility[k] = Utility[chosen]
   }
   if (method == "OLS"){
     return(sum((predicted_utility - observed_utility)**2))
@@ -239,7 +240,7 @@ And it seems that we somewhat overestimate theta values. So there may be some in
 
 ```{r}
 distance_new = (2*(theta_recovered - theta_true))**2 + 
-  (5*(0.5-theta_true)*(phi_recovered - phi_true))**2
+  (10*(0.5-theta_true)*(phi_recovered - phi_true))**2
 qplot(x = theta_true, y = phi_true, color = distance_new, size = distance_new, 
       geom = 'point') + scale_radius(limits=c(0, sqrt(2)), range=c(0, 20))
 
@@ -268,7 +269,7 @@ for (i in 1:length(freeParameters[,1])){
     B = 4
     E = 10
     
-    if (I < 10){
+    if (I*M < 10){
       Choices = seq(0, (I * M), 1)
     } else {
       Choices = seq(0, (I * M), round((I * M)/10)) #in increments of 10%
@@ -422,10 +423,6 @@ Now we can define some necessary variables and functions. We're going to redefin
 
 ```{r}
 subjectData = data.frame()
-trialList = read.csv2("C:/Users/DELL/Downloads/tutorial1_Data/trialSet.csv", sep =',', )
-trialList = trialList[,2:3]
-trialList$Believed_Multiplier = 4
-trialList$Endowment = 10
 
 obj_function = function(params, df, method = "OLS") {
   Theta = params[1]
@@ -433,13 +430,13 @@ obj_function = function(params, df, method = "OLS") {
   
   predicted_utility = vector('numeric', length(df[,1]))
   observed_utility = vector('numeric', length(df[,1]))
-  chosen = as.numeric(df[,4]) + 1
   for (k in 1:length(df[,1])){
     I = df[k, 2]
     M = df[k, 3]
     B = 4
     E = 10
-    if (I > 10) {
+    R = as.numeric(df[k,4])
+    if (I*M > 10) {
       Choices = seq(0, (I*M), round((I*M)/10))
     } else {
       Choices = seq(0, (I * M), 1)}
@@ -453,7 +450,8 @@ obj_function = function(params, df, method = "OLS") {
                            payout = payout_maximization(I, M, Choices[n]))
     }
     predicted_utility[k] = max(Utility)
-    observed_utility[k] = Utility[chosen[k]]
+    chosen = which(abs(Choices - R) == min(abs(Choices - R)))[0]
+    observed_utility[k] = Utility[chosen]
   }
   if (method == "OLS"){
     return(sum((predicted_utility - observed_utility)**2))
@@ -482,7 +480,7 @@ for (i in 1:length(included_subjects)){
     R = df$Returned[k]
     B = 4
     E = 10
-    if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+    if (I*M > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
     Utility = vector('numeric', length(Choices))
     for (n in 1:length(Choices)){
       Utility[n] = utility(theta = result$par[1], 
@@ -541,13 +539,13 @@ obj_function_guilt = function(params, df, method = "OLS") {
   
   predicted_utility = vector('numeric', length(df[,1]))
   observed_utility = vector('numeric', length(df[,1]))
-  chosen = as.numeric(df[,4]) + 1
   for (k in 1:length(df[,1])){
     I = df[k, 2]
     M = df[k, 3]
     B = 4
     E = 10
-    if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+    R = as.numeric(df[k,4])
+    if (I*M > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
     
     Utility = vector('numeric', length(Choices))
     for (n in 1:length(Choices)){
@@ -556,7 +554,8 @@ obj_function_guilt = function(params, df, method = "OLS") {
                                  guilt = guilt(I, B, Choices[n], M))
     }
     predicted_utility[k] = max(Utility)
-    observed_utility[k] = Utility[chosen[k]]
+    chosen = which(abs(Choices - R) == min(abs(Choices - R)))[0]
+    observed_utility[k] = Utility[chosen]
   }
   if (method == "OLS"){
     return(sum((predicted_utility - observed_utility)**2))
@@ -569,13 +568,13 @@ obj_function_inequity = function(params, df, method = "OLS") {
   
   predicted_utility = vector('numeric', length(df[,1]))
   observed_utility = vector('numeric', length(df[,1]))
-  chosen = as.numeric(df[,4]) + 1
   for (k in 1:length(df[,1])){
     I = df[k, 2]
     M = df[k, 3]
     B = 4
     E = 10
-    if (I > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
+    R = as.numeric(df[k,4])
+    if (I*M > 10) {Choices = seq(0, (I*M), round((I*M)/10))} else {Choices = seq(0, (I * M), 1)}
     
     Utility = vector('numeric', length(Choices))
     for (n in 1:length(Choices)){
@@ -584,7 +583,8 @@ obj_function_inequity = function(params, df, method = "OLS") {
                                     inequity = inequity(I, M, Choices[n], E))
     }
     predicted_utility[k] = max(Utility)
-    observed_utility[k] = Utility[chosen[k]]
+    chosen = which(abs(Choices - R) == min(abs(Choices - R)))[0]
+    observed_utility[k] = Utility[chosen]
   }
   if (method == "OLS"){
     return(sum((predicted_utility - observed_utility)**2))
@@ -624,7 +624,7 @@ for (i in 1:length(included_subjects)){
     R = df$Returned[k]
     B = 4
     E = 10
-    if (I > 10) {
+    if (I*M > 10) {
       Choices = seq(0, (I*M), round((I*M)/10))
     } else {
         Choices = seq(0, (I * M), 1)

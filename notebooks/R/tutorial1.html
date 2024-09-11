@@ -799,7 +799,7 @@ for (i in 1:length(freeParameters[,1])){
     B = 4
     E = 10
     
-    if (I &lt; 10){
+    if (I*M &lt; 10){
       Choices = seq(0, (I * M), 1)
     } else {
       Choices = seq(0, (I * M), round((I * M)/10)) #in increments of 10%

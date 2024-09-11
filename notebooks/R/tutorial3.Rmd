@@ -1,139 +1,98 @@
-# Tutorial 3 - Crockett et al., 2014
+# Tutorial 3 - Yu et al., 2022
 
 ## 1.4 Model the Data Generation Process
 
 First, let's define the functions
 
 ```{r}
-inequality = function(a1, b1, a2, b2){
-  d_Inequality = abs(a2 - b2) - abs(a1 - b1)
-  return(d_Inequality)
+harm = function(shocksLarger, shocksSmaller){
+  return(shocksLarger - shocksSmaller)
 }
-harm = function(a0, b0, a1, b1, a2, b2){
-  initial = c(a0, b0)
-  choice1 = c(a1, b1)
-  choice2 = c(a2, b2)
-  if (a0 == b0){advantaged = 1} else {advantaged = which(initial == max(initial))}
-  d_lossAdvantaged = (initial[advantaged] - choice1[advantaged]) - (initial[advantaged] - choice2[advantaged])
-  return(d_lossAdvantaged)
-}
-rankReverse = function(a0, b0, a1, b1, a2, b2){
-  if (a0 == b0){return(0)}
-  d_initial = a0 - b0
-  d_choice1 = a1 - b1
-  d_choice2 = a2 - b2
-  if (d_initial > 0){
-    if (d_choice1 < 0){choice1Reversed = 1} else {choice1Reversed = 0}
-    if (d_choice2 < 0){choice2Reversed = 1} else {choice2Reversed = 0}
-  } else if (d_initial < 0){
-    if (d_choice1 > 0){choice1Reversed = 1} else {choice1Reversed = 0}
-    if (d_choice2 > 0){choice2Reversed = 1} else {choice2Reversed = 0}
-  }
-  return(choice1Reversed - choice2Reversed)
+
+payout = function(moneyLarger, moneySmaller){
+  return(moneyLarger - moneySmaller)
 }
 ```
 
-Now let's check and see if they do what we want. Let's make an example trial for two players A and B with starting allocations a0 and b0 and possible choices 1 and 2 with different distributions between player A and player B:
+Now let's check and see if they do what we want. Let's make an example trial that has 10 euros for 15 shocks or :
 
 ```{r}
-example = data.frame(a0 = 20, b0 = 0, a1 = 8, b1 = 12, a2 = 15, b2 = 5)
+example = data.frame(moneyMore = 10, moneyLess = 0, shocksMore = 8, shocksLess = 5)
 example
 ```
 
 Now we can view the outputs of this example to make sure they look correct:
 
 ```{r}
-inequality(example$a1[1], example$b1[1], 
-           example$a2[1], example$b2[1])
-harm(example$a0[1], example$b0[1], 
-     example$a1[1], example$b1[1], 
-     example$a2[1], example$b2[1])
-rankReverse(example$a0[1], example$b0[1], 
-     example$a1[1], example$b1[1], 
-     example$a2[1], example$b2[1])
+harm(example$shocksMore[1], example$shocksLess[1])
+payout(example$moneyMore[1], example$moneyLess[1])
 ```
 
-So choice 1 is 6 more equal, causes more 7 harm, and reverses the existing rank. This is correct!
+So the choice for more has 3more harm for 10 more money: that's correct.
 
 ## 1.5 Simulating Data
 
 Now let's preallocate and define functions, trial list, and parameters
 
 ```{r}
-trialList = data.frame(a0 = sample(10:20, 100, replace = T))
-trialList$b0 = 20 - trialList$a0
-for (i in 1:nrow(trialList)){
-  trialList$a1 = sample(5:trialList$a0[i], 100, replace = T)
-}
-trialList$b1 = 20 - trialList$a1
-
-for (i in 1:nrow(trialList)){
-  trialList$a2 = sample(5:trialList$a0[i], 100, replace = T); trialList$a2[which(trialList$a2 == trialList$a1)] = 10
-}
-trialList$b2 = 20 - trialList$a2
-trialList = rbind(trialList, trialList[,c(2,1,4,3,6,5)])
+trialList = data.frame(Left = rep(c(T, F), 100),
+                       MoneyA = rep(rep(seq(11, 20), each = 10), times = 2),
+                       MoneyB = 10,
+                       ShocksA = 10,
+                       ShocksB = rep(rep(seq(0, 9), times = 10), times = 2))
 head(trialList)
 ```
 
 ```{r}
-utility = function(pars, IVs){
-  IVS = as.numeric(IVs)
-  a0 = IVs[1]; b0 = IVs[2]; a1 = IVs[3]; b1 = IVs[4]; a2 = IVs[5]; b2 = IVs[6]
-  alpha = pars[1]; delta = pars[2]; rho = pars[3]
-  inequality = inequality(a1, b1, a2, b2)
-  harm = harm(a0, b0, a1, b1, a2, b2)
-  rank = rankReverse(a0, b0, a1, b1, a2, b2)
-  return((alpha * inequality) - (delta * harm) - (rho * rank))
+utility = function(Payout, Harm, kappa){
+  return((Payout * kappa) - (Harm * (1 - kappa)))
 }
-probability = function(pars, utilitydiff){
-  beta = pars[length(pars)-2]; epsilon = pars[length(pars)-1]; gamma = pars[length(pars)]
+
+probability = function(beta, epsilon, gamma, utilitydiff, isLeft){
   prob = 1 / (1 + exp(-(beta * utilitydiff)))
-  prob = prob * (1 - 2 * epsilon) + epsilon + gamma * (2 * epsilon)
+  prob = prob * (1 - 2 * epsilon) + epsilon 
+  if (isLeft) {
+    prob = prob + gamma * (2 * epsilon)
+  } else {
+    prob = prob - gamma * (2 * epsilon)
+  }
   return(prob)
 }
 
-freeParameters = data.frame(alpha = rep(rep(seq(0, 1.5, 0.5), 
-                                            times = 16), each = 6) + 
-                              sample(seq(0, 0.5, 0.001), 6*64, replace = T),
-                            #ranging from 0 to 2
-                            delta = rep(rep(rep(seq(0, 1.5, 0.5), 
-                                                times = 4), each = 4), each = 6) + 
-                              sample(seq(0, 0.5, 0.001), 6*64, replace = T), 
-                            #ranging from 0 to 2
-                            rho = rep(rep(seq(0, 1.5, 0.5), 
-                                          each = 16), each = 6) + 
-                              sample(seq(0, 0.5, 0.001), 6*64, replace = T), 
-                            #ranging from 0 to 2
-                            beta = sample(seq(0,10), 6*64, replace = T), 
-                            # stochasticity
-                            epsilon = rep(seq(0, 0.5, 0.1), times = 64), 
-                            # noise
-                            gamma = sample(seq(-0.5, 0.4, 0.1), 
-                                           64*6, replace = T) + 
-                              sample(seq(0, 0.1, 0.001), 64*6, replace = T))
-                            # bias
+freeParameters = data.frame(kappa = rep(seq(0, 0.95, 0.05), times = 60) + 
+                              sample(seq(0, 0.05, 0.001), 20*6*10, replace = T),
+                            beta = sample(seq(0,100), 20*6*10, replace = T), 
+                            epsilon = rep(rep(seq(0, 0.5, 0.1), times = 10), 
+                                          each = 20),
+                            gamma = rep(seq(-0.5, 0.4, 0.1), each = 20*6) + 
+                              sample(seq(0, 0.1, 0.001), 20*6*10, replace = T)) 
 predictions = data.frame()
-
-generatePredictions = function(parameters, df){
-  pred = vector('numeric', nrow(df))
-  for (i in 1:nrow(df)){
-    thisTrialIVs = as.numeric(df[i, ])
-    utilityDiff = utility(parameters, thisTrialIVs)
-    pred[i] = max(min(
-      probability(parameters, utilityDiff), 
-      0.9999999999), 0.00000000001)
-  }
-  return(pred)
-}
 ```
 
 Now that all of that's done, let's generate predictions
 
 ```{r}
-for (i in 1:nrow(freeParameters)){
-  pars = freeParameters[i, ]
-  predictions[i, 1:nrow(trialList)] = 
-    as.numeric(round(generatePredictions(pars, trialList) * 1000)> sample(1000,1))
+for (i in 1:length(freeParameters[,1])){
+  Kappa = freeParameters[i,1]
+  Beta = freeParameters[i,2]
+  Epsilon = freeParameters[i,3]
+  Gamma = freeParameters[i,4]
+  for (k in 1:length(trialList[,1])){
+    shocksMore = trialList$ShocksA[k]
+    shocksLess = trialList$ShocksB[k]
+    moneyMore = trialList$MoneyA[k]
+    moneyLess = trialList$MoneyB[k]
+    
+    # Just Added
+    Utility = utility(Harm = harm(shocksMore, shocksLess),
+                      Payout = payout(moneyMore, moneyLess),
+                      kappa = Kappa)
+    predictions[i,k] = as.numeric(round(probability(Beta, 
+                                                    Epsilon, 
+                                                    Gamma, 
+                                                    Utility, trialList$Left[k]) *
+                                          1000)> sample(1000,1))
+  }
 }
 ```
 
@@ -142,12 +101,31 @@ for (i in 1:nrow(freeParameters)){
 Let's write the objective function
 
 ```{r}
-obj_function = function(params, df, optimMethod = "MLE") { 
-  Prob1 = generatePredictions(params, df); Chose1 = df[,7]
+obj_function_noConditions = function(params, df, optimMethod = "MLE") { 
+  Kappa = params[1]
+  Beta = params[2]
+  Epsilon = params[3]
+  Gamma = params[4]
+  
+  ProbHarm = vector('numeric', length(df[,1]))
+  choices = as.numeric(df[, 6])
+  for (k in 1:length(df[,1])){
+    isLeft = df[k, 1]
+    moneyMore = df[k, 2]
+    moneyLess = df[k, 3]
+    shocksMore = df[k, 4]
+    shocksLess = df[k, 5]
+    
+    Utility = utility(Harm = harm(shocksMore, shocksLess),
+                      Payout = payout(moneyMore, moneyLess),
+                      kappa = Kappa)
+    ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 
+                          0.9999999999), 0.00000000001)
+  }
   if (optimMethod == "OLS"){
-    return(sum((Chose1 - Prob1)**2)) 
+    return(sum((choices - ProbHarm)**2))
   } else if (optimMethod == "MLE"){
-    return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))
+    return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
   }
 }
 ```
@@ -157,21 +135,19 @@ Now we can set up the optimizer
 ```{r}
 library(pracma)
 
-initial_params = c(1,1,1, 4, 0.25, 0)
-lower_bounds = c(0, 0, 0, 0, 0, -0.5)
-upper_bounds = c(2,2,2, 10, 0.5, 0.5)
-freeParameters$alphaRecovered = 0
-freeParameters$deltaRecovered = 0
-freeParameters$rhoRecovered = 0
+initial_params = c(0.5, 4, 0.25, 0)
+lower_bounds = c(0, 0, 0, -0.5)
+upper_bounds = c(1, 100, 0.5, 0.5)
+freeParameters$kappaRecovered = 0
 freeParameters$betaRecovered = 0
 freeParameters$epsilonRecovered = 0
 freeParameters$gammaRecovered = 0
 
-optimize = function(obj, initial_params, lower_bounds, upper_bounds, df){
+optimize = function(df){
   tryCatch({
-    fmincon(obj, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "MLE", tol = 1e-08)
+    fmincon(obj_function_noConditions, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "MLE")
   }, error = function(e){
-    fmincon(obj, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "OLS", tol = 1e-08)
+    fmincon(obj_function_noConditions, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "OLS")
   })
 }
 ```
@@ -179,16 +155,14 @@ optimize = function(obj, initial_params, lower_bounds, upper_bounds, df){
 And this lets us recover the free parameters
 
 ```{r}
-for (i in 1:nrow(freeParameters)) {
+for (i in 1:length(freeParameters$kappa)) {
   trialList$Predictions = as.numeric(predictions[i,])
-  result = 
-    optimize(obj_function, initial_params, lower_bounds, upper_bounds, trialList)
-  freeParameters$alphaRecovered[i] = result$par[1]
-  freeParameters$deltaRecovered[i] = result$par[2]
-  freeParameters$rhoRecovered[i] = result$par[3]
-  freeParameters$betaRecovered[i] = result$par[4]
-  freeParameters$epsilonRecovered[i] = result$par[5]
-  freeParameters$gammaRecovered[i] = result$par[6]
+  result = optimize(df = trialList)
+  
+  freeParameters$kappaRecovered[i] = result$par[1]
+  freeParameters$betaRecovered[i] = result$par[2]
+  freeParameters$epsilonRecovered[i] = result$par[3]
+  freeParameters$gammaRecovered[i] = result$par[4]
 }
 ```
 
@@ -199,82 +173,150 @@ library(ggplot2)
 
 freeParameters$Epsilon = factor(freeParameters$epsilon)
 
-qplot(data = freeParameters, x = alpha, y = alphaRecovered, color = Epsilon) + 
-  geom_smooth(se = F) + geom_abline()
-qplot(data = freeParameters, x = delta, y = deltaRecovered, color = Epsilon) + 
-  geom_smooth(se = F) + geom_abline()
-qplot(data = freeParameters, x = rho, y = rhoRecovered, color = Epsilon) + 
-  geom_smooth(se = F) + geom_abline()
-qplot(data = freeParameters, x = beta, y = betaRecovered, color = Epsilon) + 
-  geom_smooth(se = F)+ geom_abline()
-qplot(data = freeParameters, x = epsilon, y = epsilonRecovered) + 
-  geom_smooth(method = 'lm') + geom_abline()
+qplot(data = freeParameters, x = kappa, y = kappaRecovered, color = Epsilon) + geom_smooth(se = F) + geom_abline()
+qplot(data = freeParameters, x = beta, y = betaRecovered, color = Epsilon) + geom_smooth(se = F)+ geom_abline()
+qplot(data = freeParameters, x = epsilon, y = epsilonRecovered) + geom_smooth(method = 'lm') + geom_abline()
 qplot(data = freeParameters, x = gamma, y = gammaRecovered, color = Epsilon) + geom_smooth(se = F) + geom_abline() 
 ```
 
-None of these look particularly reliable (even at low values of epsilon). The exception is epsilon.
+The parameter that we are most interested in (i.e. kappa) is really reliable, even up to high (0.4) values of epsilon. At 0.5, it is completely random.
 
 ## 2.1 Recovering Free Parameters
 
-First let's get the trial data from participants
+Let's get the trial data from participants. Data are stored in seperate mat files so we need to go through these to compile the data
 
 ```{r}
-trialData = read.csv2(
-  "C:/Users/DELL/Downloads/Data/Data/HPP_fMRI_beh_data_for_lmm.csv", sep = ',')
-head(trialData)
-```
+library(R.matlab) 
 
-So we need participants' ID numbers, a0-b2, and their choices in the format 1 or 2. In the above data frame, those are columns 1, 6, 7, 13, 14, 21, 22, and 26 so let's extract those. Also, they only analyzed the rank-reverse condition (perhaps this is why we couldn't reliably recover parameters) so that is "trail_type" 3.
-
-```{r}
-trialData = trialData[which(trialData$trail_type==3), c(1,6,7,13,14,21,22,36)]
-colnames(trialData) = c('SubjectID', 'a0', 'b0', 'a1', 'b1', 'a2', 'b2', 'Chose1')
-trialData$Chose1 = trialData$Chose1 - 1
-trialData$Prob1 = 0
-head(trialData)
-```
-
-Now we can define some necessary variables and functions
-
-```{r}
-included_subjects = levels(factor(trialData$SubjectID))
+parentfolder = 'C:/Users/DELL/Downloads/fMRI_choice_data/run' 
+included_subjects = list.files(paste(parentfolder, '1', sep = ''), full.names = F) 
+included_subjects = gsub('.mat', '', gsub('BC_1', '', included_subjects)) 
 
 subjectData = data.frame()
 
 grab_data = function(subject){
-  return(trialData[which(trialData$SubjectID == subject), -1])
+  if (sum(grepl(pattern = subject, x = list.files(paste(parentfolder, '2/', sep = ''), full.names = F))) == 0){
+    return("skipping")
+  }
+  for (r in 1:2){
+    datafile = paste(parentfolder, r, '/BC_', r, subject, '.mat', sep = '')
+    temp = readMat(datafile)
+    if (r == 1){
+      choices = temp["choice"]
+      df = data.frame(temp["trialinfo"])
+      df = cbind(df[1:76, ], as.data.frame(choices)[1:76, ])
+    } else {
+      choices = temp["choice"]
+      temp = data.frame(temp["trialinfo"])
+      temp = cbind(temp[1:76, ], as.data.frame(choices)[1:76, ])
+      df = rbind(df, temp) #some have duplicate values
+    }
+  }
+  df[which(is.na(df[,11])), 11] = sample(c(1,2), size = sum(is.na(df[,11])), replace = T)
+  df[, 10] = (df[, 10] * -1) + 2 # 1 is harm 0 is help now
+  df[, 11] = (df[, 11] * -1) + 2 # 1 is self 0 is other now
+  colnames(df) = c("trialNumber", "moneyLess", "moneyDifference", "moneyMore", "shocksLess", "shocksDifference", "shocksMore", "isLeft", "runNumber", "isSelf", "choseHarm")
+  
+  return(df)
 }
 
-addPredictions = function(trialData, subject, predictions){
-  trialData$Prob1[which(trialData$SubjectID == subject)] = predictions
-  return(trialData)
+generate_predictions = function(df, result){
+  df$ProbHarm = 0
+  Epsilon = result$par[5]
+  Gamma = result$par[6]
+  for (k in 1:length(df[,1])){
+    shocksMore = df$shocksMore[k]
+    shocksLess = df$shocksLess[k]
+    moneyMore = df$moneyMore[k]
+    moneyLess = df$moneyLess[k]
+    isLeft = as.logical(df$isLeft[k])
+    isSelf = as.logical(df$isSelf[k])
+    if (isSelf) {Kappa = result$par[1]; Beta = result$par[3]} else {Kappa = result$par[2]; Beta = result$par[4]}
+    
+    # Just Added
+    Utility = utility(Harm = harm(shocksMore, shocksLess),
+                      Payout = payout(moneyMore, moneyLess),
+                      kappa = Kappa)
+    df$ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 0.9999999999), 0.00000000001)
+  }
+  return(df)
 }
 ```
 
-Which allows us to Recover Free Parameters and Define Predicted Decisions
+So we've got a way to get all of the files that we need (per subject, per run), a function to extract the data, and function to generate predictions. We'll also update the objective function to handle both conditions (and ensure that we provide the correct number of parameter arguments) in addition to providing some error handling to our optimization procedure.
+
+```{r}
+obj_function = function(params, df, optimMethod = "MLE") { 
+  Epsilon = params[5]
+  Gamma = params[6]
+  
+  ProbHarm = vector('numeric', length(df[,1]))
+  choices = as.numeric(df[, 11])
+  for (k in 1:length(df[,1])){
+    isLeft = as.logical(df[k, 8])
+    isSelf = as.logical(df[k, 10])
+    if (isSelf){Kappa = params[1]; Beta = params[3]} else {Kappa = params[2]; Beta = params[4]}
+    moneyMore = as.numeric(df[k, 4])
+    moneyLess = as.numeric(df[k, 2])
+    shocksMore = as.numeric(df[k, 7])
+    shocksLess = as.numeric(df[k, 5])
+    
+    Utility = utility(Harm = harm(shocksMore, shocksLess),
+                      Payout = payout(moneyMore, moneyLess),
+                      kappa = Kappa)
+    ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 0.9999999999), 0.00000000001)
+  }
+  if (optimMethod == "OLS"){
+    return(sum((choices - ProbHarm)**2))
+  } else if (optimMethod == "MLE"){
+    return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
+  }
+}
+
+initial_params = c(0.5, 0.5, 4, 4, 0.25, 0)
+lower_bounds = c(0, 0, 0, 0, 0, -0.5)
+upper_bounds = c(1, 1, 100, 100, 0.5, 0.5)
+
+optimize = function(df){
+  tryCatch({
+    fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "MLE")
+  }, error = function(e){
+    fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "OLS")
+  })
+}
+```
+
+All of this allows us to Recover Free Parameters and Define Predicted Decisions
 
 ```{r}
 for (i in 1:length(included_subjects)){
   df = grab_data(included_subjects[i])
-  result = optimize(obj_function, initial_params, lower_bounds, upper_bounds, df)
+  if (is.character(df)){next}
   
-  # Just Added
-  df$Prob1 = generatePredictions(result$par, df)
+  result = optimize(df)
   
-  model_SS = sum((df$Chose1 - df$Prob1)**2)
-  model_NLL = -2*sum(df$Chose1 * log(df$Prob1) + (1 - df$Chose1) * log(1 - df$Prob1))
+  df = generate_predictions(df, result)
+  
+  model_SS = sum((df$choseHarm - df$ProbHarm)**2)
+  model_NLL = -2*sum(df$choseHarm * log(df$ProbHarm) + (1 - df$choseHarm) * log(1 - df$ProbHarm))
   
   subjectData[i, 1:9] = c(included_subjects[i], result$par[1], result$par[2], result$par[3], result$par[4], result$par[5], result$par[6],
                      model_SS, model_NLL)
   
-  trialData = addPredictions(trialData, included_subjects[i], df$Prob1)
+  df = cbind(data.frame(SubjectID = rep(included_subjects[i], length(df$trialNumber))), df)
+  if (i == 1) {trialData = df} else {trialData = rbind(trialData, df)}
 }
 
 colnames(subjectData) = c("subjectID", 
-                          "Alpha", "Delta", "Rho", 
-                          "Beta", "Epsilon", "Gamma", 
-                          "SS", "Deviance")
+                          "Kappa_Self", "Kappa_Other", "Beta_Self", "Beta_Other",
+                          "Epsilon", "Gamma", "SS", "Deviance")
 head(subjectData)
+```
+
+Okay, the subject level data looks good, how about the trial level data?
+
+```{r}
+head(trialData)
 ```
 
 ## 2.2 Compute Model Fit Index
@@ -282,90 +324,139 @@ head(subjectData)
 We will calculate BIC as the model fit index because we are attempting to model the probabilistic nature of the data generation process.
 
 ```{r}
-subjectData$BIC = as.numeric(subjectData$Deviance) + log(65) * 6
+subjectData$BIC = as.numeric(subjectData$Deviance) + log(152) * 6
 ```
 
 ## 2.3 Identity the Best Model
 
-We need to define new objective functions for each model. Since each model uses the same utility function, but holds some variables constant (at 0), we only really need to modify the number of parameter inputs and set the constant values to 0. We can also use a list of indices so that the we can use the same function to generate predictions down the line.
+We need to define new objective functions for each model. Since each model uses the same utility function, but holds some variables constant (at 0), we only really need to modify the number of parameter inputs and set the constant values to 0. We need the indices of the values that we're actually using and we can adjust the error-handling optimization procedure (i.e. the optimize function) to .
 
 ```{r}
-of_alphaOnly = function(params, df, optimMethod = "MLE"){
-  params_new = rep(0, 6); params_new[c(1, 4:6)] = params
-  Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
-  if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
-  } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
-}
-of_deltaOnly = function(params, df, optimMethod = "MLE"){
-  params_new = rep(0, 6); params_new[c(2, 4:6)] = params
-  Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
-  if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
-  } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
-}
-of_rhoOnly = function(params, df, optimMethod = "MLE"){
-  params_new = rep(0, 6); params_new[c(3:6)] = params
-  Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
-  if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
-  } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
-}
-of_ad = function(params, df, optimMethod = "MLE"){
-  params_new = rep(0, 6); params_new[c(1:2, 4:6)] = params
-  Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
-  if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
-  } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
-}
-of_ar = function(params, df, optimMethod = "MLE"){
-  params_new = rep(0, 6); params_new[c(1, 3:6)] = params
-  Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
-  if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
-  } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
-}
-of_dr = function(params, df, optimMethod = "MLE"){
-  params_new = rep(0, 6); params_new[c(2:6)] = params
-  Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
-  if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
-  } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
-}
-of_noEpsilon = function(params, df, optimMethod = "MLE"){
-  params_new = rep(0, 6); params_new[c(1:4)] = params
-  Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
-  if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
-  } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
-}
-of_noGamma = function(params, df, optimMethod = "MLE"){
-  params_new = rep(0, 6); params_new[c(1:5)] = params
-  Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
-  if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
-  } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
-}
-of_GammaOnly = function(params, df, optimMethod = "MLE"){
-  params_new = rep(0, 6); params_new[5] = 0.5; params_new[6] = params
-  Prob1 = generatePredictions(params_new, df); Chose1 = df[,7]
-  if (optimMethod == "OLS"){return(sum((Chose1 - Prob1)**2)) 
-  } else if (optimMethod == "MLE"){return(-sum(Chose1 * log(Prob1) + (1 - Chose1) * log(1 - Prob1)))}
+optimize = function(of, using, df){
+  tryCatch({
+    fmincon(of, 
+            x0 = initial_params[using], lb = lower_bounds[using], ub = upper_bounds[using], df = df, optimMethod = "MLE")
+  }, error = function(e){
+    fmincon(of, x0 = initial_params[using], lb = lower_bounds[using], ub = upper_bounds[using], df = df, optimMethod = "OLS")
+  })
 }
 
-ofs = list(of_alphaOnly, of_deltaOnly, of_rhoOnly, 
-           of_ad, of_ar, of_dr, 
-           of_noEpsilon, of_noGamma, of_GammaOnly)
-idxs = list(
-  c(1,4:6), c(2,4:6), c(3:6), c(1:2, 4:6), c(1, 3:6), c(2:6), c(1:4), c(1:5), c(6))
-```
+obj_functionNoGamma = function(params, df, optimMethod = "MLE") {
+  Epsilon = params[5]
+  Gamma = 0 
+  
+  ProbHarm = vector('numeric', length(df[,1]))
+  choices = as.numeric(df[, 11])
+  for (k in 1:length(df[,1])){
+    isLeft = as.logical(df[k, 8])
+    isSelf = as.logical(df[k, 10])
+    if (isSelf){Kappa = params[1]; Beta = params[3]} else {Kappa = params[2]; Beta = params[4]}
+    moneyMore = as.numeric(df[k, 4])
+    moneyLess = as.numeric(df[k, 2])
+    shocksMore = as.numeric(df[k, 7])
+    shocksLess = as.numeric(df[k, 5])
+    
+    Utility = utility(Harm = harm(shocksMore, shocksLess),
+                      Payout = payout(moneyMore, moneyLess),
+                      kappa = Kappa)
+    ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 
+                          0.9999999999), 0.00000000001)
+  }
+  if (optimMethod == "OLS"){
+    return(sum((choices - ProbHarm)**2))
+  } else if (optimMethod == "MLE"){
+    return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
+  }
+}
+obj_functionNoEpsilon = function(params, df, optimMethod = "MLE") { 
+  Epsilon = 0
+  Gamma = 0 
+  
+  ProbHarm = vector('numeric', length(df[,1]))
+  choices = as.numeric(df[, 11])
+  for (k in 1:length(df[,1])){
+    isLeft = as.logical(df[k, 8])
+    isSelf = as.logical(df[k, 10])
+    if (isSelf){Kappa = params[1]; Beta = params[3]} else {Kappa = params[2]; Beta = params[4]}
+    moneyMore = as.numeric(df[k, 4])
+    moneyLess = as.numeric(df[k, 2])
+    shocksMore = as.numeric(df[k, 7])
+    shocksLess = as.numeric(df[k, 5])
+    
+    Utility = utility(Harm = harm(shocksMore, shocksLess),
+                      Payout = payout(moneyMore, moneyLess),
+                      kappa = Kappa)
+    ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 
+                          0.9999999999), 0.00000000001)
+  }
+  if (optimMethod == "OLS"){
+    return(sum((choices - ProbHarm)**2))
+  } else if (optimMethod == "MLE"){
+    return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
+  }
+}
+obj_functionNoConditions = function(params, df, optimMethod = "MLE") { 
+  Kappa = params[1] 
+  Beta = params[2]
+  Epsilon = params[3] 
+  Gamma = params[4]
+  
+  ProbHarm = vector('numeric', length(df[,1]))
+  choices = as.numeric(df[, 11])
+  for (k in 1:length(df[,1])){
+    isLeft = as.logical(df[k, 8])
+    isSelf = as.logical(df[k, 10])
+    moneyMore = as.numeric(df[k, 4])
+    moneyLess = as.numeric(df[k, 2])
+    shocksMore = as.numeric(df[k, 7])
+    shocksLess = as.numeric(df[k, 5])
+    
+    Utility = utility(Harm = harm(shocksMore, shocksLess),
+                      Payout = payout(moneyMore, moneyLess),
+                      kappa = Kappa)
+    ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft), 
+                          0.9999999999), 0.00000000001)
+  }
+  if (optimMethod == "OLS"){
+    return(sum((choices - ProbHarm)**2))
+  } else if (optimMethod == "MLE"){
+    return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
+  }
+}
+obj_functionNoKappa = function(params, df, optimMethod = "MLE") { 
+  Kappa = 0 
+  Beta = 0 
+  Epsilon = 0.5 
+  Gamma = params[1] 
+  
+  ProbHarm = vector('numeric', length(df[,1]))
+  choices = as.numeric(df[, 11])
+  for (k in 1:length(df[,1])){
+    isLeft = as.logical(df[k, 8])
+    isSelf = as.logical(df[k, 10])
+    moneyMore = as.numeric(df[k, 4])
+    moneyLess = as.numeric(df[k, 2])
+    shocksMore = as.numeric(df[k, 7])
+    shocksLess = as.numeric(df[k, 5])
+    
+    Utility = utility(Harm = harm(shocksMore, shocksLess),
+                      Payout = payout(moneyMore, moneyLess),
+                      kappa = Kappa)
+    ProbHarm[k] = max(min(probability(Beta, Epsilon, Gamma, Utility, isLeft),
+                          0.9999999999), 0.00000000001)
+  }
+  if (optimMethod == "OLS"){
+    return(sum((choices - ProbHarm)**2))
+  } else if (optimMethod == "MLE"){
+    return(-sum(choices * log(ProbHarm) + (1 - choices) * log(1 - ProbHarm)))
+  }
+}
+NoGamma = seq(1, 5)
+NoEpsilon = seq(1, 4)
+NoConditions = c(1, 3, 5, 6)
+NoKappa = 6
 
-And now we can preallocate the predictions for each model and the new data frame
-
-```{r}
 altSubjectData = data.frame()
-altTrialData = trialData[,-9]
-altTrialData$alphaOnly_Prob1 = 0
-altTrialData$deltaOnly_Prob1 = 0
-altTrialData$rhoOnly_Prob1 = 0
-altTrialData$ad_Prob1 = 0
-altTrialData$ar_Prob1 = 0
-altTrialData$dr_Prob1 = 0
-altTrialData$noEpsilon_Prob1 = 0
-altTrialData$noGamma_Prob1 = 0
-altTrialData$gammaOnly_Prob1 = 0
 ```
 
 Now let's Recover Free Parameters and Generate Predictions for this Model
@@ -373,66 +464,54 @@ Now let's Recover Free Parameters and Generate Predictions for this Model
 ```{r}
 for (i in 1:length(included_subjects)){
   df = grab_data(included_subjects[i])
-  outputs = vector('numeric', 
-                   length = sum(length(c(c(1,4:6), 
-                                         c(2,4:6), 
-                                         c(3:6), 
-                                         c(1:2, 4:6), 
-                                         c(1, 3:6), 
-                                         c(2:6), 
-                                         c(1:4), 
-                                         c(1:5), 
-                                         c(6)))) + 2*9)
-  j = 0
-  for (k in 1:length(idxs)){
-    idx = idxs[k][[1]];
-    initials = initial_params[idx]
-    uppers = upper_bounds[idx]
-    lowers = lower_bounds[idx]
-    of = ofs[k][[1]]
-    if (length(idx) > 1){
-      result = optimize(of, initials, lowers, uppers, df)
-    } else {
-      result = optim(par = initials, 
-                     fn = of, 
-                     method = "L-BFGS-B", 
-                     lower = lowers, 
-                     upper = uppers, 
-                     df = df)
-    }
-    pars = rep(0, times = 6)
-    pars[idx] = result$par
-    df$Prob1 = 0
-    df$Prob1 = generatePredictions(pars, df)
-    
-    model_SS = sum((df$Chose1 - df$Prob1)**2)
-    model_NLL = -2*sum(df$Chose1*log(df$Prob1)+(1-df$Chose1)*log(1-df$Prob1))
-    outputs[(j+1):(j+2+length(result$par))] = c(result$par, model_SS, model_NLL)
-    j = j+2+length(result$par)
-    altTrialData[
-      which(altTrialData$SubjectID == included_subjects[i]), (8+k)] = df$Prob1
-  }
+  if (is.character(df)){next}
   
-  altSubjectData[i, 1:56] = c(included_subjects[i], outputs)
+  resultNoGamma = optimize(obj_functionNoGamma, NoGamma, df)
+  resultNoEpsilon = optimize(obj_functionNoEpsilon, NoEpsilon, df)
+  resultNoConditions = optimize(obj_functionNoConditions, NoConditions, df)
+  resultNoKappa = optim(obj_functionNoKappa,par = initial_params[NoKappa], lower = lower_bounds[NoKappa], upper = upper_bounds[NoKappa], df = df, method = 'L-BFGS-B')
+  
+  dfNoGamma = generate_predictions(df, data.frame(par = c(resultNoGamma$par[1:5], 0)))
+  dfNoEpsilon = generate_predictions(df, data.frame(par = c(resultNoEpsilon$par[1:4], 0, 0)))
+  dfNoConditions = generate_predictions(df, data.frame(par = c(resultNoConditions$par[c(1, 1, 2, 2, 3, 4)])))
+  dfNoKappa = generate_predictions(df, data.frame(par = c(0, 0, 0, 0, 0.5, resultNoKappa$par[1])))
+  
+  modelNG_SS = sum((dfNoGamma$choseHarm - dfNoGamma$ProbHarm)**2)
+  modelNG_NLL = -2*sum(dfNoGamma$choseHarm * log(dfNoGamma$ProbHarm) + (1 - dfNoGamma$choseHarm) * log(1 - dfNoGamma$ProbHarm))
+  modelNE_SS = sum((dfNoEpsilon$choseHarm - dfNoEpsilon$ProbHarm)**2)
+  modelNE_NLL = -2*sum(dfNoEpsilon$choseHarm * log(dfNoEpsilon$ProbHarm) + (1 - dfNoEpsilon$choseHarm) * log(1 - dfNoEpsilon$ProbHarm))
+  modelNC_SS = sum((dfNoConditions$choseHarm - dfNoConditions$ProbHarm)**2)
+  modelNC_NLL = -2*sum(dfNoConditions$choseHarm * log(dfNoConditions$ProbHarm) + (1 - dfNoConditions$choseHarm) * log(1 - dfNoConditions$ProbHarm))
+  modelNK_SS = sum((dfNoKappa$choseHarm - dfNoKappa$ProbHarm)**2)
+  modelNK_NLL = -2*sum(dfNoKappa$choseHarm * log(dfNoKappa$ProbHarm) + (1 - dfNoKappa$choseHarm) * log(1 - dfNoKappa$ProbHarm))
+  
+  altSubjectData[i, 1:23] = c(included_subjects[i], 
+                              resultNoGamma$par[1], resultNoGamma$par[2], resultNoGamma$par[3], resultNoGamma$par[4], resultNoGamma$par[5], 
+                              resultNoEpsilon$par[1], resultNoEpsilon$par[2], resultNoEpsilon$par[3], resultNoEpsilon$par[4], 
+                              resultNoConditions$par[1], resultNoConditions$par[2], resultNoConditions$par[3], resultNoConditions$par[4], 
+                              resultNoKappa$par[1],
+                              modelNG_SS, modelNG_NLL, modelNE_SS, modelNE_NLL, modelNC_SS, modelNC_NLL, modelNK_SS, modelNK_NLL)
+  
+  
+  df = cbind(data.frame(SubjectID = rep(included_subjects[i], length(df$trialNumber))), df)
+  df$ProbHarmNG = dfNoGamma$ProbHarm
+  df$ProbHarmNE = dfNoEpsilon$ProbHarm
+  df$ProbHarmNC = dfNoConditions$ProbHarm
+  df$ProbHarmNK = dfNoKappa$ProbHarm
+  if (i == 1) {altTrialData = df} else {altTrialData = rbind(altTrialData, df)}
 }
 
-colnames(altSubjectData) = c('SubjectID', 'Alpha_M1', 'Beta_M1', 'Epsilon_M1',
-                             'Gamma_M1', 'SS_M1', 'Deviance_M1', 'Delta_M2',
-                             'Beta_M2', 'Epsilon_M2', 'Gamma_M2', 'SS_M2',
-                             'Deviance_M2', 'Rho_M3', 'Beta_M3', 'Epsilon_M3',
-                             'Gamma_M3', 'SS_M3', 'Deviance_M3', 'Alpha_M4',
-                             'Delta_M4', 'Beta_M4', 'Epsilon_M4', 'Gamma_M4',
-                             'SS_M4', 'Deviance_M4', 'Alpha_M5', 'Rho_M5',
-                             'Beta_M5', 'Epsilon_M5', 'Gamma_M5', 'SS_M5',
-                             'Deviance_M5', 'Delta_M6', 'Rho_M6', 'Beta_M6',
-                             'Epsilon_M6', 'Gamma_M6', 'SS_M6', 'Deviance_M6',
-                             'Alpha_M7', 'Delta_M7', 'Rho_M7', 'Beta_M7', 'SS_M7',
-                             'Deviance_M7', 'Alpha_M8', 'Delta_M8', 'Rho_M8',
-                             'Beta_M8', 'Epsilon_M8', 'SS_M8', 'Deviance_M8',
-                             'Gamma_M9', 'SS_M9', 'Deviance_M9')
+colnames(altSubjectData) = c('SubjectID', 'KappaSelfM2', 'KappaOtherM2', 
+                             'BetaSelfM2', 'BetaOtherM2', 'EpsilonM2',
+                             'KappaSelfM3', 'KappaOtherM3', 'BetaSelfM3', 
+                             'BetaOtherM3', 'KappaM4', 'BetaM4', 'EpsilonM4',
+                             'GammaM4', 'GammaM5', 
+                             'SSM2', 'DevianceM2', 'SSM3', 'DevianceM3', 
+                             'SSM4', 'DevianceM4', 'SSM5', 'DevianceM5')
 
 for (i in 2:ncol(altSubjectData)){
-  altSubjectData[,i] = as.numeric(altSubjectData[,i])}
+  altSubjectData[,i] = as.numeric(altSubjectData[,i])
+}
 head(altSubjectData)
 ```
 
@@ -445,125 +524,63 @@ head(altTrialData)
 Now we can compute BIC for these models
 
 ```{r}
-altSubjectData$BIC_M1 = (altSubjectData$Deviance_M1) + log(65) * 4
-altSubjectData$BIC_M2 = (altSubjectData$Deviance_M2) + log(65) * 4
-altSubjectData$BIC_M3 = (altSubjectData$Deviance_M3) + log(65) * 4
-altSubjectData$BIC_M4 = (altSubjectData$Deviance_M4) + log(65) * 5
-altSubjectData$BIC_M5 = (altSubjectData$Deviance_M5) + log(65) * 5
-altSubjectData$BIC_M6 = (altSubjectData$Deviance_M6) + log(65) * 5
-altSubjectData$BIC_M7 = (altSubjectData$Deviance_M7) + log(65) * 4
-altSubjectData$BIC_M8 = (altSubjectData$Deviance_M8) + log(65) * 5
-altSubjectData$BIC_M9 = (altSubjectData$Deviance_M9) + log(65) * 1
+altSubjectData$BICM2 = as.numeric(altSubjectData$DevianceM2) + log(152) * 5
+altSubjectData$BICM3 = as.numeric(altSubjectData$DevianceM3) + log(152) * 4
+altSubjectData$BICM4 = as.numeric(altSubjectData$DevianceM4) + log(152) * 4
+altSubjectData$BICM5 = as.numeric(altSubjectData$DevianceM5) + log(152) * 1
 ```
 
 And now we can compare the BIC of all models
 
 ```{r}
-modelBIC = c(sum(subjectData$BIC), 
-             sum(altSubjectData$BIC_M1), 
-             sum(altSubjectData$BIC_M2), 
-             sum(altSubjectData$BIC_M3), 
-             sum(altSubjectData$BIC_M4), 
-             sum(altSubjectData$BIC_M5), 
-             sum(altSubjectData$BIC_M6), 
-             sum(altSubjectData$BIC_M7), 
-             sum(altSubjectData$BIC_M8), 
-             sum(altSubjectData$BIC_M9))
+modelBIC = c(sum(subjectData$BIC[-20]), 
+             sum(altSubjectData$BICM2[-20]), 
+             sum(altSubjectData$BICM3[-20]), 
+             sum(altSubjectData$BICM4[-20]), 
+             sum(altSubjectData$BICM5[-20]))
 which(modelBIC == min(modelBIC))
 ```
 
-This analysis indicates that the best model has Alpha, Rho, Beta, Epsilon, and Gamma - not Delta (i.e. harm aversion).
+This analysis indicates that the best model has KappaSelf, BetaSelf, KappaOther, BetaOther, and Epsilon but not Gamma.
 
 ## 2.4 Validate the Best Model
 
 First, let's assess model performance at a basic level: we can look at prediction accuracy to begin
 
 ```{r}
-sum(altTrialData$Chose1 == round(altTrialData$ar_Prob1))/nrow(altTrialData)
+sum(altTrialData$choseHarm == round(altTrialData$ProbHarmNG))/nrow(altTrialData)
 ```
 
-Next, we can proceed to look at the distribution of model accuracy across participants:
+Now we can check assumptions: first linearity (we'll do this across both choices)
 
 ```{r}
-qplot(altSubjectData$BIC_M5, geom = 'density')
+ggplot(data = altTrialData) + 
+  geom_smooth(aes(x = ProbHarmNG, y = choseHarm, group = isSelf, color = factor(isSelf))) 
 ```
 
-Let's look at the bottom 25% of model performance:
+Looks very good. Second, normality of error:
 
 ```{r}
-worstExplained = which(altSubjectData$BIC_M5 > 
-                         as.numeric(summary(altSubjectData$BIC_M5)[4]))
-
-qplot(data = altTrialData[
-  which(altTrialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], 
-  x = a0-a1, y = Chose1 - ar_Prob1, group = SubjectID) + geom_smooth(se=F)
+normvals = rnorm(1000, mean = 0, sd = sd(altTrialData$ProbHarmNG - altTrialData$choseHarm))
+qplot(x = altTrialData$ProbHarmNG - altTrialData$choseHarm, geom = 'density', bw = sd(altTrialData$ProbHarmNG - altTrialData$choseHarm), color = 'Actual') +
+  geom_density(aes(x = normvals, color = 'Predicted'), bw = sd(altTrialData$ProbHarmNG - altTrialData$choseHarm))
 ```
 
-Nothing systematic here
+Looks leptokurtic, but pretty normal for these kinds of model. Third we can examine homoscedasticity:
 
 ```{r}
-qplot(data = altTrialData[
-  which(altTrialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], 
-  x = a0-a2, y = Chose1 - ar_Prob1, group = SubjectID) + geom_smooth(se=F)
+qplot(x = altTrialData$shocksDifference, y = altTrialData$ProbHarmNG - altTrialData$choseHarm, geom = 'smooth')  + lims(y = c(-.1, .1))
+qplot(x = altTrialData$moneyDifference, y = altTrialData$ProbHarmNG - altTrialData$choseHarm, geom = 'smooth')  + lims(y = c(-.1, .1))
 ```
 
-Nor here
+Nice constant variance cloud across all X values. It seems that the model slightly overpredicts how much people will choose harm when the money difference is less that 2. And finally independence of error:
 
 ```{r}
-
-qplot(data = altTrialData[
-  which(altTrialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], 
-  x = b0-b1, y = Chose1 - ar_Prob1, group = SubjectID) + geom_smooth(se=F)
+qplot(x = altTrialData$shocksDifference, y = altTrialData$ProbHarmNG - altTrialData$choseHarm, color = factor(altTrialData$isSelf), geom = 'smooth') + lims(y = c(-.1,.1))
+qplot(x = altTrialData$moneyDifference, y = altTrialData$ProbHarmNG - altTrialData$choseHarm, color = factor(altTrialData$isSelf), geom = 'smooth') + lims(y = c(-.1,.1))
 ```
 
-Still fine
-
-```{r}
-qplot(data = altTrialData[
-  which(altTrialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], 
-  x = b0-b2, y = Chose1 - ar_Prob1, group = SubjectID) + geom_smooth(se=F)
-```
-
-And nothing here either. Now we can check assumptions: first linearity (we'll do this across both choices)
-
-```{r}
-ggplot(data = altTrialData) + geom_smooth(aes(x = ar_Prob1, y = Chose1, group = a0 < b0, color = factor(a0 < b0)))  
-
-```
-
-Looks okay, not exactly perfect but still decent. Second, normality of error:
-
-```{r}
-normvals = rnorm(1000, 
-                 mean = 0, 
-                 sd = sd(altTrialData$ar_Prob1 - altTrialData$Chose1))
-
-qplot(x = altTrialData$ar_Prob1 - altTrialData$Chose1, 
-      geom = 'density', 
-      bw = sd(altTrialData$ar_Prob1 - altTrialData$Chose1), 
-      color = 'Actual') +
-  geom_density(aes(x = normvals, color = 'Predicted'), 
-               bw = sd(altTrialData$ar_Prob1 - altTrialData$Chose1))
-```
-
-Looks very good. Third we can examine homoscedasticity:
-
-```{r}
-qplot(x = abs(altTrialData$a1 - altTrialData$a2), 
-      y = altTrialData$ar_Prob1 - altTrialData$Chose1) + 
-  geom_smooth(method = 'loess')
-```
-
-Nice constant variance cloud across all X values. And finally independence of error:
-
-```{r}
-qplot(x = abs(altTrialData$a1 - altTrialData$a2), 
-      y = altTrialData$ar_Prob1 - altTrialData$Chose1,
-      color = factor(altTrialData$a0 > altTrialData$b0), 
-      geom = 'jitter') + geom_smooth(method = 'loess')
-```
-
-The model seems to have a slight bias, over-predicting the likelihood of choosing option 1. But this isn't so bad and the error seems to be evenly distributed across the X axis.
+The model seems to slightly overpredict harm to the other player, but it's a difference of less than 2% across most values of shock.
 
 Let's assess the independence: i.e. the extent to which our model captures all differences in choice behavior between different people:
 
@@ -571,202 +588,197 @@ Let's assess the independence: i.e. the extent to which our model captures all d
 library(lme4)
 library(MuMIn)
 
-ris_model = glmer(data = altTrialData, 
-                  Chose1 ~ ar_Prob1 + (1 + ar_Prob1 | SubjectID), 
-                  family = "binomial")
+ris_model = glmer(data = altTrialData, choseHarm ~ ProbHarmNG + (1 + ProbHarmNG | SubjectID), family = "binomial")
 r.squaredGLMM(ris_model)
 ```
 
 Singularity warning means that (most probably) the random slope is completely redundant: trying without.
 
 ```{r}
-ri_model = glmer(data = altTrialData, Chose1 ~ ar_Prob1 + (1 | SubjectID), family = "binomial")
+ri_model = glmer(data = altTrialData, choseHarm ~ ProbHarmNG + (1 | SubjectID), family = "binomial")
 r.squaredGLMM(ri_model)
 ```
 
 Same issue, this is good. Let's see about if there's some unexplainied variance across conditions.
 
 ```{r}
-ric_model = glmer(data = altTrialData, 
-                  Chose1 ~ ar_Prob1 + factor(a0<b0) + (1 | SubjectID), 
-                  family = "binomial")
+ric_model = glmer(data = altTrialData, choseHarm ~ ProbHarmNG + isSelf + (1 | SubjectID), family = "binomial")
 r.squaredGLMM(ric_model)
 ```
 
 Good, finally, let's compare the R-squared from these models to the one from a standard lm model.
 
 ```{r}
-r.squaredLR(glm(data = altTrialData, Chose1 ~ ar_Prob1, family = "binomial"))
+r.squaredLR(glm(data = altTrialData, choseHarm ~ ProbHarmNG, family = "binomial"))
 ```
 
 Pretty damn similar, very good! Let's jump to fivefold validation
 
 ```{r}
 fivefold = data.frame() 
-trialData$Prob1_ff = 0
-
+trialData$ProbHarm_ff = 0
+adj = 1
 for (i in 1:length(included_subjects)){
   df = grab_data(included_subjects[i])
-  df$Prob1 = 0
+  if (is.character(df)){adj = adj + 1; next}
+  df$ProbHarm = 0
   
-  order = sample(nrow(df))
-  A_ff = vector('numeric', length = 5)
-  R_ff = vector('numeric', length = 5)
-  B_ff = vector('numeric', length = 5)
+  order = sample(152)
+  KSelf_ff = vector('numeric', length = 5)
+  KOther_ff = vector('numeric', length = 5)
+  BSelf_ff = vector('numeric', length = 5)
+  BOther_ff = vector('numeric', length = 5)
   E_ff = vector('numeric', length = 5)
-  G_ff = vector('numeric', length = 5)
   Deviance_ff = 0
   df$Pred = 0
   for (z in 1:5){
-    j = round((z - 1) * (nrow(df)/5) + 1)
-    n = round(z * (nrow(df)/5))
+    j = round((z - 1) * (152/5) + 1)
+    n = round(z * (152/5))
     withheld = order[j:n]
     
-    result_ff = optimize(of_ar, 
-                         initial_params[c(1,3:6)], 
-                         lower_bounds[c(1,3:6)], 
-                         upper_bounds[c(1,3:6)], 
-                         df[-withheld,])
+    result_ff = optimize(obj_functionNoGamma, NoGamma, df[-withheld,])
     
-    A_ff[z] = result_ff$par[1]
-    R_ff[z] = result_ff$par[2]
-    B_ff[z] = result_ff$par[3]
-    E_ff[z] = result_ff$par[4]
-    G_ff[z] = result_ff$par[5]
-    pars = c(result_ff$par[1], 0, result_ff$par[2:5])
-    df$Prob1[withheld] = generatePredictions(pars, df[withheld, ])
+    KSelf_ff[z] = result_ff$par[1]
+    KOther_ff[z] = result_ff$par[2]
+    BSelf_ff[z] = result_ff$par[3]
+    BOther_ff[z] = result_ff$par[4]
+    E_ff[z] = result_ff$par[5]
+    df[withheld, ] = generate_predictions(df[withheld, ], 
+                                          data.frame(par = 
+                                                       c(result_ff$par[1:5],
+                                                         0)))
   }
-  Deviance_ff = -2*sum(df$Chose1 * log(df$Prob1) + 
-                         (1 - df$Chose1) * log(1 - df$Prob1))
+  Deviance_ff = -2*sum(df$choseHarm * log(df$ProbHarm) + (1 - df$choseHarm) * log(1 - df$ProbHarm))
   fivefold[i, 1:27] = c(included_subjects[i], Deviance_ff, 
-                        A_ff, R_ff, B_ff, E_ff, G_ff)
-  trialData$Prob1_ff[which(trialData$SubjectID == included_subjects[i])] = df$Prob1
+                        KSelf_ff, KOther_ff, BSelf_ff, BOther_ff, E_ff)
+  j = (i-adj)*152 + 1; n = (i-adj + 1)*152
+  trialData$ProbHarm_ff[j:n] = df$ProbHarm
 }
 colnames(fivefold) = c('SubjectID', 'Deviance', 
-                       'A_F1', 'A_F2', 'A_F3', 'A_F4', 'A_F5',
-                       'R_F1', 'R_F2', 'R_F3', 'R_F4', 'R_F5', 
-                       'B_F1','B_F2','B_F3','B_F4','B_F5', 
-                       'E_F1', 'E_F2', 'E_F3', 'E_F4', 'E_F5', 
-                       'G_F1', 'G_F2', 'G_F3', 'G_F4', 'G_F5')
+                       'KS_F1', 'KS_F2', 'KS_F3', 'KS_F4', 'KS_F5',
+                       'KO_F1','KO_F2','KO_F3','KO_F4','KO_F5', 
+                       'BS_F1', 'BS_F2', 'BS_F3', 'BS_F4', 'BS_F5',
+                       'BO_F1','BO_F2','BO_F3','BO_F4','BO_F5', 
+                       'E_F1', 'E_F2', 'E_F3', 'E_F4', 'E_F5')
 head(fivefold)
 ```
 
 Now we can check the model accuracy:
 
 ```{r}
-sum(round(trialData$Prob1_ff) == trialData$Chose1)/nrow(trialData)
+sum(round(trialData$ProbHarm_ff) == trialData$choseHarm)/nrow(trialData)
 ```
 
-Only lost about 1.5% in accuracy which is quite reassuring. And test it against the normally recovered model:
+Only lost about 2% in accuracy which is quite reassuring. And test it against the normally recovered model:
 
 ```{r}
-fivefold$BIC = as.numeric(fivefold$Deviance) + log(65) * 6
-t.test(fivefold$BIC, altSubjectData$BIC_M5, paired = T)
+fivefold$BIC = as.numeric(fivefold$Deviance) + log(152) * 5
+t.test(fivefold$BIC[-20], altSubjectData$BICM2[-20], paired = T)
 ```
 
-It's worse, but that's okay considering this only constitutes 1.5% accuracy. And to assess the reliability, we can compute cosine similiarity:
+It's worse, but that's okay considering this only constitutes 2% accuracy. And to assess the reliability, we can compute cosine similiarity:
 
 ```{r}
 library(lsa)
 cosines = vector('numeric', length = 60)
 for (i in 1:5){
-  cosines[i] = cosine(as.numeric(altSubjectData$Alpha_M5), 
-                      as.numeric(fivefold[, (i + 2)]))
-  cosines[(i+5)] = cosine(as.numeric(altSubjectData$Rho_M5), 
-                           as.numeric(fivefold[, (i + 7)]))
-  cosines[(i+10)] = cosine(as.numeric(altSubjectData$Beta_M5), 
-                           as.numeric(fivefold[, (i + 12)]))
-  cosines[(i+15)] = cosine(as.numeric(altSubjectData$Epsilon_M5), 
-                           as.numeric(fivefold[, (i + 17)]))
-  cosines[(i+20)] = cosine(as.numeric(altSubjectData$Gamma_M5), 
-                           as.numeric(fivefold[, (i + 22)]))
+  cosines[i] = cosine(as.numeric(subjectData$Kappa_Self[-20]), as.numeric(fivefold[-20, (i + 2)]))
+  cosines[(i+5)] = cosine(as.numeric(subjectData$Kappa_Other[-20]), as.numeric(fivefold[-20, (i + 7)]))
+  cosines[(i+10)] = cosine(as.numeric(subjectData$Beta_Self[-20]), as.numeric(fivefold[-20, (i + 12)]))
+  cosines[(i+15)] = cosine(as.numeric(subjectData$Beta_Other[-20]), as.numeric(fivefold[-20, (i + 17)]))
+  cosines[(i+20)] = cosine(as.numeric(subjectData$Epsilon[-20]), as.numeric(fivefold[-20, (i + 22)]))
 }
 ```
 
-And compute the averages per parameter: first alpha.
+And compute the averages per parameter: first kappa self.
 
 ```{r}
 mean(cosines[1:5]) 
 ```
 
-Very close to 1, nice! Then Rho.
+Very close to 1, nice! Then kappa other.
 
 ```{r}
 mean(cosines[6:10])
 ```
 
-Also pretty reasonable. Then Beta
+Also pretty reasonable. Then Beta self
 
 ```{r}
 mean(cosines[11:15]) 
 ```
 
-Yep, then Epsilon
+Not good at all. Okay, now Beta Other
 
 ```{r}
 mean(cosines[16:20]) 
 ```
 
-Nice, and finally Gamma
+Again, pretty poor. Finally Epsilon
 
 ```{r}
 mean(cosines[21:25]) 
 ```
 
-Not so great, but makes sense given that bias could be more or less representative depending on the excluded trials to our training set
+Better.
 
 ## 3.1 Compare Models
 
-Let's first see if the best model (inequality aversion and rank-reverse aversion, but not harm aversion) outperforms the model with all three.
+Let's first see if the best model (all parameters except bias for left/right) outperforms the model with gamma.
 
 ```{r}
-t.test(altSubjectData$BIC_M5, subjectData$BIC, paired = T)
+t.test(altSubjectData$BICM2, subjectData$BIC, paired = T)
 ```
 
-This is better. Now let's see if it is significantly better than the model with only inequality aversion.
+This is better. Now let's see if it is significantly better than the model which doesn't distinguish between conditions.
 
 ```{r}
-t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M1, paired = T)
+t.test(altSubjectData$BICM2, altSubjectData$BICM3, paired = T)
 ```
 
-Not significantly better. Okay, what about with only harm aversion?
+Not significantly better. But note here that we're comparing the simpler model with bias to the more complex model without bias. Let's compare apples to apples shall we:
 
 ```{r}
-t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M2, paired = T)
+t.test(subjectData$BIC, altSubjectData$BICM3, paired = T)
 ```
 
-Yes, and rank reversal aversion?
+Okay, that's not different either. We should, in principle, go back and rerun model 3 without gamma to see if this is just a consequence of being able to pick up on left/right variance. What about the model which ignores noise altogether?
 
 ```{r}
-t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M3, paired = T)
+t.test(altSubjectData$BICM2, altSubjectData$BICM4, paired = T)
 ```
 
-Yes. And now the model with inequality aversion and harm aversion?
+Yes, and the one which only distinguishes between left and right?
 
 ```{r}
-t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M4, paired = T)
-```
-
-Again no. Finally the model with harm aversion and rank reversal aversion.
-
-```{r}
-t.test(altSubjectData$BIC_M5, altSubjectData$BIC_M6, paired = T)
+t.test(altSubjectData$BICM2, altSubjectData$BICM5, paired = T)
 ```
 
 Yes. Okay all done here.
+
+## 3.2 Test Modulatory Hypotheses
+
+In principle, we shouldn't run this comparison because the best model isn't significantly better than the model which doesn't differentiate between conditions. But, for the sake of looking let's compare the free parameters of kappa self and kappa other to assess how much the tradeoff between self-interest and harm-aversion changes across conditions.
+
+```{r}
+t.test(altSubjectData$KappaSelfM2[-20], altSubjectData$KappaOtherM2[-20], 
+       paired = T)
+```
+
+Self interest is much higher in the self versus the other condition. But, crucially, this should be a follow-up based on the initial analysis showing that conditions elicit different behavior.
 
 ## 3.3 Test for Individual Differences
 
 Let's first recover parameters over the whole dataset and we can assess how accurate it is
 
 ```{r}
-resultNID = fmincon(of_ar, 
-                    x0 = initial_params[c(1,3:6)], 
-                    lb = lower_bounds[c(1,3:6)], ub = upper_bounds[c(1,3:6)], 
-                    df = trialData[2:8], optimMethod = "MLE")
-pars = c(resultNID$par[1], 0, resultNID$par[2:5])
-trialData$Prob1_NID = generatePredictions(pars, trialData)
-sum(trialData$Chose1 == round(trialData$Prob1_NID))/nrow(trialData)
+resultNID = fmincon(obj_functionNoGamma, 
+                    x0 = initial_params[NoGamma], 
+                    lb = lower_bounds[NoGamma], ub = upper_bounds[NoGamma], 
+                    df = trialData, optimMethod = "MLE")
+resultNID = data.frame(par = c(resultNID$par, 0))
+dfNID = generate_predictions(trialData[, 2:12], resultNID)
+sum(dfNID$choseHarm == round(dfNID$ProbHarm))/nrow(dfNID)
 ```
 
 Not very good. This isn't surprising given that people often have very different preferences. Now let's test for individual differences.
@@ -778,13 +790,13 @@ for (i in 1:length(included_subjects)){
   trials = which(included_subjects[i] == trialData$SubjectID)
   df = trialData[trials, ]
   altSubjectData$Deviance_NID[i] = 
-    -2*sum(df$Chose1 * log(df$Prob1_NID) + (1 - df$Chose1) * log(1 - df$Prob1_NID))
+    -2*sum(df$Chose1 * log(as.numeric(df$Prob1_NID)) + (1 - df$Chose1) * log(1 - as.numeric(df$Prob1_NID)))
 }
 
 altSubjectData$BIC_NID = 
-  as.numeric(altSubjectData$Deviance_NID) + log(65) * 6/(length(included_subjects))
+  as.numeric(altSubjectData$Deviance_NID) + log(65) * 5/(length(included_subjects))
 
-t.test(altSubjectData$BIC_M5, altSubjectData$BIC_NID, paired = T)
+t.test(altSubjectData$BICM2[-20], altSubjectData$BIC_NID[-20], paired = T)
 ```
 
 Significant individual differences. Let's see which models are worse
@@ -793,4 +805,4 @@ Significant individual differences. Let's see which models are worse
 which(modelBIC > sum(altSubjectData$BIC_NID))
 ```
 
-So the only Harm Aversion, only Rank Reversal Aversion, Harm and Rank Reversal Aversion, and only left/right bias models are worse than this.
+All models are better. Okay.

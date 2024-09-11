@@ -452,7 +452,10 @@ for (i in 2:ncol(altSubjectData)){altSubjectData[,i] = as.numeric(altSubjectData
 
 ### Now Compute BIC
 
+altSubjectData$BICM2 = as.numeric(altSubjectData$DevianceM2) + log(152) * 5
+altSubjectData$BICM3 = as.numeric(altSubjectData$DevianceM3) + log(152) * 4
 altSubjectData$BICM4 = as.numeric(altSubjectData$DevianceM4) + log(152) * 4
+altSubjectData$BICM5 = as.numeric(altSubjectData$DevianceM5) + log(152) * 1
 
 ### Now Compare BIC
 
@@ -463,51 +466,36 @@ which(modelBIC == min(modelBIC))
 
 ### Assessing Model Performance
 
-sum(trialData$choseHarm == round(trialData$ProbHarm))/nrow(trialData)
-
-qplot(subjectData$BIC[-20], geom = 'density')
-worstExplained = which(subjectData$BIC[-20] > as.numeric(summary(subjectData$BIC[-20])[4]))
-
-qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = moneyDifference, y = choseHarm - ProbHarm, group = SubjectID) + geom_smooth()
-qplot(data = trialData[which(trialData$SubjectID %in% altSubjectData$SubjectID[worstExplained]),], x = shocksDifference, y = choseHarm - ProbHarm, group = SubjectID) + geom_smooth()
+sum(altTrialData$choseHarm == round(altTrialData$ProbHarmNG))/nrow(altTrialData)
 
 ### Checking Assumptions
 
-ggplot(data = trialData) + geom_smooth(aes(x = ProbHarm, y = choseHarm, group = isSelf, color = factor(isSelf))) 
-ggplot(data = trialData) + geom_density(aes(x = choseHarm, fill = factor(choseHarm)))
-normvals = rnorm(1000, mean = 0, sd = sd(trialData$ProbHarm - trialData$choseHarm))
-qplot(x = trialData$ProbHarm - trialData$choseHarm, geom = 'density', bw = sd(trialData$ProbHarm - trialData$choseHarm), color = 'Actual') +
-  geom_density(aes(x = normvals, color = 'Predicted'), bw = sd(trialData$ProbHarm - trialData$choseHarm))
-qplot(x = trialData$shocksDifference, y = trialData$ProbHarm - trialData$choseHarm, geom = 'jitter') + geom_smooth()
-qplot(x = trialData$moneyDifference, y = trialData$ProbHarm - trialData$choseHarm, geom = 'jitter') + geom_smooth()
-qplot(x = trialData$shocksDifference, y = trialData$ProbHarm - trialData$choseHarm, color = factor(trialData$isSelf), geom = 'smooth') + lims(y = c(-1,1))
-qplot(x = trialData$moneyDifference, y = trialData$ProbHarm - trialData$choseHarm, color = factor(trialData$isSelf), geom = 'smooth') + lims(y = c(-1,1))
+ggplot(data = altTrialData) + geom_smooth(aes(x = ProbHarmNG, y = choseHarm, group = isSelf, color = factor(isSelf))) 
+normvals = rnorm(1000, mean = 0, sd = sd(altTrialData$ProbHarmNG - altTrialData$choseHarm))
+qplot(x = altTrialData$ProbHarmNG - altTrialData$choseHarm, geom = 'density', bw = sd(altTrialData$ProbHarmNG - altTrialData$choseHarm), color = 'Actual') +
+  geom_density(aes(x = normvals, color = 'Predicted'), bw = sd(altTrialData$ProbHarmNG - altTrialData$choseHarm))
+qplot(x = altTrialData$shocksDifference, y = altTrialData$ProbHarmNG - altTrialData$choseHarm, geom = 'jitter') + geom_smooth()
+qplot(x = altTrialData$moneyDifference, y = altTrialData$ProbHarmNG - altTrialData$choseHarm, geom = 'jitter') + geom_smooth()
+qplot(x = altTrialData$shocksDifference, y = altTrialData$ProbHarmNG - altTrialData$choseHarm, color = factor(altTrialData$isSelf), geom = 'smooth') + lims(y = c(-1,1))
+qplot(x = altTrialData$moneyDifference, y = altTrialData$ProbHarmNG - altTrialData$choseHarm, color = factor(altTrialData$isSelf), geom = 'smooth') + lims(y = c(-1,1))
 
 ### Assessing Independence
 
 library(lme4)
 library(MuMIn)
 
-ris_model = glmer(data = trialData, choseHarm ~ ProbHarm + (1 + ProbHarm | SubjectID), family = "binomial")
+ris_model = glmer(data = altTrialData, choseHarm ~ ProbHarmNG + (1 + ProbHarmNG | SubjectID), family = "binomial")
 r.squaredGLMM(ris_model)
 
-ri_model = glmer(data = trialData, choseHarm ~ ProbHarm + (1 | SubjectID), family = "binomial")
+ri_model = glmer(data = altTrialData, choseHarm ~ ProbHarmNG + (1 | SubjectID), family = "binomial")
 r.squaredGLMM(ri_model)
 
-ric_model = glmer(data = trialData, choseHarm ~ ProbHarm + isSelf + (1 | SubjectID), family = "binomial")
+ric_model = glmer(data = altTrialData, choseHarm ~ ProbHarmNG + isSelf + (1 | SubjectID), family = "binomial")
 r.squaredGLMM(ric_model)
 
 ### Fivefold Validation
-
-fivefold = data.frame() #preallocate for parameters and errors from the fivefold validation to go into
+fivefold = data.frame() 
 trialData$ProbHarm_ff = 0
-optimize = function(df){
-  tryCatch({
-    fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "MLE")
-  }, error = function(e){
-    fmincon(obj_function, x0 = initial_params, lb = lower_bounds, ub = upper_bounds, df = df, optimMethod = "OLS")
-  })
-}
 adj = 1
 for (i in 1:length(included_subjects)){
   df = grab_data(included_subjects[i])
@@ -520,7 +508,6 @@ for (i in 1:length(included_subjects)){
   BSelf_ff = vector('numeric', length = 5)
   BOther_ff = vector('numeric', length = 5)
   E_ff = vector('numeric', length = 5)
-  G_ff = vector('numeric', length = 5)
   Deviance_ff = 0
   df$Pred = 0
   for (z in 1:5){
@@ -528,28 +515,33 @@ for (i in 1:length(included_subjects)){
     n = round(z * (152/5))
     withheld = order[j:n]
     
-    result_ff = optimize(df[-withheld,])
+    result_ff = optimize(obj_functionNoGamma, NoGamma, df[-withheld,])
     
     KSelf_ff[z] = result_ff$par[1]
     KOther_ff[z] = result_ff$par[2]
     BSelf_ff[z] = result_ff$par[3]
     BOther_ff[z] = result_ff$par[4]
     E_ff[z] = result_ff$par[5]
-    G_ff[z] = result_ff$par[6]
-    df[withheld, ] = generate_predictions(df[withheld, ], result_ff)
+    df[withheld, ] = generate_predictions(df[withheld, ], 
+                                          data.frame(par = 
+                                                       c(result_ff$par[1:5],
+                                                         0)))
   }
   Deviance_ff = -2*sum(df$choseHarm * log(df$ProbHarm) + (1 - df$choseHarm) * log(1 - df$ProbHarm))
-  fivefold[i, 1:32] = c(included_subjects[i], Deviance_ff, KSelf_ff, KOther_ff, BSelf_ff, BOther_ff, E_ff, G_ff)
+  fivefold[i, 1:27] = c(included_subjects[i], Deviance_ff, 
+                        KSelf_ff, KOther_ff, BSelf_ff, BOther_ff, E_ff)
   j = (i-adj)*152 + 1; n = (i-adj + 1)*152
   trialData$ProbHarm_ff[j:n] = df$ProbHarm
 }
-colnames(fivefold) = c('SubjectID', 'Deviance', 'KS_F1', 'KS_F2', 'KS_F3', 'KS_F4', 'KS_F5',
-                       'KO_F1','KO_F2','KO_F3','KO_F4','KO_F5', 'BS_F1', 'BS_F2', 'BS_F3', 'BS_F4', 'BS_F5',
-                       'BO_F1','BO_F2','BO_F3','BO_F4','BO_F5', 'E_F1', 'E_F2', 'E_F3', 'E_F4', 'E_F5', 
-                       'G_F1', 'G_F2', 'G_F3', 'G_F4', 'G_F5')
+colnames(fivefold) = c('SubjectID', 'Deviance', 
+                       'KS_F1', 'KS_F2', 'KS_F3', 'KS_F4', 'KS_F5',
+                       'KO_F1','KO_F2','KO_F3','KO_F4','KO_F5', 
+                       'BS_F1', 'BS_F2', 'BS_F3', 'BS_F4', 'BS_F5',
+                       'BO_F1','BO_F2','BO_F3','BO_F4','BO_F5', 
+                       'E_F1', 'E_F2', 'E_F3', 'E_F4', 'E_F5')
 
 sum(round(trialData$ProbHarm_ff) == trialData$choseHarm)/nrow(trialData)
-fivefold$BIC = as.numeric(fivefold$Deviance) + log(152) * 6
+fivefold$BIC = as.numeric(fivefold$Deviance) + log(152) * 5
 t.test(fivefold$BIC, subjectData$BIC, paired = T) #test fivefold MFI against normal MFI for this model
 
 library(lsa)
@@ -560,15 +552,13 @@ for (i in 1:5){
   cosines[(i+10)] = cosine(as.numeric(subjectData$Beta_Self[-20]), as.numeric(fivefold[-20, (i + 12)]))
   cosines[(i+15)] = cosine(as.numeric(subjectData$Beta_Other[-20]), as.numeric(fivefold[-20, (i + 17)]))
   cosines[(i+20)] = cosine(as.numeric(subjectData$Epsilon[-20]), as.numeric(fivefold[-20, (i + 22)]))
-  cosines[(i+25)] = cosine(as.numeric(subjectData$Gamma[-20]), as.numeric(fivefold[-20, (i + 27)]))
 }
 
 mean(cosines[1:5]) 
 mean(cosines[6:10])
 mean(cosines[11:15]) 
 mean(cosines[16:20]) 
-mean(cosines[21:25]) 
-mean(cosines[26:30])  
+mean(cosines[21:25])  
 
 ################ 3_1_0
 
@@ -580,8 +570,6 @@ t.test(subjectData$BIC[-20], altSubjectData$BICM5[-20], paired = T)
 ################ 3_2_0
 
 t.test(as.numeric(subjectData$Kappa_Self[-20]), as.numeric(subjectData$Kappa_Other[-20]), paired = T)
-mean(as.numeric(subjectData$Kappa_Self[-20]))
-mean(as.numeric(subjectData$Kappa_Other[-20]))
 
 ################ 3_3_0
 

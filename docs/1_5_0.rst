@@ -99,10 +99,11 @@ Now we want to plug in all of the inputs that we know (experimental variables an
             Sensitivity refers to sensitivity to differences in :bdg-warning:`Utility` between the two available :bdg-danger:`Choices`. 
             :bdg-danger:`Choices` which are more different in :bdg-warning:`Utility` should be easier to correctly distinguish between. 
             We capture individual differences in sensitivity with the logistic function, where differences in :bdg-warning:`Utility` are represented as :bdg-warning:`DU` and differences in sensitivity are represented as :bdg-success:`Beta`
+            SF is a scaling function, which can be as high as 100 if the range of :bdg-warning:`DU` is 1 or less and as little as 1 if the range of :bdg-warning:`DU` is 100 - it depends on your utility function and ranges.
 
             ::
 
-                Probability | DU =  (1)/(1 + e ** (-Beta * DU))
+                Probability | DU =  (1)/(1 + e ** (-Beta * SF * DU))
 
             As you can see, higher values of :bdg-success:`Beta` indicate more sensitivity to differences in :bdg-warning:`Utility`
             
@@ -115,11 +116,11 @@ Now we want to plug in all of the inputs that we know (experimental variables an
             Sometimes, Sensitivity isn't enough to explain randomness in the :bdg-danger:`Choices` people make. 
             Particularly, in the case of these binary choice tasks, it is often the case that doing several hundred trials makes people lose attention - affecting the extent to which their :bdg-danger:`Choices` are based on :bdg-warning:`Utility`. 
             Thus, this noise can be captured by lessening the extent to which probability is based on :bdg-warning:`DU` or :bdg-success:`Beta` and making it closer to 50-50. 
-            In other words, :bdg-success:`Epsilon` makes the probability of :bdg-danger:`Choices` insensitive to :bdg-warning:`DU`.
+            In other words, (1- :bdg-success:`Beta`) makes the probability of :bdg-danger:`Choices` insensitive to :bdg-warning:`DU`. 
 
             ::
 
-                Probability | DU =  ((1)/(1 + e ** (-Beta * DU))) * (1 - (2 * Epsilon)) + Epsilon
+                Probability | DU =  ((1)/(1 + e ** (-Beta * SF * DU))) * (1 - (1 - Beta)) + (1 - Beta) * 0.5
 
             As you can see, higher values of :bdg-success:`Epsilon` make the probability less based on :bdg-warning:`DU`. 
 
@@ -132,14 +133,14 @@ Now we want to plug in all of the inputs that we know (experimental variables an
             Sometimes, people literally just choose the left or right, or top or bottom more frequently. 
             For now, let's capture this bias by giving in a new parameter :bdg-success:`Gamma` that modulates the probabilty to reflect this bias.
             Assume isDirection is a logical (0 is Direction A and 1 is Direction B for instance), we can adjust it to random from -1 to 1.
-            We then multiply :bdg-success:`Epsilon` and :bdg-success:`Gamma` because :bdg-success:`Gamma` should only matter based on the extent to which :bdg-danger:`Choices` are insensitive to :bdg-warning:`DU`.
-            So, we then combine the factors of :bdg-success:`Epsilon` and :bdg-success:`Gamma` and (2 * isDirection - 1) and add them to the previous probability function.
+            We then multiply (1 - :bdg-success:`Beta`) and :bdg-success:`Gamma` because :bdg-success:`Gamma` should only matter based on the extent to which :bdg-danger:`Choices` are insensitive to :bdg-warning:`DU`.
+            So, we then combine the factors of (1 - :bdg-success:`Beta`) and :bdg-success:`Gamma` and (2 * isDirection - 1) and add them to the previous probability function.
 
             ::
 
-                Probability | DU =  ((1)/(1 + e ** (-Beta * DU))) * (1 - (2 * Epsilon)) + Epsilon + (Epsilon * Gamma * (2 * isDirection - 1))
+                Probability | DU =  ((1)/(1 + e ** (-Beta * SF * DU))) * (1 - (1 - Beta)) + (1 - Beta) * 0.5 + ((1 - Beta) * 0.5 * Gamma * (2 * isDirection - 1))
 
-            As you can see, higher values of :bdg-success:`Epsilon` make :bdg-success:`Gamma` the main determinant of the probability.
+            As you can see, higher values of (1 - :bdg-success:`Beta`) make :bdg-success:`Gamma` the main determinant of the probability.
 
             .. figure:: 1_5_bias.png
                 :figwidth: 100%
@@ -640,18 +641,8 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                         'Endowment': Endowment
                     })
 
-                    def payout_maximization(investment, multiplier, returned):
-                        return ((investment * multiplier - returned) / (investment * multiplier))
-                        
-                    def inequity(investment, multiplier, returned, endowment):
-                        return ((investment * multiplier - returned) / (investment * multiplier + endowment - investment)) ** 2
-                        
-                    def guilt(investment, believed_multiplier, returned, multiplier):
-                        return ((investment * believed_multiplier / 2 - returned) / (investment * multiplier))
-
-                    def utility(theta, phi, guilt, inequity, payout){
+                    def utility(theta, phi, guilt, inequity, payout):
                         return(theta*payout - (1-theta)*min(guilt + phi, inequity - phi))
-                    }
                         
                     theta = np.repeat(np.arange(0, 0.505, 0.005), repeats=101)
                     phi = np.tile(np.arange(-0.1, 0.102, 0.002), 101)
@@ -856,6 +847,8 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
             .. tab-item:: Python
 
                 ::
+
+                    import random
 
                     non_specific = [0] * len(freeParameters) # Just Added this Line
 

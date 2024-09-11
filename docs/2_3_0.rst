@@ -990,7 +990,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 colnames_altSubjectData = ['SubjectID', 'guilt_theta', 'inequity_theta', 'greed_modelNLL', 'greed_modelSS', 'guilt_modelNLL', 'guilt_modelSS', 'inequity_ModelNLL', 'inequity_ModelSS']
                 altSubjectData = pd.DataFrame(altSubjectData, columns=colnames_altSubjectData)
 
-.. dropdown:: Compute Model Fit Index for Each :bdg-success`Subject`, for Each Alternative Model
+.. dropdown:: Compute Model Fit Index for Each :bdg-success:`Subject`, for Each Alternative Model
 
     .. tab-set::
 

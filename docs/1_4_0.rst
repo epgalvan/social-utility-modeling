@@ -302,7 +302,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 ::
 
                     guilt = function(investment, believed_multiplier, returned, multiplier){
-                        return((((investment * believed_multiplier)/2 - returned)/(investment * multiplier))**2)
+                        return((((investment * believed_multiplier * 0.5) - returned)/(investment * believed_multiplier))**2)
                     }
 
             .. tab-item:: MatLab
@@ -310,7 +310,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 ::
 
                     function value = guilt(investment, believed_multiplier, returned, multiplier)
-                        value = (((investment * believed_multiplier)/2 - returned) / (investment * multiplier))^2;
+                        value = (((investment * believed_multiplier)/2 - returned) / (investment * believed_multiplier))^2;
                     end
 
 
@@ -319,7 +319,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 :: 
                     
                     def guilt(investment, believed_multiplier, returned, multiplier):
-                        return ((((investment * believed_multiplier)/2 - returned) / (investment * multiplier))**2)
+                        return ((((investment * believed_multiplier)/2 - returned) / (investment * believed_multiplier))**2)
 
 .. dropdown:: Identify Relevant :bdg-success:`Free Parameters` for each :bdg-secondary:`Construct Value`
 
