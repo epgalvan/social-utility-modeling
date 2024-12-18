@@ -1,4 +1,4 @@
-Compare Recovered Parameters
+Recovering Free Parameters
 *********
 
 Lesson

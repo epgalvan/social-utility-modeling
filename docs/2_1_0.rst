@@ -1,4 +1,4 @@
-Recovering Free Parameters
+Estimating Free Parameters
 *************
 
 Lesson
@@ -26,7 +26,7 @@ How to Achieve this Goal
 
             .. tab-item:: Plain English
 
-                Before we start recovering free parameters, we need to check off a pretty simple list. 
+                Before we start estimating free parameters, we need to check off a pretty simple list. 
                 There are several functions and variables that we should already have: in the event that you are using a seperate workspace from your simulation, make sure that these are included.
 
                 1. :bdg-primary:`Trial` List - this should be in a certain order and have all of the trials that the subject has seen
@@ -93,7 +93,7 @@ How to Achieve this Goal
             .. tab-item:: Plain English
 
                 We're going to start our most superior ``for`` loop which iterates over :bdg-success:`Subjects` included in our analysis. 
-                Before we start talking about recovering parameters, let's just make sure that we have our ducks in a row: 
+                Before we start talking about estimating parameters, let's just make sure that we have our ducks in a row: 
                 
                 1. We need the data for this :bdg-success:`Subject``
                 2. The :bdg-danger:`Decisions` for this :bdg-success:`Subject` need to be in the same order as the :bdg-primary:`Trial` List we use in our Objective Function
@@ -112,7 +112,7 @@ How to Achieve this Goal
 
                 .. dropdown:: So what do we need to preallocate before this loop starts?
 
-                    An output for the :bdg-success:`Free Parameters` we'll recover, along with any other subject information. 
+                    An output for the :bdg-success:`Free Parameters` we'll estimate, along with any other subject information. 
                     Also, we'll output all trial-by-trial :bdg-success:`Subject` data that will be relevant later.
 
                     Both of these are already done, nice.
@@ -164,13 +164,13 @@ How to Achieve this Goal
                         trialData[start:end, :] = #to determine
 
 
-.. dropdown:: Recover :bdg-success:`Free Parameters`
+.. dropdown:: Estimate :bdg-success:`Free Parameters`
 
     .. tab-set::
 
             .. tab-item:: Plain English
 
-                Now, we are going to answer the Determine Free Parameters demand placed on us in the :bdg-success:`Subject` loop, namely to recover :bdg-success:`Free Parameters`.
+                Now, we are going to answer the Determine Free Parameters demand placed on us in the :bdg-success:`Subject` loop, namely to estimate :bdg-success:`Free Parameters`.
                 We first need to hand our Objective Function the :bdg-success:`Subject`'s data. 
                 Then, we need to store our data before we proceed to the next :bdg-success:`Subject`. 
 
@@ -188,7 +188,7 @@ How to Achieve this Goal
 
                 .. dropdown:: Then, what do we need to compute?
 
-                    We need to get data about what the model actually predicts based on the recovered :bdg-success:`Free Parameters`.
+                    We need to get data about what the model actually predicts based on the estimated :bdg-success:`Free Parameters`.
 
             .. tab-item:: R
 
@@ -477,7 +477,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 for (i in 1:length(included_subjects)){
                     df = trialData[which(included_subjects[i] == trialData$Subject), ]
 
-                    #Recover Free Parameters
+                    #Estimate Free Parameters
 
                 }
 
@@ -488,7 +488,7 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                 for i = 1:length(included_subjects)
                     df = trialData(trialData.Subject == included_subjects(i), :);
                     
-                    % Recover Free Parameters
+                    % Estimate Free Parameters
 
                 end
 
@@ -500,9 +500,9 @@ Tutorial 1 - van Baar, Chang, & Sanfey, 2019
                     df = trialData[trialData['Subject'] == included_subjects[i]]
                     result = minimize(obj_function, x0=initial_params, bounds=list(zip(lower_bounds, upper_bounds)), args=(df,))
 
-                    #Recover Free Parameters
+                    #Estimate Free Parameters
 
-.. dropdown:: Recover :bdg-success:`Free Parameters`
+.. dropdown:: Estimate :bdg-success:`Free Parameters`
 
     .. tab-set::
 
@@ -847,7 +847,7 @@ Tutorial 2 - Galvan & Sanfey, 2024
                 end
 
 
-.. dropdown:: Recover :bdg-success:`Free Parameters` for each :bdg-primary:`Condition`
+.. dropdown:: Estimate :bdg-success:`Free Parameters` for each :bdg-primary:`Condition`
 
     .. tab-set::
 
@@ -1265,7 +1265,7 @@ Tutorial 3 - Crockett et al., 2014
         .. tab-item:: Python
 
             ::
-.. dropdown:: Recover :bdg-success:`Free Parameters` and Determine Predicted :bdg-danger:`Decisions`
+.. dropdown:: Estimate :bdg-success:`Free Parameters` and Determine Predicted :bdg-danger:`Decisions`
 
     .. tab-set::
 
@@ -1341,7 +1341,7 @@ Tutorial 4 - Li et al., 2022
 
             ::
 
-.. dropdown:: Recover :bdg-success:`Free Parameters` and Determine Predicted :bdg-danger:`Decisions`
+.. dropdown:: Estimate :bdg-success:`Free Parameters` and Determine Predicted :bdg-danger:`Decisions`
 
     .. tab-set::
 

@@ -1,4 +1,4 @@
-Handbook for Utility Modeling in Social Decision-Making
+Handbook for Social Utility Modeling
 **********************
 
 In this handbook, we will walk, step-by-step, through the process of computationally modeling behavior in value-based social decision-making tasks - complete with conceptual examples and four fully fledged walk-throughs that you can complete yourself. 
@@ -24,14 +24,14 @@ There is no required foreknowledge to conceptually understand the course, but a 
     Outline the Data Generation Process <1_3_0.rst>
     Model the Data Generation Process <1_4_0.rst>
     Simulating Data <1_5_0.rst>
-    Compare Recovered Parameters <1_6_0.rst>
+    Recovering Free Parameters <1_6_0.rst>
     A Priori Clustering <1_7_0.rst>
 
 .. toctree::
    :maxdepth: 1
    :caption: Model Fitting
 
-    Recovering Free Parameters <2_1_0.rst>
+    Estimating Free Parameters <2_1_0.rst>
     Determine Model Fit Index <2_2_0.rst>
     Identify the Best Model <2_3_0.rst>
     Validate the Best Model <2_4_0.rst>
