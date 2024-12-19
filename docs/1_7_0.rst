@@ -1,4 +1,4 @@
-A Priori Clustering
+Grouping
 *********
 
 Lesson

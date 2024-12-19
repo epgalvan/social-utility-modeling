@@ -25,7 +25,7 @@ There is no required foreknowledge to conceptually understand the course, but a 
     Model the Data Generation Process <1_4_0.rst>
     Simulating Data <1_5_0.rst>
     Recovering Free Parameters <1_6_0.rst>
-    A Priori Clustering <1_7_0.rst>
+    Grouping <1_7_0.rst>
 
 .. toctree::
    :maxdepth: 1
