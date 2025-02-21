@@ -2,6 +2,7 @@ Test Modulatory Hypotheses
 **********
 
 .. _homoscedasticity: https://social-utility-modeling.readthedocs.io/en/latest/2_4_0.html
+.. _here: https://epgalvan.github.io/integration-simulations/
 
 Lesson
 ================
@@ -23,6 +24,33 @@ To see how :bdg-primary:`Conditions` affect :bdg-success:`Free Parameters`.
 
     In experiments where you use multiple :bdg-primary:`Conditions`, you will end up recovering :bdg-success:`Free Parameters` for seperate :bdg-primary:`Conditions`. 
     Thus, you may wish to use these :bdg-success:`Free Parameters` as a proxy for how preferences change as a function of your :bdg-primary:`Condition` - these would be Modulatory Hypotheses (i.e. how :bdg-primary:`Conditions` modulate the data generation process). 
+
+Why Fitting Per Condition is Less Preferrable
+-----------------
+
+Although there are definitely use cases for fitting a model over multiple different :bdg-primary:`Conditions` (what we will learn here), 
+when possible it is better to integrate multiple :bdg-primary:`Conditions` within the same model. 
+Namely, when it is believed that :bdg-primary:`Conditions` will modulate individuals' :bdg-success:`Preferences` **and there are more than two** :bdg-primary:`Conditions`, 
+I believe that models which internally hypothesize *how* these :bdg-success:`Preferences` change across :bdg-primary:`Conditions` are superior. 
+In general, there are three reasons that it is not desirable to **even consider** models fit separately per :bdg-primary:`Condition` when there are more than two :bdg-primary:`Conditions`.
+
+.. dropdown:: Inability to Correctly Identify the Correct Model
+
+    Simulations from a simplified experiment are presented `here`_ which test the ability of model comparison to correctly identify the model that generated the data. 
+    A model split over :bdg-primary:`Conditions` outperforms the model that actually generated the data *and* is more parsimonious. 
+
+.. dropdown:: Lack of Predictive Value
+
+    We run experiments to gain insights which, we hope, generalize beyond the laboratory. 
+    One key advantage of computational models is that they enable us to generate novel predictions based on known :bdg-success:`Preferences` to new situations within the laboratory - moving us closer to this goal of external validation. 
+    However, for models fit seperately per :bdg-primary:`Condition`, if we demonstrate that this model is superior via model testing what we have also demonstrated is that :bdg-success:`Free Parameters` do not generalize to new contexts. 
+    Thus, the model has no predictive value in new :bdg-primary:`Conditions` which further undermines its' generalizability.
+
+.. dropdown:: Theoretical Deficits
+
+    Similar to its lack of predictive value, a model fit separately between :bdg-primary:`Conditions` misses an opportunity to hone theoretical knowledge.
+    A key reason that we assess how :bdg-success:`Preferences` change between :bdg-primary:`Conditions` is typically because we hypothesize that :bdg-primary:`Conditions` are distinct in articulable ways. 
+    Testing these hypothesized differences is a key advantage of computational modeling, but a model fit separately between :bdg-primary:`Conditions` does not enable this hypothesis to be tested. 
 
 How to Achieve this Goal
 ------------
