@@ -29,7 +29,7 @@ Why Fitting Per Condition is Less Preferrable
 -----------------
 
 Although there are definitely use cases for fitting a model over multiple different :bdg-primary:`Conditions` (what we will learn below), 
-when possible it is better to integrate multiple :bdg-primary:`Conditions` within the same model. 
+when possible it is typically better to integrate multiple :bdg-primary:`Conditions` within the same model. 
 Namely, when it is believed that :bdg-primary:`Conditions` will modulate individuals' :bdg-success:`Preferences` **and there are more than two** :bdg-primary:`Conditions`, 
 I believe that models which internally hypothesize *how* these :bdg-success:`Preferences` change across :bdg-primary:`Conditions` are superior. 
 In general, there are three reasons that it is not desirable to **even consider** models fit separately per :bdg-primary:`Condition` when there are more than two :bdg-primary:`Conditions`.
