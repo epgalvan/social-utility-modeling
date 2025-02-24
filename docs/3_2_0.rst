@@ -28,7 +28,7 @@ To see how :bdg-primary:`Conditions` affect :bdg-success:`Free Parameters`.
 Why Fitting Per Condition is Less Preferrable
 -----------------
 
-Although there are definitely use cases for fitting a model over multiple different :bdg-primary:`Conditions` (what we will learn here), 
+Although there are definitely use cases for fitting a model over multiple different :bdg-primary:`Conditions` (what we will learn below), 
 when possible it is better to integrate multiple :bdg-primary:`Conditions` within the same model. 
 Namely, when it is believed that :bdg-primary:`Conditions` will modulate individuals' :bdg-success:`Preferences` **and there are more than two** :bdg-primary:`Conditions`, 
 I believe that models which internally hypothesize *how* these :bdg-success:`Preferences` change across :bdg-primary:`Conditions` are superior. 
@@ -36,8 +36,10 @@ In general, there are three reasons that it is not desirable to **even consider*
 
 .. dropdown:: Inability to Correctly Identify the Correct Model
 
-    Simulations from a simplified experiment are presented `here`_ which test the ability of model comparison to correctly identify the model that generated the data. 
-    A model split over :bdg-primary:`Conditions` outperforms the model that actually generated the data *even though it is more parsimonious*. 
+    Simulations from a hypothetical Dictator Game experiment are presented `here`_ which test the ability of model comparison to correctly identify the model that generated the data. 
+    A model split over :bdg-primary:`Conditions` often outperforms the model that actually generated the data *even though it is more parsimonious* under several different circumstances. 
+    This means, depending on (a) the assumptions of your :bdg-success:`Parameter` estimation process, (b) the features of your data, and (c) the power in your sample, 
+    including a per condition model in your model set may obfuscate the real model. 
 
 .. dropdown:: Lack of Predictive Value
 
